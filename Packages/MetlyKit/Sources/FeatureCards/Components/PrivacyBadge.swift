@@ -6,15 +6,19 @@ struct PrivacyBadge: View {
     let privacy: FieldPrivacy
 
     var body: some View {
-        Label(privacy.title, systemImage: privacy.symbolName)
-            .labelStyle(.titleAndIcon)
-            .font(.caption.weight(.medium))
-            .foregroundStyle(.secondary)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 2)
-            .background(.fill.tertiary, in: .capsule)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text("\(privacy.title) field"))
+        // An HStack, not a Label: inside list rows a Label's modifiers apply to icon and title separately.
+        HStack(spacing: 3) {
+            Image(systemName: privacy.symbolName)
+                .imageScale(.small)
+            Text(privacy.title)
+        }
+        .font(.caption.weight(.medium))
+        .foregroundStyle(.secondary)
+        .padding(.horizontal, 7)
+        .padding(.vertical, 2)
+        .background(.fill.tertiary, in: .capsule)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("\(privacy.title) field"))
     }
 }
 

@@ -28,6 +28,21 @@ enum ExportRenderer {
         case renderFailed
     }
 
+    private static var exportsFolder: URL {
+        URL.temporaryDirectory.appending(path: "CardExports", directoryHint: .isDirectory)
+    }
+
+    /// Removes files left by earlier export sessions (each render lives in its own sub-folder).
+    static func purgeStaleExports(olderThan age: TimeInterval = 60 * 60) {
+        let manager = FileManager.default
+        let folders = (try? manager.contentsOfDirectory(at: exportsFolder, includingPropertiesForKeys: [.creationDateKey])) ?? []
+        let cutoff = Date.now.addingTimeInterval(-age)
+        for folder in folders {
+            let created = (try? folder.resourceValues(forKeys: [.creationDateKey]))?.creationDate ?? .distantPast
+            if created < cutoff { try? manager.removeItem(at: folder) }
+        }
+    }
+
     static func render(_ output: ExportOutput, design: CardDesign, content: CardFaceContent,
                        fileName: String) throws -> RenderedExport {
         let data: Data
@@ -56,7 +71,7 @@ enum ExportRenderer {
             preview = image
         }
 
-        let folder = URL.temporaryDirectory.appending(path: "CardExports/\(UUID().uuidString)", directoryHint: .isDirectory)
+        let folder = exportsFolder.appending(path: UUID().uuidString, directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         let fileURL = folder.appending(path: fileName, directoryHint: .notDirectory)
         try data.write(to: fileURL, options: [.atomic, .completeFileProtection])

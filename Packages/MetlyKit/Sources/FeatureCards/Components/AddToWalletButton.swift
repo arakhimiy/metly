@@ -17,6 +17,7 @@ struct AddToWalletButton: UIViewRepresentable {
     func updateUIView(_ button: PKAddPassButton, context: Context) {
         context.coordinator.action = action
         button.addPassButtonStyle = style
+        button.isEnabled = context.environment.isEnabled
     }
 
     func makeCoordinator() -> Coordinator {

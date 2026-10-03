@@ -82,7 +82,8 @@ struct CardExportForm: View {
             Text(errorMessage ?? "")
         }
         .sensoryFeedback(.success, trigger: successCount)
-        .onDisappear { rendered?.discard() }
+        // Not discarded on disappear: a system sheet over this cover may trigger it while the file is shared.
+        .task { ExportRenderer.purgeStaleExports() }
     }
 
     // MARK: Rendering

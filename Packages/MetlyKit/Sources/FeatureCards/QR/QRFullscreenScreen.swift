@@ -36,6 +36,7 @@ struct QRFullscreenScreen: View {
                                            description: Text("Create a card to get your QR code."))
                 }
             }
+            .navigationTitle("QR Code")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {

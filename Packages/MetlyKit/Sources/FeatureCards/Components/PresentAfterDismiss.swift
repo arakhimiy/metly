@@ -3,7 +3,7 @@ import SwiftUI
 
 extension AppRouter {
     /// Presents either kind of route.
-    func present(_ presentation: Presentation) {
+    func presentRoute(_ presentation: Presentation) {
         switch presentation {
         case .sheet(let sheet): present(sheet)
         case .cover(let cover): present(cover)
@@ -34,6 +34,6 @@ private struct PresentAfterDismissModifier: ViewModifier {
     private func presentNext() {
         guard let presentation = next else { return }
         next = nil
-        router.present(presentation)
+        router.presentRoute(presentation)
     }
 }

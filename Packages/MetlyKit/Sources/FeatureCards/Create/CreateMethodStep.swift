@@ -10,6 +10,19 @@ struct CreateMethodStep: View {
     var body: some View {
         List {
             Section {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("How do you want to start?")
+                        .font(.title2.bold())
+                        .accessibilityAddTraits(.isHeader)
+                    Text("You can change everything later in the editor.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
+            }
+
+            Section {
                 CreateMethodRow(title: "Start from a Template", subtitle: "Nine layouts, ready for your details",
                                 systemImage: "square.grid.2x2.fill", color: .accentColor) {
                     onChoose(.template)
@@ -18,19 +31,6 @@ struct CreateMethodStep: View {
                                 systemImage: "rectangle.fill", color: .gray) {
                     onChoose(.blank)
                 }
-            } header: {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("How do you want to start?")
-                        .font(.title2.bold())
-                        .foregroundStyle(.primary)
-                    Text("You can change everything later in the editor.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .textCase(nil)
-                .padding(.bottom, 8)
-                .accessibilityElement(children: .combine)
-                .accessibilityAddTraits(.isHeader)
             }
         }
         .navigationTitle("New Card")

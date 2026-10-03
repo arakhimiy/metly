@@ -11,7 +11,8 @@ struct CardSettingsScreen: View {
     @Query(ProfileQuery.current) private var profiles: [Profile]
 
     var body: some View {
-        Group {
+        // A single container (not Group), so onChange isn't duplicated onto each branch.
+        ZStack {
             if let card = cards.first(where: { $0.id == cardID }) {
                 CardSettingsForm(card: card, cards: cards, profile: profiles.first)
             } else {

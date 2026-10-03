@@ -19,7 +19,8 @@ struct ShareCardScreen: View {
     @State private var followUp: Presentation?
 
     var body: some View {
-        Group {
+        // A single container (not Group), so onDisappear fires once for the sheet itself.
+        ZStack {
             if let card = cards.first(where: { $0.id == cardID }) {
                 ShareCardContent(card: card, profile: profiles.first, didShare: $didShare,
                                  onClose: close, onExport: openExport)
@@ -46,7 +47,7 @@ struct ShareCardScreen: View {
     private func didDisappear() {
         if let next = followUp {
             followUp = nil
-            router.present(next)
+            router.presentRoute(next)
         } else if JustMetPrompter.claimAfterShare(didShare: didShare, preferences: services.preferences) {
             router.present(.justMet(cardID: cardID))
         }

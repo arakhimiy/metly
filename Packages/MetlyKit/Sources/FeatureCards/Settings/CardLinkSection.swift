@@ -36,8 +36,6 @@ struct CardLinkSection: View {
                 Button("Share Link…", systemImage: "square.and.arrow.up") {}
                     .disabled(true)
             }
-        } header: {
-            Text("Link")
         } footer: {
             footer(for: status)
         }

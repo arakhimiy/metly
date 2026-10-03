@@ -34,7 +34,8 @@ struct CardCreateScreen: View {
     }
 
     var body: some View {
-        Group {
+        // A single container (not Group), so onAppear / onDisappear fire for the cover itself.
+        ZStack {
             if let card = createdCard {
                 CreateSuccessView(card: card, profile: profiles.first, createdOffline: createdOffline,
                                   onShare: shareNow, onDone: done)

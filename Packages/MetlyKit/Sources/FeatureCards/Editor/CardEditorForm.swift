@@ -48,7 +48,6 @@ struct CardEditorForm: View {
                 Text("Upgrade to \(Brand.proName) to use Editorial and every palette.")
             }
         }
-        .interactiveDismissDisabled(isDirty)
     }
 
     // MARK: Sections
