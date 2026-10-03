@@ -57,8 +57,14 @@ public enum MetlyServiceFactory {
         } else {
             // Separate Keychain item so mock tokens never reach a real backend.
             sessionStore = KeychainSessionStore(service: "com.metly.app.session.mock")
-            let seed: MockMetlyServer.Seed = if let snapshot = container.mainContext.mockAccountSnapshot(email: sessionStore.load()?.email) {
+            let session = sessionStore.load()
+            let seed: MockMetlyServer.Seed = if let snapshot = container.mainContext.mockAccountSnapshot(email: session?.email,
+                                                                                                     userID: session?.userID) {
                 .account(snapshot)
+            } else if let session {
+                // Signed in, setup not finished yet.
+                .account(MockSeed.Account(user: UserDTO(id: session.userID, email: session.email, authProviders: [.apple],
+                                                        createdAt: .now, profileComplete: false), profile: nil))
             } else if ProcessInfo.processInfo.arguments.contains("-MetlyMockExistingAccount") {
                 .demo
             } else {

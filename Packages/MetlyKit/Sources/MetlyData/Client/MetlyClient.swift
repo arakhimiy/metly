@@ -213,11 +213,12 @@ public final class MetlyClient {
             if let outcome = outcome(for: updated, connection: connection) { return outcome }
         }
         if Task.isCancelled { return .cancelled }
-        // Realtime may have been down: ask once.
-        if let latest = try? await api.connect.fetchRequest(id: request.id), let outcome = outcome(for: latest, connection: nil) {
-            return outcome
-        }
-        return .noResponse
+        // Realtime may have been down: ask once, and keep the answer.
+        guard let latest = try? await api.connect.fetchRequest(id: request.id) else { return .noResponse }
+        var applier = SyncApplier(context: container.mainContext, mode: .pull)
+        applier.apply(latest)
+        try? container.mainContext.save()
+        return outcome(for: latest, connection: nil) ?? .noResponse
     }
 
     private func outcome(for request: ConnectRequestDTO, connection: ConnectionDTO?) -> ConnectOutcome? {

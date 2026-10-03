@@ -219,8 +219,14 @@ public extension ConnectRequest {
         deletedAt = dto.deletedAt
     }
 
-    /// Everything about a request is server-driven.
-    func applyServerOwned(_ dto: ConnectRequestDTO) { apply(dto) }
+    /// While a local accept/decline/cancel is queued, only the peer's details follow the server.
+    func applyServerOwned(_ dto: ConnectRequestDTO) {
+        peerName = dto.peer.fullName
+        peerTitle = dto.peer.jobTitle
+        peerCompany = dto.peer.company
+        peerCard = dto.peer.card ?? peerCard
+        expiresAt = dto.expiresAt
+    }
 }
 
 // MARK: Context helpers
@@ -228,10 +234,26 @@ public extension ConnectRequest {
 public extension ModelContext {
     /// Inserts or overwrites records from server DTOs and marks them synced (no LWW — use for
     /// server-authoritative results such as connect accept responses and realtime events).
+    /// The local record for a server connection: same `id`, or — for a Metly user — the unsynced
+    /// connection a feature created optimistically for the same `remoteUserID` (e.g. People
+    /// accepting a request offline). That record is re-keyed to the server id instead of being
+    /// duplicated; its follow-ups follow along through the relationship.
+    func matchConnection(for dto: ConnectionDTO) -> Connection? {
+        if let existing = record(Connection.self, id: dto.id) { return existing }
+        guard dto.deletedAt == nil, let remoteID = dto.remoteUserID else { return nil }
+        let synced = SyncState.synced.rawValue
+        let descriptor = FetchDescriptor<Connection>(predicate: #Predicate {
+            $0.remoteUserID == remoteID && $0.deletedAt == nil && $0.syncStateRaw != synced
+        })
+        guard let optimistic = try? fetch(descriptor).first else { return nil }
+        optimistic.id = dto.id
+        return optimistic
+    }
+
     @discardableResult
     func upsert(_ dto: ConnectionDTO) -> Connection {
         let connection: Connection
-        if let existing = record(Connection.self, id: dto.id) {
+        if let existing = matchConnection(for: dto) {
             existing.apply(dto, in: self)
             connection = existing
         } else {
@@ -256,7 +278,7 @@ public extension ModelContext {
     }
 
     /// Snapshot of the whole local store as server DTOs (seeds `MockMetlyServer` from the device).
-    func mockAccountSnapshot(email: String?) -> MockSeed.Account? {
+    func mockAccountSnapshot(email: String?, userID: UUID? = nil) -> MockSeed.Account? {
         guard let profile = currentProfile() else { return nil }
         let live = #Predicate<Card> { $0.deletedAt == nil }
         let cards = ((try? fetch(FetchDescriptor(predicate: live))) ?? []).map(\.dto)
@@ -264,7 +286,7 @@ public extension ModelContext {
         let connections = ((try? fetch(FetchDescriptor<Connection>(predicate: #Predicate { $0.deletedAt == nil }))) ?? []).map(\.dto)
         let followUps = ((try? fetch(FetchDescriptor<FollowUp>(predicate: #Predicate { $0.deletedAt == nil }))) ?? []).map(\.dto)
         let requests = ((try? fetch(FetchDescriptor<ConnectRequest>(predicate: #Predicate { $0.deletedAt == nil }))) ?? []).map(\.dto)
-        let user = UserDTO(id: MockSeed.ownerUserID, email: email ?? MockSeed.ownerEmail, authProviders: [.apple],
+        let user = UserDTO(id: userID ?? MockSeed.ownerUserID, email: email ?? MockSeed.ownerEmail, authProviders: [.apple],
                            createdAt: profile.createdAt, profileComplete: profile.isSetupComplete)
         return MockSeed.Account(user: user, profile: profile.dto, cards: cards, events: events, connections: connections,
                                 followUps: followUps, connectRequests: requests)

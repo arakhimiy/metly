@@ -414,9 +414,11 @@ public final class SyncEngine: SyncServicing {
     /// True when something local still needs pushing (ignores records the server rejected).
     public func hasPushableChanges() -> Bool {
         let context = container.mainContext
-        let rejected = state.rejectedIDs
+        let state = state
         func dirty<Model: SyncedRecord>(_ type: Model.Type) -> Bool {
-            SyncPushBatch.dirty(type, in: context).contains { $0.syncState == .pendingDelete || !rejected.contains($0.id) }
+            SyncPushBatch.dirty(type, in: context).contains {
+                $0.syncState == .pendingDelete || !state.isRejected($0.id, updatedAt: $0.updatedAt)
+            }
         }
         return dirty(Profile.self) || dirty(Card.self) || dirty(Event.self) || dirty(Connection.self)
             || dirty(FollowUp.self) || dirty(ConnectRequest.self)

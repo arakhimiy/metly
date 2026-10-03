@@ -209,6 +209,29 @@ struct MockBackend: Sendable {
     mutating func upsertConnection(_ incoming: ConnectionDTO, canonical: inout SyncChanges) -> SyncResultDTO {
         let existing = connections[incoming.id]
         if let stale = staleResult(incoming, existing: existing, into: \.connections, canonical: &canonical) { return stale }
+        // One connection per Metly user: a second record for the same remoteUserID (e.g. created
+        // optimistically offline while the server already made one on accept) merges into the
+        // existing record; the pushed id is tombstoned.
+        if existing == nil, let remoteID = incoming.remoteUserID,
+           let twin = connections.values.first(where: { $0.remoteUserID == remoteID && $0.id != incoming.id }) {
+            var merged = twin
+            if incoming.updatedAt >= twin.updatedAt {
+                merged = incoming
+                merged.id = twin.id
+                merged.createdAt = min(twin.createdAt, incoming.createdAt)
+                merged.avatarURL = twin.avatarURL
+                if merged.theirCard == nil { merged.theirCard = twin.theirCard }
+                if merged.note.isEmpty { merged.note = twin.note }
+            }
+            connections[twin.id] = merged
+            touch(.connection, twin.id)
+            let tombstone = TombstoneDTO(type: .connection, id: incoming.id, deletedAt: incoming.updatedAt)
+            tombstones[incoming.id] = tombstone
+            touch(.connection, incoming.id)
+            canonical.connections.append(merged)
+            canonical.tombstones.append(tombstone)
+            return SyncResultDTO(type: .connection, id: incoming.id, status: .applied)
+        }
         var connection = incoming
         connection.avatarURL = existing?.avatarURL
         connection.deletedAt = nil

@@ -10,18 +10,22 @@ public struct AuthSession: Codable, Sendable, Hashable {
     /// Opaque, single-use (rotated on every refresh).
     public var refreshToken: String
     public var accessTokenExpiresAt: Date
+    /// Sign in with Apple user identifier — checked at launch for revocation.
+    public var appleUserID: String?
 
-    public init(userID: UUID, email: String?, accessToken: String, refreshToken: String, accessTokenExpiresAt: Date) {
+    public init(userID: UUID, email: String?, accessToken: String, refreshToken: String, accessTokenExpiresAt: Date,
+                appleUserID: String? = nil) {
         self.userID = userID
         self.email = email
         self.accessToken = accessToken
         self.refreshToken = refreshToken
         self.accessTokenExpiresAt = accessTokenExpiresAt
+        self.appleUserID = appleUserID
     }
 
-    public init(tokens: SessionTokens, user: UserDTO) {
+    public init(tokens: SessionTokens, user: UserDTO, appleUserID: String? = nil) {
         self.init(userID: user.id, email: user.email, accessToken: tokens.accessToken,
-                  refreshToken: tokens.refreshToken, accessTokenExpiresAt: tokens.accessTokenExpiresAt)
+                  refreshToken: tokens.refreshToken, accessTokenExpiresAt: tokens.accessTokenExpiresAt, appleUserID: appleUserID)
     }
 
     /// Applies rotated tokens from `POST /v1/auth/refresh`.

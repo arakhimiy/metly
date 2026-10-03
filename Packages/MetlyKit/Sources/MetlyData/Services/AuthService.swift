@@ -1,3 +1,4 @@
+import AuthenticationServices
 import Foundation
 import MetlyCore
 import MetlyNetworking
@@ -15,14 +16,21 @@ public enum AuthError: LocalizedError, Equatable {
 }
 
 /// Sign in with Apple / Google → backend session (Keychain) → initial sync.
-/// Sign-out and account deletion wipe the SwiftData store, the Keychain session, sync
-/// bookkeeping and device preferences (SPEC §9 Q46).
+///
+/// - `isSignedIn` depends only on the Keychain session (a signed-in user who hasn't finished
+///   setup stays signed in across launches).
+/// - Sign-out and account deletion wipe the Keychain session, sync bookkeeping, device
+///   preferences and — as the very last step, with no `await` after it — the SwiftData store.
+/// - When the session dies on its own (refresh token rejected, Apple ID revoked) `isSignedIn`
+///   flips to false without wiping: the app shell routes to onboarding, then calls `signOut()`.
 @MainActor
 @Observable
 public final class AuthService: AuthServicing {
     public private(set) var isSignedIn: Bool
     public private(set) var accountEmail: String?
     public private(set) var userID: UUID?
+    /// Set when Apple reported the credential revoked (notification or launch check).
+    public private(set) var appleCredentialRevoked = false
 
     @ObservationIgnored private let api: any MetlyAPI
     @ObservationIgnored private let sessionStore: any SessionStore
@@ -30,12 +38,13 @@ public final class AuthService: AuthServicing {
     @ObservationIgnored private let preferences: AppPreferences
     @ObservationIgnored private let sync: SyncEngine
     @ObservationIgnored private let isMock: Bool
-    /// Set by the factory: realtime start/stop and push re-registration around session changes.
+    @ObservationIgnored private var revocationObserver: (any NSObjectProtocol)?
+    /// Set by the factory: realtime start/stop and push (un)registration around session changes.
     @ObservationIgnored var onSignedIn: () -> Void = {}
     @ObservationIgnored var onSignedOut: () async -> Void = {}
 
     public init(api: any MetlyAPI, sessionStore: any SessionStore, container: ModelContainer, preferences: AppPreferences,
-                sync: SyncEngine, isMock: Bool) {
+                sync: SyncEngine, isMock: Bool, observeRevocation: Bool = true) {
         self.api = api
         self.sessionStore = sessionStore
         self.container = container
@@ -54,6 +63,14 @@ public final class AuthService: AuthServicing {
         isSignedIn = session != nil
         accountEmail = session?.email
         userID = session?.userID
+
+        if observeRevocation {
+            revocationObserver = NotificationCenter.default.addObserver(
+                forName: ASAuthorizationAppleIDProvider.credentialRevokedNotification, object: nil, queue: .main
+            ) { [weak self] _ in
+                Task { @MainActor in self?.credentialWasRevoked() }
+            }
+        }
     }
 
     // MARK: AuthServicing
@@ -68,18 +85,20 @@ public final class AuthService: AuthServicing {
                                          userIdentifier: credential.userID, fullName: name, email: credential.email)
         let response = try await api.auth.signInWithApple(request)
         let suggested = response.suggestedName ?? name?.formatted
-        return try await completeSignIn(response, suggestedName: suggested, fallbackEmail: credential.email)
+        return try await completeSignIn(response, suggestedName: suggested, fallbackEmail: credential.email,
+                                        appleUserID: credential.userID)
     }
 
     public func signIn(google credential: GoogleSignInCredential) async throws -> AuthResult {
         let response = try await api.auth.signInWithGoogle(GoogleSignInRequest(idToken: credential.idToken))
         return try await completeSignIn(response, suggestedName: response.suggestedName ?? credential.fullName,
-                                        fallbackEmail: credential.email)
+                                        fallbackEmail: credential.email, appleUserID: nil)
     }
 
+    /// Safe to call more than once (the UI also wipes defensively).
     public func signOut() async {
         let refreshToken = sessionStore.load()?.refreshToken
-        if isSignedIn {
+        if isSignedIn, refreshToken != nil {
             // Best effort — never block local sign-out on the network.
             try? await api.auth.logout(LogoutRequest(refreshToken: refreshToken))
         }
@@ -95,31 +114,63 @@ public final class AuthService: AuthServicing {
         _ = try await api.account.requestDataExport()
     }
 
+    // MARK: Sign in with Apple revocation
+
+    /// Call at launch while signed in. Returns false when the Apple ID credential was revoked or
+    /// no longer exists — then route to onboarding and call `signOut()`. Google sessions, offline
+    /// checks and errors count as valid.
+    public func checkAppleCredentialState() async -> Bool {
+        guard isSignedIn, let appleUserID = sessionStore.load()?.appleUserID else { return true }
+        guard let state = try? await ASAuthorizationAppleIDProvider().credentialState(forUserID: appleUserID) else { return true }
+        switch state {
+        case .revoked:
+            credentialWasRevoked()
+            return false
+        case .notFound where !isMock:   // simulator mock sign-ins may use made-up Apple IDs
+            credentialWasRevoked()
+            return false
+        default:
+            return true
+        }
+    }
+
+    private func credentialWasRevoked() {
+        guard isSignedIn, sessionStore.load()?.appleUserID != nil else { return }
+        appleCredentialRevoked = true
+        endSessionWithoutWipe()
+    }
+
     // MARK: Session lifecycle
 
-    /// Called when the refresh token is rejected: the session is gone, local data stays until the
-    /// next sign-in (wiped then if it's a different account).
+    /// The refresh token was rejected: the session is gone; local data stays until `signOut()`
+    /// (or the next sign-in, which wipes first if it's a different account).
     public func sessionDidExpire() {
+        endSessionWithoutWipe()
+    }
+
+    private func endSessionWithoutWipe() {
         guard isSignedIn else { return }
         isSignedIn = false
         Task { await onSignedOut() }
     }
 
-    private func completeSignIn(_ response: AuthResponse, suggestedName: String?, fallbackEmail: String?) async throws -> AuthResult {
+    private func completeSignIn(_ response: AuthResponse, suggestedName: String?, fallbackEmail: String?,
+                                appleUserID: String?) async throws -> AuthResult {
         let context = container.mainContext
         // A different account than the one whose data is on this device → start clean.
         let previousUser = sync.state.lastUserID
         if let previousUser, previousUser != response.user.id {
-            try? MetlyModelContainer.wipe(context)
             sync.reset()
+            try? MetlyModelContainer.wipe(context)
         } else if previousUser == nil, !isMock {
             sync.state.cursor = nil   // first sign-in on this install: full snapshot
         }
-        var session = AuthSession(tokens: response.session, user: response.user)
+        var session = AuthSession(tokens: response.session, user: response.user, appleUserID: appleUserID)
         if session.email == nil { session.email = fallbackEmail }
         try sessionStore.save(session)
         sync.state.lastUserID = response.user.id
         isSignedIn = true
+        appleCredentialRevoked = false
         accountEmail = session.email
         userID = session.userID
         onSignedIn()
@@ -132,12 +183,13 @@ public final class AuthService: AuthServicing {
 
     private func wipeLocalAccount() async {
         await onSignedOut()
+        // Everything below is synchronous; the store wipe is the last step.
         sync.reset()
-        try? MetlyModelContainer.wipe(container.mainContext)
         sessionStore.clear()
         preferences.reset()
         isSignedIn = false
         accountEmail = nil
         userID = nil
+        try? MetlyModelContainer.wipe(container.mainContext)
     }
 }

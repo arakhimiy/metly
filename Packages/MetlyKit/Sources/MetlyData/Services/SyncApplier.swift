@@ -7,7 +7,8 @@ import SwiftData
 ///
 /// Rules (per record, matched by `id`):
 /// - not local → insert (unless it is a tombstone) and mark `synced`;
-/// - local `synced` → overwrite with the server version;
+/// - local `synced` → overwrite with the server version, unless it is older than what we already
+///   have (realtime events and HTTP responses can arrive out of order);
 /// - local dirty → overwrite only if the server version is newer, or if this is the push echo
 ///   for exactly the version we sent; otherwise keep the user's edit and take server-owned
 ///   fields only (slug, publish state, stats…). A dirty record is never overwritten by older data.
@@ -78,7 +79,7 @@ struct SyncApplier {
 
     mutating func apply(_ dto: ConnectionDTO) {
         let context = context
-        merge(dto, local: context.record(Connection.self, id: dto.id), insert: { Connection(dto: dto, in: context) },
+        merge(dto, local: context.matchConnection(for: dto), insert: { Connection(dto: dto, in: context) },
               applyAll: { $0.apply(dto, in: context) }, applyServerOwned: { $0.applyServerOwned(dto) })
     }
 
@@ -109,7 +110,10 @@ struct SyncApplier {
             insert().syncState = .synced
             return
         }
-        if serverWins(local, remoteUpdatedAt: dto.updatedAt) {
+        if local.syncState == .synced {
+            guard dto.updatedAt >= local.updatedAt else { return }   // stale delivery
+            applyAll(local)
+        } else if serverWins(local, remoteUpdatedAt: dto.updatedAt) {
             applyAll(local)
             local.syncState = .synced
         } else {
@@ -117,8 +121,8 @@ struct SyncApplier {
         }
     }
 
+    /// For records with unsynced local changes.
     private func serverWins(_ local: some SyncedRecord, remoteUpdatedAt: Date) -> Bool {
-        if local.syncState == .synced { return true }
         if case .echo(let pushed) = mode, let sent = pushed[local.id], sent == local.updatedAt { return true }
         return remoteUpdatedAt > local.updatedAt
     }
@@ -128,7 +132,7 @@ struct SyncApplier {
     mutating func apply(_ tombstone: TombstoneDTO) {
         seenIDs.insert(tombstone.id)
         guard let local = record(of: tombstone.type, id: tombstone.id) else { return }
-        if local.syncState == .pendingDelete || serverWins(local, remoteUpdatedAt: tombstone.deletedAt) {
+        if local.syncState != .pendingUpsert || serverWins(local, remoteUpdatedAt: tombstone.deletedAt) {
             context.delete(local)
         }
     }
