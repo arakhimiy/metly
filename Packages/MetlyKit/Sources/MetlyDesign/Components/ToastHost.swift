@@ -5,12 +5,19 @@ import SwiftUI
 /// Attached once by the app root — features only call `router.showToast(...)`.
 public struct ToastHostModifier: ViewModifier {
     @Environment(AppRouter.self) private var router
+    /// Presentation level this host sits on; only the top-most level shows the toast (nil = always).
+    let level: Int?
 
-    public init() {}
+    public init(level: Int? = nil) { self.level = level }
+
+    private var isTopMost: Bool {
+        guard let level else { return true }
+        return router.presentations.count == level
+    }
 
     public func body(content: Content) -> some View {
         content.overlay(alignment: .bottom) {
-            if let toast = router.toast {
+            if let toast = router.toast, isTopMost {
                 ToastView(toast: toast) { router.toast = nil }
                     .id(toast.id)
                     .padding(.bottom, 112) // clears the floating tab bar (iOS 26) and the classic one
@@ -57,5 +64,5 @@ struct ToastView: View {
 }
 
 public extension View {
-    func toastHost() -> some View { modifier(ToastHostModifier()) }
+    func toastHost(level: Int? = nil) -> some View { modifier(ToastHostModifier(level: level)) }
 }

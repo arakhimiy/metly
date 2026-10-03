@@ -29,7 +29,7 @@ struct RootView: View {
             }
         }
         .animation(.default, value: router.phase)
-        .toastHost()
+        .toastHost(level: 0)
         .task { await bootstrap() }
         // Session expired / Apple ID revoked while running.
         .onChange(of: services.auth.isSignedIn) { _, signedIn in

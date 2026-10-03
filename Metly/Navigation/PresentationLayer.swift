@@ -10,10 +10,14 @@ struct PresentationLayer: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(item: binding(covers: false)) { presentation in
-                RouteResolver.view(for: presentation).presentationLayer(level: level + 1)
+                RouteResolver.view(for: presentation)
+                    .presentationLayer(level: level + 1)
+                    .toastHost(level: level + 1)   // toasts appear on the top-most modal
             }
             .fullScreenCover(item: binding(covers: true)) { presentation in
-                RouteResolver.view(for: presentation).presentationLayer(level: level + 1)
+                RouteResolver.view(for: presentation)
+                    .presentationLayer(level: level + 1)
+                    .toastHost(level: level + 1)
             }
     }
 
