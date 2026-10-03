@@ -17,6 +17,11 @@ struct CardRow: View {
             HStack(spacing: 12) {
                 CardFaceView(design: card.design, content: faceContent)
                     .frame(width: 56)
+                    // Hairline so light cards don't melt into the row background.
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 56 * 0.042)
+                            .strokeBorder(Color(.separator), lineWidth: 0.5)
+                    }
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: 2) {

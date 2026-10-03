@@ -27,7 +27,6 @@ struct ProfileForm: View {
             CardsSection(profile: profile, cards: cards)
             SharingSection(profile: profile, cards: cards)
             ProPlanSection()
-            AppearanceSection()
             SettingsLinksSection()
             SignOutSection()
         }

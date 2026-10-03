@@ -12,7 +12,7 @@ struct ProPlanSection: View {
                 LabeledContent {
                     Text(PlanDescription.title(isPro: entitlements.isPro, productID: entitlements.productID))
                 } label: {
-                    SettingsRowLabel(Brand.proName, systemImage: "crown.fill", color: .orange)
+                    SettingsRowLabel(verbatim: Brand.proName, systemImage: "crown.fill", color: .orange)
                 }
             }
         }
