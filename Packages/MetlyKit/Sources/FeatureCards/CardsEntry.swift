@@ -3,8 +3,9 @@ import MetlyDesign
 import SwiftUI
 
 // FROZEN ENTRY POINTS — the app RouteResolver constructs these. Keep the initialisers;
-// replace the bodies with the real screens.
+// the bodies host the real screens.
 
+/// CARD_CREATE (cover wizard, SPEC §2.5.23).
 public struct CardCreateView: View {
     public let origin: CardCreateOrigin
 
@@ -13,9 +14,11 @@ public struct CardCreateView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("New Card", specID: "CARD_CREATE")
+        CardCreateScreen(origin: origin)
     }
 }
+
+/// CARD_EDITOR (cover, SPEC §2.5.24).
 public struct CardEditorView: View {
     public let cardID: UUID
 
@@ -24,9 +27,11 @@ public struct CardEditorView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Edit Card", specID: "CARD_EDITOR")
+        CardEditorScreen(cardID: cardID)
     }
 }
+
+/// CARD_SETTINGS (push, SPEC §2.5.22).
 public struct CardSettingsView: View {
     public let cardID: UUID
 
@@ -35,9 +40,11 @@ public struct CardSettingsView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Card Settings", specID: "CARD_SETTINGS")
+        CardSettingsScreen(cardID: cardID)
     }
 }
+
+/// CARD_EXPORT (cover, SPEC §2.5.25).
 public struct CardExportView: View {
     public let cardID: UUID
     public let tab: CardExportTab
@@ -48,9 +55,11 @@ public struct CardExportView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Export", specID: "CARD_EXPORT")
+        CardExportScreen(cardID: cardID, initialTab: tab)
     }
 }
+
+/// QR_FULLSCREEN (cover, SPEC §2.5.28).
 public struct QRFullscreenView: View {
     public let cardID: UUID
 
@@ -59,9 +68,11 @@ public struct QRFullscreenView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("QR Code", specID: "QR_FULLSCREEN")
+        QRFullscreenScreen(initialCardID: cardID)
     }
 }
+
+/// SHARE_SHEET (sheet, SPEC §2.5.29).
 public struct ShareCardSheet: View {
     public let cardID: UUID
 
@@ -70,6 +81,6 @@ public struct ShareCardSheet: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Share", specID: "SHARE_SHEET")
+        ShareCardScreen(cardID: cardID)
     }
 }
