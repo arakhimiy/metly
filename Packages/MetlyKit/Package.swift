@@ -21,7 +21,7 @@ let package = Package(
     products: [
         // Linked by the app target.
         .library(name: "MetlyApp", targets: [
-            "MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking", "MetlyWidgetKit",
+            "MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking", "MetlyWidgetKit", "MetlyCapture",
             "FeatureOnboarding", "FeatureHome", "FeatureCards", "FeatureScan",
             "FeatureConnect", "FeaturePeople", "FeatureEvents", "FeatureProfile",
         ]),
@@ -35,6 +35,7 @@ let package = Package(
         .library(name: "MetlyData", targets: ["MetlyData"]),
         .library(name: "MetlyNetworking", targets: ["MetlyNetworking"]),
         .library(name: "MetlyWidgetKit", targets: ["MetlyWidgetKit"]),
+        .library(name: "MetlyCapture", targets: ["MetlyCapture"]),
         .library(name: "FeatureOnboarding", targets: ["FeatureOnboarding"]),
         .library(name: "FeatureHome", targets: ["FeatureHome"]),
         .library(name: "FeatureCards", targets: ["FeatureCards"]),
@@ -55,17 +56,19 @@ let package = Package(
         // SwiftData @Model types must not be MainActor-isolated → nonisolated default; services are @MainActor explicitly.
         .target(name: "MetlyData", dependencies: ["MetlyCore", "MetlyNetworking"], swiftSettings: nonisolatedSettings),
         .target(name: "MetlyWidgetKit", dependencies: ["MetlyCore", "MetlyCardKit"], swiftSettings: mainActorSettings),
+        // Context capture shared by People, Connect, Scan, Events (owned by the People & Context agent).
+        .target(name: "MetlyCapture", dependencies: ["MetlyCore", "MetlyDesign", "MetlyData"], swiftSettings: mainActorSettings),
 
         // MARK: Features (never depend on each other)
         .target(name: "FeatureOnboarding", dependencies: [
-            "MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData",
+            "MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking",
         ], swiftSettings: mainActorSettings),
-        .target(name: "FeatureHome", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData"], swiftSettings: mainActorSettings),
-        .target(name: "FeatureCards", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking"], swiftSettings: mainActorSettings),
-        .target(name: "FeatureScan", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking"], swiftSettings: mainActorSettings),
-        .target(name: "FeatureConnect", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking"], swiftSettings: mainActorSettings),
-        .target(name: "FeaturePeople", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData"], swiftSettings: mainActorSettings),
-        .target(name: "FeatureEvents", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData"], swiftSettings: mainActorSettings),
+        .target(name: "FeatureHome", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyCapture", "MetlyNetworking"], swiftSettings: mainActorSettings),
+        .target(name: "FeatureCards", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking", "MetlyCapture"], swiftSettings: mainActorSettings),
+        .target(name: "FeatureScan", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking", "MetlyCapture"], swiftSettings: mainActorSettings),
+        .target(name: "FeatureConnect", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking", "MetlyCapture"], swiftSettings: mainActorSettings),
+        .target(name: "FeaturePeople", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyCapture", "MetlyNetworking"], swiftSettings: mainActorSettings),
+        .target(name: "FeatureEvents", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyCapture", "MetlyNetworking"], swiftSettings: mainActorSettings),
         .target(name: "FeatureProfile", dependencies: ["MetlyCore", "MetlyDesign", "MetlyCardKit", "MetlyData", "MetlyNetworking"], swiftSettings: mainActorSettings),
 
         // MARK: Tests (Swift Testing)
@@ -75,6 +78,7 @@ let package = Package(
         .testTarget(name: "MetlyDataTests", dependencies: ["MetlyData"]),
         .testTarget(name: "MetlyNetworkingTests", dependencies: ["MetlyNetworking"]),
         .testTarget(name: "MetlyWidgetKitTests", dependencies: ["MetlyWidgetKit"]),
+        .testTarget(name: "MetlyCaptureTests", dependencies: ["MetlyCapture"]),
         .testTarget(name: "FeatureOnboardingTests", dependencies: ["FeatureOnboarding"]),
         .testTarget(name: "FeatureHomeTests", dependencies: ["FeatureHome"]),
         .testTarget(name: "FeatureCardsTests", dependencies: ["FeatureCards"]),
