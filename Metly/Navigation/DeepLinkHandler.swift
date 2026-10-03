@@ -5,8 +5,14 @@ import SwiftUI
 
 /// Universal Links (`https://metly.link/c/{slug}`), custom scheme (`metly://…`) and widget/intent links.
 enum DeepLinkHandler {
+    /// A link that arrived before the app reached `.main` (cold launch from a widget, control or Siri).
+    private static var pendingURL: URL?
+
     static func handle(_ url: URL, router: AppRouter, context: ModelContext) {
-        guard router.phase == .main else { return }
+        guard router.phase == .main else {
+            if router.phase == .launching { pendingURL = url }
+            return
+        }
 
         // Someone else's card link → Scanned Card.
         if let slug = Brand.slug(from: url) {
@@ -44,8 +50,19 @@ enum DeepLinkHandler {
             router.present(.connect(cardID: nil))
         case "scan":
             router.select(.scan)
+        case "event":    // metly://event/start — App Shortcut "Start Event"
+            if parts.first == "start" {
+                router.dismissAll()
+                router.present(.startEvent(eventID: nil))
+            }
         default:
             break
         }
+    }
+
+    static func handlePendingURL(router: AppRouter, context: ModelContext) {
+        guard let url = pendingURL else { return }
+        pendingURL = nil
+        handle(url, router: router, context: context)
     }
 }

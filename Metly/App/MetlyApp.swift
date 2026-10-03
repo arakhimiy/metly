@@ -32,6 +32,7 @@ struct MetlyApp: App {
         }
         #endif
         self.container = container
+        WidgetSync.start(container: container)   // widget snapshot + pending widget actions
         // Keep the demo seeding above this call: the mock server mirrors the device store.
         let environment = MetlyServiceFactory.makeEnvironment(container: container)
         self.environment = environment
@@ -59,6 +60,10 @@ struct MetlyApp: App {
                 .onOpenURL { url in DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
                     if let url = activity.webpageURL { DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
+                }
+                .onChange(of: router.phase) { _, phase in
+                    // Widget / Control / Siri cold launches arrive before the root phase is ready.
+                    if phase == .main { DeepLinkHandler.handlePendingURL(router: router, context: container.mainContext) }
                 }
                 .onChange(of: scenePhase) { _, phase in
                     switch phase {
