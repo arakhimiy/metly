@@ -1,3 +1,4 @@
+import FeatureCards
 import FeatureHome
 import FeatureProfile
 import MetlyCore
@@ -52,6 +53,7 @@ struct MetlyApp: App {
                 .environment(router)
                 .environment(services)
                 .environment(client)
+                .environment(\.walletPassProvider, APIWalletPassProvider(client: client, container: container))
                 .modelContainer(container)
                 .preferredColorScheme(services.preferences.appearance.colorScheme)
                 .onOpenURL { url in DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
