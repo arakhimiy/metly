@@ -1,0 +1,197 @@
+import MetlyCore
+import MetlyData
+import SwiftData
+import SwiftUI
+
+/// SCAN (SPEC §2.5.8, §3.13): full-bleed camera with **QR Code | Paper Card**, Paste Link,
+/// flashlight and, in Paper mode, a shutter that reads the card on device.
+struct ScanScreen: View {
+    @Environment(AppRouter.self) private var router
+    @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
+
+    @Query(Card.live) private var cards: [Card]
+    @Query(Event.active) private var activeEvents: [Event]
+
+    @State private var mode: ScanMode
+    @State private var camera: ScanCamera
+    @State private var debouncer = ScanDebouncer()
+    @State private var isVisible = false
+    @State private var isReadingCard = false
+
+    @State private var invalidCode: InvalidCodeAlert?
+    @State private var showsInvalidCode: Bool
+    @State private var paperNotRead: PaperNotReadAlert?
+    @State private var showsPaperNotRead: Bool
+
+    @State private var successFeedback = 0
+    @State private var warningFeedback = 0
+
+    /// Parameters exist for previews; the app uses the defaults.
+    init(mode: ScanMode = .qr, camera: ScanCamera = ScanCamera(),
+         invalidCode: InvalidCodeAlert? = nil, paperNotRead: PaperNotReadAlert? = nil) {
+        _mode = State(initialValue: mode)
+        _camera = State(initialValue: camera)
+        _invalidCode = State(initialValue: invalidCode)
+        _showsInvalidCode = State(initialValue: invalidCode != nil)
+        _paperNotRead = State(initialValue: paperNotRead)
+        _showsPaperNotRead = State(initialValue: paperNotRead != nil)
+    }
+
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+            if camera.access == .authorized {
+                cameraLayer
+            } else {
+                CameraAccessView(access: camera.access, onRequestAccess: requestAccess, onPaste: handlePasted) {
+                    #if DEBUG
+                    DemoScanMenu(onPayload: handlePasted, onPaperDraft: handlePaperDraft)
+                    #endif
+                }
+            }
+        }
+        .navigationTitle("Scan Card")
+        .navigationBarTitleDisplayMode(.inline)
+        .modifier(ScanChrome())
+        .environment(\.colorScheme, .dark)
+        .alert(InvalidCodeAlert.title, isPresented: $showsInvalidCode, presenting: invalidCode) { alert in
+            if let url = alert.url {
+                Button("Cancel", role: .cancel) {}
+                Button("Open in Safari") { openInSafari(url) }
+            } else {
+                Button("OK", role: .cancel) {}
+            }
+        } message: { alert in
+            Text(alert.message)
+        }
+        .alert(PaperNotReadAlert.title, isPresented: $showsPaperNotRead, presenting: paperNotRead) { alert in
+            Button("Enter Manually") { enterManually(imageData: alert.imageData) }
+            Button("Retake", role: .cancel) {}
+        } message: { _ in
+            Text(PaperNotReadAlert.message)
+        }
+        .sensoryFeedback(.success, trigger: successFeedback)
+        .sensoryFeedback(.warning, trigger: warningFeedback)
+        .task { await camera.requestAccessIfNeeded() }
+        .onAppear(perform: appear)
+        .onDisappear(perform: disappear)
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { camera.refreshAccess() }
+        }
+        .onChange(of: camera.isTorchOn) { camera.applyTorch() }
+        .onChange(of: mode) { camera.isTorchOn = false }
+    }
+
+    private var cameraLayer: some View {
+        ZStack {
+            if isVisible {
+                ScanCameraFeed(mode: mode, camera: camera, onCode: handleScanned)
+                    .ignoresSafeArea()
+                    .accessibilityLabel("Camera Viewfinder")
+            }
+            ViewfinderGuide(mode: mode)
+        }
+        .safeAreaInset(edge: .top) {
+            ScanTopBar(mode: $mode, eventName: activeEvents.first?.name)
+        }
+        .safeAreaInset(edge: .bottom) {
+            ScanBottomBar(mode: mode, isReadingCard: isReadingCard, hasTorch: camera.hasTorch,
+                          isTorchOn: $camera.isTorchOn, onPaste: handlePasted, onShutter: readPaperCard)
+        }
+    }
+
+    private var ownSlugs: Set<String> {
+        Set(cards.map(\.slug).filter { !$0.isEmpty })
+    }
+
+    // MARK: Lifecycle
+
+    private func appear() {
+        isVisible = true
+        camera.refreshAccess()
+        // Coming back from a scanned card: don't re-open it while the code is still in frame.
+        debouncer.pause(for: 1.2)
+    }
+
+    private func disappear() {
+        isVisible = false
+        camera.isTorchOn = false
+    }
+
+    private func requestAccess() {
+        Task { await camera.requestAccessIfNeeded() }
+    }
+
+    // MARK: QR codes & links
+
+    private func handleScanned(_ payload: String) {
+        let isBlocked = !isVisible || showsInvalidCode || showsPaperNotRead || isReadingCard
+        guard debouncer.shouldHandle(payload, isBlocked: isBlocked) else { return }
+        route(QRPayloadClassifier.classify(payload, ownSlugs: ownSlugs), source: .camera)
+    }
+
+    private func handlePasted(_ text: String) {
+        route(QRPayloadClassifier.classify(text, ownSlugs: ownSlugs), source: .clipboard)
+    }
+
+    private func route(_ payload: QRPayload, source: ScanSource) {
+        switch payload {
+        case .metlyCard(let url, let slug):
+            successFeedback += 1
+            router.push(.scannedCard(ScannedCardPayload(url: url, slug: slug)))
+        case .ownCard:
+            successFeedback += 1
+            router.showToast("That’s Your Card", systemImage: "person.crop.rectangle")
+        case .vCard(let text):
+            successFeedback += 1
+            router.push(.scannedCard(ScannedCardPayload(vCard: text)))
+        case .webLink(let url):
+            showInvalidCode(InvalidCodeAlert(source: source, url: url, domain: payload.displayDomain))
+        case .other:
+            showInvalidCode(InvalidCodeAlert(source: source))
+        }
+    }
+
+    private func showInvalidCode(_ alert: InvalidCodeAlert) {
+        warningFeedback += 1
+        invalidCode = alert
+        showsInvalidCode = true
+    }
+
+    private func openInSafari(_ url: URL) {
+        router.showToast("Opening Safari", systemImage: "safari")
+        openURL(url)
+    }
+
+    // MARK: Paper cards
+
+    private func readPaperCard() {
+        guard !isReadingCard else { return }
+        isReadingCard = true
+        Task {
+            defer { isReadingCard = false }
+            do {
+                let photo = try await camera.capturePhoto()
+                handlePaperDraft(await PaperCardReader.read(photo, liveLines: camera.liveLines))
+            } catch {
+                handlePaperDraft(PaperCardDraft())
+            }
+        }
+    }
+
+    private func handlePaperDraft(_ draft: PaperCardDraft) {
+        if draft.isReadable {
+            successFeedback += 1
+            router.push(.paperReview(draft))
+        } else {
+            warningFeedback += 1
+            paperNotRead = PaperNotReadAlert(imageData: draft.imageData)
+            showsPaperNotRead = true
+        }
+    }
+
+    private func enterManually(imageData: Data?) {
+        router.push(.paperReview(PaperCardDraft(imageData: imageData)))
+    }
+}

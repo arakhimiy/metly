@@ -5,13 +5,16 @@ import SwiftUI
 // FROZEN ENTRY POINTS — the app RouteResolver constructs these. Keep the initialisers;
 // replace the bodies with the real screens.
 
+/// SCAN tab root (SPEC §2.5.8).
 public struct ScanView: View {
     public init() {}
 
     public var body: some View {
-        FeaturePlaceholder("Scan", specID: "SCAN")
+        ScanScreen()
     }
 }
+
+/// SCANNED_CARD (SPEC §2.5.9) — a scanned / pasted Metly link or a foreign vCard.
 public struct ScannedCardView: View {
     public let payload: ScannedCardPayload
 
@@ -20,9 +23,11 @@ public struct ScannedCardView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Scanned Card", specID: "SCANNED_CARD")
+        ScannedCardScreen(payload: payload)
     }
 }
+
+/// PAPER_REVIEW (SPEC §2.5.10) — OCR result (or empty fields for "Enter Manually").
 public struct PaperReviewView: View {
     public let draft: PaperCardDraft
 
@@ -31,6 +36,6 @@ public struct PaperReviewView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Paper Card", specID: "PAPER_REVIEW")
+        PaperReviewScreen(draft: draft)
     }
 }
