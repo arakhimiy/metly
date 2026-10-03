@@ -1,7 +1,7 @@
 import Foundation
 import MetlyCore
 import Testing
-@testable import FeatureProfile
+@testable import MetlySharedUI
 
 @Suite("Card management rules")
 struct CardManagementTests {

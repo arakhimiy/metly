@@ -2,13 +2,20 @@ import SwiftUI
 
 /// Menu content for MENU_CARD_ACTIONS: Copy Link · Share… · Show QR Code · Connect Nearby ·
 /// Edit Card · Card Settings… · Export… · Set as Default / ✓ Default Card · Delete Card.
-struct CardActionsMenu: View {
+public struct CardActionsMenu: View {
     let hasLink: Bool
     let isDefault: Bool
     let isReadOnly: Bool
     let perform: (CardAction) -> Void
 
-    var body: some View {
+    public init(hasLink: Bool, isDefault: Bool, isReadOnly: Bool, perform: @escaping (CardAction) -> Void) {
+        self.hasLink = hasLink
+        self.isDefault = isDefault
+        self.isReadOnly = isReadOnly
+        self.perform = perform
+    }
+
+    public var body: some View {
         Section {
             Button("Copy Link", systemImage: "link") { perform(.copyLink) }
                 .disabled(!hasLink)

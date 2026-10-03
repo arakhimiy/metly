@@ -2,6 +2,7 @@ import MetlyCardKit
 import MetlyCore
 import MetlyData
 import SwiftUI
+import MetlySharedUI
 
 /// Cards row: 56 pt card face · name · link (or "Not published") · Default · ⌃⌄ → card menu.
 struct CardRow: View {

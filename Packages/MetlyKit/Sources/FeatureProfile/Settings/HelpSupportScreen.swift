@@ -1,5 +1,6 @@
 import MetlyCore
 import StoreKit
+import MetlySharedUI
 import SwiftUI
 
 /// SETTINGS_HELP (SPEC §2.5.20).

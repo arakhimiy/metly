@@ -1,6 +1,7 @@
 import MetlyCore
 import MetlyData
 import SwiftUI
+import MetlySharedUI
 
 /// "Sharing": Pause All Links (single global switch), Preview Public Page, Widgets.
 struct SharingSection: View {

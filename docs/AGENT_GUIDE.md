@@ -35,7 +35,14 @@ MetlyData       SwiftData models: Profile, Card, Connection, FollowUp, Event, Co
                 descriptors: Card.live, Connection.live, FollowUp.open, Event.active, ConnectRequest.pendingIncoming
                 context helpers: currentProfile(), defaultCard(), activeEvent(), cardToShare(), record(_:id:)
                 card.faceContent(profile:audience:), PreviewSeed, View.metlyPreview(_:plan:online:)
-MetlyNetworking API client + DTOs + mock server (Data & Sync agent)
+MetlyNetworking API client + DTOs + mock server (Data & Sync agent) — see docs/api/README.md "Using the API from features"
+MetlyCapture    shared context capture (People agent): CaptureDraft, ContextCaptureForm, FollowUpPolicy,
+                .followUpLimitAlert, ContactSaver/.contactSaver, ContactLinks, LocationContextProvider,
+                VoiceNoteRecognizer, CaptureChip, TagFlowLayout, .settingsAlert — API summary at top of MetlyCapture.swift
+MetlySharedUI   data-aware shared UI: CardActionsMenu + CardAction + CardActionCoordinator (+ .cardActionAlerts),
+                CardManagement (default/delete/limit rules), SafariView + .inAppBrowser(BrowserPage)
+MetlyCardKit+   CardTemplateThumbnail, CardPaletteSwatch, CardProLockBadge, .cardFaceElevation(), CardFaceContent.sample,
+                VCardBuilder / VCardParser, CardExporter (png/pdfSingle/pdfSheetA4/lockScreenWallpaper), ContactValueFormat
 ```
 
 ### Navigation
