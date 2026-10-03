@@ -49,6 +49,7 @@ MetlyDesign    HIG components, toast/undo HUD, avatars, field icons, glass helpe
 MetlyCardKit   CardFace renderer (9 templates × 6 palettes × light/dark), QR, vCard, exports
 MetlyData      SwiftData schema, preview/seed data, sync engine, repositories
 MetlyNetworking API client, DTOs, endpoints, MockMetlyServer, Keychain session store
+MetlyCapture   shared context-capture block (where/note/voice/tags/follow-up), Contacts saver, location
 Feature*       one per area (see ownership table)
 ```
 
@@ -60,7 +61,7 @@ Feature*       one per area (see ownership table)
 | 1 | CardKit | `Sources/MetlyCardKit`, `Tests/MetlyCardKitTests` | Appendix B, QR, vCard, PNG/PDF/Lock renderers | 1 |
 | 2 | Data & Sync | `Sources/MetlyData`, `Sources/MetlyNetworking`, their tests, `docs/api/openapi.yaml` | sync, auth session, mock server | 1 |
 | 3 | Onboarding & Auth | `Sources/FeatureOnboarding` + tests | ONB_WELCOME, AUTH_SIGNUP, SETUP_PROFILE, SETUP_PERMISSIONS, DEFERRED_WELCOME | 1 |
-| 4 | People & Context | `Sources/FeaturePeople` + tests | PEOPLE, CONNECTION_DETAIL, ADD_CONTEXT, JUST_MET, context capture + voice note, blocked people | 1 |
+| 4 | People & Context | `Sources/FeaturePeople`, `Sources/MetlyCapture` (shared capture block) + tests | PEOPLE, CONNECTION_DETAIL, ADD_CONTEXT, JUST_MET, context capture + voice note, blocked people | 1 |
 | 5 | Profile & Paywall | `Sources/FeatureProfile` + tests, `Metly/Metly.storekit` | PROFILE, SETTINGS_*, PAYWALL | 1 |
 | 6 | Cards & Sharing | `Sources/FeatureCards` + tests | CARD_CREATE, CARD_EDITOR, CARD_SETTINGS, CARD_EXPORT, QR_FULLSCREEN, SHARE_SHEET, card menus | 2 |
 | 7 | Scan | `Sources/FeatureScan` + tests | SCAN, SCANNED_CARD, PAPER_REVIEW | 2 |
