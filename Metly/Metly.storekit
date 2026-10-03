@@ -1,0 +1,59 @@
+{
+  "identifier" : "6B1C2F3A",
+  "nonRenewingSubscriptions" : [],
+  "products" : [],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : []
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21500001",
+      "localizations" : [],
+      "name" : "Metly Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "19.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "21500002",
+          "introductoryOffer" : null,
+          "localizations" : [
+            { "description" : "All Metly Pro features, billed yearly.", "displayName" : "Metly Pro Yearly", "locale" : "en_US" }
+          ],
+          "productID" : "com.metly.app.pro.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Pro Yearly",
+          "subscriptionGroupID" : "21500001",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : []
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "21500003",
+          "introductoryOffer" : null,
+          "localizations" : [
+            { "description" : "All Metly Pro features, billed monthly.", "displayName" : "Metly Pro Monthly", "locale" : "en_US" }
+          ],
+          "productID" : "com.metly.app.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pro Monthly",
+          "subscriptionGroupID" : "21500001",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : []
+        }
+      ]
+    }
+  ],
+  "version" : { "major" : 4, "minor" : 0 }
+}

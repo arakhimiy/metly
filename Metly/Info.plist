@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Metly uses the camera to scan QR codes and paper business cards.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Metly finds people nearby who also use Metly so you can swap cards.</string>
+	<key>NSNearbyInteractionUsageDescription</key>
+	<string>Metly detects when you hold your iPhone near someone else's to swap cards.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_metly-connect._tcp</string>
+		<string>_metly-connect._udp</string>
+	</array>
+	<key>NSContactsUsageDescription</key>
+	<string>Metly saves the people you meet to your Contacts when you ask it to.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Metly uses the microphone to dictate private notes. Audio isn't stored.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Metly turns your voice into a private note on your iPhone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Metly saves card images and Lock Screen wallpapers to your Photos.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Metly suggests events from your calendar so new contacts are tagged automatically.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Metly fills in where you met someone. Your location is never shared.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tg</string>
+		<string>whatsapp</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.metly.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>metly</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>google-signin</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>$(GOOGLE_REVERSED_CLIENT_ID)</string>
+			</array>
+		</dict>
+	</array>
+	<key>MetlyGoogleClientID</key>
+	<string>$(GOOGLE_CLIENT_ID)</string>
+	<key>MetlyAPIBaseURL</key>
+	<string>$(METLY_API_BASE_URL)</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+		<string>remote-notification</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.metly.app.refresh</string>
+		<string>com.metly.app.sync</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
+</plist>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position:relative;width:100%;aspect-ratio:85/55;container-type:inline-size;overflow:hidden;border-radius:4.2cqw;background:{{ vm.bgFill }};color:{{ vm.fg }};font-family:{{ vm.font }};box-shadow:{{ vm.edge }};text-align:left;line-height:1.2;user-select:none;text-rendering:geometricPrecision;font-kerning:normal;word-spacing:normal">
+<sc-if value="{{ vm.t.minimal }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;padding:7cqw;display:flex;flex-direction:column;justify-content:space-between;align-items:{{ vm.alignItems }}">
+<div style="display:flex;flex-direction:column;gap:1.2cqw;max-width:62cqw;align-items:{{ vm.alignItems }}"><div style="font-size:6.6cqw;font-weight:600;letter-spacing:-0.02em">{{ vm.name }}</div><div style="font-size:3.3cqw;color:{{ vm.muted }}">{{ vm.role }}</div></div>
+<div style="display:flex;flex-direction:column;gap:1cqw;max-width:58cqw"><sc-for list="{{ vm.contacts }}" as="c" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:1.8cqw;font-size:3.1cqw;white-space:nowrap"><i class="{{ c.icon }}" style="color:{{ vm.acc }};font-size:3.4cqw;flex:none"></i><span style="overflow:hidden;text-overflow:ellipsis">{{ c.value }}</span></div></sc-for></div>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;right:6cqw;bottom:6cqw;width:24cqw;height:24cqw;background:#fff;border-radius:2cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</sc-if>
+<sc-if value="{{ vm.t.professional }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;padding:6.5cqw;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:3cqw">
+<sc-if value="{{ vm.hasLogo }}" hint-placeholder-val="{{ false }}"><img src="{{ vm.logo }}" style="width:9cqw;height:9cqw;object-fit:contain;border-radius:1.6cqw"></sc-if>
+<sc-if value="{{ vm.noLogo }}" hint-placeholder-val="{{ true }}"><div style="width:9cqw;height:9cqw;border-radius:1.8cqw;background:{{ vm.acc }};color:{{ vm.bg }};display:flex;align-items:center;justify-content:center;font-size:4.4cqw;font-weight:700">{{ vm.mono }}</div></sc-if>
+<div style="font-size:2.6cqw;letter-spacing:0.16em;text-transform:uppercase;color:{{ vm.muted }}">{{ vm.company }}</div>
+</div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:1cqw"><div style="font-size:6cqw;font-weight:600;letter-spacing:-0.02em">{{ vm.name }}</div><div style="font-size:3.2cqw;color:{{ vm.muted }}">{{ vm.title }}</div><div style="width:9cqw;height:0.6cqw;background:{{ vm.acc }};margin:1.6cqw 0 2.2cqw"></div></div>
+<div style="display:flex;flex-direction:column;gap:1cqw;max-width:58cqw"><sc-for list="{{ vm.contacts }}" as="c" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:1.8cqw;font-size:3cqw;white-space:nowrap"><i class="{{ c.icon }}" style="color:{{ vm.acc }};font-size:3.3cqw;flex:none"></i><span style="overflow:hidden;text-overflow:ellipsis">{{ c.value }}</span></div></sc-for></div>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;right:6.5cqw;bottom:6.5cqw;width:22cqw;height:22cqw;background:#fff;border-radius:2cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</sc-if>
+<sc-if value="{{ vm.t.modern }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;top:0;bottom:0;width:2.2cqw;background:{{ vm.acc }}"></div>
+<div style="position:absolute;inset:0;padding:7cqw 7cqw 7cqw 9.5cqw;display:flex;flex-direction:column;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:3.4cqw">
+<div style="width:14cqw;height:14cqw;border-radius:50%;overflow:hidden;flex:none;background:{{ vm.panelTint }};display:flex;align-items:center;justify-content:center;font-size:5cqw;font-weight:600">
+<sc-if value="{{ vm.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ vm.photo }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
+<sc-if value="{{ vm.noPhoto }}" hint-placeholder-val="{{ true }}"><span>{{ vm.initials }}</span></sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:1cqw;min-width:0"><div style="font-size:5.6cqw;font-weight:600;letter-spacing:-0.02em">{{ vm.name }}</div><div style="font-size:3cqw;color:{{ vm.muted }}">{{ vm.role }}</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:1cqw;max-width:56cqw"><sc-for list="{{ vm.contacts }}" as="c" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:1.8cqw;font-size:3cqw;white-space:nowrap"><i class="{{ c.icon }}" style="color:{{ vm.acc }};font-size:3.3cqw;flex:none"></i><span style="overflow:hidden;text-overflow:ellipsis">{{ c.value }}</span></div></sc-for></div>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;right:6cqw;bottom:6cqw;width:22cqw;height:22cqw;background:#fff;border-radius:2cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</sc-if>
+<sc-if value="{{ vm.t.bold }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;padding:6.5cqw;display:flex;flex-direction:column;justify-content:space-between;align-items:{{ vm.alignItems }}">
+<div style="font-size:2.6cqw;letter-spacing:0.18em;text-transform:uppercase;color:{{ vm.acc }};font-weight:600">{{ vm.company }}</div>
+<div style="display:flex;flex-direction:column;align-items:{{ vm.alignItems }}"><div style="font-size:11cqw;font-weight:700;line-height:0.95;letter-spacing:-0.035em">{{ vm.first }}</div><div style="font-size:11cqw;font-weight:700;line-height:0.95;letter-spacing:-0.035em;color:{{ vm.acc }}">{{ vm.last }}</div></div>
+<div style="display:flex;flex-direction:column;gap:0.8cqw;max-width:60cqw;align-items:{{ vm.alignItems }}"><div style="font-size:3cqw;color:{{ vm.muted }}">{{ vm.title }}</div><sc-for list="{{ vm.contacts2 }}" as="c" hint-placeholder-count="2"><div style="font-size:3cqw;white-space:nowrap">{{ c.value }}</div></sc-for></div>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;right:6.5cqw;bottom:6.5cqw;width:20cqw;height:20cqw;background:#fff;border-radius:2cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</sc-if>
+<sc-if value="{{ vm.t.gradient }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;padding:7cqw;display:flex;flex-direction:column;justify-content:space-between;align-items:{{ vm.alignItems }}">
+<div style="font-size:2.6cqw;padding:0.9cqw 2.6cqw;border-radius:99px;border:1px solid {{ vm.rule }}">{{ vm.company }}</div>
+<div style="display:flex;flex-direction:column;gap:1cqw;align-items:{{ vm.alignItems }}"><div style="font-size:7cqw;font-weight:600;letter-spacing:-0.025em">{{ vm.name }}</div><div style="font-size:3.2cqw;color:{{ vm.muted }}">{{ vm.title }}</div></div>
+<div style="display:flex;flex-direction:column;gap:0.9cqw;max-width:58cqw"><sc-for list="{{ vm.contacts }}" as="c" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:1.8cqw;font-size:3cqw;white-space:nowrap"><i class="{{ c.icon }}" style="font-size:3.3cqw;flex:none"></i><span style="overflow:hidden;text-overflow:ellipsis">{{ c.value }}</span></div></sc-for></div>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;right:6cqw;bottom:6cqw;width:23cqw;height:23cqw;background:#fff;border-radius:2cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</sc-if>
+<sc-if value="{{ vm.t.split }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;top:0;bottom:0;width:36cqw;background:{{ vm.acc }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.4cqw">
+<div style="width:13cqw;height:13cqw;border-radius:50%;overflow:hidden;background:{{ vm.bg }};color:{{ vm.fg }};display:flex;align-items:center;justify-content:center;font-size:4.6cqw;font-weight:600">
+<sc-if value="{{ vm.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ vm.photo }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
+<sc-if value="{{ vm.noPhoto }}" hint-placeholder-val="{{ true }}"><span>{{ vm.initials }}</span></sc-if>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="width:21cqw;height:21cqw;background:#fff;border-radius:2cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</div>
+<div style="position:absolute;left:36cqw;right:0;top:0;bottom:0;padding:6.5cqw;display:flex;flex-direction:column;justify-content:space-between">
+<div style="display:flex;flex-direction:column;gap:1cqw"><div style="font-size:5.6cqw;font-weight:600;letter-spacing:-0.02em">{{ vm.name }}</div><div style="font-size:3cqw;color:{{ vm.muted }}">{{ vm.title }}</div><div style="font-size:2.6cqw;letter-spacing:0.14em;text-transform:uppercase;color:{{ vm.acc }};margin-top:1cqw">{{ vm.company }}</div></div>
+<div style="display:flex;flex-direction:column;gap:1cqw"><sc-for list="{{ vm.contacts }}" as="c" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:1.8cqw;font-size:2.9cqw;white-space:nowrap"><i class="{{ c.icon }}" style="color:{{ vm.acc }};font-size:3.2cqw;flex:none"></i><span style="overflow:hidden;text-overflow:ellipsis">{{ c.value }}</span></div></sc-for></div>
+</div>
+</sc-if>
+<sc-if value="{{ vm.t.terminal }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;padding:6cqw;display:flex;flex-direction:column;gap:1.2cqw;font-size:3cqw">
+<div style="color:{{ vm.muted }}">~/cardy <span style="color:{{ vm.acc }}">$</span> whoami</div>
+<div style="font-size:5.4cqw;font-weight:600;letter-spacing:-0.02em">{{ vm.name }}<span style="color:{{ vm.acc }};font-weight:400">_</span></div>
+<div style="color:{{ vm.muted }}"># {{ vm.role }}</div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:1cqw;max-width:58cqw"><sc-for list="{{ vm.contacts }}" as="c" hint-placeholder-count="3"><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:{{ vm.acc }}">{{ c.key }}</span> {{ c.value }}</div></sc-for></div>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;right:6cqw;bottom:6cqw;width:22cqw;height:22cqw;background:#fff;border-radius:1.4cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</sc-if>
+<sc-if value="{{ vm.t.stack }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;padding:6cqw 20cqw;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1.4cqw;text-align:center">
+<div style="width:13cqw;height:13cqw;border-radius:50%;overflow:hidden;background:{{ vm.panelTint }};display:flex;align-items:center;justify-content:center;font-size:4.6cqw;font-weight:600;margin-bottom:1cqw">
+<sc-if value="{{ vm.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ vm.photo }}" style="width:100%;height:100%;object-fit:cover"></sc-if>
+<sc-if value="{{ vm.noPhoto }}" hint-placeholder-val="{{ true }}"><span>{{ vm.initials }}</span></sc-if>
+</div>
+<div style="font-size:5.6cqw;font-weight:600;letter-spacing:-0.02em">{{ vm.name }}</div>
+<div style="font-size:3cqw;color:{{ vm.muted }}">{{ vm.role }}</div>
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.6cqw 3cqw;margin-top:1.6cqw"><sc-for list="{{ vm.contacts }}" as="c" hint-placeholder-count="3"><span style="font-size:2.7cqw;white-space:nowrap;display:inline-flex;align-items:center;gap:1cqw"><i class="{{ c.icon }}" style="color:{{ vm.acc }}"></i>{{ c.value }}</span></sc-for></div>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;right:4.5cqw;top:4.5cqw;width:15cqw;height:15cqw;background:#fff;border-radius:1.6cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</sc-if>
+<sc-if value="{{ vm.t.editorial }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;padding:6.5cqw;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;font-size:2.5cqw;letter-spacing:0.18em;text-transform:uppercase;color:{{ vm.muted }};padding-bottom:1.8cqw;border-bottom:1px solid {{ vm.rule }}"><span>No. 01</span><span>{{ vm.company }}</span></div>
+<div style="font-size:9cqw;font-style:italic;line-height:1;letter-spacing:-0.01em;margin-top:5cqw">{{ vm.name }}</div>
+<div style="font-size:3.4cqw;color:{{ vm.acc }};margin-top:1.4cqw">{{ vm.title }}</div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:0.8cqw;max-width:58cqw"><sc-for list="{{ vm.contacts }}" as="c" hint-placeholder-count="3"><div style="font-size:3.1cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.value }}</div></sc-for></div>
+</div>
+<sc-if value="{{ vm.qrShow }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;right:6.5cqw;bottom:6.5cqw;width:20cqw;height:20cqw;background:#fff;border-radius:1cqw;overflow:hidden"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ vm.qr }}" fill="#000"></path></svg></div></sc-if>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:220},&quot;vm&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;}}"></script>
+</body>
+</html>

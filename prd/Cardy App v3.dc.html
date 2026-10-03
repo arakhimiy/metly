@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" data-bg-color="#0F766E"><rect width="100" height="100" fill="#0F766E"/><rect x="28" y="36" width="44" height="28" rx="4" fill="none" stroke="#fff" stroke-width="3"/><rect x="58" y="51" width="8" height="8" rx="1" fill="#fff"/></svg></template>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/nocturne-21cc1d4a-355d-4a31-a29d-44685842549f/styles.css">
+<script src="_ds/nocturne-21cc1d4a-355d-4a31-a29d-44685842549f/_ds_bundle.js"></script>
+<link rel="stylesheet" href="vendor/phosphor/regular.css">
+<link rel="stylesheet" href="vendor/phosphor/fill.css">
+<link rel="stylesheet" href="vendor/phosphor/bold.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Nunito:wght@400;600;700&display=swap">
+<style>
+body{margin:0;background:var(--color-bg)}
+a{color:var(--color-accent)}a:hover{color:var(--color-accent-400)}
+[data-scroll]>*{flex-shrink:0}
+@keyframes cPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+@keyframes cUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes cPush{from{transform:translateX(100%)}to{transform:none}}
+@keyframes cFade{from{opacity:0}to{opacity:1}}
+@keyframes cPop{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+@keyframes cScan{0%{top:12%}100%{top:88%}}
+@keyframes cDrop{from{transform:translateY(-140%)}to{transform:none}}
+@keyframes cSpin{to{transform:rotate(360deg)}}
+@keyframes cBumpL{0%,100%{transform:translateX(-52px) rotate(0)}45%,62%{transform:translateX(-14px) rotate(12deg)}}
+@keyframes cBumpR{0%,100%{transform:translateX(52px) rotate(0)}45%,62%{transform:translateX(14px) rotate(-12deg)}}
+@keyframes cGlow{0%,40%{opacity:0;transform:scale(.4)}52%{opacity:.9;transform:scale(1)}75%,100%{opacity:0;transform:scale(1.7)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-wrap:wrap;gap:48px;align-items:center;justify-content:center;padding:48px 24px;background:radial-gradient(110% 70% at 20% 0%, var(--color-neutral-900) 0%, var(--color-bg) 65%);color:var(--color-text);font-family:var(--font-body)">
+
+<div style="width:240px;max-width:100%;flex:none;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:500">Cardy <span class="tag tag-accent" style="white-space:nowrap">v3 · teal</span></div>
+<div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent);text-wrap:pretty">UIKit / SwiftUI patterns throughout: large titles, inset grouped lists, switches, segmented controls, pull-down menus, alerts and sheets.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ jumps }}" as="j" hint-placeholder-count="14"><button onClick="{{ j.onClick }}" style="display:flex;align-items:center;gap:10px;min-height:32px;padding:4px 10px;white-space:nowrap;border:0;border-radius:var(--radius-md);background:{{ j.bg }};color:{{ j.fg }};font:inherit;font-size:13px;text-align:left;cursor:pointer" style-hover="background:color-mix(in srgb, var(--color-text) 7%, transparent)"><span style="width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.6"></span>{{ j.label }}</button></sc-for>
+</div>
+<div style="display:flex;border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden;align-self:flex-start">
+<sc-for list="{{ themeSegSide }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.onClick }}" style="padding:7px 14px;border:0;background:{{ o.bg }};color:{{ o.fg }};box-shadow:inset 0 0 0 1px {{ o.bd }};font:inherit;font-size:13px;cursor:pointer">{{ o.label }}</button></sc-for>
+</div>
+</div>
+
+<div data-cardy-phone="1" style="width:390px;height:844px;border-radius:56px;position:relative;overflow:hidden;contain:layout paint;isolation:isolate;transform:translateZ(0);background:#000;color:#fff;flex:none;font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;font-size:17px;letter-spacing:-0.2px;line-height:1.29;box-shadow:0 0 0 11px #121318, 0 0 0 12px #3f424d, 0 40px 90px rgba(0,0,0,.55)">
+<div style="position:absolute;top:11px;left:50%;transform:translateX(-50%);width:124px;height:36px;border-radius:20px;background:#000;z-index:120"></div>
+<div style="position:absolute;top:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 48px;z-index:110;font-size:17px;font-weight:600;pointer-events:none;color:{{ statusFg }}"><span>9:41</span><div style="display:flex;gap:6px;align-items:center;font-size:17px"><i class="ph-fill ph-cell-signal-full"></i><i class="ph-fill ph-wifi-high"></i><i class="ph-fill ph-battery-full" style="font-size:22px"></i></div></div>
+
+<sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);display:flex;flex-direction:column;padding:56px 24px 34px;gap:18px">
+<div style="display:flex;justify-content:flex-end"><button onClick="{{ toSignin }}" style="min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer">Skip</button></div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center">
+<sc-if value="{{ step0 }}" hint-placeholder-val="{{ true }}"><div style="position:relative;width:310px;height:280px"><div style="position:absolute;left:0;top:10px;width:270px;transform:rotate(-7deg)"><dc-import name="CardFace" vm="{{ welcomeB }}" hint-size="270px,175px"></dc-import></div><div style="position:absolute;left:34px;top:92px;width:276px;transform:rotate(4deg)"><dc-import name="CardFace" vm="{{ welcomeA }}" hint-size="276px,178px"></dc-import></div></div></sc-if>
+<sc-if value="{{ step1 }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:center;gap:16px"><div style="width:210px;height:210px;background:#fff;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,.25)"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ welcomeQR }}" fill="#000"></path></svg></div><span style="font-size:15px;color:var(--lab2);display:flex;gap:6px;align-items:center"><i class="ph ph-safari-logo" style="color:var(--tint)"></i>Opens in any browser</span></div></sc-if>
+<sc-if value="{{ step2 }}" hint-placeholder-val="{{ false }}"><div style="width:310px;background:var(--bg2);border-radius:12px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px;padding:12px 16px"><span style="width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">JT</span><div style="display:flex;flex-direction:column"><span style="font-weight:600">Jasur Toshmatov</span><span style="font-size:15px;color:var(--lab2)">Payline</span></div></div>
+<div style="padding:11px 16px;border-top:0.5px solid var(--sep);display:flex;justify-content:space-between;font-size:17px"><span>Event</span><span style="color:var(--lab2)">Tashkent Tech Week</span></div>
+<div style="padding:11px 16px;border-top:0.5px solid var(--sep);font-size:17px;text-wrap:pretty">Wants a design review of their payments SDK in October.</div>
+</div></sc-if>
+</div>
+<sc-if value="{{ step0 }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:8px;text-align:center"><div style="font-size:34px;font-weight:700;letter-spacing:0.37px;line-height:1.2;text-wrap:balance">One profile. A card for every room.</div><div style="font-size:17px;color:var(--lab2);text-wrap:pretty">Save your details once. Each card picks what to show — and who gets to see it.</div></div></sc-if>
+<sc-if value="{{ step1 }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;text-align:center"><div style="font-size:34px;font-weight:700;letter-spacing:0.37px;line-height:1.2;text-wrap:balance">Share with a scan. No app needed.</div><div style="font-size:17px;color:var(--lab2);text-wrap:pretty">Your QR opens a page in any browser. One tap saves you to their contacts.</div></div></sc-if>
+<sc-if value="{{ step2 }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px;text-align:center"><div style="font-size:34px;font-weight:700;letter-spacing:0.37px;line-height:1.2;text-wrap:balance">Remember where you met.</div><div style="font-size:17px;color:var(--lab2);text-wrap:pretty">Swap cards with other Cardy users and keep private notes only you can read.</div></div></sc-if>
+<div style="display:flex;gap:9px;justify-content:center;padding:6px 0"><sc-for list="{{ welcomeDots }}" as="d" hint-placeholder-count="3"><span style="width:7px;height:7px;border-radius:50%;background:{{ d.bg }}"></span></sc-for></div>
+<button onClick="{{ nextWelcome }}" style="height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer" style-active="opacity:.7">Continue</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSignin }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);display:flex;flex-direction:column;padding:52px 16px 34px;gap:14px;animation:cPush .35s cubic-bezier(.2,.8,.2,1)">
+<div style="height:44px;display:flex;align-items:center;margin-left:-8px"><button onClick="{{ toWelcome }}" style="display:flex;align-items:center;gap:2px;min-height:44px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;padding:0 8px 0 0"><i class="ph-bold ph-caret-left" style="font-size:22px"></i>Back</button></div>
+<div style="font-size:34px;font-weight:700;letter-spacing:0.37px;padding:0 4px">Create your Cardy</div>
+<div style="font-size:17px;color:var(--lab2);padding:0 4px 8px;text-wrap:pretty">It takes a minute. You can make your first card right after.</div>
+<button onClick="{{ signIn }}" style="height:50px;border:0;border-radius:12px;background:var(--lab);color:var(--bg);font:inherit;font-size:19px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px" style-active="opacity:.7"><i class="ph-fill ph-apple-logo" style="font-size:21px"></i>Continue with Apple</button>
+<button onClick="{{ signIn }}" style="height:50px;border:0;border-radius:12px;background:var(--bg2);color:var(--lab);font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="opacity:.7"><i class="ph-bold ph-google-logo" style="font-size:19px"></i>Continue with Google</button>
+<div style="display:flex;align-items:center;gap:12px;font-size:13px;color:var(--lab2);margin:8px 0"><span style="flex:1;height:0.5px;background:var(--sep)"></span>or<span style="flex:1;height:0.5px;background:var(--sep)"></span></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><div style="display:flex;align-items:center;min-height:44px;padding:0 16px;gap:12px"><span style="width:60px">Email</span><input type="email" placeholder="you@company.uz" value="{{ email }}" onChange="{{ onEmail }}" style="flex:1;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;caret-color:var(--tint)"></div></div>
+<button onClick="{{ toCheck }}" style="height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer" style-active="opacity:.7">Continue</button>
+<div style="margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:15px;color:var(--lab2);text-align:center"><span>Already have an account? <span onClick="{{ signIn }}" style="color:var(--tint);cursor:pointer">Sign In</span></span><span style="font-size:12px">By continuing you agree to the Terms and Privacy Policy.</span></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab)">
+
+<div onScroll="{{ onScroll }}" style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:58px 0 110px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:34px;font-weight:700;letter-spacing:0.37px;line-height:1.2">{{ greeting }}</span></div>
+<button onClick="{{ toProfile }}" style="width:36px;height:36px;margin-bottom:5px;border-radius:50%;border:0;padding:0;overflow:hidden;cursor:pointer;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;font:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center"><sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><span style="display:block;width:100%;height:100%;background-image:{{ photoBg }};background-size:cover;background-position:center"></span></sc-if><sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}"><span>{{ myInitials }}</span></sc-if></button>
+</div>
+<sc-if value="{{ offline }}" hint-placeholder-val="{{ false }}"><div style="margin:14px 16px 0;padding:10px 14px;border-radius:12px;background:var(--bg2);display:flex;gap:10px;align-items:center;font-size:15px"><i class="ph-fill ph-wifi-slash" style="color:#FF9500;font-size:18px"></i><span style="flex:1">You're offline. Your QR code still works.</span></div></sc-if>
+<div onScroll="{{ onCarousel }}" style="display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;padding:18px 16px 14px;scrollbar-width:none">
+<sc-for list="{{ homeCards }}" as="c" hint-placeholder-count="2"><div onClick="{{ c.onClick }}" onPointerDown="{{ c.down }}" onPointerUp="{{ c.up }}" onPointerLeave="{{ c.up }}" onPointerCancel="{{ c.up }}" onContextMenu="{{ c.ctx }}" style="flex:none;width:358px;scroll-snap-align:start;cursor:pointer;transition:transform .15s;-webkit-touch-callout:none;user-select:none" style-active="transform:scale(.98)"><dc-import name="CardFace" vm="{{ c.vm }}" hint-size="358px,232px"></dc-import></div></sc-for>
+<button onClick="{{ newCard }}" style="flex:none;width:150px;height:232px;scroll-snap-align:start;border:0;border-radius:14px;background:var(--bg2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--tint);font:inherit;font-size:15px"><i class="ph-fill ph-plus-circle" style="font-size:34px"></i>New Card</button>
+</div>
+<div style="display:flex;gap:9px;justify-content:center"><sc-for list="{{ carDots }}" as="d" hint-placeholder-count="3"><span style="width:7px;height:7px;border-radius:50%;background:{{ d.bg }}"></span></sc-for></div>
+<div style="display:flex;align-items:center;gap:12px;padding:14px 20px 0">
+<div style="flex:1;display:flex;flex-direction:column;min-width:0"><span style="font-size:20px;font-weight:600;letter-spacing:0.38px">{{ activeName }} Card</span><span style="font-size:13px;color:var(--lab2);display:flex;align-items:center;gap:6px"><sc-if value="{{ isPausedLink }}" hint-placeholder-val="{{ false }}"><span style="width:7px;height:7px;border-radius:50%;background:#FF9500"></span></sc-if>{{ activeSub }}</span></div>
+<button onClick="{{ openCardMenu }}" style="width:30px;height:30px;border-radius:50%;border:0;background:var(--fill3);color:var(--tint);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer"><i class="ph-bold ph-dots-three"></i></button>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 20px 0;font-size:13px;color:var(--lab2)"><sc-for list="{{ visFields }}" as="v" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:4px"><i class="{{ v.pIcon }}" style="font-size:13px"></i>{{ v.label }}</span></sc-for></div>
+<div style="display:flex;gap:10px;padding:16px 16px 0"><button onClick="{{ showQR }}" style="flex:1;height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="opacity:.7"><i class="ph-bold ph-qr-code"></i>{{ L.showQR }}</button><button onClick="{{ openShare }}" style="flex:1;height:50px;border:0;border-radius:12px;background:var(--fill3);color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="opacity:.7"><i class="ph-bold ph-export"></i>{{ L.share }}</button></div>
+<div style="padding:28px 16px 0">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px 8px"><span style="font-size:22px;font-weight:700;letter-spacing:0.35px">{{ L.recent }}</span><button onClick="{{ toConnections }}" style="border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;padding:0">{{ L.seeAll }}</button></div>
+<sc-if value="{{ noConns }}" hint-placeholder-val="{{ false }}"><div style="background:var(--bg2);border-radius:10px;padding:14px 16px;font-size:15px;color:var(--lab2);text-wrap:pretty">People you swap cards with show up here. Open Exchange at your next event.</div></sc-if>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden">
+<sc-for list="{{ recent }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:0 0 0 16px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer" style-active="background:var(--bg3)"><span style="width:40px;height:40px;flex:none;border-radius:50%;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">{{ c.initials }}</span><span style="flex:1;display:flex;align-items:center;gap:8px;min-height:60px;padding-right:16px;border-top:0.5px solid {{ c.sep }};min-width:0"><span style="flex:1;display:flex;flex-direction:column;min-width:0"><span style="font-size:17px">{{ c.name }}</span><span style="font-size:15px;color:var(--lab2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.event }}</span></span><span style="font-size:15px;color:var(--lab2)">{{ c.ago }}</span><i class="ph-bold ph-caret-right" style="color:var(--lab3);font-size:14px"></i></span></button></sc-for>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isScan }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:radial-gradient(90% 60% at 50% 42%, #3a3a3c 0%, #000 80%);color:#fff;display:flex;flex-direction:column;align-items:center;padding:62px 24px 110px;gap:24px">
+<div style="height:34px;display:flex;align-items:center;font-size:17px;font-weight:600">Scan Card</div>
+<sc-if value="{{ scanDenied }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:0 40px 110px;text-align:center;z-index:2"><i class="ph ph-camera-slash" style="font-size:52px;color:rgba(235,235,245,.6)"></i><span style="font-size:22px;font-weight:700">Camera Access Needed</span><span style="font-size:15px;color:rgba(235,235,245,.6);text-wrap:pretty">Allow camera access in Settings to scan cards. You can still paste a link.</span><button onClick="{{ allowCamera }}" style="margin-top:10px;height:44px;padding:0 22px;border:0;border-radius:22px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer">Open Settings</button><button onClick="{{ pasteLink }}" style="min-height:44px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer">Paste Link</button></div></sc-if>
+<div style="position:relative;width:250px;height:250px;margin-top:50px">
+<span style="position:absolute;left:0;top:0;width:44px;height:44px;border-left:4px solid #fff;border-top:4px solid #fff;border-top-left-radius:18px"></span>
+<span style="position:absolute;right:0;top:0;width:44px;height:44px;border-right:4px solid #fff;border-top:4px solid #fff;border-top-right-radius:18px"></span>
+<span style="position:absolute;left:0;bottom:0;width:44px;height:44px;border-left:4px solid #fff;border-bottom:4px solid #fff;border-bottom-left-radius:18px"></span>
+<span style="position:absolute;right:0;bottom:0;width:44px;height:44px;border-right:4px solid #fff;border-bottom:4px solid #fff;border-bottom-right-radius:18px"></span>
+{{ scanLine }}
+</div>
+<div style="padding:8px 14px;border-radius:10px;background:rgba(0,0,0,.45);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);font-size:15px;text-align:center">Point at a Cardy or vCard QR code</div>
+<div style="display:flex;gap:14px;margin-top:auto;align-items:center">
+<button onClick="{{ pasteLink }}" style="height:44px;padding:0 18px;border-radius:22px;border:0;background:rgba(120,120,128,.36);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:#fff;font:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;gap:7px;cursor:pointer"><i class="ph ph-clipboard-text" style="font-size:18px"></i>Paste Link</button>
+<button onClick="{{ simulateScan }}" style="width:64px;height:64px;border-radius:50%;border:4px solid #fff;background:transparent;padding:4px;cursor:pointer"><span style="display:block;width:100%;height:100%;border-radius:50%;background:#fff"></span></button>
+<button onClick="{{ torch }}" style="width:44px;height:44px;border-radius:50%;border:0;background:rgba(120,120,128,.36);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer"><i class="ph-fill ph-flashlight"></i></button>
+</div>
+<span style="font-size:12px;color:rgba(235,235,245,.6)">Shutter simulates a scan</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ isConnections }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab)">
+<div style="position:absolute;top:0;left:0;right:0;height:96px;padding:52px 12px 0 16px;display:flex;align-items:center;justify-content:flex-end;z-index:25;background:{{ navBg }};backdrop-filter:{{ navBlur }};-webkit-backdrop-filter:{{ navBlur }};box-shadow:{{ navLine }};transition:background .2s"><span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:17px;font-weight:600;opacity:{{ navTitleOp }};transition:opacity .2s;pointer-events:none">{{ L.people }}</span><button onClick="{{ toExchange }}" style="width:44px;height:44px;border:0;background:transparent;color:var(--tint);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative"><i class="ph ph-arrows-left-right"></i></button></div>
+<div onScroll="{{ onScroll }}" data-scroll="1" style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:96px 0 110px;display:flex;flex-direction:column;gap:10px">
+<div style="padding:0 16px;display:flex;align-items:baseline;gap:8px"><span style="font-size:34px;font-weight:700;letter-spacing:0.37px;line-height:1.2">{{ L.people }}</span><span style="font-size:17px;color:var(--lab2)">{{ connCount }}</span></div>
+<div style="padding:0 16px"><div style="display:flex;align-items:center;gap:6px;height:36px;padding:0 8px;border-radius:10px;background:var(--fill3)"><i class="ph ph-magnifying-glass" style="font-size:17px;color:var(--lab2)"></i><input placeholder="{{ L.search }}" value="{{ q }}" onChange="{{ onQ }}" style="flex:1;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;outline:none;caret-color:var(--tint)"><sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearQ }}" style="border:0;background:transparent;color:var(--lab2);font-size:17px;cursor:pointer;padding:0;display:flex"><i class="ph-fill ph-x-circle"></i></button></sc-if></div></div>
+<div style="padding:0 16px 6px"><div style="display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ filterSeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+<sc-if value="{{ hasPending }}" hint-placeholder-val="{{ true }}">
+<div style="padding:0 16px"><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">{{ L.requests }}</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ pending }}" as="p" hint-placeholder-count="1"><div style="display:flex;gap:12px;padding:12px 16px"><span style="width:40px;height:40px;flex:none;border-radius:50%;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">{{ p.initials }}</span><div style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0"><div style="display:flex;flex-direction:column"><span style="font-size:17px"><span style="font-weight:600">{{ p.name }}</span> wants to swap cards</span><span style="font-size:15px;color:var(--lab2)">{{ p.role }} · {{ p.event }}</span></div><div style="display:flex;gap:8px"><button onClick="{{ p.accept }}" style="height:34px;padding:0 16px;border-radius:17px;border:0;background:var(--tintfill);color:#fff;font:inherit;font-size:15px;font-weight:600;cursor:pointer">{{ L.accept }}</button><button onClick="{{ p.decline }}" style="height:34px;padding:0 16px;border-radius:17px;border:0;background:var(--fill3);color:var(--tint);font:inherit;font-size:15px;font-weight:600;cursor:pointer">{{ L.decline }}</button></div></div></div></sc-for></div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2)">Accepting shares your Work card.</div></div>
+</sc-if>
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="1">
+<div style="padding:14px 16px 0"><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase;display:flex;justify-content:space-between"><span>{{ g.title }}</span><span>{{ g.count }}</span></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ g.items }}" as="c" hint-placeholder-count="3"><div style="position:relative;overflow:hidden"><div style="position:absolute;top:0;bottom:0;right:0;display:flex"><button onClick="{{ c.onNote }}" style="width:74px;border:0;background:#FF9500;color:#fff;font:inherit;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer"><i class="ph-fill ph-note-pencil" style="font-size:21px"></i>Note</button><button onClick="{{ c.onRemove }}" style="width:74px;border:0;background:var(--red);color:#fff;font:inherit;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer"><i class="ph-fill ph-trash" style="font-size:21px"></i>Remove</button></div><button onClick="{{ c.onClick }}" onPointerDown="{{ c.pd }}" onPointerMove="{{ c.pm }}" onPointerUp="{{ c.pu }}" onPointerCancel="{{ c.pu }}" style="position:relative;display:flex;align-items:center;gap:12px;width:100%;padding:0 0 0 16px;border:0;background:var(--bg2);color:inherit;font:inherit;text-align:left;cursor:pointer;touch-action:pan-y;transform:translateX({{ c.tx }});transition:{{ c.tr }}" style-active="background:var(--bg3)"><span style="width:40px;height:40px;flex:none;border-radius:50%;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">{{ c.initials }}</span><span style="flex:1;display:flex;align-items:center;gap:8px;min-height:62px;padding-right:16px;border-top:0.5px solid {{ c.sep }};min-width:0"><span style="flex:1;display:flex;flex-direction:column;min-width:0"><span style="font-size:17px">{{ c.name }}</span><span style="font-size:15px;color:var(--lab2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.role }} · {{ c.meta }}</span></span><i class="ph-bold ph-caret-right" style="color:var(--lab3);font-size:14px"></i></span></button></div></sc-for></div></div>
+</sc-for>
+<sc-if value="{{ peopleEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:70px 30px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center"><i class="ph ph-users-three" style="font-size:52px;color:var(--lab2)"></i><span style="font-size:22px;font-weight:700">No Connections Yet</span><span style="font-size:15px;color:var(--lab2);text-wrap:pretty">Scan someone's card or open Exchange to swap. Your notes about them stay private.</span><button onClick="{{ toExchange }}" style="margin-top:8px;height:44px;padding:0 22px;border:0;border-radius:22px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer">Start Exchange</button></div></sc-if>
+<sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}"><div style="padding:60px 24px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center"><i class="ph ph-magnifying-glass" style="font-size:48px;color:var(--lab2)"></i><span style="font-size:22px;font-weight:700">No Results for “{{ q }}”</span><span style="font-size:15px;color:var(--lab2)">Check the spelling or try a new search.</span></div></sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab)">
+<div style="position:absolute;top:0;left:0;right:0;height:96px;padding-top:52px;display:flex;align-items:center;justify-content:center;z-index:25;background:{{ navBg }};backdrop-filter:{{ navBlur }};-webkit-backdrop-filter:{{ navBlur }};box-shadow:{{ navLine }};transition:background .2s"><span style="font-size:17px;font-weight:600;opacity:{{ navTitleOp }};transition:opacity .2s">{{ L.profile }}</span></div>
+<div onScroll="{{ onScroll }}" data-scroll="1" style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:96px 16px 110px;display:flex;flex-direction:column;gap:24px">
+<span style="font-size:34px;font-weight:700;letter-spacing:0.37px;line-height:1.2">{{ L.profile }}</span>
+<div style="background:var(--bg2);border-radius:10px;display:flex;align-items:center;gap:14px;padding:12px 16px">
+<label style="width:60px;height:60px;border-radius:50%;overflow:hidden;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;cursor:pointer;flex:none;position:relative"><input type="file" accept="image/*" style="display:none" onChange="{{ onPhoto }}"><sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><span style="display:block;width:100%;height:100%;background-image:{{ photoBg }};background-size:cover;background-position:center"></span></sc-if><sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}"><span>{{ myInitials }}</span></sc-if><span style="position:absolute;left:0;right:0;bottom:0;height:18px;background:rgba(0,0,0,.45);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">EDIT</span></label>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0"><input value="{{ profile.name }}" onChange="{{ onName }}" style="font:inherit;font-size:22px;background:transparent;border:0;color:var(--lab);padding:0;width:100%;outline:none;caret-color:var(--tint)"><input value="{{ profile.title }}" onChange="{{ onTitle }}" style="font:inherit;font-size:15px;background:transparent;border:0;color:var(--lab2);padding:0;width:100%;outline:none;caret-color:var(--tint)"></div>
+</div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">{{ L.contact }}</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ fieldRows }}" as="f" hint-placeholder-count="5"><div style="display:flex;align-items:center;gap:12px;padding-left:16px"><span style="width:29px;height:29px;border-radius:7px;background:{{ f.color }};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="{{ f.icon }}"></i></span><div style="flex:1;display:flex;align-items:center;gap:8px;min-height:52px;padding-right:12px;border-top:0.5px solid {{ f.sep }};min-width:0"><div style="flex:1;display:flex;flex-direction:column;min-width:0"><span style="font-size:13px;color:var(--lab2)">{{ f.label }}</span><input value="{{ f.value }}" onChange="{{ f.onChange }}" style="font:inherit;font-size:17px;background:transparent;border:0;color:var(--lab);padding:0;width:100%;outline:none;caret-color:var(--tint)"></div><button onClick="{{ f.openMenu }}" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--lab2);font:inherit;font-size:15px;cursor:pointer;flex:none">{{ f.privLabel }}<i class="ph-bold ph-caret-up-down" style="font-size:12px"></i></button></div></div></sc-for></div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">Public: anyone with your link. Connections: people you've swapped with. Private: only you.</div></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">{{ L.cards }}</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ cardRows }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:0 0 0 16px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer" style-active="background:var(--bg3)"><div style="width:56px;flex:none;pointer-events:none"><dc-import name="CardFace" vm="{{ c.vm }}" hint-size="56px,36px"></dc-import></div><span style="flex:1;display:flex;align-items:center;gap:8px;min-height:60px;padding-right:16px;border-top:0.5px solid {{ c.sep }};min-width:0"><span style="flex:1;display:flex;flex-direction:column;min-width:0"><span style="font-size:17px">{{ c.label }}</span><span style="font-size:13px;color:var(--lab2)">{{ c.link }}</span></span><sc-if value="{{ c.isDefault }}" hint-placeholder-val="{{ false }}"><span style="font-size:15px;color:var(--lab2)">Default</span></sc-if><i class="ph-bold ph-caret-up-down" style="color:var(--lab3);font-size:13px"></i></span></button></sc-for></div></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">{{ L.settings }}</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px;padding-left:16px"><span style="width:29px;height:29px;border-radius:7px;background:#636366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="ph-fill ph-circle-half"></i></span><div style="flex:1;display:flex;align-items:center;min-height:44px;padding-right:12px"><span style="flex:1">Appearance</span><button onClick="{{ openThemeMenu }}" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--lab2);font:inherit;font-size:17px;cursor:pointer">{{ themeLabel }}<i class="ph-bold ph-caret-up-down" style="font-size:12px"></i></button></div></div>
+<div style="display:flex;align-items:center;gap:12px;padding-left:16px"><span style="width:29px;height:29px;border-radius:7px;background:#007AFF;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="ph-bold ph-translate"></i></span><div style="flex:1;display:flex;align-items:center;min-height:44px;padding-right:12px;border-top:0.5px solid var(--sep)"><span style="flex:1">{{ L.language }}</span><button onClick="{{ openLangMenu }}" style="display:flex;align-items:center;gap:4px;min-height:44px;padding:0 4px;border:0;background:transparent;color:var(--lab2);font:inherit;font-size:17px;cursor:pointer">{{ langLabel }}<i class="ph-bold ph-caret-up-down" style="font-size:12px"></i></button></div></div>
+<div style="display:flex;align-items:center;gap:12px;padding-left:16px"><span style="width:29px;height:29px;border-radius:7px;background:#FF3B30;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="ph-fill ph-bell"></i></span><div style="flex:1;display:flex;align-items:center;gap:8px;min-height:44px;padding-right:16px;border-top:0.5px solid var(--sep)"><span style="flex:1">Exchange Requests</span><button onClick="{{ notifT.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ notifT.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ notifT.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div></div>
+<div style="display:flex;align-items:center;gap:12px;padding-left:16px"><span style="width:29px;height:29px;border-radius:7px;background:#FF9500;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="ph-fill ph-pause"></i></span><div style="flex:1;display:flex;align-items:center;gap:8px;min-height:44px;padding-right:16px;border-top:0.5px solid var(--sep)"><span style="flex:1">Pause All Links</span><button onClick="{{ pauseT.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ pauseT.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ pauseT.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div></div>
+</div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">Paused links show an inactive page. Printed QR codes work again when you resume.</div></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><button onClick="{{ toWidgets }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:0 0 0 16px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer" style-active="background:var(--bg3)"><span style="width:29px;height:29px;border-radius:7px;background:#5856D6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="ph-fill ph-squares-four"></i></span><span style="flex:1;display:flex;align-items:center;gap:8px;min-height:44px;padding-right:16px;border-top:0.5px solid transparent"><span style="flex:1">Widgets</span><i class="ph-bold ph-caret-right" style="color:var(--lab3);font-size:14px"></i></span></button><button onClick="{{ toWeb }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:0 0 0 16px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer" style-active="background:var(--bg3)"><span style="width:29px;height:29px;border-radius:7px;background:#007AFF;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="ph-fill ph-compass"></i></span><span style="flex:1;display:flex;align-items:center;gap:8px;min-height:44px;padding-right:16px;border-top:0.5px solid var(--sep)"><span style="flex:1">Preview Public Page</span><i class="ph-bold ph-caret-right" style="color:var(--lab3);font-size:14px"></i></span></button></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><button onClick="{{ openPro }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:0 0 0 16px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer" style-active="background:var(--bg3)"><span style="width:29px;height:29px;border-radius:7px;background:var(--tintfill);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="ph-fill ph-sparkle"></i></span><span style="flex:1;display:flex;align-items:center;gap:8px;min-height:44px;padding-right:16px"><span style="flex:1">Cardy Pro</span><span style="color:var(--lab2)">Free</span><i class="ph-bold ph-caret-right" style="color:var(--lab3);font-size:14px"></i></span></button></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><button onClick="{{ askSignOut }}" style="width:100%;min-height:44px;border:0;background:transparent;color:var(--red);font:inherit;font-size:17px;cursor:pointer" style-active="background:var(--bg3)">{{ L.signOut }}</button></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isConnection }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:35;animation:cPush .35s cubic-bezier(.2,.8,.2,1);box-shadow:-10px 0 30px rgba(0,0,0,.2)">
+<div style="position:absolute;top:0;left:0;right:0;height:96px;padding:52px 8px 0;display:flex;align-items:center;justify-content:space-between;z-index:25;background:{{ navBg }};backdrop-filter:{{ navBlur }};-webkit-backdrop-filter:{{ navBlur }};box-shadow:{{ navLine }};transition:background .2s">
+<sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ back }}" style="display:flex;align-items:center;gap:2px;min-height:44px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;padding:0 8px 0 0"><i class="ph-bold ph-caret-left" style="font-size:22px"></i>People</button><span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:17px;font-weight:600;opacity:{{ navTitleOp }};pointer-events:none">{{ conn.name }}</span><button onClick="{{ editNote }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;position:relative">Edit</button></sc-if>
+<sc-if value="{{ editingNote }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cancelNote }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer">Cancel</button><button onClick="{{ saveNote }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer">Done</button></sc-if>
+</div>
+<div onScroll="{{ onScroll }}" data-scroll="1" style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:100px 16px 110px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center"><span style="width:96px;height:96px;border-radius:50%;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:600;margin-bottom:8px">{{ connInitials }}</span><span style="font-size:28px;font-weight:600;letter-spacing:0.36px">{{ conn.name }}</span><span style="font-size:15px;color:var(--lab2);white-space:nowrap">{{ conn.title }} · {{ conn.company }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px"><sc-for list="{{ connActions }}" as="a" hint-placeholder-count="4"><button onClick="{{ a.onClick }}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:58px;border:0;border-radius:12px;background:var(--bg2);color:var(--tint);font:inherit;font-size:12px;cursor:pointer" style-active="opacity:.6"><i class="{{ a.icon }}" style="font-size:21px"></i>{{ a.label }}</button></sc-for></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase;display:flex;gap:6px;align-items:center">Note<i class="ph-fill ph-lock-simple" style="font-size:12px"></i>Only You</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden">
+<sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;min-height:44px;padding:0 16px;gap:12px"><span style="flex:none">Event</span><span style="flex:1;min-width:0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--lab2)">{{ conn.event }}</span></div>
+<div style="margin-left:16px;display:flex;align-items:center;min-height:44px;padding-right:16px;gap:12px;border-top:0.5px solid var(--sep)"><span style="flex:none">Place</span><span style="flex:1;min-width:0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--lab2)">{{ conn.place }}, {{ conn.city }}</span></div>
+<div style="margin-left:16px;display:flex;align-items:center;min-height:44px;padding-right:16px;gap:12px;border-top:0.5px solid var(--sep)"><span style="flex:none">Met</span><span style="flex:1;min-width:0;text-align:right;white-space:nowrap;color:var(--lab2)">{{ conn.date }}</span></div>
+<sc-if value="{{ connHasNote }}" hint-placeholder-val="{{ true }}"><div style="margin-left:16px;padding:11px 16px 11px 0;border-top:0.5px solid var(--sep);text-wrap:pretty">{{ conn.note }}</div></sc-if>
+<sc-if value="{{ connNoNote }}" hint-placeholder-val="{{ false }}"><button onClick="{{ editNote }}" style="display:block;width:calc(100% - 16px);margin-left:16px;text-align:left;padding:11px 16px 11px 0;border:0;border-top:0.5px solid var(--sep);background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer">Add Note…</button></sc-if>
+<sc-if value="{{ connHasTags }}" hint-placeholder-val="{{ true }}"><div style="margin-left:16px;padding:10px 16px 10px 0;border-top:0.5px solid var(--sep);display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ conn.tags }}" as="t" hint-placeholder-count="2"><span style="font-size:15px;padding:4px 10px;border-radius:14px;background:var(--fill3);color:var(--tint)">{{ t }}</span></sc-for></div></sc-if>
+</sc-if>
+<sc-if value="{{ editingNote }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;min-height:44px;padding:0 16px;gap:12px"><span style="width:70px;flex:none">Event</span><input value="{{ draft.event }}" onChange="{{ onDraftEvent }}" style="flex:1;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;caret-color:var(--tint)"></div>
+<div style="margin-left:16px;display:flex;align-items:center;min-height:44px;padding-right:16px;gap:12px;border-top:0.5px solid var(--sep)"><span style="width:70px;flex:none">Place</span><input value="{{ draft.place }}" onChange="{{ onDraftPlace }}" style="flex:1;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;caret-color:var(--tint)"></div>
+<div style="margin-left:16px;display:flex;align-items:center;min-height:44px;padding-right:16px;gap:12px;border-top:0.5px solid var(--sep)"><span style="width:70px;flex:none">Tags</span><input placeholder="Comma separated" value="{{ draft.tags }}" onChange="{{ onDraftTags }}" style="flex:1;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;caret-color:var(--tint)"></div>
+<div style="margin-left:16px;padding-right:16px;border-top:0.5px solid var(--sep)"><textarea placeholder="What did you talk about?" value="{{ draft.text }}" onChange="{{ onDraftText }}" style="display:block;width:100%;min-height:110px;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;resize:none;caret-color:var(--tint)"></textarea></div>
+</sc-if>
+</div></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Shared Card</div><dc-import name="CardFace" vm="{{ connVM }}" hint-size="358px,232px"></dc-import></div>
+<div><div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ connFields }}" as="f" hint-placeholder-count="4"><div style="margin-left:16px;padding:8px 16px 8px 0;border-top:0.5px solid {{ f.sep }};display:flex;flex-direction:column"><span style="font-size:15px">{{ f.label }}</span><span style="font-size:17px;color:var(--tint)">{{ f.value }}</span></div></sc-for></div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2)">You shared your Work card with {{ connFirst }}.</div></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><button onClick="{{ askRemove }}" style="display:block;width:100%;text-align:left;min-height:44px;padding:0 16px;border:0;background:transparent;color:var(--red);font:inherit;font-size:17px;cursor:pointer">Remove Connection</button><button onClick="{{ askBlock }}" style="display:block;width:calc(100% - 16px);margin-left:16px;text-align:left;min-height:44px;padding:0;border:0;border-top:0.5px solid var(--sep);background:transparent;color:var(--red);font:inherit;font-size:17px;cursor:pointer">Block {{ connFirst }}</button></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isScanned }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:35;animation:cPush .35s cubic-bezier(.2,.8,.2,1)">
+<div style="position:absolute;top:0;left:0;right:0;height:96px;padding:52px 8px 0;display:flex;align-items:center;z-index:25;background:var(--mat);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)"><button onClick="{{ back }}" style="display:flex;align-items:center;gap:2px;min-height:44px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;padding:0 8px 0 0;position:relative;z-index:1"><i class="ph-bold ph-caret-left" style="font-size:22px"></i>Scan</button><span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:17px;font-weight:600">Scanned Card</span></div>
+<div data-scroll="1" style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:108px 16px 110px;display:flex;flex-direction:column;gap:20px">
+<dc-import name="CardFace" vm="{{ scannedVM }}" hint-size="358px,232px"></dc-import>
+<div style="display:flex;flex-direction:column;padding:0 4px"><span style="font-size:28px;font-weight:600;letter-spacing:0.36px">{{ scanned.name }}</span><span style="font-size:15px;color:var(--lab2)">{{ scanned.title }} · {{ scanned.company }}</span></div>
+<div><div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ scannedFields }}" as="f" hint-placeholder-count="3"><div style="margin-left:16px;padding:8px 16px 8px 0;border-top:0.5px solid {{ f.sep }};display:flex;flex-direction:column"><span style="font-size:15px">{{ f.label }}</span><span style="font-size:17px;color:var(--tint)">{{ f.value }}</span></div></sc-for></div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">Swap cards to see what {{ scannedFirst }} shares with connections only.</div></div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:auto"><button onClick="{{ swapScanned }}" style="height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="opacity:.7"><i class="ph-bold ph-arrows-left-right"></i>Swap Cards</button><button onClick="{{ saveContact }}" style="height:50px;border:0;border-radius:12px;background:var(--fill3);color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer" style-active="opacity:.7">Add to Contacts</button></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:{{ tb.side }};right:{{ tb.side }};bottom:{{ tb.bottom }};height:{{ tb.h }};padding:{{ tb.pad }};border-radius:{{ tb.r }};display:flex;gap:2px;background:{{ tabBg }};backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:{{ tb.shadow }};z-index:30">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.onClick }}" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:0;border-radius:27px;background:{{ t.pill }};color:{{ t.fg }};font:inherit;font-size:10px;font-weight:600;letter-spacing:0.1px;cursor:pointer;position:relative;transition:background .2s"><i class="{{ t.icon }}" style="font-size:24px"></i>{{ t.label }}<sc-if value="{{ t.badge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:3px;left:calc(50% + 7px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#FF3B30;color:#fff;font-size:13px;font-weight:400;display:flex;align-items:center;justify-content:center">{{ t.badge }}</span></sc-if></button></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isEditor }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:40;display:flex;flex-direction:column;animation:cUp .4s cubic-bezier(.2,.8,.2,1)">
+<div style="padding:52px 8px 0;height:96px;flex:none;display:flex;align-items:center;justify-content:space-between;position:relative"><button onClick="{{ back }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;position:relative;z-index:1">Cancel</button><span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:17px;font-weight:600">{{ editCardName }} Card</span><button onClick="{{ saveCard }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer;position:relative;z-index:1">Done</button></div>
+<div style="padding:10px 28px 16px;flex:none"><dc-import name="CardFace" vm="{{ editVM }}" hint-size="334px,216px"></dc-import></div>
+<div style="padding:0 16px 14px;flex:none"><div style="display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ edTabs }}" as="o" hint-placeholder-count="5"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer;letter-spacing:-0.1px">{{ o.label }}</button></sc-for></div></div>
+<div data-scroll="1" style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 16px 40px;display:flex;flex-direction:column;gap:22px">
+<sc-if value="{{ edTemplate }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 10px">
+<sc-for list="{{ tplItems }}" as="t" hint-placeholder-count="9"><button onClick="{{ t.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;border:0;background:transparent;color:{{ t.fg }};font:inherit;font-size:13px;cursor:pointer"><div style="width:100%;position:relative;border-radius:8px;box-shadow:0 0 0 {{ t.ringW }} var(--tint);pointer-events:none"><dc-import name="CardFace" vm="{{ t.vm }}" hint-size="100%,70px"></dc-import><sc-if value="{{ t.on }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:-6px;top:-6px;width:20px;height:20px;border-radius:50%;background:var(--tintfill);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 0 0 2px var(--bg)"><i class="ph-bold ph-check"></i></span></sc-if></div><span style="display:flex;align-items:center;gap:4px">{{ t.label }}<sc-if value="{{ t.locked }}" hint-placeholder-val="{{ false }}"><i class="ph-fill ph-lock-simple" style="font-size:12px;color:var(--lab2)"></i></sc-if></span></button></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ edColour }}" hint-placeholder-val="{{ false }}">
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Palette</div>
+<div style="background:var(--bg2);border-radius:10px;padding:16px;display:flex;justify-content:space-between"><sc-for list="{{ palItems }}" as="p" hint-placeholder-count="6"><button onClick="{{ p.onClick }}" style="width:44px;height:44px;border-radius:50%;border:0;padding:0;cursor:pointer;background:{{ p.swatch }};box-shadow:{{ p.ring }};position:relative;display:flex;align-items:center;justify-content:center"><sc-if value="{{ p.locked }}" hint-placeholder-val="{{ false }}"><span style="width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px"><i class="ph-fill ph-lock-simple"></i></span></sc-if></button></sc-for></div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2)">{{ palName }}. Text contrast meets WCAG AA.</div></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Card Appearance</div><div style="display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ modeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+<div style="background:var(--bg2);border-radius:10px;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px"><span style="flex:1">Gradient Background</span><button onClick="{{ gradT.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ gradT.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ gradT.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div>
+</sc-if>
+<sc-if value="{{ edType }}" hint-placeholder-val="{{ false }}">
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Typeface</div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px"><sc-for list="{{ fontItems }}" as="f" hint-placeholder-count="4"><button onClick="{{ f.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 4px 10px;border-radius:10px;border:0;background:var(--bg2);box-shadow:inset 0 0 0 {{ f.ringW }} var(--tint);color:{{ f.fg }};font:inherit;font-size:12px;cursor:pointer"><span style="font-family:{{ f.family }};font-size:26px;line-height:1.15;color:var(--lab)">Aa</span>{{ f.label }}</button></sc-for></div>
+<sc-if value="{{ fontForced }}" hint-placeholder-val="{{ false }}"><div style="padding:7px 16px 0;font-size:13px;color:var(--lab2)">This template sets its own typeface.</div></sc-if></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Alignment</div><div style="display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ alignSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Density</div><div style="display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ densitySeg }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer">{{ o.label }}</button></sc-for></div></div>
+</sc-if>
+<sc-if value="{{ edContent }}" hint-placeholder-val="{{ false }}">
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Show on This Card</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ contentRows }}" as="f" hint-placeholder-count="5"><div style="display:flex;align-items:center;gap:12px;padding-left:16px;opacity:{{ f.op }}"><span style="width:29px;height:29px;border-radius:7px;background:{{ f.color }};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="{{ f.icon }}"></i></span><div style="flex:1;display:flex;align-items:center;gap:8px;min-height:56px;padding-right:16px;border-top:0.5px solid {{ f.sep }};min-width:0"><div style="flex:1;display:flex;flex-direction:column;min-width:0"><span>{{ f.label }}</span><span style="font-size:13px;color:var(--lab2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.sub }}</span></div><button onClick="{{ f.t.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ f.t.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ f.t.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div></div></sc-for></div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">Values come from your profile. Private fields never appear on a card.</div></div>
+</sc-if>
+<sc-if value="{{ edMedia }}" hint-placeholder-val="{{ false }}">
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Photo</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden">
+<label style="display:flex;align-items:center;gap:12px;padding:8px 16px;cursor:pointer"><input type="file" accept="image/*" style="display:none" onChange="{{ onPhoto }}"><span style="width:44px;height:44px;border-radius:50%;overflow:hidden;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex:none"><sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><span style="display:block;width:100%;height:100%;background-image:{{ photoBg }};background-size:cover;background-position:center"></span></sc-if><sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}"><span>{{ myInitials }}</span></sc-if></span><span style="flex:1;color:var(--tint)">Choose Photo…</span></label>
+<div style="margin-left:16px;display:flex;align-items:center;gap:8px;min-height:44px;padding-right:16px;border-top:0.5px solid var(--sep)"><span style="flex:1">Show on Card</span><button onClick="{{ photoT.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ photoT.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ photoT.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div>
+</div><div style="padding:7px 16px 0;font-size:13px;color:var(--lab2)">Shows on Modern, Split and Stack.</div></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Logo</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden">
+<label style="display:flex;align-items:center;gap:12px;padding:8px 16px;cursor:pointer"><input type="file" accept="image/*" style="display:none" onChange="{{ onLogo }}"><span style="width:44px;height:44px;border-radius:10px;overflow:hidden;background:var(--fill3);color:var(--lab2);display:flex;align-items:center;justify-content:center;font-size:22px;flex:none"><sc-if value="{{ hasLogo }}" hint-placeholder-val="{{ false }}"><span style="display:block;width:100%;height:100%;background-image:{{ logoBg }};background-size:contain;background-repeat:no-repeat;background-position:center"></span></sc-if><sc-if value="{{ noLogo }}" hint-placeholder-val="{{ true }}"><i class="ph ph-image-square"></i></sc-if></span><span style="flex:1;color:var(--tint)">Choose Logo…</span></label>
+<div style="margin-left:16px;display:flex;align-items:center;gap:8px;min-height:44px;padding-right:16px;border-top:0.5px solid var(--sep)"><span style="flex:1">Show on Card</span><button onClick="{{ logoT.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ logoT.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ logoT.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div>
+</div><div style="padding:7px 16px 0;font-size:13px;color:var(--lab2)">Shows on Professional.</div></div>
+<div><div style="background:var(--bg2);border-radius:10px;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px"><span style="flex:1">QR Code</span><button onClick="{{ qrT.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ qrT.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ qrT.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2)">Always black on a white plate. Logos never go on the code.</div></div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isExport }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:45;display:flex;flex-direction:column;animation:cUp .4s cubic-bezier(.2,.8,.2,1)">
+<div style="padding:52px 8px 0;height:96px;flex:none;display:flex;align-items:center;position:relative"><button onClick="{{ back }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;position:relative;z-index:1">Cancel</button><span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:17px;font-weight:600">Export</span></div>
+<div data-scroll="1" style="flex:1;overflow-y:auto;scrollbar-width:none;padding:6px 16px 20px;display:flex;flex-direction:column;gap:22px">
+<div style="height:230px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--bg2)">
+<sc-if value="{{ exIsLock }}" hint-placeholder-val="{{ false }}"><div style="width:100px;height:208px;border-radius:18px;overflow:hidden;background:{{ exLockBg }};box-shadow:0 0 0 3px #1c1c1e;display:flex;flex-direction:column;align-items:center;padding:20px 8px 10px;color:{{ exLockFg }}"><span style="font-size:8px;opacity:.75">Saturday 26</span><span style="font-size:28px;font-weight:600;line-height:1">9:41</span><div style="margin-top:auto;width:52px;height:52px;background:#fff;border-radius:6px"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ activeQR }}" fill="#000"></path></svg></div></div></sc-if>
+<sc-if value="{{ exIsWallet }}" hint-placeholder-val="{{ false }}"><div style="width:160px;height:206px;border-radius:12px;background:{{ exLockBg }};color:{{ exLockFg }};padding:10px 12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.3)"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:700;display:flex;gap:4px;align-items:center"><i class="ph-fill ph-cards"></i>Cardy</span><span style="font-size:9px;opacity:.75;text-transform:uppercase">{{ editCardName }}</span></div><div><div style="font-size:7px;opacity:.7;text-transform:uppercase;letter-spacing:.5px">Name</div><div style="font-size:15px;font-weight:600;line-height:1.1">{{ profile.name }}</div></div><div style="display:flex;justify-content:space-between;gap:6px;font-size:9px"><div><div style="font-size:7px;opacity:.7;text-transform:uppercase">Title</div>{{ profile.title }}</div><div style="text-align:right"><div style="font-size:7px;opacity:.7;text-transform:uppercase">Company</div>{{ profile.company }}</div></div><div style="margin-top:auto;align-self:center;width:78px;height:78px;background:#fff;border-radius:6px"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ activeQR }}" fill="#000"></path></svg></div></div></sc-if>
+<sc-if value="{{ exIsCard }}" hint-placeholder-val="{{ true }}"><div style="width:280px"><dc-import name="CardFace" vm="{{ editVM }}" hint-size="280px,181px"></dc-import></div></sc-if>
+</div>
+<div style="display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ exFormats }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">{{ exOptTitle }}</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ exSizes }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="display:block;width:calc(100% - 16px);margin-left:16px;padding:0;border:0;border-top:0.5px solid {{ o.sep }};background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer"><span style="display:flex;align-items:center;gap:12px;min-height:56px;padding-right:16px"><span style="flex:1;display:flex;flex-direction:column"><span>{{ o.label }}</span><span style="font-size:13px;color:var(--lab2)">{{ o.sub }}</span></span><i class="ph-bold ph-check" style="color:var(--tint);font-size:18px;opacity:{{ o.op }}"></i></span></button></sc-for></div>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">The QR keeps a 4-module quiet zone and error correction level M in every format.</div></div>
+</div>
+<div style="padding:12px 16px 34px;display:flex;gap:10px;flex:none"><button onClick="{{ doShareFile }}" style="flex:1;height:50px;border:0;border-radius:12px;background:var(--fill3);color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="ph-bold ph-export"></i>Share</button><button onClick="{{ doExport }}" style="flex:2;height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer" style-active="opacity:.7">{{ exCta }}</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isExchange }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:40;display:flex;flex-direction:column;animation:cUp .4s cubic-bezier(.2,.8,.2,1)">
+<div style="padding:52px 8px 0;height:96px;flex:none;display:flex;align-items:center;justify-content:flex-end;position:relative"><span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:17px;font-weight:600">Exchange</span><button onClick="{{ back }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer;position:relative">Done</button></div>
+<div data-scroll="1" style="flex:1;overflow-y:auto;scrollbar-width:none;padding:10px 16px 34px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ exModeSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+<sc-if value="{{ exTap }}" hint-placeholder-val="{{ false }}"><div style="height:240px;position:relative">{{ bumpArt }}</div></sc-if>
+<sc-if value="{{ exQR }}" hint-placeholder-val="{{ true }}"><div style="display:flex;justify-content:center;padding:26px 0 10px"><div style="position:relative;width:180px;height:180px">{{ pulse }}<div style="position:absolute;inset:30px;border-radius:50%;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:600;overflow:hidden"><sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><span style="display:block;width:100%;height:100%;background-image:{{ photoBg }};background-size:cover;background-position:center"></span></sc-if><sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}"><span>{{ myInitials }}</span></sc-if></div></div></div></sc-if>
+<div style="text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center"><span style="font-size:20px;font-weight:600">{{ exTitle }}</span><span style="font-size:15px;color:var(--lab2);text-wrap:pretty">{{ exHint }}</span></div>
+<div style="display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ cardSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Nearby on Cardy</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ nearby }}" as="n" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:12px;padding-left:16px"><span style="width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,#A6ABB8,#858994);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;flex:none">{{ n.initials }}</span><div style="flex:1;display:flex;align-items:center;gap:8px;min-height:62px;padding-right:16px;border-top:0.5px solid {{ n.sep }};min-width:0"><span style="flex:1;display:flex;flex-direction:column;min-width:0"><span>{{ n.name }}</span><span style="font-size:15px;color:var(--lab2)">{{ n.role }}</span></span><button onClick="{{ n.onClick }}" style="height:30px;padding:0 16px;border-radius:15px;border:0;background:var(--fill3);color:var(--tint);font:inherit;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px">{{ n.btn }}</button></div></div></sc-for></div></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMatch }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:50;display:flex;flex-direction:column;animation:cUp .4s cubic-bezier(.2,.8,.2,1)">
+<div style="padding:52px 8px 0;height:96px;flex:none;display:flex;align-items:center;justify-content:space-between;position:relative"><button onClick="{{ skipMatch }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer">Not Now</button><button onClick="{{ saveMatch }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer">Save</button></div>
+<div data-scroll="1" style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 16px 34px;display:flex;flex-direction:column;gap:22px">
+<div style="position:relative;height:210px;animation:cPop .5s ease"><div style="position:absolute;left:4px;top:0;width:240px;transform:rotate(-6deg)"><dc-import name="CardFace" vm="{{ editVM }}" hint-size="240px,155px"></dc-import></div><div style="position:absolute;right:4px;top:52px;width:240px;transform:rotate(5deg)"><dc-import name="CardFace" vm="{{ matchVM }}" hint-size="240px,155px"></dc-import></div></div>
+<div style="display:flex;flex-direction:column;gap:6px;text-align:center"><span style="font-size:28px;font-weight:700;letter-spacing:0.36px">You're Connected</span><span style="font-size:17px;color:var(--lab2);text-wrap:pretty">You and {{ matchName }} swapped cards. Add a note while it's fresh.</span></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Private Note</div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden">
+<div style="display:flex;align-items:center;min-height:44px;padding:0 16px;gap:12px"><span style="width:60px;flex:none">Event</span><input value="{{ draft.event }}" onChange="{{ onDraftEvent }}" style="flex:1;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;caret-color:var(--tint)"></div>
+<div style="margin-left:16px;display:flex;align-items:center;min-height:44px;padding-right:16px;gap:12px;border-top:0.5px solid var(--sep)"><span style="width:60px;flex:none">Place</span><input value="{{ draft.place }}" onChange="{{ onDraftPlace }}" style="flex:1;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;caret-color:var(--tint)"></div>
+<div style="margin-left:16px;padding-right:16px;border-top:0.5px solid var(--sep)"><textarea placeholder="What did you talk about?" value="{{ draft.text }}" onChange="{{ onDraftText }}" style="display:block;width:100%;min-height:90px;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;resize:none;caret-color:var(--tint)"></textarea></div>
+</div><div style="padding:7px 16px 0;font-size:13px;color:var(--lab2)">Only you can see this.</div></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><button onClick="{{ saveContact }}" style="display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0 16px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer"><i class="ph ph-address-book" style="font-size:20px"></i>Add to Contacts</button></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isQR }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:60;background:var(--bg);color:var(--lab);display:flex;flex-direction:column;align-items:center;padding:52px 16px 34px;gap:16px;animation:cUp .4s cubic-bezier(.2,.8,.2,1)">
+<div style="align-self:stretch;height:44px;display:flex;justify-content:space-between;align-items:center"><span style="display:flex;gap:6px;align-items:center;font-size:13px;color:var(--lab2);padding-left:8px"><i class="ph-fill ph-sun" style="color:#FF9500;font-size:16px"></i>Brightness raised</span><button onClick="{{ closeOverlay }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer">Done</button></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:18px;text-align:center"><span style="font-size:28px;font-weight:700;letter-spacing:0.36px">{{ profile.name }}</span><span style="font-size:15px;color:var(--lab2)">{{ profile.title }} · {{ profile.company }}</span></div>
+<div style="width:290px;height:290px;background:#fff;border-radius:22px;overflow:hidden;position:relative;box-shadow:0 16px 50px rgba(0,0,0,.25);margin-top:6px"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%;opacity:{{ qrOpacity }}" shape-rendering="crispEdges"><path d="{{ activeQR }}" fill="#000"></path></svg><sc-if value="{{ linkPaused }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#1c1c1e;font-size:17px;font-weight:600"><i class="ph-fill ph-pause-circle" style="font-size:40px"></i>Link Paused</div></sc-if></div>
+<span style="font-size:15px;color:var(--lab2);text-align:center;text-wrap:pretty">Scan with the camera — no app needed<br>{{ activeLink }}</span>
+<div style="width:220px;display:flex;padding:2px;border-radius:9px;background:var(--fill3)"><sc-for list="{{ cardSeg }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.onClick }}" style="flex:1;height:28px;border:0;border-radius:7px;background:{{ o.bg }};box-shadow:{{ o.sh }};color:var(--lab);font:inherit;font-size:13px;font-weight:{{ o.fw }};cursor:pointer">{{ o.label }}</button></sc-for></div>
+<div style="margin-top:auto;display:flex;gap:10px;align-self:stretch"><button onClick="{{ toExchange }}" style="flex:1;height:50px;border:0;border-radius:12px;background:var(--fill3);color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="ph-bold ph-arrows-left-right"></i>Swap Nearby</button><button onClick="{{ openShare }}" style="flex:1;height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="ph-bold ph-export"></i>Share</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isShare }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeShare }}" style="position:absolute;inset:0;z-index:70;background:var(--dim);animation:cFade .25s ease">
+<div onClick="{{ stop }}" style="position:absolute;left:0;right:0;bottom:0;border-radius:14px 14px 0 0;background:var(--bg);color:var(--lab);padding:6px 16px 34px;display:flex;flex-direction:column;gap:18px;animation:cUp .35s cubic-bezier(.2,.8,.2,1)">
+<span style="align-self:center;width:36px;height:5px;border-radius:3px;background:var(--lab3)"></span>
+<div style="display:flex;align-items:center;gap:12px"><div style="width:62px;flex:none"><dc-import name="CardFace" vm="{{ editVM }}" hint-size="62px,40px"></dc-import></div><div style="flex:1;display:flex;flex-direction:column;min-width:0"><span style="font-size:15px;font-weight:600">{{ profile.name }} · {{ editCardName }}</span><span style="font-size:13px;color:var(--lab2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ activeLink }}</span></div><button onClick="{{ closeShare }}" style="width:30px;height:30px;border-radius:50%;border:0;background:var(--fill3);color:var(--lab2);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;flex:none"><i class="ph-bold ph-x"></i></button></div>
+<div style="display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:6px 0 2px;border-top:0.5px solid var(--sep);padding-top:16px"><sc-for list="{{ targets }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.onClick }}" style="flex:none;width:62px;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:transparent;color:var(--lab);font:inherit;font-size:11px;cursor:pointer;padding:0"><span style="width:60px;height:60px;border-radius:14px;background:{{ t.bg }};display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff"><i class="{{ t.icon }}"></i></span>{{ t.label }}</button></sc-for></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ shareActions }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.onClick }}" style="display:block;width:calc(100% - 16px);margin-left:16px;padding:0;border:0;border-top:0.5px solid {{ a.sep }};background:transparent;color:var(--lab);font:inherit;font-size:17px;text-align:left;cursor:pointer"><span style="display:flex;align-items:center;min-height:48px;padding-right:16px"><span style="flex:1">{{ a.label }}</span><i class="{{ a.icon }}" style="font-size:21px"></i></span></button></sc-for></div>
+<div style="background:var(--bg2);border-radius:10px;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 16px"><span style="flex:1;display:flex;flex-direction:column"><span>Pause This Link</span></span><button onClick="{{ pauseT.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ pauseT.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ pauseT.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCheck }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);display:flex;flex-direction:column;padding:52px 16px 34px;gap:12px;animation:cPush .35s cubic-bezier(.2,.8,.2,1)">
+<div style="height:44px;display:flex;align-items:center;margin-left:-8px"><button onClick="{{ toSigninBack }}" style="display:flex;align-items:center;gap:2px;min-height:44px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;padding:0 8px 0 0"><i class="ph-bold ph-caret-left" style="font-size:22px"></i>Back</button></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:0 12px 60px"><span style="width:88px;height:88px;border-radius:22px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:46px;color:var(--tint);margin-bottom:8px"><i class="ph-fill ph-envelope-simple-open"></i></span><span style="font-size:28px;font-weight:700;letter-spacing:0.36px">Check Your Email</span><span style="font-size:17px;color:var(--lab2);text-wrap:pretty">We sent a sign-in link to <span style="color:var(--lab);font-weight:600">{{ emailShown }}</span>. It expires in 15 minutes.</span></div>
+<button onClick="{{ signIn }}" style="height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="opacity:.7">Open Mail</button>
+<button onClick="{{ resend }}" style="height:50px;border:0;border-radius:12px;background:var(--fill3);color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="opacity:.7">Resend Link</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCreate }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:40;display:flex;flex-direction:column;animation:cUp .4s cubic-bezier(.2,.8,.2,1)">
+<div style="padding:52px 8px 0;height:96px;flex:none;display:flex;align-items:center;justify-content:space-between;position:relative"><span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:17px;font-weight:600">{{ cTitle }}</span><sc-if value="{{ cHasBack }}" hint-placeholder-val="{{ true }}"><button onClick="{{ cBack }}" style="min-height:44px;padding:0 8px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;position:relative;z-index:1">{{ cBackLabel }}</button></sc-if><span></span><span></span></div>
+<div style="padding:0 16px 8px;flex:none"><div style="height:4px;border-radius:2px;background:var(--fill3);overflow:hidden"><div style="height:100%;width:{{ cProgress }};background:var(--tint);border-radius:2px;transition:width .35s ease"></div></div></div>
+<div data-scroll="1" style="flex:1;overflow-y:auto;scrollbar-width:none;padding:14px 16px 20px;display:flex;flex-direction:column;gap:22px">
+<sc-if value="{{ cMethod }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:6px;padding:0 4px"><span style="font-size:28px;font-weight:700;letter-spacing:0.36px">How do you want to start?</span><span style="font-size:15px;color:var(--lab2)">You can change everything later in the editor.</span></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ methods }}" as="m" hint-placeholder-count="3"><button onClick="{{ m.onClick }}" style="display:flex;align-items:center;gap:14px;width:100%;padding:0 0 0 16px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer" style-active="background:var(--bg3)"><span style="width:40px;height:40px;border-radius:10px;background:{{ m.color }};color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none"><i class="{{ m.icon }}"></i></span><span style="flex:1;display:flex;align-items:center;gap:8px;min-height:68px;padding-right:16px;border-top:0.5px solid {{ m.sep }};min-width:0"><span style="flex:1;display:flex;flex-direction:column;min-width:0"><span>{{ m.title }}</span><span style="font-size:13px;color:var(--lab2)">{{ m.sub }}</span></span><span style="font-size:15px;color:var(--lab2)">{{ m.badge }}</span><i class="ph-bold ph-caret-right" style="color:var(--lab3);font-size:14px"></i></span></button></sc-for></div>
+</sc-if>
+<sc-if value="{{ cGallery }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px"><sc-for list="{{ cTpls }}" as="t" hint-placeholder-count="9"><button onClick="{{ t.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;border:0;background:transparent;color:{{ t.fg }};font:inherit;font-size:13px;cursor:pointer"><div style="width:100%;position:relative;border-radius:9px;box-shadow:0 0 0 {{ t.ringW }} var(--tint);pointer-events:none"><dc-import name="CardFace" vm="{{ t.vm }}" hint-size="100%,110px"></dc-import><sc-if value="{{ t.on }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:-6px;top:-6px;width:22px;height:22px;border-radius:50%;background:var(--tintfill);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 0 0 2px var(--bg)"><i class="ph-bold ph-check"></i></span></sc-if></div><span style="display:flex;align-items:center;gap:4px">{{ t.label }}<sc-if value="{{ t.locked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;padding:1px 6px;border-radius:6px;background:var(--fill3);color:var(--tint)">PRO</span></sc-if></span></button></sc-for></div>
+</sc-if>
+<sc-if value="{{ cAI }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ aiQs }}" as="qq" hint-placeholder-count="3"><div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">{{ qq.title }}</div><div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ qq.opts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="display:block;width:calc(100% - 16px);margin-left:16px;padding:0;border:0;border-top:0.5px solid {{ o.sep }};background:transparent;color:var(--lab);font:inherit;font-size:17px;text-align:left;cursor:pointer"><span style="display:flex;align-items:center;min-height:44px;padding-right:16px"><span style="flex:1">{{ o.label }}</span><i class="ph-bold ph-check" style="color:var(--tint);font-size:18px;opacity:{{ o.op }}"></i></span></button></sc-for></div></div></sc-for>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">{{ aiQuota }}</div>
+</sc-if>
+<sc-if value="{{ cGen }}" hint-placeholder-val="{{ false }}"><div style="min-height:460px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center">{{ spinner }}<span style="font-size:20px;font-weight:600">Designing your card…</span><span style="font-size:15px;color:var(--lab2);text-wrap:pretty">Matching layouts and palettes to “{{ aiUseLabel }}”.</span></div></sc-if>
+<sc-if value="{{ cResults }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ aiResults }}" as="r" hint-placeholder-count="3"><button onClick="{{ r.onClick }}" style="display:block;width:100%;padding:0;border:0;background:transparent;border-radius:14px;box-shadow:0 0 0 {{ r.ringW }} var(--tint);cursor:pointer;position:relative"><div style="pointer-events:none"><dc-import name="CardFace" vm="{{ r.vm }}" hint-size="358px,232px"></dc-import></div><sc-if value="{{ r.on }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:-7px;top:-7px;width:26px;height:26px;border-radius:50%;background:var(--tintfill);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 0 2px var(--bg)"><i class="ph-bold ph-check"></i></span></sc-if></button></sc-for>
+<div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">{{ aiResultsNote }}</div>
+</sc-if>
+<sc-if value="{{ cDetails }}" hint-placeholder-val="{{ false }}">
+<dc-import name="CardFace" vm="{{ cPreview }}" hint-size="358px,232px"></dc-import>
+<div style="background:var(--bg2);border-radius:10px;display:flex;align-items:center;min-height:44px;padding:0 16px;gap:12px"><span style="width:96px;flex:none">Card Name</span><input value="{{ createName }}" onChange="{{ onCreateName }}" style="flex:1;border:0;background:transparent;color:var(--lab);font:inherit;font-size:17px;padding:11px 0;outline:none;caret-color:var(--tint)"></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Show on This Card</div><div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ cFields }}" as="f" hint-placeholder-count="5"><div style="display:flex;align-items:center;gap:12px;padding-left:16px;opacity:{{ f.op }}"><span style="width:29px;height:29px;border-radius:7px;background:{{ f.color }};color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none"><i class="{{ f.icon }}"></i></span><div style="flex:1;display:flex;align-items:center;gap:8px;min-height:56px;padding-right:16px;border-top:0.5px solid {{ f.sep }};min-width:0"><div style="flex:1;display:flex;flex-direction:column;min-width:0"><span>{{ f.label }}</span><span style="font-size:13px;color:var(--lab2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.sub }}</span></div><button onClick="{{ f.t.onClick }}" style="width:51px;height:31px;border-radius:16px;border:0;padding:0;position:relative;background:{{ f.t.bg }};cursor:pointer;flex:none;transition:background .2s"><span style="position:absolute;top:2px;left:{{ f.t.x }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06)"></span></button></div></div></sc-for></div><div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">Values come from your profile. Change privacy there.</div></div>
+</sc-if>
+<sc-if value="{{ cDone }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding-top:10px;animation:cPop .4s ease"><i class="ph-fill ph-check-circle" style="font-size:60px;color:var(--green)"></i><span style="font-size:28px;font-weight:700;letter-spacing:0.36px">Your Card Is Live</span><span style="font-size:15px;color:var(--lab2)">{{ doneLink }}</span></div>
+<dc-import name="CardFace" vm="{{ doneVM }}" hint-size="358px,232px"></dc-import>
+</sc-if>
+</div>
+<sc-if value="{{ cShowCta }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 16px 34px;flex:none;display:flex;flex-direction:column;gap:10px"><button onClick="{{ cNext }}" style="height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="opacity:.7">{{ cCta }}</button><sc-if value="{{ cDone }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cShare }}" style="height:50px;border:0;border-radius:12px;background:var(--fill3);color:var(--tint);font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><i class="ph-bold ph-export"></i>Share Now</button></sc-if></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPaywall }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:65;display:flex;flex-direction:column;animation:cUp .4s cubic-bezier(.2,.8,.2,1)">
+<button onClick="{{ closePaywall }}" style="position:absolute;top:58px;right:16px;z-index:3;width:30px;height:30px;border-radius:50%;border:0;background:var(--fill3);color:var(--lab2);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer"><i class="ph-bold ph-x"></i></button>
+<div data-scroll="1" style="flex:1;overflow-y:auto;scrollbar-width:none;padding:70px 16px 16px;display:flex;flex-direction:column;gap:22px">
+<div style="position:relative;height:190px"><div style="position:absolute;left:0;top:34px;width:200px;transform:rotate(-9deg)"><dc-import name="CardFace" vm="{{ proA }}" hint-size="200px,130px"></dc-import></div><div style="position:absolute;right:0;top:34px;width:200px;transform:rotate(9deg)"><dc-import name="CardFace" vm="{{ proC }}" hint-size="200px,130px"></dc-import></div><div style="position:absolute;left:50%;top:10px;width:220px;transform:translateX(-50%)"><dc-import name="CardFace" vm="{{ proB }}" hint-size="220px,142px"></dc-import></div></div>
+<div style="display:flex;flex-direction:column;gap:6px;text-align:center"><span style="font-size:34px;font-weight:700;letter-spacing:0.37px">Cardy Pro</span><span style="font-size:17px;color:var(--lab2);text-wrap:pretty">Every template, every palette, and as many cards as you need.</span></div>
+<div style="background:var(--bg2);border-radius:10px;overflow:hidden"><sc-for list="{{ proFeatures }}" as="f" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:14px;padding-left:16px"><span style="width:32px;height:32px;border-radius:8px;background:var(--tintfill);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none"><i class="{{ f.icon }}"></i></span><div style="flex:1;display:flex;flex-direction:column;min-height:60px;justify-content:center;padding-right:16px;border-top:0.5px solid {{ f.sep }}"><span>{{ f.title }}</span><span style="font-size:13px;color:var(--lab2)">{{ f.sub }}</span></div></div></sc-for></div>
+<div style="display:flex;flex-direction:column;gap:10px"><sc-for list="{{ plans }}" as="p" hint-placeholder-count="2"><button onClick="{{ p.onClick }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;border:0;background:var(--bg2);box-shadow:inset 0 0 0 2px {{ p.bd }};color:var(--lab);font:inherit;text-align:left;cursor:pointer"><i class="{{ p.radio }}" style="font-size:24px;color:{{ p.rc }}"></i><span style="flex:1;display:flex;flex-direction:column"><span style="display:flex;align-items:center;gap:8px;font-weight:600">{{ p.title }}<sc-if value="{{ p.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--tintfill);color:#fff">{{ p.badge }}</span></sc-if></span><span style="font-size:13px;color:var(--lab2)">{{ p.sub }}</span></span><span style="font-weight:600">{{ p.price }}</span></button></sc-for></div>
+</div>
+<div style="padding:10px 16px 30px;flex:none;display:flex;flex-direction:column;gap:10px"><button onClick="{{ subscribe }}" style="height:50px;border:0;border-radius:12px;background:var(--tintfill);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="opacity:.7">{{ payCta }}</button><div style="display:flex;justify-content:center;gap:18px;font-size:13px;color:var(--lab2)"><span onClick="{{ restore }}" style="color:var(--tint);cursor:pointer">Restore Purchases</span><span>Terms</span><span>Privacy</span></div></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWidgets }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:var(--bg);color:var(--lab);z-index:35;animation:cPush .35s cubic-bezier(.2,.8,.2,1)">
+<div style="position:absolute;top:0;left:0;right:0;height:96px;padding:52px 8px 0;display:flex;align-items:center;z-index:25;background:var(--mat);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)"><button onClick="{{ back }}" style="display:flex;align-items:center;gap:2px;min-height:44px;border:0;background:transparent;color:var(--tint);font:inherit;font-size:17px;cursor:pointer;padding:0 8px 0 0;position:relative;z-index:1"><i class="ph-bold ph-caret-left" style="font-size:22px"></i>{{ L.profile }}</button><span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:17px;font-weight:600">Widgets</span></div>
+<div data-scroll="1" style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:108px 16px 40px;display:flex;flex-direction:column;gap:26px">
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Lock Screen</div>
+<div style="height:290px;border-radius:14px;overflow:hidden;background:{{ wBg }};color:{{ wFg }};display:flex;flex-direction:column;align-items:center;padding:26px 16px">
+<span style="font-size:15px;font-weight:600;opacity:.8">Saturday 26 September</span><span style="font-size:76px;font-weight:700;line-height:1;letter-spacing:-1px">9:41</span>
+<div style="display:flex;gap:10px;margin-top:18px"><div style="width:176px;height:72px;border-radius:16px;background:{{ wGlass }};display:flex;align-items:center;gap:10px;padding:8px"><div style="width:56px;height:56px;background:#fff;border-radius:8px;flex:none"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ activeQR }}" fill="#000"></path></svg></div><div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:13px;font-weight:600">Scan to connect</span><span style="font-size:12px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ profile.name }}</span></div></div><div style="width:72px;height:72px;border-radius:50%;background:{{ wGlass }};display:flex;align-items:center;justify-content:center;font-size:30px"><i class="ph-bold ph-qr-code"></i></div></div>
+</div><div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">Tap the widget to show your QR at full brightness, without unlocking.</div></div>
+<div><div style="padding:0 16px 7px;font-size:13px;color:var(--lab2);text-transform:uppercase">Home Screen</div>
+<div style="border-radius:14px;background:{{ wBg }};padding:20px;display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:start">
+<div style="width:150px;height:150px;border-radius:22px;background:var(--bg2);color:var(--lab);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,.2)"><div style="width:96px;height:96px;background:#fff;border-radius:10px"><svg viewBox="0 0 33 33" style="display:block;width:100%;height:100%" shape-rendering="crispEdges"><path d="{{ activeQR }}" fill="#000"></path></svg></div><span style="font-size:12px;font-weight:600">{{ editCardName }} Card</span></div>
+<div style="display:flex;flex-direction:column;gap:4px;color:{{ wFg }};font-size:13px;padding-top:6px"><span style="font-size:15px;font-weight:600">Small</span><span style="opacity:.8">Your QR, one tap away.</span></div>
+<div style="grid-column:1 / -1;height:150px;border-radius:22px;background:var(--bg2);color:var(--lab);display:flex;align-items:center;gap:14px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.2)"><div style="width:170px;flex:none"><dc-import name="CardFace" vm="{{ editVM }}" hint-size="170px,110px"></dc-import></div><div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:15px;font-weight:600">{{ editCardName }} Card</span><span style="font-size:13px;color:var(--lab2)">{{ weekCount }}</span><span style="font-size:13px;color:var(--tint);font-weight:600;margin-top:6px">Show QR</span></div></div>
+</div><div style="padding:7px 16px 0;font-size:13px;color:var(--lab2);text-wrap:pretty">Touch and hold the Home Screen, tap Edit › Add Widget, then choose Cardy.</div></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWeb }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:#F2F2F7;color:#000;z-index:5;animation:cFade .3s ease">
+<div style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:52px 0 130px">
+<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#F9F9F9;border-bottom:0.5px solid rgba(60,60,67,.29)"><i class="ph-bold ph-x" style="font-size:13px;color:rgba(60,60,67,.45)"></i><span style="width:40px;height:40px;border-radius:9px;background:#0F766E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none"><i class="ph-fill ph-cards"></i></span><div style="flex:1;display:flex;flex-direction:column;min-width:0"><span style="font-size:13px;font-weight:600">Cardy</span><span style="font-size:12px;color:rgba(60,60,67,.6)">Digital business cards</span></div><span onClick="{{ webBack }}" style="font-size:15px;font-weight:600;color:#007AFF;cursor:pointer;padding:6px">Open</span></div>
+<div style="padding:24px 16px;display:flex;flex-direction:column;gap:20px">
+<dc-import name="CardFace" vm="{{ webVM }}" hint-size="358px,232px"></dc-import>
+<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px"><span style="font-size:28px;font-weight:700">{{ profile.name }}</span><span style="font-size:15px;color:rgba(60,60,67,.6)">{{ profile.title }} · {{ profile.company }}</span></div>
+<sc-if value="{{ webPaused }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border-radius:10px;padding:14px 16px;display:flex;gap:10px;align-items:center;font-size:15px;text-wrap:pretty"><i class="ph-fill ph-pause-circle" style="font-size:24px;color:#FF9500;flex:none"></i>This card is paused by its owner. Details are hidden for now.</div></sc-if>
+<sc-if value="{{ webLive }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border-radius:10px;overflow:hidden"><sc-for list="{{ webFields }}" as="f" hint-placeholder-count="3"><div style="margin-left:16px;padding:8px 16px 8px 0;border-top:0.5px solid {{ f.sep }};display:flex;flex-direction:column"><span style="font-size:15px">{{ f.label }}</span><span style="font-size:17px;color:#0F766E">{{ f.value }}</span></div></sc-for></div>
+<button onClick="{{ webSave }}" style="height:50px;border:0;border-radius:12px;background:#0F766E;color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><i class="ph-bold ph-address-book"></i>Save to Contacts</button>
+<button onClick="{{ webBack }}" style="height:50px;border:0;border-radius:12px;background:rgba(118,118,128,.12);color:#0F766E;font:inherit;font-size:17px;font-weight:600;cursor:pointer">Swap Cards in Cardy</button>
+</sc-if>
+<span style="text-align:center;font-size:12px;color:rgba(60,60,67,.6)">Made with Cardy · Only public details are shown</span>
+</div></div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:8px 14px 30px;background:rgba(249,249,249,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 -0.5px 0 rgba(60,60,67,.29);display:flex;flex-direction:column;gap:10px">
+<div style="height:44px;border-radius:12px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.1);display:flex;align-items:center;padding:0 14px;gap:8px;font-size:17px"><span style="font-size:15px;font-weight:600">aA</span><span style="flex:1;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px"><i class="ph-fill ph-lock-simple" style="font-size:13px;color:rgba(60,60,67,.6)"></i>cardy.link</span><i class="ph-bold ph-arrow-clockwise" style="font-size:16px"></i></div>
+<div style="display:flex;justify-content:space-between;padding:0 10px;font-size:22px;color:#007AFF"><i class="ph ph-caret-left" onClick="{{ webBack }}" style="cursor:pointer"></i><i class="ph ph-caret-right" style="opacity:.35"></i><i class="ph ph-export"></i><i class="ph ph-book-open"></i><i class="ph ph-copy"></i></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasCtx }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeCtx }}" style="position:absolute;inset:0;z-index:88;background:var(--dim);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;flex-direction:column;padding:140px 16px 0;gap:12px;animation:cFade .2s ease">
+<div style="animation:cPop .3s cubic-bezier(.2,.8,.2,1)"><dc-import name="CardFace" vm="{{ ctxVM }}" hint-size="358px,232px"></dc-import></div>
+<div onClick="{{ stop }}" style="width:250px;border-radius:13px;overflow:hidden;background:var(--menu);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);color:var(--lab);transform-origin:left top;animation:cPop .25s cubic-bezier(.2,.8,.2,1)"><sc-for list="{{ ctxItems }}" as="m" hint-placeholder-count="4"><button onClick="{{ m.onClick }}" style="display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:10px 16px;border:0;border-top:{{ m.sepW }} solid var(--sep);background:transparent;color:{{ m.color }};font:inherit;font-size:17px;text-align:left;cursor:pointer" style-active="background:var(--fill3)"><span style="flex:1">{{ m.label }}</span><i class="{{ m.icon }}" style="font-size:19px"></i></button></sc-for></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasPush }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ openPush }}" style="position:absolute;left:8px;right:8px;top:54px;z-index:118;padding:12px 14px;border-radius:22px;background:var(--menu);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;gap:10px;align-items:center;color:var(--lab);cursor:pointer;animation:cDrop .45s cubic-bezier(.2,.8,.2,1)"><span style="width:38px;height:38px;border-radius:9px;background:var(--tintfill);color:#fff;display:flex;align-items:center;justify-content:center;font-size:21px;flex:none"><i class="ph-fill ph-cards"></i></span><div style="flex:1;display:flex;flex-direction:column;min-width:0"><div style="display:flex;justify-content:space-between;font-size:15px"><span style="font-weight:600">Cardy</span><span style="font-size:13px;color:var(--lab2)">now</span></div><span style="font-size:15px">Dilnoza Rahimova wants to swap cards</span><span style="font-size:13px;color:var(--lab2)">Tashkent Tech Week · Hyatt Regency</span></div></div>
+</sc-if>
+
+<sc-if value="{{ hasMenu }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeMenu }}" style="position:absolute;inset:0;z-index:90;background:rgba(0,0,0,.08)">
+<div onClick="{{ stop }}" style="position:absolute;left:{{ menuX }};top:{{ menuY }};width:250px;border-radius:13px;overflow:hidden;background:var(--menu);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);box-shadow:0 10px 40px rgba(0,0,0,.28);color:var(--lab);transform-origin:{{ menuOrigin }};animation:cPop .2s cubic-bezier(.2,.8,.2,1)">
+<sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="4"><button onClick="{{ m.onClick }}" style="display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:10px 16px;border:0;border-top:{{ m.sepW }} solid var(--sep);background:transparent;color:{{ m.color }};font:inherit;font-size:17px;text-align:left;cursor:pointer" style-active="background:var(--fill3)"><i class="ph-bold ph-check" style="font-size:15px;width:16px;opacity:{{ m.checkOp }};display:{{ m.checkDisp }}"></i><span style="flex:1;display:flex;flex-direction:column"><span>{{ m.label }}</span><sc-if value="{{ m.sub }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--lab2)">{{ m.sub }}</span></sc-if></span><i class="{{ m.icon }}" style="font-size:19px"></i></button></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasAlert }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:100;background:var(--dim);display:flex;align-items:center;justify-content:center;animation:cFade .2s ease">
+<div style="width:270px;border-radius:14px;overflow:hidden;background:var(--menu);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);color:var(--lab);text-align:center;animation:cPop .22s cubic-bezier(.2,.8,.2,1)">
+<div style="padding:19px 16px 18px;display:flex;flex-direction:column;gap:3px"><span style="font-size:17px;font-weight:600">{{ alertTitle }}</span><span style="font-size:13px;text-wrap:pretty">{{ alertMsg }}</span></div>
+<div style="display:flex;border-top:0.5px solid var(--sep)"><sc-for list="{{ alertActions }}" as="a" hint-placeholder-count="2"><button onClick="{{ a.onClick }}" style="flex:1;min-height:44px;border:0;border-left:{{ a.sepW }} solid var(--sep);background:transparent;color:{{ a.color }};font:inherit;font-size:17px;font-weight:{{ a.fw }};cursor:pointer" style-active="background:var(--fill3)">{{ a.label }}</button></sc-for></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;top:58px;z-index:115;display:flex;justify-content:center;pointer-events:none"><div style="display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:24px;background:var(--menu);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);box-shadow:0 8px 30px rgba(0,0,0,.2);color:var(--lab);font-size:15px;font-weight:600;animation:cPop .25s ease"><i class="ph-fill ph-check-circle" style="color:var(--green);font-size:18px"></i>{{ toast }}</div></div>
+</sc-if>
+<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:{{ statusFg }};z-index:125;pointer-events:none"></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;appTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;},&quot;tint&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;teal&quot;,&quot;nocturne&quot;,&quot;blue&quot;,&quot;cardy&quot;],&quot;default&quot;:&quot;teal&quot;,&quot;tsType&quot;:&quot;'teal'|'nocturne'|'blue'|'cardy'&quot;},&quot;tabStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;island&quot;,&quot;classic&quot;],&quot;default&quot;:&quot;island&quot;,&quot;tsType&quot;:&quot;'island'|'classic'&quot;},&quot;demoData&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;empty&quot;],&quot;default&quot;:&quot;empty&quot;,&quot;tsType&quot;:&quot;'full'|'empty'&quot;},&quot;offline&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;app&quot;,&quot;onboarding&quot;],&quot;default&quot;:&quot;app&quot;,&quot;tsType&quot;:&quot;'app'|'onboarding'&quot;},&quot;freePlan&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const PAL={
+ graphite:{label:'Graphite',light:['#F5F5F7','#111114','#1C1C1E'],dark:['#0B0B0C','#F5F5F7','#FFFFFF']},
+ snow:{label:'Snow',light:['#FFFFFF','#000000','#000000'],dark:['#000000','#FFFFFF','#FFFFFF']},
+ ink:{label:'Ink',light:['#FFFFFF','#0A1F44','#1D4ED8'],dark:['#08111F','#E8EEF9','#60A5FA']},
+ sand:{label:'Sand',light:['#F7F2EA','#2B2118','#A05A16'],dark:['#1A1410','#F5EFE6','#F59E0B']},
+ ocean:{label:'Ocean',pro:true,light:['#F0F9FF','#06283D','#0369A1'],dark:['#041B2B','#E0F2FE','#38BDF8']},
+ ember:{label:'Ember',pro:true,light:['#FFF7F5','#3A1410','#C02626'],dark:['#1B0B08','#FFEDE9','#F87171']}
+};
+const TPL=[['minimal','Minimal'],['professional','Professional'],['modern','Modern'],['bold','Bold'],['gradient','Gradient'],['split','Split'],['terminal','Terminal'],['stack','Stack'],['editorial','Editorial',true]];
+const FONTS={system:'-apple-system, "SF Pro Text", "Inter", system-ui, sans-serif',rounded:'ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif',serif:'"New York", "Instrument Serif", Georgia, serif',mono:'ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace'};
+const FM={phone:['ph-fill ph-phone','tel','Phone','#34C759'],email:['ph-fill ph-envelope-simple','mail','Email','#007AFF'],telegram:['ph-fill ph-telegram-logo','tg','Telegram','#32ADE6'],website:['ph-bold ph-globe-simple','web','Website','#5856D6'],linkedin:['ph-fill ph-linkedin-logo','in','LinkedIn','#0A66C2']};
+const FO=['phone','email','telegram','website','linkedin'];
+const PRIV={PUBLIC:['Public','ph ph-globe-simple','Anyone with your link'],CONNECTIONS_ONLY:['Connections','ph ph-users','People you’ve swapped with'],PRIVATE:['Private','ph ph-lock-simple','Only you']};
+const THEMES={
+ dark:{'--bg':'#000000','--bg2':'#1C1C1E','--bg3':'#2C2C2E','--lab':'#FFFFFF','--lab2':'rgba(235,235,245,0.6)','--lab3':'rgba(235,235,245,0.3)','--sep':'rgba(84,84,88,0.65)','--fill':'rgba(120,120,128,0.36)','--fill3':'rgba(118,118,128,0.24)','--tint':'#9184d9','--tintfill':'#796cbf','--green':'#30D158','--red':'#FF453A','--mat':'rgba(22,22,24,0.8)','--menu':'rgba(44,44,46,0.9)','--thumb':'#636366','--taboff':'#8E8E93','--dim':'rgba(0,0,0,0.48)'},
+ light:{'--bg':'#F2F2F7','--bg2':'#FFFFFF','--bg3':'#E5E5EA','--lab':'#000000','--lab2':'rgba(60,60,67,0.6)','--lab3':'rgba(60,60,67,0.3)','--sep':'rgba(60,60,67,0.29)','--fill':'rgba(120,120,128,0.2)','--fill3':'rgba(118,118,128,0.12)','--tint':'#6a5db3','--tintfill':'#6a5db3','--green':'#34C759','--red':'#FF3B30','--mat':'rgba(249,249,249,0.82)','--menu':'rgba(242,242,247,0.92)','--thumb':'#FFFFFF','--taboff':'#999999','--dim':'rgba(0,0,0,0.3)'}
+};
+const TINTS={teal:{dark:{'--tint':'#2DD4BF','--tintfill':'#0F766E'},light:{'--tint':'#0F766E','--tintfill':'#0F766E'}},nocturne:{},blue:{dark:{'--tint':'#0A84FF','--tintfill':'#0A84FF'},light:{'--tint':'#007AFF','--tintfill':'#007AFF'}},cardy:{dark:{'--tint':'#6B8AFF','--tintfill':'#3B5BFF'},light:{'--tint':'#3B5BFF','--tintfill':'#3B5BFF'}}};
+const STR={
+ en:{home:'Home',scan:'Scan',people:'People',profile:'Profile',hi:'Hi',showQR:'Show QR',share:'Share',recent:'Recent',seeAll:'See All',search:'Search',all:'All',events:'Events',places:'Places',requests:'Requests',accept:'Accept',decline:'Decline',contact:'Contact Details',cards:'Cards',settings:'Settings',signOut:'Sign Out',language:'Language'},
+ uz:{home:'Asosiy',scan:'Skan',people:'Kontaktlar',profile:'Profil',hi:'Salom',showQR:'QR ko‘rsatish',share:'Ulashish',recent:'So‘nggilar',seeAll:'Hammasi',search:'Qidirish',all:'Hammasi',events:'Tadbirlar',places:'Joylar',requests:'So‘rovlar',accept:'Qabul qilish',decline:'Rad etish',contact:'Kontakt maʼlumotlari',cards:'Kartalar',settings:'Sozlamalar',signOut:'Chiqish',language:'Til'},
+ ru:{home:'Главная',scan:'Скан',people:'Контакты',profile:'Профиль',hi:'Привет',showQR:'Показать QR',share:'Поделиться',recent:'Недавние',seeAll:'Все',search:'Поиск',all:'Все',events:'События',places:'Места',requests:'Запросы',accept:'Принять',decline:'Отклонить',contact:'Контакты',cards:'Карточки',settings:'Настройки',signOut:'Выйти',language:'Язык'}
+};
+const qrCache={};
+function qrPath(seed){
+ if(qrCache[seed]) return qrCache[seed];
+ let s=2166136261; for(const ch of seed){s^=ch.charCodeAt(0); s=Math.imul(s,16777619)>>>0;}
+ const rnd=()=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return s/4294967296;};
+ const N=25,g=[];
+ for(let y=0;y<N;y++){g[y]=[];for(let x=0;x<N;x++)g[y][x]=rnd()<0.47;}
+ const finder=(ox,oy)=>{for(let y=-1;y<=7;y++)for(let x=-1;x<=7;x++){const X=ox+x,Y=oy+y;if(X<0||Y<0||X>=N||Y>=N)continue;g[Y][X]=x>=0&&x<=6&&y>=0&&y<=6&&(x===0||x===6||y===0||y===6||(x>=2&&x<=4&&y>=2&&y<=4));}};
+ finder(0,0);finder(N-7,0);finder(0,N-7);
+ for(let i=8;i<N-8;i++){g[6][i]=i%2===0;g[i][6]=i%2===0;}
+ for(let y=-2;y<=2;y++)for(let x=-2;x<=2;x++){g[18+y][18+x]=Math.max(Math.abs(x),Math.abs(y))!==1;}
+ let d='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(g[y][x])d+=`M${x+4} ${y+4}h1v1h-1z`;
+ return qrCache[seed]=d;
+}
+const P=(o)=>({tags:[],note:'',...o});
+const CONNS=[
+ P({id:'jasur',name:'Jasur Toshmatov',title:'Backend Engineer',company:'Payline',phone:'+998 93 555 12 09',email:'jasur@payline.uz',telegram:'@jasurt',website:'jasur.dev',event:'Tashkent Tech Week',place:'Hyatt Regency',city:'Tashkent',date:'Sep 24',ago:'2d',note:'Talked about their card-payments SDK. Wants a design review in October.',tags:['Payments','Follow up'],spec:{template:'modern',palette:'ocean',mode:'dark'}}),
+ P({id:'madina',name:'Madina Yusupova',title:'Architect',company:'Studio Nur',phone:'+998 97 410 22 81',email:'madina@studionur.uz',website:'studionur.uz',event:'Tashkent Tech Week',place:'Hyatt Regency',city:'Tashkent',date:'Sep 24',ago:'2d',tags:['Studio'],spec:{template:'editorial',palette:'sand',mode:'light'}}),
+ P({id:'bekzod',name:'Bekzod Karimov',title:'Partner',company:'Silk Road Ventures',email:'bekzod@srv.vc',telegram:'@bekzodk',website:'srv.vc',event:'IT Park Demo Day',place:'IT Park',city:'Tashkent',date:'Sep 12',ago:'2w',note:'Pre-seed, B2B SaaS. Intro came through Timur.',tags:['Investor'],spec:{template:'professional',palette:'graphite',mode:'light'}}),
+ P({id:'timur',name:'Timur Aliyev',title:'Founder',company:'Kitob',phone:'+998 90 777 03 14',telegram:'@timur',event:'IT Park Demo Day',place:'IT Park',city:'Tashkent',date:'Sep 12',ago:'2w',spec:{template:'bold',palette:'ember',mode:'dark'}}),
+ P({id:'olga',name:'Olga Kim',title:'Product Manager',company:'Nova Systems',email:'olga.kim@nova.io',phone:'+998 99 301 45 60',event:'Client meeting',place:'Registan Plaza',city:'Samarkand',date:'Sep 3',ago:'3w',note:'Redesign of their field-sales app. Budget signed off in Q4.',tags:['Client'],spec:{template:'split',palette:'ink',mode:'light'}}),
+ P({id:'aigerim',name:'Aigerim Sadykova',title:'Head of Growth',company:'Qazaq Pay',email:'aigerim@qazaqpay.kz',telegram:'@aigerim',event:'Central Asia Fintech',place:'Esentai Mall',city:'Almaty',date:'Aug 20',ago:'1mo',tags:['Fintech'],spec:{template:'gradient',palette:'ink',mode:'dark'}})
+];
+const PENDING=[P({id:'dilnoza',name:'Dilnoza Rahimova',title:'Marketing Lead',company:'Bozor Group',email:'dilnoza@bozor.uz',telegram:'@dilnoza',event:'Tashkent Tech Week',place:'Hyatt Regency',city:'Tashkent',date:'Sep 26',ago:'now',spec:{template:'stack',palette:'sand',mode:'dark'}})];
+const NEARBY=[P({id:'sardor',name:'Sardor Nazarov',title:'iOS Developer',company:'Uzcard',phone:'+998 94 120 88 12',email:'sardor@uzcard.uz',telegram:'@sardor',event:'Tashkent Tech Week',place:'Hyatt Regency',city:'Tashkent',date:'Sep 26',ago:'now',spec:{template:'terminal',palette:'graphite',mode:'dark'}}),P({id:'kamila',name:'Kamila Usmonova',title:'UX Researcher',company:'Beeline',email:'kamila@beeline.uz',event:'Tashkent Tech Week',place:'Hyatt Regency',city:'Tashkent',date:'Sep 26',ago:'now',spec:{template:'minimal',palette:'snow',mode:'light'}})];
+const initials=(n)=>n.trim().split(/\s+/).map(p=>p[0]).join('').slice(0,2);
+const withSep=(arr)=>arr.map((x,i)=>({...x,sep:i?'var(--sep)':'transparent'}));
+const newSpec=(o)=>({template:'minimal',palette:'ink',mode:'dark',font:'system',align:'left',density:'balanced',bg:'solid',qr:true,showPhoto:true,showLogo:true,fields:{phone:true,email:true,telegram:true,website:true,linkedin:false},...o});
+
+class Component extends DCLogic {
+ state={
+  phase:this.props.start==='onboarding'?'welcome':'app', step:0, email:'',
+  theme:this.props.appTheme||'dark', tab:'home', route:null, from:null, overlay:null, scrolled:false, menu:null, alert:null,
+  cards:[
+   {id:'work',name:'Work',slug:'aziza-w7k2',spec:newSpec({template:'professional',fields:{phone:true,email:true,telegram:true,website:true,linkedin:false}})},
+   {id:'personal',name:'Personal',slug:'aziza-p3x9',spec:newSpec({template:'terminal',palette:'graphite',font:'mono',fields:{phone:false,email:false,telegram:true,website:true,linkedin:true}})}
+  ],
+  active:0, defaultId:'work',
+  profile:{name:'Aziza Karimova',title:'Product Designer',company:'Tezkor Labs',phone:'+998 90 123 45 67',email:'aziza@tezkor.uz',telegram:'@aziza.k',website:'aziza.design',linkedin:'in/azizakarimova'},
+  privacy:{phone:'CONNECTIONS_ONLY',email:'PUBLIC',telegram:'PUBLIC',website:'PUBLIC',linkedin:'CONNECTIONS_ONLY'},
+  photo:null, logo:null,
+  conns:CONNS, pending:PENDING, connId:'jasur', editingNote:false, draft:{event:'',place:'',text:'',tags:''},
+  filter:'all', q:'', edTab:'template', exFormat:'png', exOpt:1,
+  linkPaused:false, notif:true, matchWith:null, scanned:NEARBY[0], toast:null,
+  lang:'en', pro:false, plan:'year', createStep:'method', createSpec:null, createName:'Conference', createFrom:'method', aiAns:{use:'conference',style:'professional',mode:'dark'}, aiResults:[], aiSel:0, aiLeft:3, exMode:'qr', waitingId:null, swipe:{id:null,x:0}, ctx:null, push:false, scanDenied:false
+ };
+ componentDidMount(){this.applyTheme();}
+ componentDidUpdate(pp){if(pp.appTheme!==this.props.appTheme&&this.props.appTheme)this.setState({theme:this.props.appTheme});this.applyTheme();}
+ applyTheme(){const el=document.querySelector('[data-cardy-phone]');if(!el){setTimeout(()=>this.applyTheme(),50);return;}const tn=this.props.tint||'teal',key=this.state.theme+tn;if(el._th===key)return;const t={...THEMES[this.state.theme],...((TINTS[tn]||{})[this.state.theme]||{})};for(const k in t)el.style.setProperty(k,t[k]);el.style.background=t['--bg'];el.style.color=t['--lab'];el._th=key;}
+ free(){return !this.state.pro&&this.props.freePlan!==false;}
+ say(msg){clearTimeout(this._t);this.setState({toast:msg});this._t=setTimeout(()=>this.setState({toast:null}),2000);}
+ seg(list,cur,fn){return list.map(([v,l])=>{const on=v===cur;return{label:l,bg:on?'var(--thumb)':'transparent',sh:on?'0 3px 8px rgba(0,0,0,.12), 0 3px 1px rgba(0,0,0,.04)':'none',fw:on?'600':'500',onClick:()=>fn(v)};});}
+ tog(on,fn){return{bg:on?'var(--green)':'var(--fill)',x:on?'22px':'2px',onClick:fn};}
+ me(){const s=this.state;const p={...s.profile,photo:s.photo,logo:s.logo};FO.forEach(k=>{if(s.privacy[k]==='PRIVATE')p[k]=null;});return p;}
+ vm(spec,p,seed){
+  const pal=PAL[spec.palette]||PAL.ink,mode=spec.mode||'dark',[bg,fg,acc]=pal[mode],tpl=spec.template||'minimal';
+  const grad=tpl==='gradient'||spec.bg==='gradient';
+  const font=tpl==='terminal'?FONTS.mono:tpl==='editorial'?FONTS.serif:FONTS[spec.font||'system'];
+  const lim={minimal:2,balanced:3,detailed:5}[spec.density||'balanced'];
+  const f=spec.fields||{phone:1,email:1,telegram:1,website:1,linkedin:1};
+  const contacts=FO.filter(k=>f[k]&&p[k]).slice(0,lim).map(k=>({icon:FM[k][0].replace('ph-fill','ph').replace('ph-bold','ph'),key:FM[k][1],value:p[k]}));
+  const parts=p.name.trim().split(' '),t={};TPL.forEach(([id])=>t[id]=id===tpl);
+  const appLight=this.state.theme==='light',same=(mode==='light')===appLight;
+  const edge=same?(appLight?'0 0 0 0.5px rgba(0,0,0,.14), 0 6px 20px rgba(0,0,0,.08)':'0 0 0 0.5px rgba(255,255,255,.18), 0 10px 30px rgba(0,0,0,.45)'):(appLight?'0 8px 24px rgba(0,0,0,.18)':'0 10px 30px rgba(0,0,0,.5)');
+  const photo=spec.showPhoto!==false?p.photo:null,logo=spec.showLogo!==false?p.logo:null;
+  return{bg,fg,acc,t,font,edge,contacts,contacts2:contacts.slice(0,2),
+   muted:`color-mix(in srgb, ${fg} 66%, ${bg})`,rule:`color-mix(in srgb, ${fg} 24%, transparent)`,panelTint:`color-mix(in srgb, ${acc} 24%, ${bg})`,
+   bgFill:grad?`linear-gradient(140deg, ${bg} 22%, color-mix(in srgb, ${acc} 40%, ${bg}))`:bg,
+   name:p.name,first:parts[0],last:parts.slice(1).join(' '),title:p.title,company:p.company,role:[p.title,p.company].filter(Boolean).join(' · '),
+   initials:initials(p.name||'?'),mono:(p.company||'?')[0],qrShow:spec.qr!==false,qr:qrPath(seed),
+   photo,hasPhoto:!!photo,noPhoto:!photo,logo,hasLogo:!!logo,noLogo:!logo,alignItems:spec.align==='center'?'center':'flex-start'};
+ }
+ go(o){this.setState({overlay:null,menu:null,alert:null,ctx:null,editingNote:false,scrolled:false,swipe:{id:null,x:0},...o});}
+ updSpec(patch){this.setState(s=>{const cards=s.cards.slice();const c=cards[s.active];cards[s.active]={...c,spec:{...c.spec,...patch}};return{cards};});}
+ readImg(e,key){const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>this.setState({[key]:r.result});r.readAsDataURL(f);}
+ openConn(c){this.go({phase:'app',tab:'connections',route:'connection',connId:c.id});}
+ startMatch(p){this.go({phase:'app',route:'match',matchWith:p,draft:{event:p.event,place:p.place,text:'',tags:''}});}
+ menu(e,items){
+  e.stopPropagation();const ph=document.querySelector('[data-cardy-phone]').getBoundingClientRect(),r=e.currentTarget.getBoundingClientRect(),k=ph.width/390;
+  const rl=(r.left-ph.left)/k,rr=(r.right-ph.left)/k,rt=(r.top-ph.top)/k,rb=(r.bottom-ph.top)/k;
+  const h=items.reduce((a,it)=>a+(it.sub?60:44),0);
+  let x=(rl+rr)/2>195?rr-250:rl;x=Math.max(8,Math.min(390-258,x));
+  let y=rb+6,up=false;if(y+h>800){y=rt-h-6;up=true;}y=Math.max(56,y);
+  this.setState({menu:{x,y,items,origin:`${(rl+rr)/2>195?'right':'left'} ${up?'bottom':'top'}`}});
+ }
+ alert(title,msg,actions){this.setState({menu:null,alert:{title,msg,actions}});}
+ cardMenuItems(i){
+  const s=this.state,c=s.cards[i];
+  return[
+   {label:'Copy Link',icon:'ph ph-copy',onClick:()=>this.say('Link Copied')},
+   {label:'Share…',icon:'ph ph-export',onClick:()=>this.setState({active:i,overlay:'share'})},
+   {label:'Show QR Code',icon:'ph ph-qr-code',onClick:()=>this.setState({active:i,overlay:'qr'})},
+   {label:'Start Exchange',icon:'ph ph-arrows-left-right',onClick:()=>this.go({active:i,route:'exchange'})},
+   {label:'Edit Card',icon:'ph ph-pencil-simple',onClick:()=>this.go({active:i,route:'editor',edTab:'template'})},
+   {label:'Export…',icon:'ph ph-download-simple',onClick:()=>this.go({active:i,route:'export',exFormat:'png',exOpt:1})},
+   {label:s.defaultId===c.id?'Default Card':'Set as Default',icon:'ph ph-star',checked:s.defaultId===c.id,onClick:()=>{this.setState({defaultId:c.id});this.say(`${c.name} is your default`);}},
+   {label:'Delete Card',icon:'ph ph-trash',destructive:true,onClick:()=>this.alert(`Delete “${c.name}” Card?`,'Its link and QR code will stop working. People you’ve swapped with keep your details.',[
+     {label:'Cancel'},{label:'Delete',destructive:true,onClick:()=>{if(this.state.cards.length<2){this.say('You need at least one card');return;}this.setState(st=>{const cards=st.cards.filter(x=>x.id!==c.id);return{cards,active:0,defaultId:st.defaultId===c.id?cards[0].id:st.defaultId};});this.say('Card Deleted');}}])}
+  ];
+ }
+ toPaywall(){this.go({route:'paywall',from:this.state.route});}
+ startCreate(){this.go({route:'create',createStep:'method',createSpec:newSpec({}),createName:'Conference',createFrom:'method',aiSel:0});}
+ genResults(a){const free=this.free();const sets={minimal:['minimal','stack','terminal'],bold:['bold','split','gradient'],professional:['professional','modern','minimal'],creative:free?['gradient','split','stack']:['editorial','gradient','split']};const pals=free?['ink','sand','graphite']:['ocean','ember','ink'];return (sets[a.style]||sets.minimal).map((t,i)=>newSpec({template:t,palette:pals[i],mode:a.mode,font:t==='stack'?'rounded':'system',density:a.use==='personal'?'minimal':'balanced'}));}
+ extra(L,conns,pendingL,me,card,spec,cardVM,free){
+  const s=this.state,set=(o)=>this.setState(o),step=s.createStep,cs=s.createSpec||newSpec({});
+  const USE={conference:'Conference',clients:'Client meetings',freelance:'Freelance',personal:'Personal'};
+  const chk=(list,cur,fn)=>withSep(list.map(([v,l])=>({label:l,op:v===cur?'1':'0',onClick:()=>fn(v)})));
+  const setAns=(k)=>(v)=>this.setState(st=>({aiAns:{...st.aiAns,[k]:v},createName:k==='use'?USE[v].split(' ')[0]:st.createName}));
+  const spinner=React.createElement('div',{style:{position:'relative',width:'36px',height:'36px',animation:'cSpin .9s steps(8) infinite'}},[0,1,2,3,4,5,6,7].map(i=>React.createElement('span',{key:i,style:{position:'absolute',left:'16px',top:'0',width:'4px',height:'10px',borderRadius:'2px',background:'var(--lab2)',transformOrigin:'2px 18px',transform:'rotate('+(i*45)+'deg)',opacity:(i+1)/8}})));
+  const phone=(k,anim)=>React.createElement('div',{key:k,style:{position:'absolute',top:'50px',left:'calc(50% - 36px)',width:'72px',height:'144px',borderRadius:'18px',border:'2.5px solid var(--lab)',background:'var(--bg2)',transformOrigin:'50% 100%',animation:anim}},React.createElement('span',{style:{position:'absolute',top:'7px',left:'50%',transform:'translateX(-50%)',width:'22px',height:'6px',borderRadius:'3px',background:'var(--lab)'}}));
+  const bumpArt=React.createElement(React.Fragment,null,React.createElement('span',{key:'g',style:{position:'absolute',top:'16px',left:'calc(50% - 44px)',width:'88px',height:'88px',borderRadius:'50%',background:'radial-gradient(circle, var(--tint) 0%, transparent 70%)',animation:'cGlow 2.4s ease-in-out infinite'}}),phone('l','cBumpL 2.4s ease-in-out infinite'),phone('r','cBumpR 2.4s ease-in-out infinite'));
+  const last=s.cards[s.cards.length-1];
+  const lp=(PAL[spec.palette]||PAL.ink)[spec.mode];
+  const dc=s.cards.find(c=>c.id===s.defaultId)||s.cards[0];
+  const pub={...s.profile,photo:s.photo,logo:s.logo};FO.forEach(k=>{if(s.privacy[k]!=='PUBLIC')pub[k]=null;});
+  const ci=s.ctx?Math.min(s.ctx.i,s.cards.length-1):0;
+  return{
+   photoBg:s.photo?'url("'+s.photo+'")':'none', logoBg:s.logo?'url("'+s.logo+'")':'none',
+   L, greeting:L.hi+', '+s.profile.name.trim().split(' ')[0], langLabel:{en:'English',uz:'Oʻzbekcha',ru:'Русский'}[s.lang],
+   offline:!!this.props.offline, noConns:conns.length===0, peopleEmpty:conns.length===0&&!pendingL.length,
+   isCheck:s.phase==='check', emailShown:s.email||'aziza@tezkor.uz', toCheck:()=>set({phase:'check'}), toSigninBack:()=>set({phase:'signin'}), resend:()=>this.say('Link Sent'),
+   visFields:FO.filter(k=>spec.fields[k]&&s.privacy[k]!=='PRIVATE'&&s.profile[k]).map(k=>({label:FM[k][2],pIcon:s.privacy[k]==='PUBLIC'?'ph ph-globe-simple':'ph ph-users'})),
+   showQR:()=>set({overlay:'qr'}), scanDenied:!!s.scanDenied, allowCamera:()=>{set({scanDenied:false});this.say('Camera Allowed');},
+   isCreate:s.phase==='app'&&s.route==='create', cMethod:step==='method', cGallery:step==='gallery', cAI:step==='ai', cGen:step==='gen', cResults:step==='results', cDetails:step==='details', cDone:step==='done',
+   cTitle:{method:'New Card',gallery:'Templates',ai:'Design with AI',gen:'Design with AI',results:'Pick a Design',details:'Details',done:''}[step],
+   cBackLabel:step==='method'?'Cancel':'Back', cHasBack:step!=='done'&&step!=='gen',
+   cBack:()=>{const prev={gallery:'method',ai:'method',results:'ai',details:s.createFrom||'method'}[step];if(!prev){this.go({route:null});return;}set({createStep:prev});},
+   cProgress:{method:'20%',gallery:'45%',ai:'45%',gen:'65%',results:'70%',details:'88%',done:'100%'}[step],
+   cShowCta:step!=='method'&&step!=='gen', cCta:{gallery:'Continue',ai:'Generate 3 Designs',results:'Use This Design',details:'Publish Card',done:'Done'}[step]||'',
+   cNext:()=>{
+    if(step==='gallery')set({createStep:'details',createFrom:'gallery'});
+    else if(step==='ai'){if(free&&s.aiLeft<=0){this.toPaywall();return;}set({createStep:'gen',aiResults:this.genResults(s.aiAns),aiSel:0});clearTimeout(this._gt);this._gt=setTimeout(()=>this.setState(st=>({createStep:st.createStep==='gen'?'results':st.createStep,aiLeft:Math.max(0,st.aiLeft-1)})),1700);}
+    else if(step==='results')set({createSpec:s.aiResults[s.aiSel],createStep:'details',createFrom:'results'});
+    else if(step==='details'){const id='c'+Date.now();this.setState(st=>({cards:[...st.cards,{id,name:(st.createName||'New').trim()||'New',slug:'aziza-'+id.slice(-4),spec:st.createSpec||newSpec({})}],active:st.cards.length,createStep:'done'}));}
+    else {this.go({route:null,tab:'home'});this.say('Card Published');}
+   },
+   cShare:()=>this.go({route:null,tab:'home',overlay:'share'}),
+   methods:withSep([['template','Start from a Template','Nine layouts, ready for your details','ph-fill ph-squares-four','#007AFF',''],['ai','Design with AI','Answer three questions, get three designs','ph-fill ph-sparkle','var(--tintfill)',free?s.aiLeft+' left':''],['blank','Blank Card','A minimal layout to build on','ph-fill ph-file','#8E8E93','']].map(([id,title,sub,icon,color,badge])=>({title,sub,icon,color,badge,onClick:()=>set(id==='template'?{createStep:'gallery'}:id==='ai'?{createStep:'ai'}:{createStep:'details',createFrom:'method',createSpec:newSpec({})})}))),
+   cTpls:TPL.map(([id,label,pro])=>{const on=cs.template===id,locked=!!pro&&free;return{label,locked,on,vm:this.vm({...cs,template:id},me,'new'),ringW:on?'2.5px':'0',fg:on?'var(--tint)':'var(--lab)',onClick:()=>locked?this.toPaywall():set({createSpec:{...cs,template:id}})};}),
+   aiQs:[{title:'What is it for?',opts:chk([['conference','Conference'],['clients','Client meetings'],['freelance','Freelance'],['personal','Personal']],s.aiAns.use,setAns('use'))},{title:'Style',opts:chk([['minimal','Minimal'],['professional','Professional'],['bold','Bold'],['creative','Creative']],s.aiAns.style,setAns('style'))},{title:'Card Appearance',opts:chk([['dark','Dark'],['light','Light']],s.aiAns.mode,setAns('mode'))}],
+   aiQuota:free?s.aiLeft+' of 3 AI designs left this month.':'Cardy Pro includes 30 AI designs a month.',
+   aiResultsNote:free?'Suggestions use Free palettes only, so every design can be published.':'Tap a design to select it.',
+   spinner, aiUseLabel:USE[s.aiAns.use],
+   aiResults:(s.aiResults||[]).map((sp,i)=>({vm:this.vm(sp,me,'ai-'+i),on:i===s.aiSel,ringW:i===s.aiSel?'3px':'0',onClick:()=>set({aiSel:i})})),
+   cPreview:this.vm(cs,me,'new'), createName:s.createName, onCreateName:(e)=>set({createName:e.target.value}),
+   cFields:withSep(FO.map(k=>{const isPriv=s.privacy[k]==='PRIVATE',on=!!cs.fields[k]&&!isPriv;return{icon:FM[k][0],color:FM[k][3],label:FM[k][2],sub:isPriv?'Private — hidden from all cards':s.profile[k],op:isPriv?'0.45':'1',t:this.tog(on,()=>isPriv?this.say('Change privacy in Profile first'):set({createSpec:{...cs,fields:{...cs.fields,[k]:!cs.fields[k]}}}))};})),
+   doneVM:cardVM(last), doneLink:'cardy.link/c/'+last.slug,
+   isPaywall:s.phase==='app'&&s.route==='paywall',
+   proA:this.vm(newSpec({template:'editorial',palette:'sand',mode:'light',qr:false}),me,'pa'), proB:this.vm(newSpec({template:'modern',palette:'ocean',mode:'dark'}),me,'pb'), proC:this.vm(newSpec({template:'bold',palette:'ember',mode:'dark',qr:false}),me,'pc'),
+   proFeatures:withSep([['ph-fill ph-cards','Unlimited cards','One for every event, client and side project'],['ph-fill ph-palette','Every template and palette','Editorial, Ocean and Ember included'],['ph-fill ph-sparkle','30 AI designs a month','Up from 3 on the Free plan']].map(([icon,title,sub])=>({icon,title,sub}))),
+   plans:[['year','Yearly','$19.99','$1.67 a month, billed yearly','Save 44%'],['month','Monthly','$2.99','Billed monthly','']].map(([id,title,price,sub,badge])=>{const on=s.plan===id;return{title,price,sub,badge,hasBadge:!!badge,bd:on?'var(--tint)':'transparent',radio:on?'ph-fill ph-check-circle':'ph ph-circle',rc:on?'var(--tint)':'var(--lab3)',onClick:()=>set({plan:id})};}),
+   payCta:s.pro?'You’re on Pro':'Subscribe',
+   subscribe:()=>{const back=s.from||null;if(!s.pro){this.setState({pro:true});this.say('Welcome to Cardy Pro');}this.go({route:back,from:null});},
+   restore:()=>this.say('No purchases to restore'), closePaywall:()=>this.go({route:s.from||null,from:null}),
+   isWidgets:s.phase==='app'&&s.route==='widgets', toWidgets:()=>this.go({route:'widgets'}),
+   wBg:'linear-gradient(165deg, '+lp[0]+', color-mix(in srgb, '+lp[2]+' 45%, '+lp[0]+'))', wFg:lp[1], wGlass:spec.mode==='light'?'rgba(0,0,0,.08)':'rgba(255,255,255,.16)',
+   weekCount:Math.min(3,conns.length)+' new connections this week',
+   isWeb:s.phase==='web', toWeb:()=>this.go({phase:'web'}), webBack:()=>this.go({phase:'app'}), webSave:()=>this.say('Contact Saved'),
+   webVM:this.vm(dc.spec,pub,'me-'+dc.id), webPaused:s.linkPaused, webLive:!s.linkPaused,
+   webFields:withSep(FO.filter(k=>pub[k]&&dc.spec.fields[k]).map(k=>({label:FM[k][2].toLowerCase(),value:pub[k]}))),
+   hasPush:!!s.push, openPush:()=>this.go({phase:'app',tab:'connections',route:null,push:false}),
+   hasCtx:!!s.ctx, ctxVM:cardVM(s.cards[ci]), closeCtx:()=>set({ctx:null}),
+   ctxItems:s.ctx?this.cardMenuItems(ci).map((m,i)=>({label:m.label,icon:m.icon||'',color:m.destructive?'var(--red)':'var(--lab)',sepW:i?'0.5px':'0',onClick:()=>{this.setState({ctx:null});m.onClick&&m.onClick();}})):[],
+   exModeSeg:this.seg([['qr','Nearby'],['tap','Tap Phones']],s.exMode,(v)=>set({exMode:v})), exTap:s.exMode==='tap', exQR:s.exMode!=='tap', bumpArt,
+   exTitle:s.exMode==='tap'?'Hold phones together':'Looking for people nearby',
+   exHint:s.exMode==='tap'?'Hold the top of your iPhone near theirs. Cardy needs to be open on both phones.':'Swap with other Cardy users around you. You send your card and get theirs back. To share with someone without the app, use Show QR.'
+  };
+ }
+ renderVals(){
+  const s=this.state,set=(o)=>this.setState(o),free=this.free();
+  const L=STR[s.lang]||STR.en,emptyD=this.props.demoData==='empty',conns=emptyD?[]:s.conns,pendingL=emptyD?[]:s.pending;
+  const me=this.me(),card=s.cards[Math.min(s.active,s.cards.length-1)],spec=card.spec;
+  const cardVM=(c)=>this.vm(c.spec,me,'me-'+c.id);
+  const inApp=s.phase==='app',R=s.route,T=s.tab;
+  const q=s.q.trim().toLowerCase();
+  const list=conns.filter(c=>!q||[c.name,c.company,c.event,c.city].join(' ').toLowerCase().includes(q));
+  const row=(c)=>({name:c.name,initials:initials(c.name),role:`${c.title}`,event:`${c.event} · ${c.city}`,ago:c.ago,
+   meta:s.filter==='events'?`${c.city}, ${c.date}`:s.filter==='locations'?`${c.event}, ${c.date}`:`${c.event}`,onClick:()=>{if(this._suppress)return;if(s.swipe.id===c.id&&s.swipe.x<0){set({swipe:{id:null,x:0}});return;}this.openConn(c);},
+   tx:(s.swipe.id===c.id?s.swipe.x:0)+'px',tr:this._dragging?'none':'transform .28s cubic-bezier(.2,.8,.2,1)',
+   pd:(e)=>{this._sw={id:c.id,x0:e.clientX,base:s.swipe.id===c.id?s.swipe.x:0,moved:false};try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}},
+   pm:(e)=>{const d=this._sw;if(!d||d.id!==c.id)return;const dx=e.clientX-d.x0;if(Math.abs(dx)>6)d.moved=true;if(!d.moved)return;this._dragging=true;this.setState({swipe:{id:c.id,x:Math.max(-148,Math.min(0,d.base+dx))}});},
+   pu:()=>{const d=this._sw;if(!d)return;this._dragging=false;if(d.moved){const x=this.state.swipe.id===c.id?this.state.swipe.x:0;this.setState({swipe:{id:c.id,x:x<-60?-148:0}});this._suppress=true;setTimeout(()=>this._suppress=false,60);}this._sw=null;},
+   onNote:()=>{this.openConn(c);this.setState({editingNote:true,draft:{event:c.event,place:c.place,text:c.note,tags:c.tags.join(', ')}});},
+   onRemove:()=>this.alert(`Remove ${c.name.split(' ')[0]}?`,'Your note will be deleted. They keep the card you shared.',[{label:'Cancel',onClick:()=>this.setState({swipe:{id:null,x:0}})},{label:'Remove',destructive:true,onClick:()=>{this.setState(st=>({conns:st.conns.filter(x=>x.id!==c.id),swipe:{id:null,x:0}}));this.say('Connection Removed');}}])});
+  let groups;
+  if(s.filter==='all') groups=list.length?[{title:'All People',count:String(list.length),items:withSep(list.map(row))}]:[];
+  else{const key=s.filter==='events'?'event':'city';const m=new Map();list.forEach(c=>{if(!m.has(c[key]))m.set(c[key],[]);m.get(c[key]).push(c);});
+   groups=[...m].map(([k,v])=>({title:k,count:String(v.length),items:withSep(v.map(row))}));}
+  const conn=s.conns.find(c=>c.id===s.connId)||s.conns[0];
+  const fieldsOf=(p)=>withSep(FO.filter(k=>p[k]).map(k=>({label:FM[k][2].toLowerCase(),value:p[k]})));
+  const J=(o)=>()=>this.go({phase:'app',...o});
+  const jumps=[
+   ['Welcome',()=>this.go({phase:'welcome',step:0,route:null}),s.phase==='welcome'],
+   ['Sign up',()=>this.go({phase:'signin',route:null}),s.phase==='signin'],
+   ['Check email',()=>this.go({phase:'check',route:null}),s.phase==='check'],
+   ['Home',J({tab:'home',route:null}),inApp&&T==='home'&&!R&&!s.overlay&&!s.menu&&!s.ctx],
+   ['Long-press card',J({tab:'home',route:null,ctx:{i:s.active}}),!!s.ctx],
+   ['QR fullscreen',J({tab:'home',route:null,overlay:'qr'}),s.overlay==='qr'],
+   ['Share sheet',J({tab:'home',route:null,overlay:'share'}),s.overlay==='share'],
+   ['New card flow',()=>{this.go({phase:'app'});this.startCreate();},R==='create'&&s.createStep!=='results'],
+   ['AI design results',()=>this.go({phase:'app',route:'create',createStep:'results',createSpec:newSpec({}),aiResults:this.genResults(s.aiAns),aiSel:0}),R==='create'&&s.createStep==='results'],
+   ['Exchange · nearby',J({route:'exchange',exMode:'qr'}),R==='exchange'&&s.exMode==='qr'],
+   ['Exchange · tap phones',J({route:'exchange',exMode:'tap'}),R==='exchange'&&s.exMode==='tap'],
+   ["You're connected",()=>this.startMatch(NEARBY[0]),R==='match'],
+   ['Push notification',()=>{this.go({phase:'app',tab:'home',route:null,push:true});clearTimeout(this._pt);this._pt=setTimeout(()=>this.setState({push:false}),5000);},!!s.push],
+   ['Scan',J({tab:'scan',route:null,scanDenied:false}),inApp&&T==='scan'&&!R&&!s.scanDenied],
+   ['Camera denied',J({tab:'scan',route:null,scanDenied:true}),inApp&&T==='scan'&&!!s.scanDenied],
+   ['Scanned card',J({tab:'scan',route:'scanned',scanned:NEARBY[0]}),R==='scanned'],
+   ['People',J({tab:'connections',route:null}),inApp&&T==='connections'&&!R&&s.swipe.id===null],
+   ['Swipe actions',()=>{const c=conns[0];this.go({phase:'app',tab:'connections',route:null,filter:'all',q:''});if(c)setTimeout(()=>this.setState({swipe:{id:c.id,x:-148}}),30);},inApp&&T==='connections'&&!R&&s.swipe.id!==null],
+   ['Connection + note',()=>this.openConn(s.conns[0]),R==='connection'],
+   ['Editor',J({route:'editor'}),R==='editor'],
+   ['Export',J({route:'export',exFormat:'png',exOpt:1}),R==='export'&&s.exFormat!=='wallet'],
+   ['Wallet pass',J({route:'export',exFormat:'wallet',exOpt:0}),R==='export'&&s.exFormat==='wallet'],
+   ['Widgets',J({tab:'profile',route:'widgets'}),R==='widgets'],
+   ['Public web page',()=>this.go({phase:'web'}),s.phase==='web'],
+   ['Paywall',J({route:'paywall',from:null}),R==='paywall'],
+   ['Profile & settings',J({tab:'profile',route:null}),inApp&&T==='profile'&&!R&&!s.alert],
+   ['Alert',()=>{this.go({phase:'app',tab:'profile',route:null});this.alert('Sign Out?','You can sign back in with Apple, Google or email.',[{label:'Cancel'},{label:'Sign Out',destructive:true,onClick:()=>this.go({phase:'welcome',step:0})}]);},!!s.alert]
+  ].map(([label,onClick,on])=>({label,onClick,bg:on?'color-mix(in srgb, var(--color-accent) 14%, transparent)':'transparent',fg:on?'var(--color-accent)':'var(--color-text)'}));
+  const cardSeg=this.seg(s.cards.map((c,i)=>[i,c.name]),s.active,(i)=>set({active:i}));
+  const exOpts={png:['Resolution',[['1×','1020 × 660 px'],['2×','2040 × 1320 px · Retina'],['3×','3060 × 1980 px · Print-ready']]],pdf:['Page',[['Single Card','85 × 55 mm, 3 mm bleed, crop marks'],['A4 Sheet','10 cards up, for a print shop']]],wallet:['Pass',[['Apple Wallet','QR on the pass, updates when you edit']]],lock:['Device',[['iPhone 16 Pro','1206 × 2622 px'],['iPhone SE','750 × 1334 px']]]}[s.exFormat];
+  const exOpt=Math.min(s.exOpt,exOpts[1].length-1);
+  const lockPal=(PAL[spec.palette]||PAL.ink)[spec.mode];
+  const onScan=inApp&&T==='scan'&&!R&&!s.overlay;
+  const tabs=[['home',L.home,'ph ph-house'],['scan',L.scan,'ph ph-qr-code'],['connections',L.people,'ph ph-users-three'],['profile',L.profile,'ph ph-user-circle']].map(([id,label,icon])=>({label,icon:T===id?icon.replace('ph ','ph-fill '):icon,fg:T===id?(onScan?'#fff':'var(--tint)'):(onScan?'rgba(235,235,245,.6)':'var(--taboff)'),pill:T===id&&this.props.tabStyle!=='classic'?(onScan?'rgba(255,255,255,.16)':'var(--fill3)'):'transparent',badge:id==='connections'&&pendingL.length?String(pendingL.length):null,onClick:()=>this.go({tab:id,route:null})}));
+  const ring=(d)=>React.createElement('span',{key:d,style:{position:'absolute',inset:0,borderRadius:'50%',border:'2px solid var(--tint)',animation:`cPulse 2.4s ${d}s ease-out infinite`,opacity:0}});
+  const scanLine=React.createElement('span',{style:{position:'absolute',left:'22px',right:'22px',top:'12%',height:'2px',borderRadius:'1px',background:'#fff',boxShadow:'0 0 16px rgba(255,255,255,.8)',animation:'cScan 1.8s ease-in-out infinite alternate'}});
+  const mDraft=(k)=>(e)=>{const v=e.target.value;this.setState(st=>({draft:{...st.draft,[k]:v}}));};
+  const menuItems=s.menu?s.menu.items.map((m,i)=>({label:m.label,sub:m.sub||null,icon:m.icon||'',color:m.destructive?'var(--red)':'var(--lab)',sepW:i?'0.5px':'0',checkOp:m.checked?'1':'0',checkDisp:s.menu.items.some(x=>x.checked!==undefined)?'block':'none',onClick:()=>{this.setState({menu:null});m.onClick&&m.onClick();}})):[];
+  const alertActions=s.alert?s.alert.actions.map((a,i)=>({label:a.label,color:a.destructive?'var(--red)':'var(--tint)',fw:i===0&&s.alert.actions.length>1?'400':'600',sepW:i?'0.5px':'0',onClick:()=>{this.setState({alert:null});a.onClick&&a.onClick();}})):[];
+  return{...this.extra(L,conns,pendingL,me,card,spec,cardVM,free),
+   jumps, tabs, cardSeg, stop:(e)=>e.stopPropagation(),
+   themeSegSide:[['dark','Dark'],['light','Light']].map(([v,l])=>{const on=s.theme===v;return{label:l,bd:on?'var(--color-accent)':'transparent',fg:on?'var(--color-accent)':'var(--color-text)',bg:on?'color-mix(in srgb, var(--color-accent) 12%, transparent)':'transparent',onClick:()=>set({theme:v})};}),
+   statusFg:s.phase==='web'?'#000':onScan?'#fff':(s.theme==='light'?'#000':'#fff'),
+   navBg:s.scrolled?'var(--mat)':'transparent', navBlur:s.scrolled?'blur(20px) saturate(180%)':'none', navLine:s.scrolled?'0 0.5px 0 var(--sep)':'none', navTitleOp:s.scrolled?'1':'0',
+   onScroll:(e)=>{const sc=e.currentTarget.scrollTop>36;if(sc!==this.state.scrolled)set({scrolled:sc});},
+   tb:this.props.tabStyle==='classic'?{side:'0',bottom:'0',h:'83px',pad:'0 8px 34px',r:'0',shadow:'0 -0.5px 0 '+(onScan?'rgba(255,255,255,.18)':'var(--sep)')}:{side:'20px',bottom:'26px',h:'62px',pad:'4px',r:'31px',shadow:'inset 0 0 0 0.5px '+(onScan?'rgba(255,255,255,.18)':'var(--sep)')+', 0 8px 28px rgba(0,0,0,.22), 0 1px 3px rgba(0,0,0,.12)'},
+   tabBg:onScan?'rgba(40,40,42,.6)':'var(--menu)', tabLine:onScan?'rgba(255,255,255,.18)':'var(--sep)',
+   isWelcome:s.phase==='welcome', isSignin:s.phase==='signin',
+   step0:s.step===0, step1:s.step===1, step2:s.step===2,
+   welcomeDots:[0,1,2].map(i=>({bg:i===s.step?'var(--lab)':'var(--lab3)'})),
+   welcomeA:this.vm(newSpec({template:'professional'}),s.profile,'w-a'),
+   welcomeB:this.vm(newSpec({template:'editorial',palette:'sand',mode:'light',qr:false}),CONNS[1],'w-b'),
+   welcomeQR:qrPath('me-work'),
+   nextWelcome:()=>s.step<2?set({step:s.step+1}):set({phase:'signin'}),
+   toSignin:()=>set({phase:'signin'}), toWelcome:()=>set({phase:'welcome'}),
+   email:s.email, onEmail:(e)=>set({email:e.target.value}),
+   signIn:()=>{this.go({phase:'app',tab:'home',route:null});this.say('Signed In');},
+   isHome:inApp&&T==='home', isScan:inApp&&T==='scan', isConnections:inApp&&T==='connections', isProfile:inApp&&T==='profile',
+   isEditor:inApp&&R==='editor', isExport:inApp&&R==='export', isExchange:inApp&&R==='exchange', isMatch:inApp&&R==='match', isScanned:inApp&&R==='scanned', isConnection:inApp&&R==='connection',
+   showTabs:inApp&&!R, isQR:inApp&&s.overlay==='qr', isShare:inApp&&s.overlay==='share',
+   hasToast:!!s.toast, toast:s.toast, hasMenu:!!s.menu, menuItems, menuX:s.menu?s.menu.x+'px':'0', menuY:s.menu?s.menu.y+'px':'0', menuOrigin:s.menu?s.menu.origin:'top',
+   closeMenu:()=>set({menu:null}), hasAlert:!!s.alert, alertTitle:s.alert?s.alert.title:'', alertMsg:s.alert?s.alert.msg:'', alertActions,
+   firstName:s.profile.name.trim().split(' ')[0], myInitials:initials(s.profile.name||'?'), photo:s.photo, hasPhoto:!!s.photo, noPhoto:!s.photo, logo:s.logo, hasLogo:!!s.logo, noLogo:!s.logo,
+   profile:s.profile,
+   homeCards:s.cards.map((c,i)=>({vm:cardVM(c),
+    onClick:()=>{if(this._lp){this._lp=false;return;}set({active:i,overlay:'qr'});},
+    down:()=>{this._lp=false;clearTimeout(this._lpT);this._lpT=setTimeout(()=>{this._lp=true;this.setState({active:i,ctx:{i}});},480);},
+    up:()=>clearTimeout(this._lpT),
+    ctx:(e)=>{e.preventDefault();clearTimeout(this._lpT);this._lp=true;this.setState({active:i,ctx:{i}});}})),
+   carDots:[...s.cards,{}].map((c,i)=>({bg:i===s.active?'var(--lab)':'var(--lab3)'})),
+   onCarousel:(e)=>{const i=Math.min(s.cards.length-1,Math.round(e.currentTarget.scrollLeft/368));if(i!==this.state.active)set({active:i});},
+   activeName:card.name, activeSub:s.linkPaused?'Paused — scans show an inactive page':(s.defaultId===card.id?'Default card':'\u00a0'), isPausedLink:s.linkPaused,
+   openCardMenu:(e)=>this.menu(e,this.cardMenuItems(s.active)),
+   newCard:()=>{if(s.cards.length<2||!free)this.startCreate();else this.alert('Card Limit Reached','The Free plan includes 2 cards. Delete one, or upgrade to Cardy Pro for unlimited cards.',[{label:'Not Now'},{label:'See Pro',onClick:()=>this.toPaywall()}]);},
+   quick:[['ph ph-qr-code','Show QR',()=>set({overlay:'qr'})],['ph ph-export','Share',()=>set({overlay:'share'})],['ph ph-arrows-left-right','Exchange',()=>this.go({route:'exchange'})],['ph ph-pencil-simple','Edit',()=>this.go({route:'editor'})]].map(([icon,label,onClick])=>({icon,label,onClick})),
+   recent:withSep(conns.slice(0,3).map(row)),
+   toProfile:()=>this.go({tab:'profile'}), toConnections:()=>this.go({tab:'connections'}),
+   scanLine, pasteLink:()=>this.go({route:'scanned',scanned:NEARBY[1]}), simulateScan:()=>this.go({route:'scanned',scanned:NEARBY[0]}), torch:()=>this.say('Torch On'),
+   scanned:s.scanned, scannedFirst:s.scanned.name.split(' ')[0], scannedVM:this.vm(s.scanned.spec,{...s.scanned,phone:null},s.scanned.id),
+   scannedFields:fieldsOf({...s.scanned,phone:null}),
+   swapScanned:()=>this.startMatch(s.scanned),
+   saveContact:()=>this.say('Added to Contacts'),
+   connCount:String(conns.length), q:s.q, hasQ:!!s.q, onQ:(e)=>set({q:e.target.value}), clearQ:()=>set({q:''}),
+   filterSeg:this.seg([['all',L.all],['events',L.events],['locations',L.places]],s.filter,(v)=>set({filter:v})),
+   groups, noResults:!groups.length&&conns.length>0, hasPending:pendingL.length>0,
+   pending:pendingL.map(p=>({name:p.name.split(' ')[0],initials:initials(p.name),role:p.company,event:p.event,
+    accept:()=>{this.setState(st=>({pending:st.pending.filter(x=>x.id!==p.id),conns:[p,...st.conns]}));this.say(`Connected with ${p.name.split(' ')[0]}`);},
+    decline:()=>this.alert(`Decline ${p.name.split(' ')[0]}’s Request?`,'They won’t be notified.',[{label:'Cancel'},{label:'Decline',destructive:true,onClick:()=>this.setState(st=>({pending:st.pending.filter(x=>x.id!==p.id)}))}])})),
+   conn, connFirst:conn.name.split(' ')[0], connInitials:initials(conn.name), connVM:this.vm(conn.spec,conn,conn.id), connFields:fieldsOf(conn), connHasNote:!!conn.note, connNoNote:!conn.note, connHasTags:conn.tags.length>0,
+   connActions:[['ph-fill ph-chat-circle','message'],['ph-fill ph-phone','call'],['ph-fill ph-envelope-simple','mail'],['ph-fill ph-address-book','save']].map(([icon,label])=>({icon,label,onClick:()=>this.say(label==='save'?'Added to Contacts':`Opening ${label}`)})),
+   askRemove:()=>this.alert(`Remove ${conn.name.split(' ')[0]}?`,'Your note will be deleted. They keep the card you shared.',[{label:'Cancel'},{label:'Remove',destructive:true,onClick:()=>{this.setState(st=>({conns:st.conns.filter(c=>c.id!==conn.id)}));this.go({route:null});this.say('Connection Removed');}}]),
+   askBlock:()=>this.alert(`Block ${conn.name.split(' ')[0]}?`,'Your cards will look like they don’t exist to them.',[{label:'Cancel'},{label:'Block',destructive:true,onClick:()=>{this.setState(st=>({conns:st.conns.filter(c=>c.id!==conn.id)}));this.go({route:null});this.say('Blocked');}}]),
+   editingNote:s.editingNote, notEditing:!s.editingNote, draft:s.draft,
+   editNote:()=>set({editingNote:true,draft:{event:conn.event,place:conn.place,text:conn.note,tags:conn.tags.join(', ')}}),
+   cancelNote:()=>set({editingNote:false}),
+   onDraftEvent:mDraft('event'), onDraftPlace:mDraft('place'), onDraftText:mDraft('text'), onDraftTags:mDraft('tags'),
+   saveNote:()=>{const d=s.draft;this.setState(st=>({editingNote:false,conns:st.conns.map(c=>c.id===conn.id?{...c,event:d.event,place:d.place,note:d.text,tags:d.tags.split(',').map(x=>x.trim()).filter(Boolean)}:c)}));this.say('Note Saved');},
+   matchVM:s.matchWith?this.vm(s.matchWith.spec,s.matchWith,s.matchWith.id):null, matchName:s.matchWith?s.matchWith.name.split(' ')[0]:'',
+   saveMatch:()=>{const p={...s.matchWith,event:s.draft.event,place:s.draft.place,note:s.draft.text};this.setState(st=>({conns:[p,...st.conns.filter(c=>c.id!==p.id)]}));this.openConn(p);this.say('Connection Saved');},
+   skipMatch:()=>{const p=s.matchWith;this.setState(st=>({conns:[p,...st.conns.filter(c=>c.id!==p.id)]}));this.go({route:null,tab:'connections'});},
+   pulse:React.createElement(React.Fragment,null,[0,0.8,1.6].map(ring)),
+   nearby:withSep(NEARBY.map(n=>({name:n.name,initials:initials(n.name),role:`${n.title} · ${n.company}`,btn:s.waitingId===n.id?'Waiting…':'Swap',onClick:()=>{if(this.state.waitingId)return;set({waitingId:n.id});clearTimeout(this._wt);this._wt=setTimeout(()=>{this.setState({waitingId:null});if(this.state.route==='exchange')this.startMatch(n);},1600);}}))),
+   toExchange:()=>this.go({route:'exchange'}), openShare:()=>set({overlay:'share'}), closeOverlay:()=>set({overlay:null}), closeShare:()=>set({overlay:null}),
+   activeQR:qrPath('me-'+card.id), activeLink:'cardy.link/c/'+card.slug, qrOpacity:s.linkPaused?'0.1':'1', linkPaused:s.linkPaused,
+   targets:[['ph-fill ph-broadcast','AirDrop','#007AFF'],['ph-fill ph-chat-circle','Messages','#34C759'],['ph-fill ph-telegram-logo','Telegram','#2AABEE'],['ph-fill ph-whatsapp-logo','WhatsApp','#25D366'],['ph-fill ph-envelope-simple','Mail','#1E90FF']].map(([icon,label,bg])=>({icon,label,bg,onClick:()=>{set({overlay:null});this.say(`Sent via ${label}`);}})),
+   shareActions:withSep([['Copy Link','ph ph-copy',()=>{set({overlay:null});this.say('Link Copied');}],['Add to Apple Wallet','ph ph-wallet',()=>this.go({route:'export',from:null,exFormat:'wallet',exOpt:0})],['Save Image or PDF','ph ph-download-simple',()=>this.go({route:'export',from:null,exFormat:'png',exOpt:1})]].map(([label,icon,onClick])=>({label,icon,onClick}))),
+   pauseT:this.tog(s.linkPaused,()=>{set({linkPaused:!s.linkPaused});this.say(s.linkPaused?'Links Resumed':'Links Paused');}),
+   notifT:this.tog(s.notif,()=>set({notif:!s.notif})),
+   back:()=>this.go({route:s.from||null,from:null}),
+   editCardName:card.name, editVM:cardVM(card),
+   saveCard:()=>{this.go({route:null});this.say(`${card.name} Card Published`);},
+   edTabs:this.seg([['template','Template'],['colour','Color'],['type','Type'],['content','Fields'],['media','Media']],s.edTab,(v)=>set({edTab:v})),
+   edTemplate:s.edTab==='template', edColour:s.edTab==='colour', edType:s.edTab==='type', edContent:s.edTab==='content', edMedia:s.edTab==='media',
+   tplItems:TPL.map(([id,label,pro])=>{const on=spec.template===id,locked=!!pro&&free;return{label,locked,on,vm:this.vm({...spec,template:id},me,'me-'+card.id),ringW:on?'2.5px':'0',fg:on?'var(--tint)':'var(--lab)',
+    onClick:()=>locked?this.alert(`${label} Is a Pro Template`,'Upgrade to Cardy Pro to use Editorial and every palette.',[{label:'Not Now'},{label:'See Pro',onClick:()=>this.toPaywall()}]):this.updSpec({template:id})};}),
+   palItems:Object.keys(PAL).map(k=>{const Pp=PAL[k],on=spec.palette===k,locked=!!Pp.pro&&free,c=Pp[spec.mode];return{locked,swatch:`linear-gradient(135deg, ${c[0]} 50%, ${c[2]} 50%)`,ring:on?'0 0 0 0.5px rgba(128,128,128,.4) inset, 0 0 0 3px var(--bg2), 0 0 0 5.5px var(--tint)':'0 0 0 0.5px rgba(128,128,128,.4) inset',
+    onClick:()=>locked?this.toPaywall():this.updSpec({palette:k})};}),
+   palName:(PAL[spec.palette]||PAL.ink).label,
+   modeSeg:this.seg([['light','Light'],['dark','Dark']],spec.mode,(v)=>this.updSpec({mode:v})),
+   gradT:this.tog(spec.template==='gradient'||spec.bg==='gradient',()=>spec.template==='gradient'?this.say('Gradient template is always gradient'):this.updSpec({bg:spec.bg==='gradient'?'solid':'gradient'})),
+   fontItems:[['system','Default'],['rounded','Rounded'],['serif','Serif'],['mono','Mono']].map(([k,label])=>{const on=spec.font===k;return{label,family:FONTS[k],ringW:on?'2px':'0',fg:on?'var(--tint)':'var(--lab2)',onClick:()=>this.updSpec({font:k})};}),
+   fontForced:spec.template==='terminal'||spec.template==='editorial',
+   alignSeg:this.seg([['left','Leading'],['center','Center']],spec.align,(v)=>this.updSpec({align:v})),
+   densitySeg:this.seg([['minimal','Minimal'],['balanced','Balanced'],['detailed','Detailed']],spec.density,(v)=>this.updSpec({density:v})),
+   contentRows:withSep(FO.map(k=>{const pr=s.privacy[k],isPriv=pr==='PRIVATE',on=!!spec.fields[k]&&!isPriv;return{icon:FM[k][0],color:FM[k][3],label:FM[k][2],sub:isPriv?'Private — hidden from all cards':`${s.profile[k]} · ${PRIV[pr][0]}`,op:isPriv?'0.45':'1',
+    t:this.tog(on,()=>isPriv?this.say('Change privacy in Profile first'):this.updSpec({fields:{...spec.fields,[k]:!spec.fields[k]}}))};})),
+   photoT:this.tog(spec.showPhoto!==false,()=>this.updSpec({showPhoto:spec.showPhoto===false})),
+   logoT:this.tog(spec.showLogo!==false,()=>this.updSpec({showLogo:spec.showLogo===false})),
+   qrT:this.tog(spec.qr!==false,()=>this.updSpec({qr:spec.qr===false})),
+   onPhoto:(e)=>this.readImg(e,'photo'), onLogo:(e)=>this.readImg(e,'logo'),
+   exFormats:this.seg([['png','PNG'],['pdf','PDF'],['wallet','Wallet'],['lock','Lock Screen']],s.exFormat,(v)=>set({exFormat:v,exOpt:0})),
+   exOptTitle:exOpts[0],
+   exSizes:withSep(exOpts[1].map(([label,sub],i)=>({label,sub,op:i===exOpt?'1':'0',onClick:()=>set({exOpt:i})}))),
+   exIsLock:s.exFormat==='lock', exIsWallet:s.exFormat==='wallet', exIsCard:s.exFormat==='png'||s.exFormat==='pdf',
+   exLockBg:`linear-gradient(170deg, ${lockPal[0]}, color-mix(in srgb, ${lockPal[2]} 35%, ${lockPal[0]}))`, exLockFg:lockPal[1],
+   exCta:{png:'Save to Photos',pdf:'Save to Files',wallet:'Add to Wallet',lock:'Save Wallpaper'}[s.exFormat],
+   doExport:()=>this.say({png:'Saved to Photos',pdf:'Saved to Files',wallet:'Added to Wallet',lock:'Wallpaper Saved'}[s.exFormat]),
+   doShareFile:()=>set({overlay:'share'}),
+   fieldRows:withSep(FO.map(k=>{const pr=s.privacy[k];return{icon:FM[k][0],color:FM[k][3],label:FM[k][2],value:s.profile[k],privLabel:PRIV[pr][0],
+    onChange:(e)=>{const v=e.target.value;this.setState(st=>({profile:{...st.profile,[k]:v}}));},
+    openMenu:(e)=>this.menu(e,Object.keys(PRIV).map(v=>({label:PRIV[v][0],sub:PRIV[v][2],icon:PRIV[v][1],checked:s.privacy[k]===v,onClick:()=>this.setState(st=>({privacy:{...st.privacy,[k]:v}}))})))};})),
+   themeLabel:s.theme==='dark'?'Dark':'Light',
+   openThemeMenu:(e)=>this.menu(e,[['dark','Dark','ph ph-moon'],['light','Light','ph ph-sun']].map(([v,l,icon])=>({label:l,icon,checked:s.theme===v,onClick:()=>set({theme:v})}))),
+   openLangMenu:(e)=>this.menu(e,[['en','English'],['uz','Oʻzbekcha'],['ru','Русский']].map(([v,l])=>({label:l,checked:s.lang===v,onClick:()=>set({lang:v})}))),
+   openPro:()=>this.alert('Cardy Pro','Unlimited cards, Editorial and every palette, and 30 AI designs a month.',[{label:'Not Now'},{label:'Learn More',onClick:()=>this.toPaywall()}]),
+   askSignOut:()=>this.alert('Sign Out?','You can sign back in with Apple, Google or email.',[{label:'Cancel'},{label:'Sign Out',destructive:true,onClick:()=>this.go({phase:'welcome',step:0,route:null})}]),
+   onName:(e)=>{const v=e.target.value;this.setState(st=>({profile:{...st.profile,name:v}}));},
+   onTitle:(e)=>{const v=e.target.value;this.setState(st=>({profile:{...st.profile,title:v}}));},
+   cardRows:withSep(s.cards.map((c,i)=>({label:c.name,isDefault:s.defaultId===c.id,link:'cardy.link/c/'+c.slug,vm:cardVM(c),onClick:(e)=>this.menu(e,this.cardMenuItems(i))})))
+  };
+ }
+}
+</script>
+</body>
+</html>
