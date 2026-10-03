@@ -42,6 +42,7 @@ struct CardExportForm: View {
 
                 ExportOptionsSections(options: $options, linkStatus: linkStatus)
             }
+            .contentMargins(.top, 4, for: .scrollContent)
             .safeAreaInset(edge: .top, spacing: 0) {
                 Picker("Format", selection: $options.tab) {
                     ForEach(CardExportTab.allCases, id: \.self) { tab in

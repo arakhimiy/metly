@@ -27,7 +27,7 @@ struct QRHeroView: View {
                 .padding(8)
                 .background(.white, in: .rect(cornerRadius: 24))
                 .shadow(color: .black.opacity(0.12), radius: 14, y: 6)
-                .frame(maxWidth: 320)
+                .frame(maxWidth: 300)
                 .opacity(showsPausedState ? 0.1 : 1)
                 .overlay {
                     if showsPausedState {

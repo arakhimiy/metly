@@ -33,9 +33,9 @@ struct ActionButtonStack<Primary: View, Secondary: View>: View {
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
-            HStack(spacing: 12) {
-                secondary.frame(maxWidth: .infinity)
-                primary.frame(maxWidth: .infinity)
+            EqualWidthHStack(spacing: 12) {
+                secondary
+                primary
             }
             VStack(spacing: 10) {
                 primary.frame(maxWidth: .infinity)
@@ -43,5 +43,34 @@ struct ActionButtonStack<Primary: View, Secondary: View>: View {
             }
         }
         .controlSize(.large)
+    }
+}
+
+/// Lays out children side by side with equal widths. Its ideal width is (widest child × count), so
+/// inside `ViewThatFits` it is rejected as soon as any label would have to wrap.
+struct EqualWidthHStack: Layout {
+    var spacing: Double = 12
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) -> CGSize {
+        guard !subviews.isEmpty else { return .zero }
+        let ideal = subviews.map { $0.sizeThatFits(.unspecified) }
+        let totalSpacing = spacing * Double(subviews.count - 1)
+        let widest = ideal.map(\.width).max() ?? 0
+        let width = proposal.width ?? (widest * Double(subviews.count) + totalSpacing)
+        let columnWidth = max((width - totalSpacing) / Double(subviews.count), 0)
+        let height = subviews.map { $0.sizeThatFits(ProposedViewSize(width: columnWidth, height: nil)).height }.max() ?? 0
+        return CGSize(width: max(width, widest * Double(subviews.count) + totalSpacing), height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) {
+        guard !subviews.isEmpty else { return }
+        let totalSpacing = spacing * Double(subviews.count - 1)
+        let columnWidth = max((bounds.width - totalSpacing) / Double(subviews.count), 0)
+        var x = bounds.minX
+        for subview in subviews {
+            subview.place(at: CGPoint(x: x, y: bounds.midY), anchor: .leading,
+                          proposal: ProposedViewSize(width: columnWidth, height: bounds.height))
+            x += columnWidth + spacing
+        }
     }
 }

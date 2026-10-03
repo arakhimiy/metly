@@ -9,7 +9,7 @@ struct PaletteGrid: View {
     let onSelect: (CardPalette) -> Void
 
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 52), spacing: 8)], spacing: 8) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 44), spacing: 6)], spacing: 8) {
             ForEach(CardPalette.allCases) { palette in
                 Button {
                     onSelect(palette)

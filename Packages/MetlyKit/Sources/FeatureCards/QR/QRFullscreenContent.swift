@@ -43,6 +43,7 @@ struct QRFullscreenContent: View {
                      : "Works without internet. Contact only, no analytics or Connect.")
             }
         }
+        .contentMargins(.top, 4, for: .scrollContent)
         .bottomActionBar {
             ActionButtonStack {
                 Button(action: onShare) {
