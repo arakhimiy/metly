@@ -5,6 +5,8 @@ import SwiftUI
 // FROZEN ENTRY POINTS — the app RouteResolver constructs these. Keep the initialisers;
 // replace the bodies with the real screens.
 
+/// CONNECT cover (SPEC §2.5.26). `cardID` preselects the card to share (QR "Connect Nearby",
+/// a card's menu); nil uses the active event's card, else the default card.
 public struct ConnectView: View {
     public let cardID: UUID?
 
@@ -13,9 +15,11 @@ public struct ConnectView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Connect", specID: "CONNECT")
+        ConnectScreen(requestedCardID: cardID)
     }
 }
+
+/// CONNECTED cover (SPEC §2.5.27) for a connection that was just made.
 public struct ConnectedView: View {
     public let connectionID: UUID
 
@@ -24,6 +28,6 @@ public struct ConnectedView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("You're Connected", specID: "CONNECTED")
+        ConnectedScreen(connectionID: connectionID)
     }
 }
