@@ -1,3 +1,4 @@
+import FeatureHome
 import FeatureProfile
 import MetlyCore
 import MetlyData
@@ -9,7 +10,7 @@ import SwiftUI
 struct MetlyApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @Environment(\.scenePhase) private var scenePhase
-    @State private var router = AppRouter()
+    @State private var router: AppRouter
     private let container: ModelContainer
     private let environment: MetlyEnvironment
     private let services: AppServices
@@ -38,6 +39,11 @@ struct MetlyApp: App {
         environment.syncEngine.registerBackgroundTasks()   // BGTask "com.metly.app.sync"
         AppDelegate.services = services
         subscriptionManager.start(services: services)
+
+        let router = AppRouter()
+        _router = State(initialValue: router)
+        // Owns the UNUserNotificationCenter delegate; must be set before launch finishes.
+        FollowUpNotificationScheduler.configure(router: router, container: container, services: services)
     }
 
     var body: some Scene {
