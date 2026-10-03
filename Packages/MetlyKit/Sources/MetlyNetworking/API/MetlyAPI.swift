@@ -41,6 +41,10 @@ public protocol ProfileAPI: Sendable {
     func deleteImage(_ kind: ProfileImageKind) async throws -> ProfileDTO
     /// GET an asset URL returned by the API (photos/logos/avatars).
     func downloadAsset(_ url: URL) async throws -> Data
+    /// `POST /v1/integrations/telegram/link` — reminder delivery via @MetlyRemindBot.
+    func requestTelegramLink() async throws -> TelegramLinkDTO
+    /// `DELETE /v1/integrations/telegram/link`
+    func unlinkTelegram() async throws
 }
 
 public protocol CardsAPI: Sendable {

@@ -292,6 +292,29 @@ extension MockMetlyServer: ProfileAPI {
         guard let data = backend.assets[url] else { throw APIError.notFound("Asset") }
         return data
     }
+
+    /// The mock behaves as if the user tapped Start in Telegram right away.
+    public func requestTelegramLink() async throws -> TelegramLinkDTO {
+        try await serve()
+        setTelegramLinked(true)
+        return TelegramLinkDTO(botURL: URL(string: "https://t.me/\(Brand.telegramBot)?start=mock-\(UUID().uuidString.prefix(8).lowercased())")!,
+                               expiresAt: .now.addingTimeInterval(900))
+    }
+
+    public func unlinkTelegram() async throws {
+        try await serve()
+        setTelegramLinked(false)
+    }
+
+    private func setTelegramLinked(_ linked: Bool) {
+        guard var profile = backend.profile else { return }
+        profile.notificationPrefs.telegramLinked = linked
+        if !linked, profile.notificationPrefs.delivery == .telegramBot { profile.notificationPrefs.delivery = .push }
+        profile.updatedAt = .now
+        backend.profile = profile
+        backend.touch(.profile, profile.id)
+        broadcast(.syncAvailable)
+    }
 }
 
 // MARK: - Cards & Wallet

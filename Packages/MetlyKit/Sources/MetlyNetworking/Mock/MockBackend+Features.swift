@@ -204,7 +204,7 @@ extension MockBackend {
         let open = followUps.values.filter { !$0.isDone && $0.connectionID.map(peopleIDs.contains) == true }.count
         let withoutNotes = people.filter { $0.note.isEmpty }.map(\.id)
         return EventSummaryDTO(eventID: eventID, people: people.count, withNotes: people.count - withoutNotes.count,
-                               openFollowUps: open, connectionIDsWithoutNotes: withoutNotes, startedAt: event.startDate,
+                               openFollowUps: open, unnotedConnectionIDs: withoutNotes, startedAt: event.startDate,
                                endedAt: event.endedAt)
     }
 
@@ -270,7 +270,7 @@ extension ConnectionDTO {
     }
 }
 
-// MARK: Web share-back (SPEC §3.10 merge rules — the real backend must implement the same)
+// MARK: Web share-back (SPEC §3.10 + PLAN Q18 — the real backend must implement the same)
 extension MockBackend {
     mutating func receiveShareBack(name: String, phone: String?, telegram: String?, metAtText: String?, cardID: UUID?,
                                    now: Date) -> ShareBackNoticeDTO {
@@ -283,24 +283,20 @@ extension MockBackend {
 
         let result: ShareBackMergeResult
         var connection: ConnectionDTO
+        var candidate: UUID?
         if let duplicate = connections.values.first(where: {
             (!phoneDigits.isEmpty && digits($0.phone) == phoneDigits) || (!handle.isEmpty && $0.telegram.lowercased() == handle)
         }) {
             // 1. Same phone (digits only) or Telegram (case-insensitive) → fill gaps silently.
             result = .dedupedByPhoneOrTelegram
             connection = duplicate
-        } else if let pending = connections.values.first(where: {
-            $0.isPendingMerge && $0.fullName.split(separator: " ").first.map({ $0.lowercased() }) == firstName
-        }) {
-            // 2. A "Who did you just meet?" placeholder with the same first name → merge.
-            result = .mergedWithJustMet
-            connection = pending
-            connection.fullName = name
-            connection.isMerged = true
-            connection.isPendingMerge = false
         } else {
-            // 3. New connection.
+            // 2. New connection. A "Who did you just meet?" placeholder with the same first name is only
+            //    suggested — the app confirms and merges (PLAN Q18).
             result = .created
+            candidate = connections.values.first(where: {
+                $0.isPendingMerge && $0.fullName.split(separator: " ").first.map({ $0.lowercased() }) == firstName
+            })?.id
             connection = ConnectionDTO(id: UUID(), fullName: name, jobTitle: "Contact", company: "Shared from your web page",
                                        source: .webShareBack,
                                        context: MeetingContext(eventID: event?.id, eventName: event?.name ?? metAtText,
@@ -320,6 +316,6 @@ extension MockBackend {
             touch(.card, card.id)
         }
         return ShareBackNoticeDTO(shareBackID: UUID(), cardID: card?.id ?? UUID(), connection: connection,
-                                  mergeResult: result, eventName: event?.name)
+                                  mergeResult: result, mergeCandidateID: candidate, eventName: event?.name)
     }
 }

@@ -39,6 +39,18 @@ public struct CommitUploadRequest: Codable, Sendable, Hashable {
     public init(uploadID: String) { self.uploadID = uploadID }
 }
 
+/// `POST /v1/integrations/telegram/link` — open `botURL` (t.me deep link); the bot confirms the
+/// link server-side and `notificationPrefs.telegramLinked` turns true on the next sync.
+public struct TelegramLinkDTO: Codable, Sendable, Hashable {
+    public var botURL: URL
+    public var expiresAt: Date
+
+    public init(botURL: URL, expiresAt: Date) {
+        self.botURL = botURL
+        self.expiresAt = expiresAt
+    }
+}
+
 // MARK: Cards
 
 public struct DuplicateCardRequest: Codable, Sendable, Hashable {
@@ -92,17 +104,17 @@ public struct EventSummaryDTO: Codable, Sendable, Hashable {
     public var people: Int
     public var withNotes: Int
     public var openFollowUps: Int
-    public var connectionIDsWithoutNotes: [UUID]
+    public var unnotedConnectionIDs: [UUID]
     public var startedAt: Date
     public var endedAt: Date?
 
-    public init(eventID: UUID, people: Int, withNotes: Int, openFollowUps: Int, connectionIDsWithoutNotes: [UUID],
+    public init(eventID: UUID, people: Int, withNotes: Int, openFollowUps: Int, unnotedConnectionIDs: [UUID],
                 startedAt: Date, endedAt: Date?) {
         self.eventID = eventID
         self.people = people
         self.withNotes = withNotes
         self.openFollowUps = openFollowUps
-        self.connectionIDsWithoutNotes = connectionIDsWithoutNotes
+        self.unnotedConnectionIDs = unnotedConnectionIDs
         self.startedAt = startedAt
         self.endedAt = endedAt
     }

@@ -178,6 +178,8 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
 
 // MARK: Share-back notices (realtime + push payload)
 
+/// `mergedWithJustMet` is reserved: in v1 the server never merges into a "just met" record by
+/// itself — the app asks the owner first (PLAN Q18) using `mergeCandidateID`.
 public enum ShareBackMergeResult: String, Codable, Sendable { case created, dedupedByPhoneOrTelegram, mergedWithJustMet }
 
 public struct ShareBackNoticeDTO: Codable, Sendable, Hashable {
@@ -185,13 +187,17 @@ public struct ShareBackNoticeDTO: Codable, Sendable, Hashable {
     public var cardID: UUID
     public var connection: ConnectionDTO
     public var mergeResult: ShareBackMergeResult
+    /// A `isPendingMerge` connection with the same first name — offer "Is this the person you met at …?".
+    public var mergeCandidateID: UUID?
     public var eventName: String?
 
-    public init(shareBackID: UUID, cardID: UUID, connection: ConnectionDTO, mergeResult: ShareBackMergeResult, eventName: String?) {
+    public init(shareBackID: UUID, cardID: UUID, connection: ConnectionDTO, mergeResult: ShareBackMergeResult,
+                mergeCandidateID: UUID? = nil, eventName: String?) {
         self.shareBackID = shareBackID
         self.cardID = cardID
         self.connection = connection
         self.mergeResult = mergeResult
+        self.mergeCandidateID = mergeCandidateID
         self.eventName = eventName
     }
 }

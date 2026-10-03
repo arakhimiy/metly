@@ -211,7 +211,7 @@ struct MockMetlyServerTests {
         #expect(live.first { $0.id == justMet.id }?.isMerged == true)
     }
 
-    @Test("Share-back dedupes by phone digits and merges into a just-met placeholder by first name")
+    @Test("Share-back dedupes by phone/Telegram and only suggests a just-met placeholder by first name")
     func shareBackRules() async throws {
         let server = server()
         let byTelegram = await server.simulateShareBack(name: "Jasur A.", telegram: "@JASUR")
@@ -222,10 +222,11 @@ struct MockMetlyServerTests {
                                         isPendingMerge: true, createdAt: .now, updatedAt: .now)
         placeholder.jobTitle = "Met via your QR"
         _ = await server.simulateRemoteChanges(SyncChanges(connections: [placeholder]))
-        let merged = await server.simulateShareBack(name: "malika Rahimova", phone: "+998 91 111 22 33")
-        #expect(merged.mergeResult == .mergedWithJustMet)
-        #expect(merged.connection.id == placeholder.id)
-        #expect(merged.connection.isMerged)
+        let shared = await server.simulateShareBack(name: "malika Rahimova", phone: "+998 91 111 22 33")
+        #expect(shared.mergeResult == .created)
+        #expect(shared.connection.id != placeholder.id)
+        #expect(shared.mergeCandidateID == placeholder.id)
+        #expect(shared.connection.source == .webShareBack)
     }
 
     @Test func deferredInviteOnlyWhenEnabled() async throws {

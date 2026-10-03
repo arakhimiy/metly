@@ -108,6 +108,14 @@ extension LiveMetlyAPI: ProfileAPI {
     public func downloadAsset(_ url: URL) async throws -> Data {
         try await client.send(.raw(absoluteURL: url, accept: "image/*", requiresAuth: false))
     }
+
+    public func requestTelegramLink() async throws -> TelegramLinkDTO {
+        try await send(.post, "/v1/integrations/telegram/link", idempotent: true)
+    }
+
+    public func unlinkTelegram() async throws {
+        let _: EmptyResponse = try await send(.delete, "/v1/integrations/telegram/link")
+    }
 }
 
 extension LiveMetlyAPI: CardsAPI {
