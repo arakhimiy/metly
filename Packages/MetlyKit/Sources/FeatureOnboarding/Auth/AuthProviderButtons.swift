@@ -20,10 +20,11 @@ struct AuthProviderButtons: View {
                 // The button doesn't restyle itself when the color scheme flips at runtime.
                 .id(colorScheme)
 
+            // Large control size + body text ≈ the Apple button's 50 pt; grows with Dynamic Type.
             Button(action: onGoogle) {
                 Label(mode.googleTitle, systemImage: "g.circle.fill")
                     .font(.body.weight(.semibold))
-                    .frame(maxWidth: .infinity, minHeight: 34)
+                    .frame(maxWidth: .infinity)
             }
             .secondaryButtonStyle()
             .controlSize(.large)

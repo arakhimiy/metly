@@ -58,8 +58,8 @@ private struct PermissionStateControl: View {
                 case .granted:
                     Image(systemName: "checkmark.circle.fill")
                         .font(.title2)
-                        .symbolRenderingMode(.hierarchical)
-                        .foregroundStyle(.green)
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, .green)
                         .frame(minWidth: 44, minHeight: 44)
                         .accessibilityLabel("Allowed")
                 case .denied:

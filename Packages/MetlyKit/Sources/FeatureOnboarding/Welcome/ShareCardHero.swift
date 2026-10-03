@@ -10,11 +10,13 @@ struct ShareCardHero: View {
     var body: some View {
         ZStack {
             CardFaceView(design: OnboardingSamples.personalDesign, content: OnboardingSamples.ownerCard)
+                .cardEdge()
                 .rotationEffect(.degrees(-9))
                 .offset(x: -20, y: -26)
                 .shadow(color: .black.opacity(0.12), radius: 10, y: 6)
 
             CardFaceView(design: OnboardingSamples.workDesign, content: OnboardingSamples.ownerCard)
+                .cardEdge()
                 .rotationEffect(.degrees(4))
                 .offset(x: 14, y: 22)
                 .shadow(color: .black.opacity(0.22), radius: 16, y: 10)

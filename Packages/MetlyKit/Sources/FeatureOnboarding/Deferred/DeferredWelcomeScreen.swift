@@ -30,6 +30,7 @@ struct DeferredWelcomeScreen: View {
                 Spacer(minLength: 16)
 
                 CardFaceView(design: invite.card.design, content: invite.card.faceContent)
+                    .cardEdge()
                     .containerRelativeFrame(.horizontal) { length, _ in min(length * 0.8, 380) }
                     .rotationEffect(.degrees(-3))
                     .shadow(color: .black.opacity(0.2), radius: 18, y: 10)
