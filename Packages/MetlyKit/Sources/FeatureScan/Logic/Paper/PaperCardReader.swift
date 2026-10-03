@@ -30,7 +30,11 @@ nonisolated enum PaperCardReader {
         var request = RecognizeTextRequest()
         request.recognitionLevel = .accurate
         request.automaticallyDetectsLanguage = true
-        request.recognitionLanguages = [Locale.Language(identifier: "en-US"), Locale.Language(identifier: "ru-RU")]
+        // Latin (English / Uzbek) and Cyrillic (Russian), limited to what this device supports.
+        let wanted = [Locale.Language(identifier: "en-US"), Locale.Language(identifier: "ru-RU")]
+        let supported = request.supportedRecognitionLanguages.map(\.maximalIdentifier)
+        let languages = wanted.filter { supported.contains($0.maximalIdentifier) }
+        if !languages.isEmpty { request.recognitionLanguages = languages }
         // Names, handles and emails aren't dictionary words — correction would "fix" them.
         request.usesLanguageCorrection = false
 

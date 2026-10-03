@@ -44,8 +44,10 @@ final class ScannedCardModel {
     var connectPhase: ConnectPhase = .idle
     var errorMessage: String?
     var showsError = false
-    /// Set by Cancel so the request is withdrawn (leaving the screen keeps it pending).
-    @ObservationIgnored var withdrawsOnCancel = false
+    /// Cancel Request withdraws the request; nothing else does (it stays pending for days).
+    @ObservationIgnored private var withdrawsOnCancel = false
+    /// Not tied to the view's lifetime: switching tabs mid-wait must not resend or drop the request.
+    @ObservationIgnored private var connectTask: Task<Void, Never>?
 
     init(phase: Phase = .loading, connectPhase: ConnectPhase = .idle) {
         self.phase = phase
@@ -63,7 +65,8 @@ final class ScannedCardModel {
             phase = .unavailable
             return
         }
-        phase = .loading
+        // Refreshing (e.g. back from CONNECTED) keeps the card on screen instead of a spinner.
+        if case .metly = phase {} else { phase = .loading }
         do {
             let card = try await client.publicProfile(slug: slug)
             phase = card.status == .available && card.snapshot != nil ? .metly(card) : .unavailable
@@ -80,6 +83,24 @@ final class ScannedCardModel {
 
     // MARK: Connect
 
+    var isConnecting: Bool { connectPhase == .sending || connectPhase == .waiting }
+
+    /// Connect tapped: sends the request and waits for the answer in the background.
+    func startConnect(to card: PublicCardDTO, client: MetlyClient, modelContext: ModelContext, router: AppRouter) {
+        guard !isConnecting else { return }
+        withdrawsOnCancel = false
+        connectTask = Task {
+            await connect(to: card, client: client, modelContext: modelContext, router: router)
+        }
+    }
+
+    /// Cancel Request: stops waiting and withdraws the request.
+    func cancelConnect() {
+        withdrawsOnCancel = true
+        connectTask?.cancel()
+        connectTask = nil
+    }
+
     /// Sends a connect request and waits briefly for the answer. Accepted → CONNECTED;
     /// offline → saved locally (source `.scanQR`) and ADD_CONTEXT opens.
     func connect(to card: PublicCardDTO, client: MetlyClient, modelContext: ModelContext, router: AppRouter) async {
@@ -88,14 +109,22 @@ final class ScannedCardModel {
             fail("Create a card first — it’s what \(card.owner?.firstName ?? "they") will get back.")
             return
         }
-        withdrawsOnCancel = false
         connectPhase = .sending
         let request: ConnectRequestDTO
         do {
             request = try await client.sendConnectRequest(to: .slug(card.slug), cardID: cardID, method: .scan)
         } catch APIError.offline {
-            let connection = ScanConnectionFactory.insertConnection(from: snapshot, remoteUserID: card.owner?.userID,
+            let connection: Connection
+            if let known = ScanConnectionFactory.existing(remoteUserID: card.owner?.userID, in: modelContext) {
+                // Already in People (e.g. added earlier): don't create a second record.
+                known.mySharedCardID = cardID
+                known.markChanged()
+                try? modelContext.save()
+                connection = known
+            } else {
+                connection = ScanConnectionFactory.insertConnection(from: snapshot, remoteUserID: card.owner?.userID,
                                                                     sharedCardID: cardID, in: modelContext)
+            }
             connectPhase = .savedOffline
             router.present(.addContext(connectionID: connection.id))
             return

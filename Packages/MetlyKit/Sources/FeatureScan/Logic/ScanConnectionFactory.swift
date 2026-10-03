@@ -56,6 +56,14 @@ enum ScanConnectionFactory {
         return people.first { $0.remoteUserID == remoteUserID && !$0.isDeleted }
     }
 
+    /// Same as above, fetched from the store (blocked people included, so they aren't duplicated).
+    static func existing(remoteUserID: UUID?, in context: ModelContext) -> Connection? {
+        guard let remoteUserID else { return nil }
+        var descriptor = FetchDescriptor<Connection>(predicate: #Predicate { $0.remoteUserID == remoteUserID && $0.deletedAt == nil })
+        descriptor.fetchLimit = 1
+        return try? context.fetch(descriptor).first
+    }
+
     /// A live connection sharing a phone number (last 9 digits), email or Telegram handle.
     static func existing(matching fields: [ContactField], among people: [Connection]) -> Connection? {
         let phone = fields.first { $0.kind == .phone }.map { phoneKey($0.value) } ?? ""

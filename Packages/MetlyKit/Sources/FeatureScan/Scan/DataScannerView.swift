@@ -12,9 +12,11 @@ struct DataScannerView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> DataScannerViewController {
         let qr: [VNBarcodeSymbology] = [.qr]
+        // Latin (English / Uzbek) and Cyrillic (Russian) cards, limited to what this device supports.
+        let languages = ["en-US", "ru-RU"].filter(DataScannerViewController.supportedTextRecognitionLanguages.contains)
         let types: Set<DataScannerViewController.RecognizedDataType> = mode == .qr
             ? [.barcode(symbologies: qr)]
-            : [.text(languages: ["en", "ru"])]
+            : [.text(languages: languages)]
         let scanner = DataScannerViewController(
             recognizedDataTypes: types,
             qualityLevel: mode == .qr ? .fast : .balanced,

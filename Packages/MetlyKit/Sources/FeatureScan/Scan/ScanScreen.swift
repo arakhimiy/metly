@@ -88,7 +88,7 @@ struct ScanScreen: View {
             if isVisible {
                 ScanCameraFeed(mode: mode, camera: camera, onCode: handleScanned)
                     .ignoresSafeArea()
-                    .accessibilityLabel("Camera")
+                    .accessibilityLabel("Camera Viewfinder")
             }
             ViewfinderGuide(mode: mode)
         }

@@ -17,9 +17,9 @@ struct MetlyCardDetail: View {
     @Environment(\.modelContext) private var modelContext
     @Query(Connection.live) private var people: [Connection]
 
-    @State private var connectAttempt: UUID?
     @State private var contactDraft: ContactDraft?
     @State private var addedCount = 0
+    @State private var isBlocked = false
 
     var body: some View {
         @Bindable var model = model
@@ -30,6 +30,13 @@ struct MetlyCardDetail: View {
                     Label("This is your card.", systemImage: "person.crop.rectangle")
                         .foregroundStyle(.secondary)
                 }
+            } else if isBlocked {
+                Section {
+                    Label("You’ve blocked \(firstName).", systemImage: "hand.raised.fill")
+                        .foregroundStyle(.secondary)
+                } footer: {
+                    Text("Unblock \(firstName) in Profile › Privacy & Data › Blocked People to connect.")
+                }
             } else {
                 ConnectActionSection(firstName: firstName, phase: model.connectPhase, isInPeople: existing != nil,
                                      showsConnectHint: !isConnected, onConnect: connect, onCancel: cancelConnect,
@@ -38,23 +45,24 @@ struct MetlyCardDetail: View {
             ContactFieldsSection(fields: snapshot.fields)
             if !isSelf {
                 Section {
-                    if existing == nil {
+                    if isBlocked {
+                        EmptyView()
+                    } else if existing == nil {
                         Button("Add to People", systemImage: "person.crop.circle.badge.plus", action: addToPeople)
                     } else if !isConnected, model.connectPhase == .idle || model.connectPhase == .noResponse {
                         Button("Connect", systemImage: "person.badge.plus", action: connect)
                     }
                     Button("Save to Contacts", systemImage: "square.and.arrow.down", action: saveToContacts)
                 } footer: {
-                    if existing == nil {
+                    if existing == nil, !isBlocked {
                         Text("Add to People keeps \(firstName) with your notes without sending a request.")
                     }
                 }
             }
         }
         .contactSaver(item: $contactDraft, onCompletion: contactSaved)
-        .task(id: connectAttempt) {
-            guard connectAttempt != nil else { return }
-            await model.connect(to: card, client: client, modelContext: modelContext, router: router)
+        .task(id: people.count) {
+            isBlocked = ScanConnectionFactory.existing(remoteUserID: card.owner?.userID, in: modelContext)?.isBlocked == true
         }
         .alert("Couldn’t Connect", isPresented: $model.showsError) {
             Button("OK", role: .cancel) {}
@@ -90,12 +98,11 @@ struct MetlyCardDetail: View {
     // MARK: Actions
 
     private func connect() {
-        connectAttempt = UUID()
+        model.startConnect(to: card, client: client, modelContext: modelContext, router: router)
     }
 
     private func cancelConnect() {
-        model.withdrawsOnCancel = true
-        connectAttempt = nil
+        model.cancelConnect()
     }
 
     private func openInPeople() {
