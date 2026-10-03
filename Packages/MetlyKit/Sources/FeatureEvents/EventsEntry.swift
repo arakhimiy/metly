@@ -1,10 +1,11 @@
 import MetlyCore
-import MetlyDesign
 import SwiftUI
 
 // FROZEN ENTRY POINTS — the app RouteResolver constructs these. Keep the initialisers;
-// replace the bodies with the real screens.
+// the bodies host the real screens (StartEvent/, Detail/, Ended/, Export/).
+// Auto-end: `EventLifecycle.endExpiredEvents(in:)` or `.endsExpiredEvents()` (Logic/).
 
+/// START_EVENT (sheet, medium + large) — `eventID == nil` starts a new event, otherwise edits it.
 public struct StartEventSheet: View {
     public let eventID: UUID?
 
@@ -13,9 +14,11 @@ public struct StartEventSheet: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Start Event", specID: "START_EVENT")
+        StartEventScreen(eventID: eventID)
     }
 }
+
+/// EVENT_DETAIL (push).
 public struct EventDetailView: View {
     public let eventID: UUID
 
@@ -24,9 +27,11 @@ public struct EventDetailView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Event", specID: "EVENT_DETAIL")
+        EventDetailScreen(eventID: eventID)
     }
 }
+
+/// EVENT_ENDED (full-screen cover).
 public struct EventEndedView: View {
     public let eventID: UUID
 
@@ -35,9 +40,11 @@ public struct EventEndedView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Event Ended", specID: "EVENT_ENDED")
+        EventEndedScreen(eventID: eventID)
     }
 }
+
+/// EVENT_EXPORT (large sheet, CSV).
 public struct EventExportSheet: View {
     public let eventID: UUID
 
@@ -46,6 +53,6 @@ public struct EventExportSheet: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Export", specID: "EVENT_EXPORT")
+        EventExportScreen(eventID: eventID)
     }
 }
