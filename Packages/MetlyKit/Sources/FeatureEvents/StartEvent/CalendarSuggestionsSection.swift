@@ -55,10 +55,9 @@ private struct CalendarAccessPromptRow: View {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Suggest Events From Calendar")
-                        .foregroundStyle(.primary)
                     Text("Pick a conference or meetup to fill in the name, place and dates.")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.secondary)
                 }
             } icon: {
                 Image(systemName: "calendar.badge.plus")
@@ -105,11 +104,12 @@ private struct CalendarSuggestionRow: View {
             HStack {
                 Label {
                     VStack(alignment: .leading, spacing: 2) {
+                        // Explicit colors: hierarchical styles resolve against the button tint.
                         Text(suggestion.title)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(Color.primary)
                         Text(suggestion.subtitle())
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.secondary)
                     }
                 } icon: {
                     Image(systemName: "calendar")

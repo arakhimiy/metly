@@ -15,6 +15,7 @@ struct EventHeaderSection: View {
                         Label(place, systemImage: "mappin.and.ellipse")
                     }
                 }
+                .fixedSize(horizontal: false, vertical: true)
                 EventStatusLine(event: event)
             }
             .padding(.vertical, 4)
@@ -27,15 +28,14 @@ private struct EventStatusLine: View {
 
     var body: some View {
         if event.isActive {
-            Label {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: "circle.fill")
+                    .imageScale(.small)
+                    .foregroundStyle(.green)
+                    .accessibilityHidden(true)
                 let status = Text("In Progress").fontWeight(.semibold).foregroundStyle(.green)
                 Text("\(status) · new connections are added automatically")
                     .foregroundStyle(.secondary)
-            } icon: {
-                Image(systemName: "circle.fill")
-                    .font(.caption2)
-                    .foregroundStyle(.green)
-                    .accessibilityHidden(true)
             }
             .font(.subheadline)
         } else {

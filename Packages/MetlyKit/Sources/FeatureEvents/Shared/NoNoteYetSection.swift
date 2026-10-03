@@ -28,21 +28,29 @@ struct NoNoteYetSection: View {
     }
 }
 
+/// Name + Add Note; the button moves under the name at accessibility text sizes.
 private struct NoNoteYetRow: View {
     let person: Connection
     let onAddNote: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
-        HStack(spacing: 12) {
-            InitialsAvatar(name: person.fullName, imageData: person.avatarData, size: 32)
-            Text(person.fullName)
-                .lineLimit(2)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+            : AnyLayout(HStackLayout(spacing: 12))
+        layout {
+            HStack(spacing: 12) {
+                InitialsAvatar(name: person.fullName, imageData: person.avatarData, size: 32)
+                Text(person.fullName)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             Button("Add Note", action: onAddNote)
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.capsule)
                 .fixedSize()
         }
+        .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
     }
 }

@@ -29,6 +29,8 @@ struct EventPeopleSection: View {
     }
 }
 
+/// Compact empty state for a list row (ContentUnavailableView stretches inside a List).
+/// Each button keeps its own style so the row never fires both.
 private struct EventPeopleEmptyState: View {
     let isActive: Bool
     let canShowQR: Bool
@@ -36,20 +38,35 @@ private struct EventPeopleEmptyState: View {
     let onJustMet: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label(isActive ? "No One Yet" : "No One Added", systemImage: "person.2")
-        } description: {
-            Text(isActive
-                 ? "People you connect with while this event is active are added here automatically."
-                 : "Nobody was added to this event.")
-        } actions: {
+        VStack(spacing: 12) {
+            Image(systemName: "person.2")
+                .font(.largeTitle)
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            VStack(spacing: 4) {
+                Text(isActive ? "No One Yet" : "No One Added")
+                    .font(.headline)
+                    .accessibilityAddTraits(.isHeader)
+                Text(isActive
+                     ? "People you connect with while this event is active are added here automatically."
+                     : "Nobody was added to this event.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .multilineTextAlignment(.center)
             if isActive {
-                if canShowQR {
-                    Button("Show QR Code", systemImage: "qrcode", action: onShowQR)
-                        .prominentButtonStyle()
+                VStack(spacing: 8) {
+                    if canShowQR {
+                        Button("Show QR Code", systemImage: "qrcode", action: onShowQR)
+                            .prominentButtonStyle()
+                    }
+                    Button("Who Did You Just Meet?", action: onJustMet)
+                        .buttonStyle(.bordered)
                 }
-                Button("Who Did You Just Meet?", action: onJustMet)
             }
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
     }
 }

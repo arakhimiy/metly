@@ -41,12 +41,13 @@ struct EventDraft: Equatable, Sendable {
         calendarEventIdentifier = nil
     }
 
-    init(event: Event) {
+    /// Loads an event for editing; the pickers work on whole days.
+    init(event: Event, calendar: Calendar = .current) {
         name = event.name
         place = event.place
         city = event.city
-        startDate = min(event.startDate, event.endDate)
-        endDate = max(event.startDate, event.endDate)
+        startDate = calendar.startOfDay(for: min(event.startDate, event.endDate))
+        endDate = calendar.startOfDay(for: max(event.startDate, event.endDate))
         cardID = event.cardID
         calendarEventIdentifier = event.calendarEventIdentifier
     }

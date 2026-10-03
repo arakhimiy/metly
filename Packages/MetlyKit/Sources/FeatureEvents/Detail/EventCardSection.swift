@@ -28,21 +28,30 @@ struct EventCardSection: View {
     }
 }
 
+/// Thumbnail + caption + name; the thumbnail sits above the text at accessibility text sizes.
 private struct EventCardRow: View {
     let card: Card
     let profile: Profile?
     let caption: String
     let showsQRIcon: Bool
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         HStack(spacing: 12) {
-            EventCardThumbnail(card: card, profile: profile)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(caption)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                Text("\(card.name) Card")
-                    .foregroundStyle(.primary)
+            let layout = dynamicTypeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+                : AnyLayout(HStackLayout(spacing: 12))
+            layout {
+                EventCardThumbnail(card: card, profile: profile)
+                VStack(alignment: .leading, spacing: 2) {
+                    // Explicit colors: hierarchical styles resolve against the button tint.
+                    Text(caption)
+                        .font(.footnote)
+                        .foregroundStyle(Color.secondary)
+                    Text("\(card.name) Card")
+                        .foregroundStyle(Color.primary)
+                }
             }
             Spacer(minLength: 8)
             if showsQRIcon {

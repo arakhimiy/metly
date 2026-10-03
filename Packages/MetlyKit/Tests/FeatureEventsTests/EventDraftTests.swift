@@ -83,7 +83,7 @@ struct EventDraftTests {
         let event = Event(name: "Meetup", place: "IT Park", city: "Tashkent", startDate: date(2026, 9, 26),
                           endDate: date(2026, 9, 26, 23, 59, 59), cardID: PreviewSeed.workCardID)
         event.calendarEventIdentifier = "cal-1"
-        let draft = EventDraft(event: event)
+        let draft = EventDraft(event: event, calendar: testCalendar)
         #expect(draft.name == "Meetup")
         #expect(draft.place == "IT Park")
         #expect(draft.cardID == PreviewSeed.workCardID)

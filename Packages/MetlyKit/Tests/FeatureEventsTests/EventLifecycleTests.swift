@@ -115,7 +115,7 @@ struct EventLifecycleTests {
         let earlier = insertPerson("Sardor", in: context)
         earlier.previousMeetings = [MeetingContext(eventID: event.id, eventName: event.name, metAt: date(2026, 9, 25))]
 
-        var draft = EventDraft(event: event)
+        var draft = EventDraft(event: event, calendar: testCalendar)
         draft.name = "Tashkent Tech Week 2026"
         draft.place = "Hilton"
         EventLifecycle.update(event, with: draft, in: context, calendar: testCalendar)
@@ -136,7 +136,7 @@ struct EventLifecycleTests {
         let person = insertPerson("Kamila", at: event, in: context)
         person.context.place = "Coffee corner"
 
-        var draft = EventDraft(event: event)
+        var draft = EventDraft(event: event, calendar: testCalendar)
         draft.place = "Hilton"
         EventLifecycle.update(event, with: draft, in: context, calendar: testCalendar)
 
@@ -150,7 +150,7 @@ struct EventLifecycleTests {
                                 context: MeetingContext(eventName: "tashkent tech week", metAt: testNow))
         context.insert(legacy)
 
-        var draft = EventDraft(event: event)
+        var draft = EventDraft(event: event, calendar: testCalendar)
         draft.name = "TTW"
         EventLifecycle.update(event, with: draft, in: context, calendar: testCalendar)
 
