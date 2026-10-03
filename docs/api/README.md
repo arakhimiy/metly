@@ -135,7 +135,7 @@ device                                   server
 2. **Pull** (`GET /v1/sync?since=&limit=`): keep a **per-user monotonic change sequence** (`seq`)
    bumped on every write (user or server-originated: merges, cascades, stats, auto-ended events,
    entitlement changes, share-backs). The cursor encodes the last `seq` delivered — never a
-   timestamp (clock skew loses data). Return records with `seq > cursor` ordered by `seq`, `limit`
+   timestamp (clock skew loses data) — and must be URL-safe (base64url). Return records with `seq > cursor` ordered by `seq`, `limit`
    per page, `hasMore` when more remain. `since` omitted = full snapshot (live records only).
 3. Pushes produce changes too: they appear in the next pull (the device tolerates the echo). Using
    `deviceId` to suppress echoes is optional.

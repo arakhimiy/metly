@@ -978,8 +978,9 @@ paths:
       summary: Changes since a cursor (deltas incl. tombstones); no cursor = full snapshot
       description: |
         Returns every record of the user whose server change sequence is greater than the cursor,
-        ordered by that sequence, at most `limit` records per page. The cursor is opaque (e.g. base64 of
-        a per-user monotonic sequence number — never a timestamp). Full snapshots (`since` omitted) omit
+        ordered by that sequence, at most `limit` records per page. The cursor is opaque and URL-safe
+        (e.g. base64url of a per-user monotonic sequence number — never a timestamp); the same applies to
+        list `nextCursor` values. Full snapshots (`since` omitted) omit
         tombstones. Tombstones are kept ≥ 90 days; an older/unknown cursor → `410 cursor_expired` and the
         client restarts with a full snapshot.
       parameters:

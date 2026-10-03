@@ -290,8 +290,8 @@ extension LiveMetlyAPI: ConnectAPI {
 
 extension LiveMetlyAPI: PublicProfilesAPI {
     public func publicProfile(slug: String) async throws -> PublicCardDTO {
-        let escaped = slug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? slug
-        return try await send(.get, "/v1/public-profiles/\(escaped)")
+        // `URL.appending(path:)` percent-encodes; slugs are `[a-z0-9-]` anyway.
+        try await send(.get, "/v1/public-profiles/\(slug.lowercased())")
     }
 }
 
