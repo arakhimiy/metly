@@ -1,19 +1,5 @@
 import Foundation
 
-/// CONNECT's two modes (segmented control).
-nonisolated enum ConnectMode: String, CaseIterable, Identifiable, Sendable {
-    case nearby, tapPhones
-
-    var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .nearby: "Nearby"
-        case .tapPhones: "Tap Phones"
-        }
-    }
-}
-
 /// Whether discovery can run, and why not.
 nonisolated enum ConnectAvailability: Equatable, Sendable {
     case starting
@@ -30,14 +16,4 @@ nonisolated enum ConnectAvailability: Equatable, Sendable {
         case .hiddenFromNearby, .localNetworkDenied, .offline, .failed: true
         }
     }
-}
-
-/// Tap Phones progress shown on the Tap Phones page.
-nonisolated enum TapStatus: Equatable, Sendable {
-    /// Waiting for phones to touch.
-    case ready
-    /// Phones touched; this phone sends the request (the machine is `.waiting`).
-    case detected(NearbyPerson)
-    /// Phones touched; the other phone sends the request — INCOMING_REQUEST follows.
-    case receiving(NearbyPerson)
 }

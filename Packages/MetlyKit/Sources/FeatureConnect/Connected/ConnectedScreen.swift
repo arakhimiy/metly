@@ -33,13 +33,10 @@ struct ConnectedScreen: View {
                                                profile: modelContext.currentProfile())
                         ContextCaptureForm(draft: $draft)
                         Section {
-                            Button {
-                                contactDraft = ContactDraft(connection: connection)
-                            } label: {
-                                Label(addedToContacts ? "Added to Contacts" : "Add to Contacts",
-                                      systemImage: addedToContacts ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
-                            }
-                            .disabled(addedToContacts)
+                            Button(addedToContacts ? "Added to Contacts" : "Add to Contacts",
+                                   systemImage: addedToContacts ? "checkmark.circle.fill" : "person.crop.circle.badge.plus",
+                                   action: addToContacts)
+                                .disabled(addedToContacts)
                         }
                     }
                 } else if hasLoaded {
@@ -59,13 +56,7 @@ struct ConnectedScreen: View {
                         .disabled(connection == nil)
                 }
             }
-            .contactSaver(item: $contactDraft) { saved in
-                guard saved else { return }
-                addedToContacts = true
-                successCount += 1
-                router.showToast("Added to Contacts", systemImage: "person.crop.circle.badge.checkmark")
-                AccessibilityNotification.Announcement("Added to Contacts").post()
-            }
+            .contactSaver(item: $contactDraft, onCompletion: contactSaverFinished)
             .followUpLimitAlert(isPresented: $showsLimitAlert, openCount: limitCount)
         }
         .sensoryFeedback(.success, trigger: successCount)
@@ -97,6 +88,20 @@ struct ConnectedScreen: View {
             do { try await Task.sleep(for: .milliseconds(500)) } catch { return }
         }
         hasLoaded = true
+    }
+
+    private func addToContacts() {
+        guard let connection else { return }
+        contactDraft = ContactDraft(connection: connection)
+    }
+
+    /// The row turns into "Added to Contacts" (the app's toast sits below covers).
+    private func contactSaverFinished(saved: Bool) {
+        guard saved else { return }
+        addedToContacts = true
+        successCount += 1
+        router.showToast("Added to Contacts", systemImage: "person.crop.circle.badge.checkmark")
+        AccessibilityNotification.Announcement("Added to Contacts").post()
     }
 
     private func save() {

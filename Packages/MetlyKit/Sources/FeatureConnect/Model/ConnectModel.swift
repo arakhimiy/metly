@@ -89,6 +89,12 @@ final class ConnectModel {
         machine.incoming.flatMap { knownRequests[$0.requestID] }
     }
 
+    /// Drives the INCOMING_REQUEST sheet: swiping it away dismisses the request (it stays in People › Requests).
+    var presentedIncomingRequest: ConnectRequest? {
+        get { incomingRequest }
+        set { if newValue == nil { dismissIncoming() } }
+    }
+
     /// "No One Nearby Yet" (Nearby only).
     var showsNoOneNearby: Bool {
         hasWaitedForPeers && peers.isEmpty && availability == .active && !machine.isWaiting
@@ -178,6 +184,12 @@ final class ConnectModel {
         send(.discoveryStopped)
         resetDiscovery()
         Task { await client.endConnectSession(sessionID) }
+    }
+
+    /// Cards were added / deleted while CONNECT is open: keep the choice valid.
+    func cardsChanged(to liveCardIDs: [UUID], requested: UUID?) {
+        selectedCardID = CardChoice.validated(selectedCardID, requested: requested,
+                                              cardToShare: modelContext?.cardToShare()?.id, liveCardIDs: liveCardIDs)
     }
 
     /// Restarts discovery (Try Again).
@@ -375,14 +387,21 @@ final class ConnectModel {
     }
 
     private func receive(_ dto: ConnectRequestDTO) {
+        // Live methods only; scan / email requests wait in People › Requests.
         guard let modelContext, dto.direction == .incoming, dto.status == .pending,
               dto.method == .nearby || dto.method == .tapPhones,
               let request = modelContext.record(ConnectRequest.self, id: dto.id) else { return }
         blockedUserIDs = Self.blockedUserIDs(in: modelContext)
-        guard !blockedUserIDs.contains(dto.peer.userID) else { return }
+        present(request)
+    }
+
+    /// Shows INCOMING_REQUEST for a pending incoming request (unless its sender is blocked).
+    func present(_ request: ConnectRequest) {
+        guard request.direction == .incoming, request.status == .pending,
+              !blockedUserIDs.contains(request.peerUserID) else { return }
         knownRequests[request.id] = request
-        send(.incomingReceived(ConnectMachine.Incoming(requestID: request.id, peerUserID: dto.peer.userID,
-                                                       firstName: ConnectCopy.firstName(of: dto.peer.fullName))))
+        send(.incomingReceived(ConnectMachine.Incoming(requestID: request.id, peerUserID: request.peerUserID,
+                                                       firstName: ConnectCopy.firstName(of: request.peerName))))
         guard machine.incoming?.requestID == request.id else { return }
         incomingCount += 1
         if case .receiving = tapStatus {

@@ -28,7 +28,7 @@ struct OverlappingCards: View {
                 .rotationEffect(.degrees(isSettled ? 5 : 0))
                 .offset(x: isSettled ? 34 : 0, y: isSettled ? 14 : 0)
         }
-        .padding(.vertical, 22)
+        .padding(.vertical, 30)
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityLabel)
