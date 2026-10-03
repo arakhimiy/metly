@@ -44,7 +44,12 @@ extension MockBackend {
         if retiredSlugs.contains(slug) { return PublicCardDTO(slug: slug, status: .deleted) }
         guard let peer = MockSeed.peer(slug: slug) else { throw APIError.notFound("Card") }
         guard !peer.isPaused else { return PublicCardDTO(slug: slug, status: .paused) }
-        let connection = connections.values.first { $0.remoteUserID == peer.userID && !$0.isBlocked }
+        // Only an accepted, mutual connect unlocks connections-only fields — a one-sided "Add to People"
+        // (scan, paper, share-back) carries the remoteUserID but must not reveal them.
+        let mutualSources: Set<ConnectionSource> = [.nearby, .tapPhones, .connectRequest, .deferredLink]
+        let connection = connections.values.first {
+            $0.remoteUserID == peer.userID && !$0.isBlocked && mutualSources.contains($0.source)
+        }
         let fields = peer.fields.filter { $0.privacy == .public || ($0.privacy == .connections && connection != nil) }
         return PublicCardDTO(slug: slug, status: .available, url: Brand.cardURL(slug: slug), cardName: "Work",
                              owner: PublicOwnerDTO(userID: peer.userID, fullName: peer.fullName, firstName: peer.firstName,

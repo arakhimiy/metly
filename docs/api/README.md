@@ -248,3 +248,10 @@ share-back; consider Cloudflare Turnstile (`captchaToken`) if spam appears.
 - Email-change / provider linking (Apple + Google on one account) — out of v1.
 - Analytics opt-in endpoint (`shareAnalytics`) — not specified yet.
 - Exact pass design and Pass Type ID (`pass.com.metly.app.card` proposed).
+
+
+### Privacy rule: who counts as "connected" (public profiles)
+`GET /api/public/cards/{slug}` and `/v1/public-profiles/{slug}` return **Connections**-level fields only when the
+viewer and the owner have an **accepted, mutual connect** (Nearby, Tap Phones, accepted connect request, deferred
+link). A one-sided connection the viewer created (scan "Add to People", paper card, web share-back) carries
+`remoteUserId` but must NOT unlock connections-only fields.
