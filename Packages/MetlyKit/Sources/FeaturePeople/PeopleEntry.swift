@@ -1,17 +1,18 @@
-import MetlyCore
-import MetlyDesign
 import SwiftUI
 
 // FROZEN ENTRY POINTS — the app RouteResolver constructs these. Keep the initialisers;
-// replace the bodies with the real screens.
+// the bodies host the real screens (files in List/, Detail/, AddContext/, JustMet/, Blocked/).
 
+/// PEOPLE tab root.
 public struct PeopleView: View {
     public init() {}
 
     public var body: some View {
-        FeaturePlaceholder("People", specID: "PEOPLE")
+        PeopleScreen()
     }
 }
+
+/// CONNECTION_DETAIL (push).
 public struct ConnectionDetailView: View {
     public let connectionID: UUID
 
@@ -20,9 +21,11 @@ public struct ConnectionDetailView: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Connection", specID: "CONNECTION_DETAIL")
+        ConnectionDetailScreen(connectionID: connectionID)
     }
 }
+
+/// ADD_CONTEXT (large sheet).
 public struct AddContextSheet: View {
     public let connectionID: UUID
 
@@ -31,9 +34,11 @@ public struct AddContextSheet: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Add Context", specID: "ADD_CONTEXT")
+        AddContextScreen(connectionID: connectionID)
     }
 }
+
+/// JUST_MET (medium / large sheet).
 public struct JustMetSheet: View {
     public let cardID: UUID?
 
@@ -42,13 +47,15 @@ public struct JustMetSheet: View {
     }
 
     public var body: some View {
-        FeaturePlaceholder("Who did you just meet?", specID: "JUST_MET")
+        JustMetScreen(cardID: cardID)
     }
 }
+
+/// Settings › Blocked People (push).
 public struct BlockedPeopleView: View {
     public init() {}
 
     public var body: some View {
-        FeaturePlaceholder("Blocked People", specID: "SETTINGS_BLOCKED")
+        BlockedPeopleScreen()
     }
 }
