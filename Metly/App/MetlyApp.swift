@@ -1,3 +1,4 @@
+import FeatureProfile
 import MetlyCore
 import MetlyData
 import MetlyDesign
@@ -10,6 +11,7 @@ struct MetlyApp: App {
     @State private var router = AppRouter()
     private let container: ModelContainer
     private let services: AppServices
+    private let subscriptionManager = SubscriptionManager()
 
     init() {
         let container: ModelContainer
@@ -27,6 +29,7 @@ struct MetlyApp: App {
         self.container = container
         services = MetlyServiceFactory.makeServices(container: container)
         AppDelegate.services = services
+        subscriptionManager.start(services: services)
     }
 
     var body: some Scene {

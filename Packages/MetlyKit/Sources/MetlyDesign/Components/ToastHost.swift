@@ -13,7 +13,7 @@ public struct ToastHostModifier: ViewModifier {
             if let toast = router.toast {
                 ToastView(toast: toast) { router.toast = nil }
                     .id(toast.id)
-                    .padding(.bottom, 96)
+                    .padding(.bottom, 112) // clears the floating tab bar (iOS 26) and the classic one
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .task(id: toast.id) {
                         try? await Task.sleep(for: .seconds(toast.undo == nil ? 2 : 4))
