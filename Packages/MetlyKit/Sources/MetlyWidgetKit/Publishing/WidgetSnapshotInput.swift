@@ -1,0 +1,92 @@
+import Foundation
+import MetlyCore
+
+/// Plain values read from the app's store, from which `WidgetSnapshotBuilder` makes a snapshot.
+///
+/// The app fills it from SwiftData (`ModelContext.currentProfile()`, `Card.live`, `FollowUp.open`,
+/// `Connection.live`, `cardToShare()`) — see `AppWidgetSnapshotSource` in the app target. Keeping the
+/// model types out of this module keeps the widget extension free of SwiftData.
+nonisolated public struct WidgetSnapshotInput: Sendable {
+    public struct Owner: Sendable {
+        public var fullName: String
+        public var jobTitle: String
+        public var company: String
+        public var photoData: Data?
+        public var logoData: Data?
+        /// Every contact field with its privacy (filtered to Public by the builder).
+        public var contactFields: [ContactField]
+        public var linksPaused: Bool
+
+        public init(fullName: String, jobTitle: String = "", company: String = "", photoData: Data? = nil,
+                    logoData: Data? = nil, contactFields: [ContactField] = [], linksPaused: Bool = false) {
+            self.fullName = fullName
+            self.jobTitle = jobTitle
+            self.company = company
+            self.photoData = photoData
+            self.logoData = logoData
+            self.contactFields = contactFields
+            self.linksPaused = linksPaused
+        }
+    }
+
+    public struct Card: Sendable {
+        public var id: UUID
+        public var name: String
+        /// Empty until the server assigned one.
+        public var slug: String
+        public var sortOrder: Int
+        public var design: CardDesign
+
+        public init(id: UUID, name: String, slug: String = "", sortOrder: Int = 0, design: CardDesign = CardDesign()) {
+            self.id = id
+            self.name = name
+            self.slug = slug
+            self.sortOrder = sortOrder
+            self.design = design
+        }
+    }
+
+    public struct FollowUp: Sendable {
+        public var id: UUID
+        public var title: String
+        public var dueAt: Date
+        public var channel: FollowUpChannel
+        public var personName: String?
+        public var connectionID: UUID?
+        /// "{event or company}" of the person.
+        public var personContext: String?
+
+        public init(id: UUID, title: String, dueAt: Date, channel: FollowUpChannel, personName: String? = nil,
+                    connectionID: UUID? = nil, personContext: String? = nil) {
+            self.id = id
+            self.title = title
+            self.dueAt = dueAt
+            self.channel = channel
+            self.personName = personName
+            self.connectionID = connectionID
+            self.personContext = personContext
+        }
+    }
+
+    public var owner: Owner
+    public var cards: [Card]
+    public var defaultCardID: UUID?
+    /// `ModelContext.cardToShare()` — the active event's card, else the default card.
+    public var shareCardID: UUID?
+    /// Open (not done, not deleted) follow-ups of people who are not deleted.
+    public var openFollowUps: [FollowUp]
+    /// `createdAt` of live connections (older ones are ignored by the builder).
+    public var connectionDates: [Date]
+    public var activeEventName: String?
+
+    public init(owner: Owner, cards: [Card] = [], defaultCardID: UUID? = nil, shareCardID: UUID? = nil,
+                openFollowUps: [FollowUp] = [], connectionDates: [Date] = [], activeEventName: String? = nil) {
+        self.owner = owner
+        self.cards = cards
+        self.defaultCardID = defaultCardID
+        self.shareCardID = shareCardID
+        self.openFollowUps = openFollowUps
+        self.connectionDates = connectionDates
+        self.activeEventName = activeEventName
+    }
+}

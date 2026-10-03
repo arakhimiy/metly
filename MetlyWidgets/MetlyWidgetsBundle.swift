@@ -1,30 +1,18 @@
 import SwiftUI
 import WidgetKit
 
-/// Wave-0 placeholder; the Widgets & Intents agent replaces this folder's contents.
+/// Metly widgets (SPEC §2.5.16) + the "Show My QR" control (Q23).
+///
+/// Data flow: the app publishes `WidgetSnapshot` JSON into the App Group (`WidgetSnapshotPublisher`);
+/// providers only read it. Interactive actions are queued for the app — this extension never opens
+/// the SwiftData store.
 @main
 struct MetlyWidgetsBundle: WidgetBundle {
     var body: some Widget {
-        PlaceholderWidget()
+        MyQRWidget()
+        CardWidget()
+        FollowUpsWidget()
+        LockScreenQRWidget()
+        ShowMyQRControl()
     }
 }
-
-struct PlaceholderWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "com.metly.placeholder", provider: PlaceholderProvider()) { _ in
-            Image(systemName: "qrcode").containerBackground(.fill.tertiary, for: .widget)
-        }
-        .configurationDisplayName("Metly")
-        .supportedFamilies([.systemSmall])
-    }
-}
-
-struct PlaceholderProvider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry { SimpleEntry(date: .now) }
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) { completion(SimpleEntry(date: .now)) }
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
-        completion(Timeline(entries: [SimpleEntry(date: .now)], policy: .never))
-    }
-}
-
-struct SimpleEntry: TimelineEntry { let date: Date }
