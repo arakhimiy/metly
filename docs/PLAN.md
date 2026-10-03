@@ -91,3 +91,14 @@ Feature*       one per area (see ownership table)
 3. Features never import other features; cross-feature navigation = `router.push/present(...)` with a route from `MetlyCore`.
 4. Builds go through `scripts/build.sh <Scheme>` which serialises `xcodebuild` across agents (machine has 8 GB RAM) and uses a per-worktree DerivedData.
 5. Every agent finishes with: module builds, its tests pass, previews for every SPEC state it owns, and a report (files, shared-component candidates, contract change requests, open issues).
+
+## Status (2026-10-03)
+
+All waves merged on `main`; app + widget extension build with zero errors; **529 package tests pass** (15 test targets).
+Verified on iPhone 17 Pro simulator (iOS 26): Home, QR fullscreen → Just Met, Scan (demo) → Scanned Card, Connect (Nearby demo) → Connected → Connection detail, People, Profile, dark mode, widget deep link.
+
+### Next steps
+- Backend team implements `docs/api/openapi.yaml` (+ `docs/api/README.md` rules); set `METLY_API_BASE_URL` per configuration — until then the app runs on `MockMetlyServer`.
+- Signing: set `DEVELOPMENT_TEAM`; register `com.metly.app`, `com.metly.app.widgets`, App Group, Associated Domains (`metly.link` AASA), Sign in with Apple, Push, Pass Type ID `pass.com.metly.app.card`; Google OAuth iOS client → `MetlyGoogleClientID`.
+- Device testing: Nearby/Tap Phones on two iPhones (MPC + NearbyInteraction thresholds), camera QR/OCR, Lock Screen widgets, Wallet pass (needs server signing).
+- Polish backlog: QR screen fits without scrolling; App icon; String Catalog extraction for future locales; promote remaining shared-component candidates listed in agent reports (BottomActionBar ×3, ImageDownscaler ×3, ContactFieldRow ×2, follow-up due labels).
