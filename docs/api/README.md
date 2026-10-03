@@ -255,3 +255,8 @@ share-back; consider Cloudflare Turnstile (`captchaToken`) if spam appears.
 viewer and the owner have an **accepted, mutual connect** (Nearby, Tap Phones, accepted connect request, deferred
 link). A one-sided connection the viewer created (scan "Add to People", paper card, web share-back) carries
 `remoteUserId` but must NOT unlock connections-only fields.
+
+### Rule: connecting settles every pending request between the same two people
+When a connect request is accepted (either direction, any method), the server marks every other `pending`
+request between the same two users as `accepted` and returns them in the next delta, so People › Requests
+never shows someone you are already connected with.

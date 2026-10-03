@@ -142,6 +142,15 @@ extension MockBackend {
         connections[connection.id] = connection
         tombstones[connection.id] = nil
         touch(.connection, connection.id)
+        // Now connected: any other pending request between the two people is settled too.
+        for (id, other) in requests where id != request.id && other.status == .pending && other.peer.userID == request.peer.userID {
+            var settled = other
+            settled.status = .accepted
+            settled.respondedAt = now
+            settled.updatedAt = now
+            requests[id] = settled
+            touch(.connectRequest, id)
+        }
         return ConnectAcceptResponse(request: request, connection: connection)
     }
 

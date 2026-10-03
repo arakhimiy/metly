@@ -178,7 +178,7 @@ public final class MetlyClient {
         let context = container.mainContext
         let event = context.activeEvent()
         var body = SendConnectRequest(cardID: cardID, method: method, eventID: event?.id, eventName: event?.name,
-                                      place: event.map { [$0.place, $0.city].filter { !$0.isEmpty }.joined(separator: ", ") })
+                                      place: event.flatMap { $0.place.isEmpty ? nil : $0.place })   // city travels separately
         switch target {
         case .nearbyToken(let token): body.toToken = token
         case .user(let userID): body.toUserID = userID
