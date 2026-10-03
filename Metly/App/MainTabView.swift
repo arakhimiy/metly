@@ -1,3 +1,4 @@
+import FeatureEvents
 import FeatureHome
 import FeaturePeople
 import FeatureProfile
@@ -31,6 +32,7 @@ struct MainTabView: View {
             }
         }
         .presentationLayer(level: 0)
+        .endsExpiredEvents()   // auto-end past events on appear/foreground → EVENT_ENDED
     }
 }
 
