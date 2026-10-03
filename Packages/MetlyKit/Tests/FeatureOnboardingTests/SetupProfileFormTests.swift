@@ -1,0 +1,68 @@
+import Foundation
+import Testing
+@testable import FeatureOnboarding
+
+@Suite("Setup profile validation")
+struct SetupProfileFormTests {
+    @Test func emptyFormCannotContinue() {
+        let form = SetupProfileForm()
+        #expect(!form.isNameValid)
+        #expect(!form.canContinue)
+        #expect(form.emailError == nil)
+    }
+
+    @Test func nameAloneIsEnough() {
+        let form = SetupProfileForm(fullName: "Aziza Karimova")
+        #expect(form.canContinue)
+    }
+
+    @Test func whitespaceNameIsInvalid() {
+        #expect(!SetupProfileForm(fullName: "  \n ").canContinue)
+    }
+
+    @Test(arguments: ["aziza@tezkor.uz", "a.b+c@sub.domain.co", "  aziza@tezkor.uz  "])
+    func acceptsCompleteEmails(_ email: String) {
+        let form = SetupProfileForm(fullName: "Aziza", email: email)
+        #expect(form.isEmailValid)
+        #expect(form.canContinue)
+    }
+
+    @Test(arguments: ["aziza", "aziza@", "aziza@tezkor", "aziza@tezkor.u", "@tezkor.uz", "a ziza@tezkor.uz", "a@@b.uz"])
+    func rejectsIncompleteEmails(_ email: String) {
+        let form = SetupProfileForm(fullName: "Aziza", email: email)
+        #expect(!form.isEmailValid)
+        #expect(!form.canContinue)
+        #expect(form.emailError == "Check your email — it looks incomplete.")
+    }
+
+    @Test func prefillsFromProvider() {
+        let form = SetupProfileForm(prefill: SetupPrefill(fullName: "Aziza Karimova", email: "aziza@icloud.com", provider: .apple))
+        #expect(form.fullName == "Aziza Karimova")
+        #expect(form.email == "aziza@icloud.com")
+        #expect(form.canContinue)
+        #expect(SetupProfileForm(prefill: nil) == SetupProfileForm())
+    }
+
+    @Test func savedProfileValuesWinOverSuggestionButEmptyOnesDont() {
+        var form = SetupProfileForm(prefill: SetupPrefill(fullName: "Apple Name", email: "apple@icloud.com", provider: .apple))
+        form.overlay(fullName: "Saved Name", jobTitle: "Designer", company: "", phone: " ",
+                     email: "", telegram: "@saved", photoData: nil)
+        #expect(form.fullName == "Saved Name")
+        #expect(form.jobTitle == "Designer")
+        #expect(form.phone == "")
+        #expect(form.email == "apple@icloud.com")
+        #expect(form.telegram == "@saved")
+    }
+
+    @Test(arguments: [("aziza", "@aziza"), ("@aziza", "@aziza"), (" az iza ", "@aziza"), ("t.me/aziza", "t.me/aziza"), ("", "")])
+    func normalizesTelegram(_ input: String, _ expected: String) {
+        #expect(SetupProfileForm(telegram: input).normalizedTelegram == expected)
+    }
+
+    @Test func contactValuesAreTrimmedInDisplayOrder() {
+        let form = SetupProfileForm(fullName: "A", phone: " +998 90 123 45 67 ", email: " a@b.uz ", telegram: "aziza")
+        let values = form.contactValues
+        #expect(values.map(\.kind) == [.phone, .email, .telegram])
+        #expect(values.map(\.value) == ["+998 90 123 45 67", "a@b.uz", "@aziza"])
+    }
+}
