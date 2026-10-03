@@ -11,13 +11,17 @@ public struct AppleSignInCredential: Sendable {
     public var authorizationCode: Data?
     public var fullName: PersonNameComponents?
     public var email: String?
+    /// Raw nonce whose SHA-256 was sent in the Apple request (backend verifies the token's nonce).
+    public var nonce: String?
 
-    public init(userID: String, identityToken: Data?, authorizationCode: Data?, fullName: PersonNameComponents?, email: String?) {
+    public init(userID: String, identityToken: Data?, authorizationCode: Data?, fullName: PersonNameComponents?,
+                email: String?, nonce: String? = nil) {
         self.userID = userID
         self.identityToken = identityToken
         self.authorizationCode = authorizationCode
         self.fullName = fullName
         self.email = email
+        self.nonce = nonce
     }
 }
 

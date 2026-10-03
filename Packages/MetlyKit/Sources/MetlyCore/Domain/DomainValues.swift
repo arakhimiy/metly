@@ -163,6 +163,22 @@ public struct NotificationPrefs: Codable, Hashable, Sendable {
     public var weeklySummary = false
     public var productNews = false
     public init() {}
+
+    // Tolerant decoding: keys added later fall back to defaults (older payloads keep decoding).
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let d = NotificationPrefs.defaults
+        followUpReminders = try c.decodeIfPresent(Bool.self, forKey: .followUpReminders) ?? d.followUpReminders
+        eventSummary = try c.decodeIfPresent(Bool.self, forKey: .eventSummary) ?? d.eventSummary
+        delivery = try c.decodeIfPresent(ReminderDelivery.self, forKey: .delivery) ?? d.delivery
+        telegramLinked = try c.decodeIfPresent(Bool.self, forKey: .telegramLinked) ?? d.telegramLinked
+        connectRequests = try c.decodeIfPresent(Bool.self, forKey: .connectRequests) ?? d.connectRequests
+        cardSaved = try c.decodeIfPresent(Bool.self, forKey: .cardSaved) ?? d.cardSaved
+        weeklySummary = try c.decodeIfPresent(Bool.self, forKey: .weeklySummary) ?? d.weeklySummary
+        productNews = try c.decodeIfPresent(Bool.self, forKey: .productNews) ?? d.productNews
+    }
+
+    private static let defaults = NotificationPrefs()
 }
 
 public struct PrivacySettings: Codable, Hashable, Sendable {
@@ -170,6 +186,13 @@ public struct PrivacySettings: Codable, Hashable, Sendable {
     public var showInNearby = true
     public var shareAnalytics = true
     public init() {}
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        findByEmail = try c.decodeIfPresent(Bool.self, forKey: .findByEmail) ?? true
+        showInNearby = try c.decodeIfPresent(Bool.self, forKey: .showInNearby) ?? true
+        shareAnalytics = try c.decodeIfPresent(Bool.self, forKey: .shareAnalytics) ?? true
+    }
 }
 
 /// Result of resolving a deferred deep link on first launch (DEFERRED_WELCOME).

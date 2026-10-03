@@ -8,9 +8,12 @@ import SwiftUI
 @main
 struct MetlyApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @Environment(\.scenePhase) private var scenePhase
     @State private var router = AppRouter()
     private let container: ModelContainer
+    private let environment: MetlyEnvironment
     private let services: AppServices
+    private let client: MetlyClient
     private let subscriptionManager = SubscriptionManager()
 
     init() {
@@ -27,21 +30,34 @@ struct MetlyApp: App {
         }
         #endif
         self.container = container
-        services = MetlyServiceFactory.makeServices(container: container)
+        // Keep the demo seeding above this call: the mock server mirrors the device store.
+        let environment = MetlyServiceFactory.makeEnvironment(container: container)
+        self.environment = environment
+        services = environment.services
+        client = environment.client
+        environment.syncEngine.registerBackgroundTasks()   // BGTask "com.metly.app.sync"
         AppDelegate.services = services
         subscriptionManager.start(services: services)
     }
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+            RootView(checkAppleCredential: { [auth = environment.auth] in await auth.checkAppleCredentialState() })
                 .environment(router)
                 .environment(services)
+                .environment(client)
                 .modelContainer(container)
                 .preferredColorScheme(services.preferences.appearance.colorScheme)
                 .onOpenURL { url in DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
                     if let url = activity.webpageURL { DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
+                }
+                .onChange(of: scenePhase) { _, phase in
+                    switch phase {
+                    case .active: services.sync.requestSync()
+                    case .background: environment.syncEngine.scheduleBackgroundSync()
+                    default: break
+                    }
                 }
         }
     }
