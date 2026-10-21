@@ -95,9 +95,61 @@ public final class SyncStateStore {
         }
     }
 
+    // MARK: Connection avatars
+
+    /// A peer's photo: the server-owned `avatarUrl` vs. the URL whose bytes are in `Connection.avatarData`.
+    public struct AvatarState: Codable, Equatable, Sendable {
+        /// Latest URL the server reported (nil = no photo).
+        public var remoteURL: URL?
+        /// URL of the bytes we stored (nil = we stored nothing).
+        public var syncedURL: URL?
+
+        public var needsDownload: Bool { remoteURL != syncedURL }
+    }
+
+    /// Keyed by connection id.
+    public var avatars: [UUID: AvatarState] {
+        get {
+            guard let data = defaults.data(forKey: Keys.avatars),
+                  let map = try? JSONDecoder().decode([String: AvatarState].self, from: data) else { return [:] }
+            return Dictionary(uniqueKeysWithValues: map.compactMap { key, value in UUID(uuidString: key).map { ($0, value) } })
+        }
+        set {
+            let map = Dictionary(uniqueKeysWithValues: newValue.map { ($0.key.uuidString, $0.value) })
+            defaults.set(try? JSONEncoder().encode(map), forKey: Keys.avatars)
+        }
+    }
+
+    /// Records the avatar URLs of server connections we applied (`nil` = the server has none).
+    public func noteRemoteAvatars(_ urls: [UUID: URL?]) {
+        guard !urls.isEmpty else { return }
+        var map = avatars
+        var changed = false
+        for (id, url) in urls {
+            if let known = map[id] {
+                guard known.remoteURL != url else { continue }
+                map[id]?.remoteURL = url
+            } else {
+                guard let url else { continue }   // never had a photo, still none
+                map[id] = AvatarState(remoteURL: url, syncedURL: nil)
+            }
+            changed = true
+        }
+        if changed { avatars = map }
+    }
+
+    public func forgetAvatars(_ ids: Set<UUID>) {
+        guard !ids.isEmpty else { return }
+        var map = avatars
+        let before = map.count
+        for id in ids { map[id] = nil }
+        if map.count != before { avatars = map }
+    }
+
     /// Forget everything about the signed-out account (keeps `installID`).
     public func reset() {
-        for key in [Keys.cursor, Keys.lastSyncedAt, Keys.rejected, Keys.lastUserID] + ProfileImageKind.allCases.map(Keys.image) {
+        for key in [Keys.cursor, Keys.lastSyncedAt, Keys.rejected, Keys.lastUserID, Keys.avatars]
+            + ProfileImageKind.allCases.map(Keys.image) {
             defaults.removeObject(forKey: key)
         }
     }
@@ -108,6 +160,7 @@ public final class SyncStateStore {
         static let rejected = "sync.rejected"
         static let installID = "sync.installID"
         static let lastUserID = "sync.lastUserID"
+        static let avatars = "sync.avatars"
         static func image(_ kind: ProfileImageKind) -> String { "sync.image.\(kind.rawValue)" }
     }
 }

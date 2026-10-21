@@ -610,7 +610,8 @@ paths:
       description: |
         A connection is unique per (owner, `remoteUserId`): if another live connection exists for the
         same `remoteUserId`, merge into it (newer `updatedAt` wins field-wise, empty fields are filled),
-        return it and tombstone the pushed id (README § Uniqueness).
+        return it and tombstone the pushed id (README § Uniqueness). Follow-ups referencing the pushed id
+        (now or in later writes) are re-pointed to the surviving connection, not deleted.
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/Connection' } } }
@@ -776,8 +777,9 @@ paths:
         Creates a `pending` request with `expiresAt` = now + 60 s for `nearby`/`tapPhones`, + 7 days
         otherwise. Notifies the peer: realtime `connect.request.received` + PUSH_CONNECT_REQUEST (when
         `notificationPrefs.connectRequests`). Only one outstanding live request per requester (a new one
-        cancels the previous). Requests to users who blocked the requester are accepted and silently
-        expire. `method: deferred` (DEFERRED_WELCOME) is pre-approved: it is accepted immediately.
+        cancels the previous). Requests to users who blocked the requester — or whom the requester
+        blocked — are accepted and silently expire (never delivered, never auto-accepted, `deferred`
+        included). `method: deferred` (DEFERRED_WELCOME) is otherwise pre-approved: accepted immediately.
       parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
       requestBody:
         required: true

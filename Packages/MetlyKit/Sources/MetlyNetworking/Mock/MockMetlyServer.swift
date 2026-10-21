@@ -15,15 +15,18 @@ public actor MockMetlyServer: MetlyAPI {
         public var latency: Duration
         public var connectAcceptDelay: Duration
         public var connectRequestLifetime: Duration
+        /// Simulated incoming Nearby / Tap Phones requests expire after this (60 s like the server).
+        public var incomingLiveRequestLifetime: Duration
         /// DEFERRED_WELCOME: `claim` returns an invite only when true (`-MetlyDeferredInvite`).
         public var deferredInviteEnabled: Bool
 
         public init(latency: Duration = .milliseconds(300), connectAcceptDelay: Duration = .milliseconds(1600),
-                    connectRequestLifetime: Duration = .seconds(8),
+                    connectRequestLifetime: Duration = .seconds(8), incomingLiveRequestLifetime: Duration = .seconds(60),
                     deferredInviteEnabled: Bool = ProcessInfo.processInfo.arguments.contains("-MetlyDeferredInvite")) {
             self.latency = latency
             self.connectAcceptDelay = connectAcceptDelay
             self.connectRequestLifetime = connectRequestLifetime
+            self.incomingLiveRequestLifetime = incomingLiveRequestLifetime
             self.deferredInviteEnabled = deferredInviteEnabled
         }
 
@@ -31,7 +34,7 @@ public actor MockMetlyServer: MetlyAPI {
         /// No latency, fast connect timers — for unit tests.
         public static var instant: Configuration {
             Configuration(latency: .zero, connectAcceptDelay: .milliseconds(40), connectRequestLifetime: .milliseconds(250),
-                          deferredInviteEnabled: false)
+                          incomingLiveRequestLifetime: .milliseconds(250), deferredInviteEnabled: false)
         }
     }
 
@@ -103,9 +106,23 @@ public actor MockMetlyServer: MetlyAPI {
     @discardableResult
     public func simulateIncomingRequest(fromSlug slug: String = "bekzod-b8n3", method: ConnectMethod = .nearby) -> ConnectRequestDTO? {
         guard let peer = MockSeed.peer(slug: slug) else { return nil }
-        let request = backend.createIncomingRequest(from: peer, method: method, now: .now)
+        let lifetime = configuration.incomingLiveRequestLifetime
+        let request = backend.createIncomingRequest(from: peer, method: method, liveLifetime: lifetime.seconds, now: .now)
         broadcast(.requestReceived(request))
+        if MockBackend.isLive(method) {
+            // Nobody answered in time: the request expires (INCOMING_REQUEST must handle it).
+            timers[request.id] = Task { [weak self] in
+                do { try await Task.sleep(for: lifetime) } catch { return }
+                await self?.expireIncoming(request.id)
+            }
+        }
         return request
+    }
+
+    private func expireIncoming(_ requestID: UUID) {
+        timers[requestID] = nil
+        guard let request = try? backend.setStatus(.expired, requestID: requestID, expected: .incoming, now: .now) else { return }
+        broadcast(.requestUpdated(request, connection: nil))
     }
 
     /// A web visitor shares their contact back (SPEC §3.10 merge rules) and emits `.shareBackReceived`.
@@ -115,6 +132,21 @@ public actor MockMetlyServer: MetlyAPI {
         let notice = backend.receiveShareBack(name: name, phone: phone, telegram: telegram, metAtText: metAt, cardID: cardID, now: .now)
         broadcast(.shareBackReceived(notice))
         return notice
+    }
+
+    /// The connected Metly user changed their profile photo: sets the server-owned `avatarUrl` of
+    /// connection `id` (nil `data` removes it) and emits `.syncAvailable`. Returns the asset URL.
+    @discardableResult
+    public func simulateAvatar(connectionID id: UUID, data: Data?) -> URL? {
+        guard var connection = backend.connections[id] else { return nil }
+        if let previous = connection.avatarURL { backend.assets[previous] = nil }
+        let url = data.map { _ in URL(string: "https://assets.mock.metly.link/avatar/\(UUID().uuidString.lowercased()).jpg")! }
+        if let url, let data { backend.assets[url] = data }
+        connection.avatarURL = url
+        backend.connections[id] = connection
+        backend.touch(.connection, id)
+        broadcast(.syncAvailable)
+        return url
     }
 
     // MARK: Plumbing
@@ -533,13 +565,16 @@ extension MockMetlyServer: ConnectAPI, RealtimeAPI {
         let peer = try backend.peer(for: request)
         let now = Date.now
         let outgoing = backend.createOutgoingRequest(request, peer: peer, lifetime: configuration.connectRequestLifetime.seconds, now: now)
-        if request.method == .deferred {
+        // Requests to someone the owner blocked are dropped silently: they just expire ("no response").
+        let blocked = backend.blocks[peer.userID] != nil
+            || backend.connections.values.contains { $0.remoteUserID == peer.userID && $0.isBlocked }
+        if request.method == .deferred, !blocked {
             // Deferred-link connects are pre-approved by the owner sharing their card.
             let response = try backend.completeRequest(id: outgoing.id, myCardID: request.cardID, now: now)
             broadcast(.requestUpdated(response.request, connection: response.connection))
             return response.request
         }
-        schedule(outgoing.id, behavior: peer.behavior)
+        schedule(outgoing.id, behavior: blocked ? .ignores : peer.behavior)
         return outgoing
     }
 
@@ -559,12 +594,16 @@ extension MockMetlyServer: ConnectAPI, RealtimeAPI {
     public func acceptRequest(id: UUID, _ request: AcceptConnectRequest) async throws -> ConnectAcceptResponse {
         try await serve()
         guard backend.requests[id]?.direction == .incoming else { throw APIError.notFound("Request") }
-        return try backend.completeRequest(id: id, myCardID: request.cardID, now: .now)
+        let response = try backend.completeRequest(id: id, myCardID: request.cardID, now: .now)
+        timers.removeValue(forKey: id)?.cancel()
+        return response
     }
 
     public func declineRequest(id: UUID) async throws -> ConnectRequestDTO {
         try await serve()
-        return try backend.setStatus(.declined, requestID: id, expected: .incoming, now: .now)
+        let request = try backend.setStatus(.declined, requestID: id, expected: .incoming, now: .now)
+        timers.removeValue(forKey: id)?.cancel()
+        return request
     }
 
     public func cancelRequest(id: UUID) async throws -> ConnectRequestDTO {

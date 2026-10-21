@@ -162,7 +162,17 @@ public final class MetlyClient {
     public var demoNearbyTokens: [String] { isMock ? MockSeed.nearbyTokens : [] }
 
     public func startConnectSession(cardID: UUID, eventID: UUID? = nil, method: ConnectMethod = .nearby) async throws -> ConnectSessionDTO {
-        try await api.connect.startSession(ConnectSessionRequest(cardID: cardID, eventID: eventID, method: method))
+        try await ensureOnServer(cardID: cardID)
+        return try await api.connect.startSession(ConnectSessionRequest(cardID: cardID, eventID: eventID, method: method))
+    }
+
+    /// Connect calls reference the shared card by id: a card created or edited moments ago (or
+    /// offline) is published first, so the peer never gets a card the server doesn't know or an
+    /// outdated version of it.
+    private func ensureOnServer(cardID: UUID) async throws {
+        guard let card = container.mainContext.record(Card.self, id: cardID), card.deletedAt == nil,
+              card.syncState != .synced else { return }
+        try await publish(card)
     }
 
     public func endConnectSession(_ sessionID: String) async {
@@ -175,6 +185,7 @@ public final class MetlyClient {
 
     /// Sends a request (Connect "Waiting…"); then `await outcome(of:)`.
     public func sendConnectRequest(to target: ConnectTarget, cardID: UUID, method: ConnectMethod) async throws -> ConnectRequestDTO {
+        try await ensureOnServer(cardID: cardID)
         let context = container.mainContext
         let event = context.activeEvent()
         var body = SendConnectRequest(cardID: cardID, method: method, eventID: event?.id, eventName: event?.name,
@@ -217,8 +228,24 @@ public final class MetlyClient {
         guard let latest = try? await api.connect.fetchRequest(id: request.id) else { return .noResponse }
         var applier = SyncApplier(context: container.mainContext, mode: .pull)
         applier.apply(latest)
+        // Accepted, but the new connection hasn't reached this device yet: fetch it now rather than
+        // reporting "didn't respond" for an accepted request.
+        if latest.status == .accepted, liveConnection(toPeer: latest.peer.userID) == nil,
+           let page = try? await api.connections.listConnections(
+               updatedSince: (latest.respondedAt ?? latest.updatedAt).addingTimeInterval(-60), cursor: nil, limit: 100),
+           let connection = page.items.first(where: { $0.remoteUserID == latest.peer.userID && $0.deletedAt == nil }) {
+            applier.apply(connection)
+        }
         try? container.mainContext.save()
         return outcome(for: latest, connection: nil) ?? .noResponse
+    }
+
+    /// The live local connection to a Metly user: removed (tombstoned) records never count, and a
+    /// non-blocked one is preferred.
+    private func liveConnection(toPeer peer: UUID) -> Connection? {
+        let descriptor = FetchDescriptor<Connection>(predicate: #Predicate { $0.remoteUserID == peer && $0.deletedAt == nil })
+        let matches = (try? container.mainContext.fetch(descriptor)) ?? []
+        return matches.first { !$0.isBlocked } ?? matches.first
     }
 
     private func outcome(for request: ConnectRequestDTO, connection: ConnectionDTO?) -> ConnectOutcome? {
@@ -227,9 +254,7 @@ public final class MetlyClient {
             return nil
         case .accepted:
             if let connection { return .accepted(connectionID: connection.id) }
-            let peer = request.peer.userID
-            let local = try? container.mainContext.fetch(FetchDescriptor<Connection>(predicate: #Predicate { $0.remoteUserID == peer })).first
-            if let local { return .accepted(connectionID: local.id) }
+            if let local = liveConnection(toPeer: request.peer.userID) { return .accepted(connectionID: local.id) }
             onSyncHint()
             return nil
         case .declined, .expired:
@@ -252,6 +277,7 @@ public final class MetlyClient {
     public func accept(_ request: ConnectRequest, sharing cardID: UUID) async throws -> Connection? {
         let context = container.mainContext
         do {
+            try await ensureOnServer(cardID: cardID)
             let response = try await api.connect.acceptRequest(id: request.id, AcceptConnectRequest(cardID: cardID))
             context.upsert(response.request)
             let connection = context.upsert(response.connection)
