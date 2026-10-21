@@ -182,8 +182,8 @@ nonisolated final class SpeechSession: DictationSession, @unchecked Sendable {
             yield(.final(text))
             teardown()
         case .restart(let previous):
+            startTask()            // the tap feeds the new request from here on
             previous?.endAudio()
-            startTask()
         case .giveUp(let text):
             yield(text.isEmpty ? .failed("Dictation stopped. Try again.") : .final(text))
             teardown()

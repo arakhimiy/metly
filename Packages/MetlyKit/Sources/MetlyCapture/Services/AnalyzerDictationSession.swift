@@ -50,12 +50,17 @@ nonisolated final class AnalyzerDictationSession: DictationSession, @unchecked S
         }
         candidates.append(Locale(identifier: "en-US"))
 
+        // "en_UZ", "en" and "en-US" often resolve to the same model: try each one once (offline, every
+        // failed attempt waits on the asset service).
+        var tried = Set<String>()
         for candidate in candidates {
-            if SpeechTranscriber.isAvailable, let supported = await SpeechTranscriber.supportedLocale(equivalentTo: candidate) {
+            if SpeechTranscriber.isAvailable, let supported = await SpeechTranscriber.supportedLocale(equivalentTo: candidate),
+               tried.insert("speech:" + supported.identifier).inserted {
                 let transcriber = SpeechTranscriber(locale: supported, preset: .progressiveTranscription)
                 if await installModel(for: transcriber) { return AnalyzerDictationSession(.speech(transcriber)) }
             }
-            if let supported = await DictationTranscriber.supportedLocale(equivalentTo: candidate) {
+            if let supported = await DictationTranscriber.supportedLocale(equivalentTo: candidate),
+               tried.insert("dictation:" + supported.identifier).inserted {
                 let transcriber = DictationTranscriber(locale: supported, preset: .progressiveLongDictation)
                 if await installModel(for: transcriber) { return AnalyzerDictationSession(.dictation(transcriber)) }
             }

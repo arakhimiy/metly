@@ -160,7 +160,7 @@ final class IncomingRequestBannerModel {
 
     /// Re-checks what's shown and queued (call when modals change or anything may have been answered).
     func update() {
-        guard let router, let modelContext else { return }
+        guard let router, let modelContext, current != nil || !queue.isEmpty else { return }
         let blocked = ConnectModel.blockedUserIDs(in: modelContext)
         let presentations = router.presentations
         queue.removeAll { !isAnswerable($0, blocked: blocked) }
