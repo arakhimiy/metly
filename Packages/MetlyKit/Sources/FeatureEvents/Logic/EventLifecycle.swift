@@ -28,6 +28,12 @@ public enum EventLifecycle {
         return expired.map(\.id)
     }
 
+    /// When the next of `events` ends by itself (the earliest end of an active event's last day), so a
+    /// running app can end it on time instead of at its next launch / return to the foreground.
+    static func nextAutoEnd(of events: [Event], calendar: Calendar = .current) -> Date? {
+        events.filter(\.isActive).map { endOfLastDay($0, calendar: calendar) }.min()
+    }
+
     // MARK: Internal helpers
 
     /// The moment the event's last day ends (start of the following day).

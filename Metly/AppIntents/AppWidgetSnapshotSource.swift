@@ -1,3 +1,4 @@
+import FeatureHome
 import Foundation
 import MetlyCore
 import MetlyData
@@ -10,6 +11,13 @@ import SwiftData
 enum WidgetSync {
     @MainActor
     static func start(container: ModelContainer) {
+        // Widget "Done" taps withdraw the reminder's notification and wait in the App Group queue until the
+        // publisher applies them (on activation, after a debounce). Until then the store still has the
+        // reminder open, so the notification scheduler must not re-add it — e.g. its first pass at launch,
+        // a "Snooze 1 Day" action or a background sync save, all of which can run before the queue is applied.
+        FollowUpNotificationScheduler.pendingCompletionIDs = {
+            WidgetSnapshotStore.appGroup.pendingFollowUpCompletionIDs()
+        }
         WidgetSnapshotPublisher.start(source: AppWidgetSnapshotSource(container: container))
     }
 }

@@ -10,8 +10,10 @@ import UserNotifications
 /// • One `UNNotificationRequest` per open reminder at its due date ("{Name}" / "{what} · via {channel}"),
 ///   with "Open {channel}" (foreground) and "Snooze 1 Day" (background) actions.
 /// • Reschedules whenever any `ModelContext` saves (Home, Follow-ups, People, capture flows, sync),
-///   when the app becomes active and when the time zone / clock changes. Done, deleted and
-///   past reminders are removed; nothing is scheduled when follow-up reminders are off in
+///   when the app becomes active and when the time zone / clock changes (fingerprints include the
+///   zone, so wall-clock triggers are rebuilt). Done, deleted and past reminders are removed — as are
+///   reminders marked done on the widget whose queued completion isn't applied yet
+///   (`pendingCompletionIDs`); nothing is scheduled when follow-up reminders are off in
 ///   Notification settings or delivered by the Telegram bot.
 /// • Taps open FOLLOWUPS on the Home tab.
 ///
@@ -28,8 +30,12 @@ public final class FollowUpNotificationScheduler {
     private var delegate: FollowUpNotificationDelegate?
     private var observers: [any NSObjectProtocol] = []
     private var debounceTask: Task<Void, Never>?
-    private var isRescheduling = false
-    private var needsAnotherPass = false
+    private lazy var passes = SerialPassRunner { [weak self] in await self?.performReschedule() }
+
+    /// Follow-ups already marked done outside the store — widget "Done" taps waiting in the App Group
+    /// queue until the app applies them. They get no notification although the store still has them open.
+    /// The app target wires this to `WidgetSnapshotStore.pendingFollowUpCompletionIDs()`.
+    public static var pendingCompletionIDs: @MainActor () -> Set<UUID> = { [] }
 
     private init(router: AppRouter, container: ModelContainer, services: AppServices, center: UNUserNotificationCenter) {
         self.center = center
@@ -88,22 +94,18 @@ public final class FollowUpNotificationScheduler {
     /// Brings pending notifications in line with the store now. Calls made while a pass is
     /// running are folded into one more pass, so passes never interleave.
     public func reschedule() async {
-        needsAnotherPass = true
-        guard !isRescheduling else { return }
-        isRescheduling = true
-        defer { isRescheduling = false }
-        while needsAnotherPass {
-            needsAnotherPass = false
-            await performReschedule()
-        }
+        await passes.run()
     }
 
     private func performReschedule() async {
         let context = container.mainContext
+        let calendar = Calendar.current
         let enabled = FollowUpNotificationPlanner.isEnabled(prefs: context.currentProfile()?.notificationPrefs)
         let open = (try? context.fetch(FollowUp.open)) ?? []
-        let candidates = open.compactMap(Self.candidate)
-        let desired = FollowUpNotificationPlanner.payloads(for: candidates, now: .now, enabled: enabled)
+        let doneElsewhere = Self.pendingCompletionIDs()
+        let candidates = open.compactMap { Self.candidate($0, doneElsewhere: doneElsewhere) }
+        let desired = FollowUpNotificationPlanner.payloads(for: candidates, now: .now, enabled: enabled,
+                                                           timeZone: calendar.timeZone)
 
         let pending = await center.pendingNotificationRequests()
             .filter { $0.identifier.hasPrefix(FollowUpNotificationPayload.identifierPrefix) }
@@ -111,7 +113,7 @@ public final class FollowUpNotificationScheduler {
         if !stale.isEmpty { center.removePendingNotificationRequests(withIdentifiers: stale) }
 
         // Already-delivered reminders that are now done or deleted leave Notification Center too.
-        let openIDs = Set(candidates.map { FollowUpNotificationPayload.identifier(for: $0.id) })
+        let openIDs = Set(candidates.filter(\.isOpen).map { FollowUpNotificationPayload.identifier(for: $0.id) })
         let delivered = await center.deliveredNotifications()
             .map(\.request.identifier)
             .filter { $0.hasPrefix(FollowUpNotificationPayload.identifierPrefix) && !openIDs.contains($0) }
@@ -123,11 +125,12 @@ public final class FollowUpNotificationScheduler {
             fingerprints[request.identifier] = request.content.userInfo[FollowUpNotificationPayload.UserInfoKey.fingerprint] as? String
         }
         for payload in FollowUpNotificationPlanner.payloadsToAdd(desired: desired, pendingFingerprints: fingerprints) {
-            try? await center.add(payload.makeRequest(calendar: .current))
+            try? await center.add(payload.makeRequest(calendar: calendar))
         }
     }
 
-    private static func candidate(_ followUp: FollowUp) -> FollowUpNotificationPlanner.Candidate? {
+    /// - Parameter doneElsewhere: `pendingCompletionIDs()` — reminders done on the widget, not saved yet.
+    static func candidate(_ followUp: FollowUp, doneElsewhere: Set<UUID> = []) -> FollowUpNotificationPlanner.Candidate? {
         let person = followUp.connection
         guard person?.isDeleted != true, person?.isBlocked != true else { return nil }
         return FollowUpNotificationPlanner.Candidate(
@@ -137,7 +140,7 @@ public final class FollowUpNotificationScheduler {
             channel: followUp.channel,
             hasChannelValue: ChannelLink.canOpen(followUp.channel, for: person),
             dueAt: followUp.dueAt,
-            isOpen: !followUp.isDone && !followUp.isDeleted
+            isOpen: !followUp.isDone && !followUp.isDeleted && !doneElsewhere.contains(followUp.id)
         )
     }
 

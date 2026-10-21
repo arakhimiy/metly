@@ -1,19 +1,30 @@
 import MetlyCore
+import MetlyData
 import SwiftData
 import SwiftUI
 
-/// Runs `EventLifecycle.endExpiredEvents(in:)` when the view appears and whenever the app becomes
-/// active, then shows EVENT_ENDED for the most recently ended event (only when nothing else is presented).
+/// Runs `EventLifecycle.endExpiredEvents(in:)` when the view appears, whenever the app becomes active
+/// and — while it stays in the foreground — at the moment the next active event's last day is over,
+/// then shows EVENT_ENDED for the most recently ended event (only when nothing else is presented).
 private struct EndsExpiredEventsModifier: ViewModifier {
     @Environment(AppRouter.self) private var router
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
+    @Query(Event.active) private var activeEvents: [Event]
 
     func body(content: Content) -> some View {
+        let nextAutoEnd = EventLifecycle.nextAutoEnd(of: activeEvents)
         content
             .task { endExpiredEvents() }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { endExpiredEvents() }
+            }
+            .task(id: nextAutoEnd) {
+                // Restarts whenever an event starts, ends, resumes or changes dates.
+                guard let nextAutoEnd else { return }
+                try? await Task.sleep(for: .seconds(max(nextAutoEnd.timeIntervalSinceNow, 0) + 1))
+                guard !Task.isCancelled else { return }
+                endExpiredEvents()
             }
     }
 

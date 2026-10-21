@@ -14,6 +14,8 @@ struct NotificationPayloadTests {
                                     hasChannelValue: hasValue, dueAt: due)
     }
 
+    /// The widget's "Done" intent removes this request by identifier (MetlyWidgetKit's
+    /// `WidgetFollowUpNotification.identifier(for:)`, pinned to the same literal there) — keep them identical.
     @Test func identifierRoundTrips() {
         let payload = payload()
         #expect(payload.identifier == "followup.11111111-2222-3333-4444-555555555555")
