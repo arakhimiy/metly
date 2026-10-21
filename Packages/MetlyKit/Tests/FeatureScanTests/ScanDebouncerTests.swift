@@ -77,6 +77,29 @@ struct ScanDebouncerTests {
         #expect(handled == [true, false, false, false, false, true])
     }
 
+    /// Regression: SCAN used to ignore *every* code for 1.2 s after appearing. VisionKit reports a code
+    /// once, when it first recognises it — usually within that window when the phone is already
+    /// pointed at it — so the code was swallowed and never reported again while it stayed in view.
+    @Test("A code already in view when SCAN opens is handled")
+    func codeInViewWhenScanOpens() {
+        var debouncer = ScanDebouncer(interval: 2, minimumGap: 1)
+        debouncer.screenAppeared(at: start)
+        #expect(run(&debouncer, [Sighting(payload: kamila, time: 0.6)]) == [true])
+    }
+
+    @Test("Back on SCAN, the code that was just handled must leave the frame first; other codes work at once")
+    func backOnScanWithTheSameCode() {
+        var debouncer = ScanDebouncer(interval: 2, minimumGap: 1)
+        #expect(run(&debouncer, [Sighting(payload: kamila, time: 0)]) == [true])   // → SCANNED_CARD
+        debouncer.screenAppeared(at: start.addingTimeInterval(20))                 // back on SCAN
+        let handled = run(&debouncer, [
+            Sighting(payload: kamila, time: 20.7),   // the new scanner sees it again: don't re-open
+            Sighting(payload: sardor, time: 21),     // a different card opens right away
+            Sighting(payload: kamila, time: 25),     // Kamila's code left the frame and came back
+        ])
+        #expect(handled == [false, true, true])
+    }
+
     @Test("Pause ignores everything; the code seen during the pause stays suppressed while in view")
     func pause() {
         var debouncer = ScanDebouncer(interval: 2, minimumGap: 1)

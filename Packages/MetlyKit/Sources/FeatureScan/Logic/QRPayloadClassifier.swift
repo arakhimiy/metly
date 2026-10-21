@@ -8,6 +8,7 @@ nonisolated enum QRPayloadClassifier {
         let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return .other }
         if isVCard(text) { return .vCard(text) }
+        if let vCard = MECardConverter.vCard(fromMECard: text) { return .vCard(vCard) }
         if let slug = metlySlug(in: text) {
             if ownSlugs.contains(slug) { return .ownCard(slug: slug) }
             return .metlyCard(url: Brand.cardURL(slug: slug), slug: slug)

@@ -85,6 +85,12 @@ final class ScannedCardModel {
 
     var isConnecting: Bool { connectPhase == .sending || connectPhase == .waiting }
 
+    /// The secondary "Connect" button for someone already in People (added, or saved offline —
+    /// whose footer says "Connect again when you're back online").
+    var offersConnect: Bool {
+        connectPhase == .idle || connectPhase == .noResponse || connectPhase == .savedOffline
+    }
+
     /// Connect tapped: sends the request and waits for the answer in the background.
     func startConnect(to card: PublicCardDTO, client: MetlyClient, modelContext: ModelContext, router: AppRouter) {
         guard !isConnecting else { return }
