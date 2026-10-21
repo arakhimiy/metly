@@ -37,7 +37,7 @@ enum ScanConnectionFactory {
     static func currentMeeting(in context: ModelContext, now: Date = .now) -> (context: MeetingContext, event: Event?) {
         guard let event = context.activeEvent() else { return (MeetingContext(metAt: now), nil) }
         let meeting = MeetingContext(eventID: event.id, eventName: event.name,
-                                     place: event.place.isEmpty ? nil : event.place,
+                                     place: PlaceText.normalizedPlace(event.place, city: event.city),
                                      city: event.city.isEmpty ? nil : event.city, metAt: now)
         return (meeting, event)
     }

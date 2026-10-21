@@ -1,5 +1,6 @@
 import Foundation
 import MetlyData
+import MetlyCapture
 
 /// User-facing strings built from event data (SPEC §2.5.15, §2.5.31, §7.2).
 enum EventCopy {
@@ -23,7 +24,7 @@ enum EventCopy {
 
     /// "Hyatt Regency, Tashkent" (empty when neither is known).
     static func place(of event: Event) -> String {
-        [event.place.trimmed, event.city.trimmed].filter { !$0.isEmpty }.joined(separator: ", ")
+        PlaceText.joined(place: event.place, city: event.city) ?? ""
     }
 
     /// EVENT_ENDED: "You met 6 people. 2 have notes. 4 follow-ups are scheduled."

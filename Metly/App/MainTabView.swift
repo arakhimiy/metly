@@ -1,3 +1,4 @@
+import FeatureConnect
 import FeatureEvents
 import FeatureHome
 import FeaturePeople
@@ -13,6 +14,12 @@ import SwiftUI
 struct MainTabView: View {
     @Environment(AppRouter.self) private var router
     @Query(ConnectRequest.pendingIncoming) private var pendingRequests: [ConnectRequest]
+    @Query(filter: #Predicate<Connection> { $0.isBlocked && $0.deletedAt == nil }) private var blockedPeople: [Connection]
+
+    /// Same filter as People › Requests (no expired, blocked or duplicate requests).
+    private var requestBadge: Int {
+        RequestVisibility.visible(pendingRequests, blockedUserIDs: Set(blockedPeople.compactMap(\.remoteUserID))).count
+    }
 
     var body: some View {
         @Bindable var router = router
@@ -26,13 +33,14 @@ struct MainTabView: View {
             Tab("People", systemImage: "person.2", value: AppTab.people) {
                 TabStack(tab: .people) { PeopleView() }
             }
-            .badge(pendingRequests.count)
+            .badge(requestBadge)
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
                 TabStack(tab: .profile) { ProfileView() }
             }
         }
         .presentationLayer(level: 0)
         .endsExpiredEvents()   // auto-end past events on appear/foreground → EVENT_ENDED
+        .incomingConnectRequestBanner()   // connect requests arriving while CONNECT is closed
     }
 }
 

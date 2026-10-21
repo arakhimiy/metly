@@ -1,6 +1,7 @@
 import Foundation
 import MetlyCore
 import MetlyData
+import MetlyCapture
 
 /// One person in the export, as plain display values (no CSV escaping yet).
 struct EventCSVRow: Identifiable, Equatable, Sendable {
@@ -19,7 +20,7 @@ struct EventCSVRow: Identifiable, Equatable, Sendable {
     /// Builds the row for a connection met at `eventName`.
     init(person: Connection, eventName: String, calendar: Calendar = .current) {
         let context = person.context
-        let place = [context.place ?? "", context.city ?? ""].map(\.trimmed).filter { !$0.isEmpty }
+        let place = PlaceText.joined(context) ?? ""
         self.init(id: person.id, values: [
             .name: person.fullName,
             .jobTitle: person.jobTitle,
@@ -31,7 +32,7 @@ struct EventCSVRow: Identifiable, Equatable, Sendable {
             .linkedin: person.linkedin,
             .event: eventName.trimmed,
             .metAt: Self.timestamp(context.metAt, calendar: calendar),
-            .place: place.joined(separator: ", "),
+            .place: place,
             .note: person.note.trimmed,
             .tags: person.tags.joined(separator: ", "),
             .followUp: Self.followUpText(for: person, calendar: calendar),

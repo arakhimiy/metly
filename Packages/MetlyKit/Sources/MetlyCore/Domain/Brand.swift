@@ -7,7 +7,10 @@ public enum Brand {
     public static let linkHost = "metly.link"
     public static let supportEmail = "support@metly.link"
     public static let telegramBot = "MetlyRemindBot"
-    public static let appGroup = "group.com.metly.app"
+    /// From `MetlyAppGroup` in the app's and the widget's Info.plist (`METLY_APP_GROUP` build setting),
+    /// so a personal-team Debug build can use its own group. Tests and previews get the release group.
+    public static let appGroup = Bundle.main.object(forInfoDictionaryKey: "MetlyAppGroup") as? String
+        ?? "group.com.metly.app"
     public static let urlScheme = "metly"
 
     public static let termsURL = URL(string: "https://metly.link/terms")!
