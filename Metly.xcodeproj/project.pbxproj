@@ -47,6 +47,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Metly.Debug.entitlements,
 				Metly.entitlements,
 				Metly.storekit,
 			);
@@ -56,6 +57,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				MetlyWidgets.Debug.entitlements,
 				MetlyWidgets.entitlements,
 			);
 			target = AA0000000000000000000702 /* MetlyWidgetsExtension */;
@@ -329,10 +331,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Metly/Metly.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Metly/Metly.Debug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Z7TV33HR3R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Metly/Info.plist;
@@ -346,8 +348,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				METLY_APP_GROUP = group.com.azizjon.metly;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.metly.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.azizjon.metly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -378,6 +381,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				METLY_APP_GROUP = group.com.metly.app;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.metly.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -393,10 +397,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = MetlyWidgets/MetlyWidgets.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MetlyWidgets/MetlyWidgets.Debug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Z7TV33HR3R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MetlyWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Metly;
@@ -405,8 +409,9 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				METLY_APP_GROUP = group.com.azizjon.metly;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.metly.app.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.azizjon.metly.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -432,6 +437,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				METLY_APP_GROUP = group.com.metly.app;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.metly.app.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";

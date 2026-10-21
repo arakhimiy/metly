@@ -43,6 +43,8 @@
 	</array>
 	<key>MetlyGoogleClientID</key>
 	<string>$(GOOGLE_CLIENT_ID)</string>
+	<key>MetlyAppGroup</key>
+	<string>$(METLY_APP_GROUP)</string>
 	<key>MetlyAPIBaseURL</key>
 	<string>$(METLY_API_BASE_URL)</string>
 	<key>UIBackgroundModes</key>
