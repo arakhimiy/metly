@@ -11,7 +11,8 @@ struct PeopleScreen: View {
     @Environment(\.modelContext) private var modelContext
 
     @Query(Connection.live) private var connections: [Connection]
-    @Query(ConnectRequest.pendingIncoming) private var requests: [ConnectRequest]
+    @Query(ConnectRequest.pendingIncoming) private var pendingRequests: [ConnectRequest]
+    @Query(filter: #Predicate<Connection> { $0.isBlocked && $0.deletedAt == nil }) private var blockedPeople: [Connection]
     @Query(filter: #Predicate<Event> { $0.deletedAt == nil }, sort: \Event.startDate, order: .reverse)
     private var events: [Event]
 
@@ -26,6 +27,11 @@ struct PeopleScreen: View {
     init(query: String = "", filter: PeopleFilter = .all) {
         _query = State(initialValue: query)
         _filter = State(initialValue: filter)
+    }
+
+    /// Expired live requests and requests from blocked people aren't offered.
+    private var requests: [ConnectRequest] {
+        RequestVisibility.visible(pendingRequests, blockedUserIDs: Set(blockedPeople.compactMap(\.remoteUserID)))
     }
 
     var body: some View {
@@ -102,6 +108,11 @@ struct PeopleScreen: View {
     }
 
     private func accept(_ request: ConnectRequest) {
+        let blocked = Set(blockedPeople.compactMap(\.remoteUserID))
+        guard RequestVisibility.isAnswerable(request, blockedUserIDs: blocked) else {
+            router.showToast("This request has expired", systemImage: "clock.badge.xmark")
+            return
+        }
         let person = PeopleActions.accept(request, in: modelContext)
         acceptedCount += 1
         router.present(.connected(connectionID: person.id))

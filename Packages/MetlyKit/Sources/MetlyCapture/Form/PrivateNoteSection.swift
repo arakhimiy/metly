@@ -40,7 +40,7 @@ struct PrivateNoteSection: View {
             voice.stop()
         } else {
             noteBeforeDictation = note
-            Task { await voice.start() }
+            voice.start()
         }
     }
 

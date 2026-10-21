@@ -28,7 +28,8 @@ public enum FollowUpQuickPick: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// Due date for this pick: the target day (custom dates are never before today) at the hour/minute of `time`.
+    /// Due date for this pick: the target day (custom dates are never before today) at the hour/minute of `time`
+    /// in local time. Never in the past: "today" at a time that has already passed moves to tomorrow.
     public func dueDate(customDate: Date, time: Date, now: Date = .now, calendar: Calendar = .current) -> Date {
         let today = calendar.startOfDay(for: now)
         let day: Date
@@ -38,8 +39,13 @@ public enum FollowUpQuickPick: String, CaseIterable, Identifiable, Sendable {
             day = max(calendar.startOfDay(for: customDate), today)
         }
         let clock = calendar.dateComponents([.hour, .minute], from: time)
-        return calendar.date(bySettingHour: clock.hour ?? MetlyCapture.defaultFollowUpHour,
-                             minute: clock.minute ?? 0, second: 0, of: day) ?? day
+        let due = Self.date(on: day, hour: clock.hour, minute: clock.minute, calendar: calendar)
+        guard due <= now, let nextDay = calendar.date(byAdding: .day, value: 1, to: day) else { return due }
+        return Self.date(on: nextDay, hour: clock.hour, minute: clock.minute, calendar: calendar)
+    }
+
+    private static func date(on day: Date, hour: Int?, minute: Int?, calendar: Calendar) -> Date {
+        calendar.date(bySettingHour: hour ?? MetlyCapture.defaultFollowUpHour, minute: minute ?? 0, second: 0, of: day) ?? day
     }
 
     /// The quick pick whose day matches `due` (to highlight an existing reminder); `.custom` otherwise.

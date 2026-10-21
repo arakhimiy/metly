@@ -38,7 +38,9 @@ import MetlyCore
 //  • .settingsAlert($alert) + SettingsAlert.microphoneOff / .speechOff / .locationOff — "Open Settings" alerts.
 //  • ContactDraft + .contactSaver(item:onCompletion:) — CNContactViewController(forNewContact:), no permission needed.
 //  • ContactLinks — Telegram (tg:// + https fallback), tel:, sms:, mailto:, website and LinkedIn URLs.
-//  • LocationContextProvider, VoiceNoteRecognizer — @Observable helpers if you need them directly.
+//  • LocationContextProvider, VoiceNoteRecognizer — @Observable helpers if you need them directly
+//    (dictation: SpeechAnalyzer on iOS 26+, SFSpeechRecognizer restarted per task on iOS 18–25).
+//  • PlaceText — "Place, City" without repeating the city; use it for every place display.
 //  • CaptureChip, FollowUpQuickPicker, TagFlowLayout — small reusable controls.
 
 /// Constants shared by every capture surface.

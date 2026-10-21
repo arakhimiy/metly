@@ -30,10 +30,12 @@ struct RequestRow: View {
                     Text("Decline").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
+                .accessibilityLabel("Decline \(PersonName.first(request.peerName))’s request")
                 Button(action: onAccept) {
                     Text("Accept").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
+                .accessibilityLabel("Accept \(PersonName.first(request.peerName))’s request")
             }
             .controlSize(.large)
         }

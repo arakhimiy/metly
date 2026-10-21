@@ -65,7 +65,8 @@ struct PersonRow: View {
             case .justMet, .scanQR, .paper: person.source.viaLabel
             default: nil
             }
-            let whereMet = context.eventName ?? context.place
+            // A place that was just the city is saved as the city only.
+            let whereMet = context.eventName ?? context.place ?? context.city
             return [via, whereMet, when].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
         case .eventAndDate:
             let date = context.metAt.formatted(.dateTime.month(.abbreviated).day())

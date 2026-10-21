@@ -2,29 +2,31 @@ import AVFAudio
 import Foundation
 import Speech
 
-/// One on-device dictation run: AVAudioEngine microphone tap → SFSpeechAudioBufferRecognitionRequest.
-/// Lives off the main actor (audio tap and recognizer callbacks run on background queues) and reports
-/// through an `AsyncStream`. Audio is never written anywhere.
-nonisolated final class SpeechSession: @unchecked Sendable {
-    enum Event: Sendable {
-        case partial(String)
-        case final(String)
-        case failed(String)
-    }
-
-    enum SessionError: Error {
-        case noMicrophoneInput
-    }
-
+/// iOS 18–25 dictation (and the fallback where SpeechAnalyzer has no model for the language):
+/// AVAudioEngine microphone tap → `SFSpeechAudioBufferRecognitionRequest`, on-device only.
+///
+/// A recognition task stops by itself after about a minute (or a long pause). While the user hasn't
+/// tapped Stop, the session commits that task's text and starts the next task on the same running
+/// microphone, so long notes keep going (`DictationRestartPolicy`). Audio is never written anywhere.
+/// Lives off the main actor (audio tap and recognizer callbacks run on other queues); state is guarded
+/// by `lock`, and stream continuations are only touched outside it.
+nonisolated final class SpeechSession: DictationSession, @unchecked Sendable {
     private let recognizer: SFSpeechRecognizer
     private let engine = AVAudioEngine()
     private let lock = NSLock()
+
+    // Guarded by `lock`.
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var task: SFSpeechRecognitionTask?
-    private var continuation: AsyncStream<Event>.Continuation?
-    private var isTornDown = false
+    private var taskID = 0
+    private var taskStartedAt = Date.now
+    private var taskHeardSomething = false
+    private var transcript = TranscriptAccumulator()
+    private var restarts = DictationRestartPolicy()
+    private var continuation: AsyncStream<DictationEvent>.Continuation?
+    private var interruptionObserver: (any NSObjectProtocol)?
     private var finishRequested = false
-    private var lastText = ""
+    private var isTornDown = false
 
     /// Nil when on-device recognition isn't available (PLAN Q17: on-device only).
     /// Tries the locale, then its language (e.g. "en_UZ" → "en"), then US English.
@@ -41,99 +43,165 @@ nonisolated final class SpeechSession: @unchecked Sendable {
         self.recognizer = recognizer
     }
 
-    func start() throws -> AsyncStream<Event> {
-        let (stream, continuation) = AsyncStream.makeStream(of: Event.self)
-        self.continuation = continuation
-
-        let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-
-        let request = SFSpeechAudioBufferRecognitionRequest()
-        request.shouldReportPartialResults = true
-        request.requiresOnDeviceRecognition = true
-        request.addsPunctuation = true
-        request.taskHint = .dictation
-        self.request = request
-
-        let input = engine.inputNode
-        let format = input.outputFormat(forBus: 0)
-        guard format.channelCount > 0, format.sampleRate > 0 else {
+    func start() async throws -> AsyncStream<DictationEvent> {
+        let (stream, continuation) = AsyncStream.makeStream(of: DictationEvent.self)
+        let stopped: Bool = lock.withLock {
+            self.continuation = continuation
+            return finishRequested || isTornDown
+        }
+        guard !stopped else {
             teardown()
-            throw SessionError.noMicrophoneInput
+            throw DictationSessionError.stoppedWhileStarting
         }
-        input.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in
-            request.append(buffer)
+        continuation.onTermination = { [weak self] termination in
+            if case .cancelled = termination { self?.cancel() }
         }
-        engine.prepare()
+
         do {
+            try DictationAudio.activateSession()
+            let input = engine.inputNode
+            let format = input.outputFormat(forBus: 0)
+            guard format.channelCount > 0, format.sampleRate > 0 else { throw DictationSessionError.noMicrophoneInput }
+            input.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
+                self?.currentRequest?.append(buffer)
+            }
+            engine.prepare()
             try engine.start()
         } catch {
             teardown()
             throw error
         }
 
-        task = recognizer.recognitionTask(with: request) { [weak self] result, error in
-            guard let self else { return }
-            if let result {
-                let text = result.bestTranscription.formattedString
-                self.remember(text)
-                if result.isFinal {
-                    continuation.yield(.final(text))
-                    continuation.finish()
-                    self.teardown()
-                } else {
-                    continuation.yield(.partial(text))
-                }
-            } else if error != nil {
-                // Ending audio with no speech surfaces as an error — treat it as a normal finish.
-                if self.wasFinishRequested {
-                    continuation.yield(.final(self.rememberedText))
-                } else {
-                    continuation.yield(.failed("Dictation stopped. Try again."))
-                }
-                continuation.finish()
-                self.teardown()
-            }
-        }
-
-        continuation.onTermination = { [weak self] _ in self?.teardown() }
+        let observer = DictationAudio.observeInterruptions { [weak self] in self?.finish() }
+        lock.withLock { interruptionObserver = observer }
+        startTask()
         return stream
     }
 
     /// Stops listening; the recognizer then delivers the final transcript.
     func finish() {
-        lock.lock()
-        finishRequested = true
-        lock.unlock()
+        let request: SFSpeechAudioBufferRecognitionRequest? = lock.withLock {
+            finishRequested = true
+            return self.request
+        }
         stopAudio()
         request?.endAudio()
+        // The recognizer normally answers within a moment; don't leave the stream open if it doesn't.
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(3))
+            self?.finishWithCurrentText()
+        }
     }
 
     /// Stops immediately without a final result.
     func cancel() {
+        let task = lock.withLock { self.task }
         task?.cancel()
         teardown()
     }
 
-    // MARK: Private
+    // MARK: Recognition tasks
 
-    private var wasFinishRequested: Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        return finishRequested
+    private var currentRequest: SFSpeechAudioBufferRecognitionRequest? {
+        lock.withLock { request }
     }
 
-    private var rememberedText: String {
-        lock.lock()
-        defer { lock.unlock() }
-        return lastText
+    private func startTask() {
+        let request = SFSpeechAudioBufferRecognitionRequest()
+        request.shouldReportPartialResults = true
+        request.requiresOnDeviceRecognition = true
+        request.addsPunctuation = true
+        request.taskHint = .dictation
+
+        let id: Int? = lock.withLock {
+            guard !isTornDown else { return nil }
+            taskID += 1
+            self.request = request
+            taskStartedAt = .now
+            taskHeardSomething = false
+            return taskID
+        }
+        guard let id else { return }
+        let task = recognizer.recognitionTask(with: request) { [weak self] result, error in
+            self?.handle(result: result, error: error, taskID: id)
+        }
+        lock.withLock {
+            if taskID == id { self.task = task }
+        }
     }
 
-    private func remember(_ text: String) {
-        lock.lock()
-        lastText = text
-        lock.unlock()
+    private enum Step {
+        case ignore
+        case partial(String)
+        case taskEnded
+    }
+
+    private func handle(result: SFSpeechRecognitionResult?, error: (any Error)?, taskID id: Int) {
+        let step: Step = lock.withLock {
+            // Late callbacks from a replaced task, or anything after teardown, are ignored.
+            guard id == taskID, !isTornDown else { return .ignore }
+            if let result {
+                let text = result.bestTranscription.formattedString
+                if !text.isEmpty { taskHeardSomething = true }
+                if result.isFinal {
+                    transcript.commit(text)
+                    return .taskEnded
+                }
+                transcript.setVolatile(text)
+                return .partial(transcript.text)
+            }
+            guard error != nil else { return .ignore }
+            // Ending audio with no speech, the time limit or a hiccup: keep what this task heard.
+            transcript.commitVolatile()
+            return .taskEnded
+        }
+        switch step {
+        case .ignore: break
+        case .partial(let text): yield(.partial(text))
+        case .taskEnded: taskEnded()
+        }
+    }
+
+    private enum Next {
+        case finish(String)
+        case restart(previous: SFSpeechAudioBufferRecognitionRequest?)
+        case giveUp(String)
+    }
+
+    private func taskEnded() {
+        let next: Next = lock.withLock {
+            if finishRequested { return .finish(transcript.text) }
+            let duration = Date.now.timeIntervalSince(taskStartedAt)
+            switch restarts.taskEnded(after: duration, recognizedText: taskHeardSomething) {
+            case .restart: return .restart(previous: request)
+            case .stop: return .giveUp(transcript.text)
+            }
+        }
+        switch next {
+        case .finish(let text):
+            yield(.final(text))
+            teardown()
+        case .restart(let previous):
+            startTask()            // the tap feeds the new request from here on
+            previous?.endAudio()
+        case .giveUp(let text):
+            yield(text.isEmpty ? .failed("Dictation stopped. Try again.") : .final(text))
+            teardown()
+        }
+    }
+
+    private func finishWithCurrentText() {
+        let text: String? = lock.withLock { isTornDown ? nil : transcript.text }
+        guard let text else { return }
+        yield(.final(text))
+        teardown()
+    }
+
+    // MARK: Teardown
+
+    private func yield(_ event: DictationEvent) {
+        let continuation = lock.withLock { self.continuation }
+        continuation?.yield(event)
     }
 
     private func stopAudio() {
@@ -142,20 +210,24 @@ nonisolated final class SpeechSession: @unchecked Sendable {
     }
 
     private func teardown() {
-        lock.lock()
-        guard !isTornDown else {
-            lock.unlock()
-            return
-        }
-        isTornDown = true
-        lock.unlock()
-
+        let released: (SFSpeechAudioBufferRecognitionRequest?, AsyncStream<DictationEvent>.Continuation?, (any NSObjectProtocol)?)? =
+            lock.withLock {
+                guard !isTornDown else { return nil }
+                isTornDown = true
+                defer {
+                    self.request = nil
+                    self.task = nil
+                    self.continuation = nil
+                    self.interruptionObserver = nil
+                }
+                return (self.request, self.continuation, self.interruptionObserver)
+            }
+        guard let released else { return }
+        let (request, continuation, observer) = released
         stopAudio()
         request?.endAudio()
-        request = nil
-        task = nil
+        if let observer { NotificationCenter.default.removeObserver(observer) }
         continuation?.finish()
-        continuation = nil
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        DictationAudio.deactivateSession()
     }
 }
