@@ -1,4 +1,5 @@
 import Foundation
+import MetlyCapture
 import MetlyCore
 import MetlyData
 
@@ -110,7 +111,7 @@ enum PeopleIndex {
             }
             guard !members.isEmpty || event.isActive else { continue }
             members.forEach { claimed.insert($0.id) }
-            let place = [event.place, event.city].filter { !$0.isEmpty }.joined(separator: ", ")
+            let place = PlaceText.joined(place: event.place, city: event.city) ?? ""
             summaries.append(EventSummary(id: event.id.uuidString, eventID: event.id, name: event.name, place: place,
                                           startDate: min(event.startDate, event.endDate),
                                           endDate: max(event.startDate, event.endDate),
@@ -126,7 +127,7 @@ enum PeopleIndex {
         for (key, members) in derived {
             let dates = members.map(\.context.metAt)
             let first = members[0]
-            let place = [first.context.place, first.context.city].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: ", ")
+            let place = PlaceText.joined(first.context) ?? ""
             summaries.append(EventSummary(id: "name:" + key, eventID: nil, name: first.context.eventName ?? key,
                                           place: place, startDate: dates.min() ?? .now, endDate: dates.max() ?? .now,
                                           isActive: false, people: members))

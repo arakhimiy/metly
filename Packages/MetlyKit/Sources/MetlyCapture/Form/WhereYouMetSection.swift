@@ -46,10 +46,12 @@ struct WhereYouMetSection: View {
         draft.place.trimmed.isEmpty && (location.isLocating || !location.isAuthorized || location.status == .failed)
     }
 
-    /// Silent auto-fill only when the user already granted location access.
+    /// Silent auto-fill only when the user already granted location access — once per form: the section's
+    /// `.task` runs again whenever the row scrolls back into view, and a Place the user cleared stays cleared.
     private func autoFillIfAuthorized() async {
         location.refreshAuthorization()
-        guard location.isAuthorized, draft.place.trimmed.isEmpty else { return }
+        guard LocationAutoFill.shouldFillSilently(isAuthorized: location.isAuthorized, status: location.status,
+                                                  place: draft.place) else { return }
         await fill()
     }
 
@@ -68,10 +70,14 @@ struct WhereYouMetSection: View {
             return
         }
         // The user may have typed meanwhile — never overwrite their input.
-        guard draft.place.trimmed.isEmpty else { return }
-        draft.place = suggestion.place
-        if draft.city.trimmed.isEmpty { draft.city = suggestion.city }
-        draft.markAutoFilled()
+        draft.applyLocationSuggestion(suggestion)
+    }
+}
+
+/// When "Where You Met" may fill Place from the location without being asked.
+enum LocationAutoFill {
+    static func shouldFillSilently(isAuthorized: Bool, status: LocationContextProvider.Status, place: String) -> Bool {
+        isAuthorized && status == .idle && place.trimmed.isEmpty
     }
 }
 

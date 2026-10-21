@@ -59,7 +59,8 @@ public struct CaptureDraft: Equatable, Sendable {
         self.intent = intent
         self.eventID = context.eventID
         self.eventName = context.eventName ?? ""
-        self.place = context.place ?? ""
+        // Stamped / event places may already end in the city ("Hyatt Regency, Tashkent" + "Tashkent").
+        self.place = PlaceText.normalizedPlace(context.place, city: context.city) ?? ""
         self.city = context.city ?? ""
         self.metAt = context.metAt
         self.note = note
@@ -80,7 +81,8 @@ public struct CaptureDraft: Equatable, Sendable {
         autoFill = AutoFill(eventName: eventName, place: place, city: city)
     }
 
-    /// The meeting context the draft describes ("Place, City" typed into Place is split).
+    /// The meeting context the draft describes ("Place, City" typed into Place is split; a place that
+    /// already ends in the City field's value is saved without it, so the city is never shown twice).
     public var meetingContext: MeetingContext {
         let event = eventName.trimmed
         var place = place.trimmed
@@ -91,9 +93,21 @@ public struct CaptureDraft: Equatable, Sendable {
         }
         return MeetingContext(eventID: event.isEmpty ? nil : eventID,
                               eventName: event.isEmpty ? nil : event,
-                              place: place.isEmpty ? nil : place,
+                              place: PlaceText.normalizedPlace(place, city: city),
                               city: city.isEmpty ? nil : city,
                               metAt: metAt)
+    }
+
+    /// Fills Place (and City when empty) from the current location. Never overwrites a typed place; keeps the
+    /// "Auto" badge only while the user hasn't edited the other Where-You-Met fields. Returns whether it filled.
+    @discardableResult
+    public mutating func applyLocationSuggestion(_ suggestion: PlaceSuggestion) -> Bool {
+        guard place.trimmed.isEmpty else { return false }
+        let userEdited = autoFill.map { $0.eventName != eventName || $0.city != city } ?? false
+        if city.trimmed.isEmpty { city = suggestion.city.trimmed }
+        place = PlaceText.normalizedPlace(suggestion.place, city: city) ?? ""
+        if !userEdited { markAutoFilled() }
+        return true
     }
 }
 

@@ -1,3 +1,4 @@
+import MetlyCapture
 import MetlyCore
 import MetlyData
 import SwiftUI
@@ -58,16 +59,16 @@ struct EarlierMeetingsSection: View {
 }
 
 enum MeetingFormatting {
-    /// "Hyatt Regency, Tashkent".
+    /// "Hyatt Regency, Tashkent" — the city once, even when the place already ends in it.
     static func place(_ context: MeetingContext) -> String? {
-        let parts = [context.place, context.city].compactMap { $0 }.filter { !$0.isEmpty }
-        return parts.isEmpty ? nil : parts.joined(separator: ", ")
+        PlaceText.joined(context)
     }
 
-    /// "Hyatt Regency · Sep 24".
+    /// "Hyatt Regency · Sep 24" (the city when there's no place).
     static func placeAndDate(_ context: MeetingContext) -> String {
         let date = context.metAt.formatted(.dateTime.month(.abbreviated).day().year())
-        guard let place = context.place, !place.isEmpty else { return date }
+        guard let place = PlaceText.normalizedPlace(context.place, city: context.city) ?? context.city, !place.isEmpty
+        else { return date }
         return "\(place) · \(date)"
     }
 }

@@ -116,12 +116,13 @@ public final class LocationContextProvider {
             guard let request = MKReverseGeocodingRequest(location: location),
                   let item = try? await request.mapItems.first else { return nil }
             let city = item.addressRepresentations?.cityName ?? ""
-            let place = item.name ?? item.address?.shortAddress ?? ""
+            // A short address usually ends in the city already ("Amir Temur Ave 107B, Tashkent").
+            let place = PlaceText.normalizedPlace(item.name ?? item.address?.shortAddress, city: city) ?? ""
             return place.isEmpty && city.isEmpty ? nil : PlaceSuggestion(place: place, city: city)
         } else {
             guard let placemark = try? await CLGeocoder().reverseGeocodeLocation(location).first else { return nil }
-            let place = placemark.areasOfInterest?.first ?? placemark.name ?? ""
             let city = placemark.locality ?? ""
+            let place = PlaceText.normalizedPlace(placemark.areasOfInterest?.first ?? placemark.name, city: city) ?? ""
             return place.isEmpty && city.isEmpty ? nil : PlaceSuggestion(place: place, city: city)
         }
     }

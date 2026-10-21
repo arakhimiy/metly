@@ -12,11 +12,11 @@ enum OfflineAccept {
     static func connection(for request: ConnectRequest, sharing cardID: UUID, in context: ModelContext,
                            now: Date = .now) -> Connection {
         let event = context.activeEvent()
-        let meeting = MeetingContext(eventID: event?.id,
-                                     eventName: event?.name ?? request.eventName,
-                                     place: nonEmpty(event?.place),
-                                     city: nonEmpty(event?.city),
-                                     metAt: now)
+        let meeting = PlaceText.normalized(MeetingContext(eventID: event?.id,
+                                                          eventName: event?.name ?? request.eventName,
+                                                          place: nonEmpty(event?.place),
+                                                          city: nonEmpty(event?.city),
+                                                          metAt: now))
 
         let peerID = request.peerUserID
         var existing = FetchDescriptor<Connection>(predicate: #Predicate { $0.remoteUserID == peerID && $0.deletedAt == nil })
