@@ -54,6 +54,17 @@ enum CardLibrary {
         }
     }
 
+    /// Card Settings "Name". Returns whether the name changed. Read-only cards (beyond the Free
+    /// limit after a downgrade) can't be edited, and that includes their name.
+    @discardableResult
+    static func rename(_ card: Card, to name: String) -> Bool {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, trimmed != card.name, !card.isDeleted, !card.isReadOnly else { return false }
+        card.name = trimmed
+        card.markChanged()
+        return true
+    }
+
     /// Makes `card` the default (SPEC: "Used for Connect, events and widgets").
     static func setDefault(_ card: Card, profile: Profile) {
         guard profile.defaultCardID != card.id else { return }

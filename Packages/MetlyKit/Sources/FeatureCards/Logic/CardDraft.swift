@@ -42,12 +42,21 @@ extension CardDraft {
     @MainActor
     @discardableResult
     func apply(to card: Card, profile: Profile?) -> CardDraftCommit {
+        apply(to: card, profile: profile, since: CardDraft(card: card))
+    }
+
+    /// Like `apply(to:profile:)`, but writes only what the user changed relative to `original`
+    /// (the copy taken when the editor opened). A rename or design that reached the card meanwhile —
+    /// Card Settings committing its name field, or sync from another device — is kept, not reverted.
+    @MainActor
+    @discardableResult
+    func apply(to card: Card, profile: Profile?, since original: CardDraft) -> CardDraftCommit {
         var cardChanged = false
-        if hasValidName, trimmedName != card.name {
+        if hasValidName, trimmedName != original.trimmedName, trimmedName != card.name {
             card.name = trimmedName
             cardChanged = true
         }
-        if design != card.design {
+        if design != original.design, design != card.design {
             card.design = design
             cardChanged = true
         }

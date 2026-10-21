@@ -13,7 +13,7 @@ struct QRFullscreenScreen: View {
     @Query(ProfileQuery.current) private var profiles: [Profile]
 
     @State private var selectedCardID: UUID
-    /// The Offline QR switch; nil until the user touches it (then it follows `QRCodeMode` defaults).
+    /// The Offline QR switch; nil = automatic (`QRCodeMode.defaultsToOffline`), else the user's choice.
     @State private var prefersOffline: Bool?
     @State private var shownAt = Date.now
     @State private var followUp: Presentation?
@@ -58,13 +58,21 @@ struct QRFullscreenScreen: View {
             if phase == .active { brightness.activate() } else { brightness.deactivate() }
         }
         .onChange(of: services.network.isOnline) { _, isOnline in
-            if !isOnline { prefersOffline = true }
+            prefersOffline = QRCodeMode.preference(afterConnectivityChange: prefersOffline, isOnline: isOnline)
+        }
+        // The shown card was deleted (or a stale deep link named one): move the chooser to the
+        // card that is actually on screen instead of keeping a dangling selection.
+        .onChange(of: cards.map(\.id), initial: true) { _, ids in
+            if let id = QRCardSelection.resolve(selectedCardID, among: ids), id != selectedCardID {
+                selectedCardID = id
+            }
         }
     }
 
     /// The chosen card, or the first one if it was deleted meanwhile.
     private var selectedCard: Card? {
-        cards.first { $0.id == selectedCardID } ?? cards.first
+        let id = QRCardSelection.resolve(selectedCardID, among: cards.map(\.id))
+        return cards.first { $0.id == id }
     }
 
     private func done() {

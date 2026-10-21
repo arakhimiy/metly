@@ -18,6 +18,8 @@ struct CardSettingsForm: View {
     @State private var name: String
     @State private var cardActions = CardActionCoordinator()
     @State private var isShowingDuplicateLimit = false
+    /// Bumped when "Default Card" refuses to turn off, so the switch snaps back on.
+    @State private var defaultToggleResets = 0
     @FocusState private var isNameFocused: Bool
 
     init(card: Card, cards: [Card], profile: Profile?) {
@@ -37,8 +39,10 @@ struct CardSettingsForm: View {
                         .submitLabel(.done)
                         .focused($isNameFocused)
                         .onSubmit(commitName)
+                        .disabled(card.isReadOnly)
                 }
                 Toggle("Default Card", isOn: isDefault)
+                    .id(defaultToggleResets)
             } header: {
                 Text("Card")
             } footer: {
@@ -109,7 +113,9 @@ struct CardSettingsForm: View {
             services.sync.requestSync()
             router.showToast("\(card.name) is your default", systemImage: "checkmark.circle")
         } else if CardLibrary.isDefault(card, among: cards, profile: profile) {
-            // At least one card is always the default.
+            // At least one card is always the default. Nothing observable changed, so the switch
+            // would stay off on screen — rebuild it so it shows the real (on) state again.
+            defaultToggleResets += 1
             router.showToast("Pick another card as default", systemImage: "info.circle")
         }
     }
@@ -117,15 +123,11 @@ struct CardSettingsForm: View {
     // MARK: Actions
 
     private func commitName() {
-        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            name = card.name
-            return
+        if CardLibrary.rename(card, to: name) {
+            services.sync.requestSync()
+        } else if name.trimmingCharacters(in: .whitespacesAndNewlines) != card.name {
+            name = card.name   // blank, or the card can't be renamed (read-only / deleted)
         }
-        guard trimmed != card.name, !card.isDeleted else { return }
-        card.name = trimmed
-        card.markChanged()
-        services.sync.requestSync()
     }
 
     private func reorder(_ order: [UUID]) {
@@ -145,6 +147,13 @@ struct CardSettingsForm: View {
     private func duplicate() {
         guard CardManagement.canCreateCard(existingCount: cards.count, limits: services.entitlements.limits) else {
             isShowingDuplicateLimit = true
+            return
+        }
+        // A Pro design kept after a downgrade stays on this card, but a copy would be a new Pro card.
+        if case .requiresPro(let trigger) = CardDesignRules.duplicating(
+            card.design, allowsPro: services.entitlements.limits.allowsProTemplates
+        ) {
+            router.present(.paywall(trigger: trigger))
             return
         }
         CardLibrary.duplicate(card, in: modelContext)

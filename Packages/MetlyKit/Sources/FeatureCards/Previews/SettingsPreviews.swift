@@ -35,6 +35,16 @@ import SwiftUI
     .metlyPreview(.full, online: false)
 }
 
+/// Beyond the Free limit after a downgrade: name, design and duplicate are locked.
+#Preview("Card Settings · read-only card") {
+    PreviewPrepared(prepare: { $0.record(Card.self, id: PreviewStore.personalCardID)?.isReadOnly = true }) {
+        NavigationStack {
+            CardSettingsView(cardID: PreviewStore.personalCardID)
+        }
+    }
+    .metlyPreview(.full)
+}
+
 #Preview("Card Settings · deleted card") {
     NavigationStack {
         CardSettingsView(cardID: UUID())

@@ -24,6 +24,14 @@ nonisolated enum CardDesignRules {
         return .updated(updated)
     }
 
+    /// "Duplicate Card": the copy keeps the design. A Free user may still own a Pro-designed card
+    /// (kept after a downgrade), but a duplicate is a new card, so its Pro template / palette is gated.
+    static func duplicating(_ design: CardDesign, allowsPro: Bool) -> DesignOutcome {
+        if !allowsPro, design.template.isPro { return .requiresPro(.proTemplate) }
+        if !allowsPro, design.palette.isPro { return .requiresPro(.proPalette) }
+        return .updated(design)
+    }
+
     static func settingGradient(_ isOn: Bool, in design: CardDesign) -> DesignOutcome {
         if !isOn, design.template == .gradient { return .blocked(.gradientTemplateIsAlwaysGradient) }
         var updated = design

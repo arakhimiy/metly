@@ -38,7 +38,7 @@ struct CardEditorForm: View {
             .safeAreaInset(edge: .top, spacing: 0) {
                 EditorPreviewHeader(design: draft.design, content: previewContent, tab: $tab)
             }
-            .navigationTitle("\(draft.trimmedName.isEmpty ? card.name : draft.trimmedName) Card")
+            .navigationTitle("\(card.name) Card")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbar }
             .alert(lockedTemplateTitle, isPresented: isShowingProTemplateAlert, presenting: lockedTemplate) { _ in
@@ -143,7 +143,8 @@ struct CardEditorForm: View {
     }
 
     private func save() {
-        let commit = draft.apply(to: card, profile: profile)
+        // Only what was edited here: the card may have been renamed / synced while the editor was open.
+        let commit = draft.apply(to: card, profile: profile, since: original)
         router.dismiss()
         guard commit.changedAnything else { return }
         services.sync.requestSync()

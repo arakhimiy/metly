@@ -48,6 +48,7 @@ struct CardCreateScreen: View {
             }
         }
         .presentAfterDismiss($followUp)
+        // Also runs when a full-screen cover on top (the paywall) goes away.
         .onAppear(perform: prepare)
         .alert("Card Limit Reached", isPresented: $isShowingLimitAlert) {
             Button("Not Now", role: .cancel, action: router.dismiss)
@@ -97,10 +98,15 @@ struct CardCreateScreen: View {
     // MARK: Actions
 
     private func prepare() {
-        guard !hasPrepared else { return }
-        hasPrepared = true
-        name = CardNaming.defaultName(existing: cards.map(\.name))
-        if !canCreate { isShowingLimitAlert = true }
+        if !hasPrepared {
+            hasPrepared = true
+            name = CardNaming.defaultName(existing: cards.map(\.name))
+        }
+        // Re-checked on every appearance: back from the paywall still on Free → the alert again;
+        // upgraded → the wizard simply continues.
+        if CardCreateFlow.needsLimitAlert(canCreate: canCreate, hasCreatedCard: createdCardID != nil) {
+            isShowingLimitAlert = true
+        }
     }
 
     private func choose(_ method: CreateMethod) {
@@ -143,6 +149,6 @@ struct CardCreateScreen: View {
     }
 
     private func showLimitPaywall() {
-        router.replaceTop(with: .cover(.paywall(trigger: .cardLimit)))
+        CardCreateFlow.showLimitPaywall(router: router)
     }
 }
