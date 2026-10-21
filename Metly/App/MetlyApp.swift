@@ -56,7 +56,10 @@ struct MetlyApp: App {
                 .environment(client)
                 .environment(\.walletPassProvider, APIWalletPassProvider(client: client, container: container))
                 .modelContainer(container)
-                .preferredColorScheme(services.preferences.appearance.colorScheme)
+                // Window-level override (also covers sheets/covers and reliably reverts to System).
+                .onChange(of: services.preferences.appearance, initial: true) { _, appearance in
+                    AppearanceApplier.apply(appearance)
+                }
                 .onOpenURL { url in DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
                     if let url = activity.webpageURL { DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
@@ -76,12 +79,17 @@ struct MetlyApp: App {
     }
 }
 
-extension AppAppearance {
-    var colorScheme: ColorScheme? {
-        switch self {
-        case .system: nil
+/// `.preferredColorScheme(nil)` doesn't always revert after a forced scheme; UIKit's window override does.
+enum AppearanceApplier {
+    static func apply(_ appearance: AppAppearance) {
+        let style: UIUserInterfaceStyle = switch appearance {
+        case .system: .unspecified
         case .light: .light
         case .dark: .dark
+        }
+        for scene in UIApplication.shared.connectedScenes {
+            guard let windowScene = scene as? UIWindowScene else { continue }
+            for window in windowScene.windows { window.overrideUserInterfaceStyle = style }
         }
     }
 }

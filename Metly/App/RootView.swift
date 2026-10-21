@@ -45,7 +45,10 @@ struct RootView: View {
         guard router.phase == .launching else { return }
         if services.auth.isSignedIn {
             let profile = modelContext.currentProfile()
-            router.phase = profile?.isSetupComplete == true ? .main : .setup
+            // A returning account whose profile hasn't been pulled yet must not re-enter setup
+            // (saving SETUP_PROFILE would create a second Profile record).
+            let setupDone = profile?.isSetupComplete == true || services.preferences.hasCompletedOnboarding
+            router.phase = setupDone ? .main : .setup
             services.sync.requestSync()
             // Apple ID revoked while the app was closed → sign out (async, after first frame).
             if await !checkAppleCredential() {
