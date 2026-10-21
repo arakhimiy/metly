@@ -11,15 +11,19 @@ enum PeopleActions {
     // MARK: Remove / block
 
     /// Removes the person (one-sided) and their open reminders. Returns the Undo action.
+    ///
+    /// Undo works from a snapshot, not the model objects: the sync engine pushes the tombstone ~1.5 s later
+    /// and hard-deletes the local records once the server confirms (the follow-ups cascade with them) —
+    /// well inside the 4 s Undo window. Restoring then re-creates the records with the same ids.
     @discardableResult
     static func remove(_ person: Connection, in context: ModelContext) -> @MainActor () -> Void {
+        let snapshot = RemovedPerson(person)
         let reminders = person.followUps.filter { !$0.isDone && !$0.isDeleted }
         reminders.forEach { $0.markDeleted() }
         person.markDeleted()
         try? context.save()
         return {
-            person.restore()
-            reminders.forEach { $0.restore() }
+            snapshot.restore(in: context)
             try? context.save()
         }
     }
@@ -60,11 +64,11 @@ enum PeopleActions {
     @discardableResult
     static func accept(_ request: ConnectRequest, in context: ModelContext, now: Date = .now) -> Connection {
         let activeEvent = context.activeEvent()
-        let meeting = MeetingContext(eventID: activeEvent?.id,
-                                     eventName: activeEvent?.name ?? request.eventName,
-                                     place: nonEmpty(activeEvent?.place),
-                                     city: nonEmpty(activeEvent?.city),
-                                     metAt: now)
+        let meeting = PlaceText.normalized(MeetingContext(eventID: activeEvent?.id,
+                                                          eventName: activeEvent?.name ?? request.eventName,
+                                                          place: nonEmpty(activeEvent?.place),
+                                                          city: nonEmpty(activeEvent?.city),
+                                                          metAt: now))
 
         let peerID = request.peerUserID
         var existing = FetchDescriptor<Connection>(predicate: #Predicate { $0.remoteUserID == peerID && $0.deletedAt == nil })
@@ -98,8 +102,24 @@ enum PeopleActions {
         request.status = .accepted
         request.respondedAt = now
         request.markChanged()
+        settleOtherRequests(from: peerID, except: request.id, in: context, now: now)
         try? context.save()
         return person
+    }
+
+    /// Connecting settles every other pending request between the two people on the server
+    /// (docs/api/README.md); mirror that locally so People › Requests doesn't ask again. Not marked
+    /// changed: the server already does it and the next pull confirms.
+    private static func settleOtherRequests(from peerID: UUID, except requestID: UUID, in context: ModelContext, now: Date) {
+        let incoming = ConnectRequestDirection.incoming.rawValue
+        let pending = ConnectRequestStatus.pending.rawValue
+        let descriptor = FetchDescriptor<ConnectRequest>(predicate: #Predicate {
+            $0.peerUserID == peerID && $0.id != requestID && $0.directionRaw == incoming && $0.statusRaw == pending
+        })
+        for other in (try? context.fetch(descriptor)) ?? [] {
+            other.status = .accepted
+            other.respondedAt = now
+        }
     }
 
     /// Declines without notifying the requester (PLAN Q9).
