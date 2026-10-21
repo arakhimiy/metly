@@ -9,9 +9,11 @@ enum FollowUpStatus: Equatable {
     case due(Date)
     case overdue(Date)
 
-    init(person: Connection, now: Date = .now) {
+    /// Calendar days, like Home and FOLLOWUPS: a reminder due earlier today is still "Today", not "Overdue".
+    init(person: Connection, now: Date = .now, calendar: Calendar = .current) {
         if let open = person.openFollowUp {
-            self = open.dueAt < now ? .overdue(open.dueAt) : .due(open.dueAt)
+            let isOverdue = calendar.startOfDay(for: open.dueAt) < calendar.startOfDay(for: now)
+            self = isOverdue ? .overdue(open.dueAt) : .due(open.dueAt)
         } else if person.followUps.contains(where: { $0.isDone && !$0.isDeleted }) {
             self = .done
         } else {
