@@ -22,7 +22,8 @@ public extension Card {
             photoData: profile.photoData,
             logoData: profile.logoData,
             fields: fields,
-            qrPayload: qrPayload ?? url?.absoluteString ?? Brand.cardURL(slug: "preview").absoluteString
+            // Unpublished cards have no link yet: never encode a fake card URL (CardKit falls back to the site).
+            qrPayload: qrPayload ?? url?.absoluteString ?? ""
         )
     }
 }
