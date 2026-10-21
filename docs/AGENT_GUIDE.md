@@ -10,8 +10,8 @@ The HTML prototype in `prd/` is for **behaviour only** — never copy its visual
 - Keep the public initialisers of your module's entry views (`*Entry.swift`) exactly as they are — the app's `RouteResolver` calls them. Replace the bodies. Add files freely inside your module.
 - Need a contract change (new route, model field, service method, shared component)? Do NOT edit the frozen file. Work around it locally if you can and list the request in your final report under **Contract change requests**.
 - Features never `import` other features.
-- Commit your work on your branch (small logical commits are fine). End commit messages with:
-  `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`
+- Commit your work on your branch (small logical commits are fine). Use the machine's global git identity — never set
+  a repo-local `user.name`/`user.email` — and do NOT add `Co-Authored-By` trailers.
 
 ## 2. Build & test (8 GB machine — builds are serialised)
 
