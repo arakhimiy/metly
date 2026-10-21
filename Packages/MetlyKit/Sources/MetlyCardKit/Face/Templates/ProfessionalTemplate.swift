@@ -18,8 +18,12 @@ struct ProfessionalTemplate: View {
             }
             Spacer(minLength: 0)
             VStack(alignment: .leading, spacing: style.u(1)) {
-                CardText(text: model.fullName, style: style, size: 6, weight: .semibold, tracking: -0.02,
-                         minimumScale: 0.6)
+                // Like the title, the name stops short of the bottom-right QR plate (long names used to
+                // run underneath it at Minimal / Balanced density).
+                CardCapWidth(maxWidth: model.showsQR ? style.u(63) : style.width) {
+                    CardText(text: model.fullName, style: style, size: 6, weight: .semibold, tracking: -0.02,
+                             minimumScale: 0.6)
+                }
                 if !model.jobTitle.isEmpty {
                     CardCapWidth(maxWidth: model.showsQR ? style.u(63) : style.width) {
                         CardText(text: model.jobTitle, style: style, size: 3.2, color: style.muted)

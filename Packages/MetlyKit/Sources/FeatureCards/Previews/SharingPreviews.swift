@@ -29,6 +29,24 @@ import SwiftUI
     .metlyPreview(.full)
 }
 
+// The whole screen — Offline QR included — fits without scrolling at the default text size.
+#Preview("QR · iPhone SE size", traits: .fixedLayout(width: 375, height: 667)) {
+    QRFullscreenView(cardID: PreviewStore.workCardID)
+        .metlyPreview(.full)
+}
+
+#Preview("QR · iPhone 17 Pro size", traits: .fixedLayout(width: 402, height: 874)) {
+    QRFullscreenView(cardID: PreviewStore.workCardID)
+        .metlyPreview(.full)
+}
+
+#Preview("QR · paused, iPhone SE size", traits: .fixedLayout(width: 375, height: 667)) {
+    PreviewPrepared(prepare: PreviewStore.pauseLinks) {
+        QRFullscreenView(cardID: PreviewStore.workCardID)
+    }
+    .metlyPreview(.full)
+}
+
 #Preview("QR · dark, accessibility text") {
     QRFullscreenView(cardID: PreviewStore.personalCardID)
         .metlyPreview(.full)
