@@ -21,9 +21,10 @@ struct FollowUpsScreen: View {
     @State private var systemNotificationsDenied = false
     @State private var completedCount = 0
     @State private var snoozedCount = 0
+    @State private var clock = DayClock()
 
     var body: some View {
-        let now = Date.now
+        let now = clock.now
         let visible = followUps.filter { $0.connection?.isDeleted != true }
         let groups = FollowUpGrouping.groups(visible, now: now, calendar: .current)
         let lastOpenBucket = groups.last { $0.bucket != .done }?.bucket
@@ -45,6 +46,7 @@ struct FollowUpsScreen: View {
                 .listStyle(.insetGrouped)
             }
         }
+        .tracksDayChanges($clock)   // Overdue / Today / This Week roll over at midnight
         .navigationTitle("Follow-ups")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

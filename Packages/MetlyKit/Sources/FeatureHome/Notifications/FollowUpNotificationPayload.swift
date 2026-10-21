@@ -24,13 +24,16 @@ nonisolated struct FollowUpNotificationPayload: Equatable, Sendable {
     let fireDate: Date
     /// `metly://reminder/{id}` — the same link widgets use.
     let link: URL
-    /// Changes whenever anything visible or the fire date changes (skip re-adding unchanged requests).
+    /// Changes whenever anything visible, the fire date or the time zone changes (skip re-adding
+    /// unchanged requests). The trigger is wall-clock time in the zone it was built in, so a request
+    /// from another zone is stale even when the due moment is the same.
     let fingerprint: String
 
     /// - Parameter hasChannelValue: whether the person has a usable value for `channel`
     ///   (decides between the category with "Open {channel}" and the plain one).
+    /// - Parameter timeZone: the zone `makeRequest(calendar:)` computes the wall-clock trigger in.
     init(followUpID: UUID, personName: String, what: String, channel: FollowUpChannel,
-         hasChannelValue: Bool, dueAt: Date) {
+         hasChannelValue: Bool, dueAt: Date, timeZone: TimeZone = .current) {
         self.followUpID = followUpID
         identifier = Self.identifier(for: followUpID)
         let name = personName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -40,7 +43,7 @@ nonisolated struct FollowUpNotificationPayload: Equatable, Sendable {
         categoryIdentifier = FollowUpNotificationCategory.identifier(for: hasChannelValue ? channel : nil)
         fireDate = dueAt
         link = URL(string: "\(Brand.urlScheme)://reminder/\(followUpID.uuidString)")!
-        fingerprint = "\(title)|\(body)|\(categoryIdentifier)|\(Int(dueAt.timeIntervalSince1970))"
+        fingerprint = "\(title)|\(body)|\(categoryIdentifier)|\(Int(dueAt.timeIntervalSince1970))|\(timeZone.identifier)"
     }
 
     static func identifier(for followUpID: UUID) -> String {

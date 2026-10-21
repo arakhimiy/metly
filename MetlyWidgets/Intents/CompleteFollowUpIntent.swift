@@ -5,8 +5,10 @@ import MetlyWidgetKit
 /// Follow-ups widget "Done" button.
 ///
 /// Runs in the widget extension, which must not write the SwiftData store: it queues the completion in
-/// the App Group (applied by the app's `WidgetSnapshotPublisher` on next launch / activation) and
-/// removes the row from the snapshot right away. WidgetKit reloads the widget when `perform()` returns.
+/// the App Group (applied by the app's `WidgetSnapshotPublisher` on next launch / activation), withdraws
+/// the reminder's pending / delivered local notification (the app skips queued completions when it
+/// reschedules) and removes the row from the snapshot right away. WidgetKit reloads the widget when
+/// `perform()` returns.
 struct CompleteFollowUpIntent: AppIntent {
     static let title: LocalizedStringResource = "Mark Follow-up Done"
     static let isDiscoverable = false
@@ -22,7 +24,7 @@ struct CompleteFollowUpIntent: AppIntent {
 
     func perform() async throws -> some IntentResult {
         guard let id = UUID(uuidString: followUpID) else { return .result() }
-        try WidgetSnapshotStore.appGroup.enqueueFollowUpCompletion(id)
+        try WidgetSnapshotStore.appGroup.enqueueFollowUpCompletion(id, notifications: SystemWidgetNotificationCenter())
         return .result()
     }
 }

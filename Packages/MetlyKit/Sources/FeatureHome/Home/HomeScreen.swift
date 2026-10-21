@@ -13,10 +13,11 @@ struct HomeScreen: View {
     @Query(FollowUp.open) private var openFollowUps: [FollowUp]
     @Query(Connection.live) private var connections: [Connection]
     @Query(Event.active) private var activeEvents: [Event]
+    @State private var clock = DayClock()
 
     var body: some View {
         let profile = profiles.first
-        let now = Date.now
+        let now = clock.now
         let calendar = Calendar.current
         let reminders = openFollowUps.filter { $0.connection?.isDeleted != true }
         let due = HomeSelection.dueToday(reminders, now: now, calendar: calendar)
@@ -37,6 +38,7 @@ struct HomeScreen: View {
             }
         }
         .listStyle(.insetGrouped)
+        .tracksDayChanges($clock)   // "Follow Up Today" rolls over at midnight / when back in the foreground
         .navigationTitle(greeting(for: profile))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

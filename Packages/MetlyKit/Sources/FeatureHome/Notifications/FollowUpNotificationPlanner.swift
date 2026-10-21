@@ -19,7 +19,9 @@ nonisolated enum FollowUpNotificationPlanner {
 
     /// Payloads for every open reminder due in the future, earliest first, capped at `maxPending`.
     /// Nothing when follow-up reminders are turned off (or delivered by the Telegram bot instead).
+    /// - Parameter timeZone: the zone the triggers' wall-clock components are computed in.
     static func payloads(for candidates: [Candidate], now: Date, enabled: Bool,
+                         timeZone: TimeZone = .current,
                          limit: Int = maxPending) -> [FollowUpNotificationPayload] {
         guard enabled else { return [] }
         return candidates
@@ -28,7 +30,8 @@ nonisolated enum FollowUpNotificationPlanner {
             .prefix(limit)
             .map {
                 FollowUpNotificationPayload(followUpID: $0.id, personName: $0.personName, what: $0.what,
-                                            channel: $0.channel, hasChannelValue: $0.hasChannelValue, dueAt: $0.dueAt)
+                                            channel: $0.channel, hasChannelValue: $0.hasChannelValue, dueAt: $0.dueAt,
+                                            timeZone: timeZone)
             }
     }
 

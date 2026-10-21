@@ -73,11 +73,21 @@ nonisolated public struct WidgetSnapshotStore: Sendable {
         }
     }
 
-    /// Widget "Done" tap: queue the completion for the app and hide the row right away.
-    public func enqueueFollowUpCompletion(_ followUpID: UUID, at date: Date = .now) throws {
+    /// Widget "Done" tap: queue the completion for the app, withdraw the reminder's local notification
+    /// and hide the row right away. The app applies the queue only when it next runs, so without the
+    /// withdrawal the reminder could still fire after it was marked done.
+    public func enqueueFollowUpCompletion(_ followUpID: UUID, at date: Date = .now,
+                                          notifications: any WidgetNotificationCenter = SystemWidgetNotificationCenter()) throws {
         let action = WidgetPendingAction.completeFollowUp(followUpID, at: date)
         try enqueue(action)
+        notifications.removeNotifications(withIdentifiers: [WidgetFollowUpNotification.identifier(for: followUpID)])
         try updateSnapshot { snapshot in snapshot = snapshot.applying([action]) }
+    }
+
+    /// Follow-ups marked done on the widget that the app hasn't applied to its store yet. The app's
+    /// notification scheduler skips them, so it never re-adds a notification the widget withdrew.
+    public func pendingFollowUpCompletionIDs() -> Set<UUID> {
+        Set(pendingActions().filter { $0.kind == .completeFollowUp }.map(\.targetID))
     }
 
     /// Deletes snapshot and queue (tests, sign-out clean-up).
