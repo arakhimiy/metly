@@ -53,6 +53,8 @@ final class ConnectModel {
     @ObservationIgnored private var lostTasks: [NearbyPeerHandle: Task<Void, Never>] = [:]
     @ObservationIgnored private var outgoingTask: Task<Void, Never>?
     @ObservationIgnored private var outgoingRequest: ConnectRequestDTO?
+    /// Requests the user cancelled; the peer may have accepted one just before the cancel reached the server.
+    @ObservationIgnored private var withdrawnRequestIDs: Set<UUID> = []
     @ObservationIgnored private var receiveTimeout: Task<Void, Never>?
 
     init(mode: ConnectMode = .nearby,
@@ -139,6 +141,10 @@ final class ConnectModel {
         let runID = UUID()
         currentRunID = runID
         resetDiscovery()
+        // A superseded run skips its own cleanup (below), so stop whatever it left advertising and browsing
+        // now: a restart that fails before `transport.start` (offline, hidden) must not leave MPC running.
+        transport.stop()
+        tapDetector?.stop()
         guard modelContext.currentProfile()?.privacySettings.showInNearby ?? true else {
             availability = .hiddenFromNearby
             return
@@ -376,14 +382,33 @@ final class ConnectModel {
         send(.incomingDismissed)
     }
 
-    /// Listens for live requests while CONNECT is open (INCOMING_REQUEST).
+    /// Listens for live requests while CONNECT is open (INCOMING_REQUEST), and for answers to requests
+    /// the user cancelled a moment too late.
     func listenForIncoming() async {
         guard let client else { return }
         for await event in client.events() {
-            if case .requestReceived(let request) = event {
+            switch event {
+            case .requestReceived(let request):
                 receive(request)
+            case .requestUpdated(let request, let connection):
+                withdrawnRequestUpdated(request, connection: connection)
+            case .shareBackReceived, .syncAvailable, .stateChanged:
+                break
             }
         }
+    }
+
+    /// The peer accepted just as the user tapped Cancel: the server can't withdraw an accepted request, so
+    /// both sides are connected — show CONNECTED instead of silently adding them to People.
+    func withdrawnRequestUpdated(_ request: ConnectRequestDTO, connection: ConnectionDTO?) {
+        guard withdrawnRequestIDs.contains(request.id), request.status != .pending else { return }
+        withdrawnRequestIDs.remove(request.id)
+        guard request.status == .accepted, let modelContext else { return }
+        let peerID = request.peer.userID
+        var descriptor = FetchDescriptor<Connection>(predicate: #Predicate { $0.remoteUserID == peerID && $0.deletedAt == nil })
+        descriptor.fetchLimit = 1
+        guard let connectionID = connection?.id ?? (try? modelContext.fetch(descriptor).first)?.id else { return }
+        send(.outcome(.accepted(connectionID: connectionID), peerUserID: peerID))
     }
 
     private func receive(_ dto: ConnectRequestDTO) {
@@ -441,6 +466,7 @@ final class ConnectModel {
             do {
                 let request = try await client.sendConnectRequest(to: .nearbyToken(peer.token), cardID: cardID, method: method)
                 guard !Task.isCancelled else {
+                    self?.withdrawnRequestIDs.insert(request.id)
                     Task { await client.cancel(request) }   // cancelled while sending: withdraw it
                     return
                 }
@@ -461,6 +487,7 @@ final class ConnectModel {
         outgoingTask = nil
         if let request = outgoingRequest, let client {
             outgoingRequest = nil
+            withdrawnRequestIDs.insert(request.id)
             Task { await client.cancel(request) }
         }
     }
