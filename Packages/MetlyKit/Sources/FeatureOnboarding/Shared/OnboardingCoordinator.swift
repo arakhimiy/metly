@@ -23,7 +23,7 @@ enum OnboardingCoordinator {
             store.setupPrefill = nil
             services.preferences.hasCompletedOnboarding = true
             services.sync.requestSync()
-            enterMain(router: router, store: store, otherwisePresenting: nil)
+            enterMain(router: router, store: store, presenting: nil)
         }
     }
 
@@ -41,18 +41,21 @@ enum OnboardingCoordinator {
             UIApplication.shared.registerForRemoteNotifications()
         }
         services.sync.requestSync()
-        enterMain(router: router, store: store, otherwisePresenting: .cardCreate(origin: .setup))
+        enterMain(router: router, store: store, presenting: .cardCreate(origin: .setup))
     }
 
-    /// Enters the tab bar. A pending deferred invite wins over `cover`: the person the user met
-    /// is surfaced as SCANNED_CARD in the Scan tab so they can save/connect right away.
-    static func enterMain(router: AppRouter, store: OnboardingStore, otherwisePresenting cover: CoverDestination?) {
+    /// Enters the tab bar, presenting `cover` (CARD_CREATE after setup). A pending deferred invite
+    /// is surfaced as SCANNED_CARD in the Scan tab — underneath `cover`: a brand-new account has no
+    /// card yet, and Connect needs one to share back, so the first card is created before the
+    /// inviter's card shows.
+    static func enterMain(router: AppRouter, store: OnboardingStore, presenting cover: CoverDestination?) {
+        router.enterMain()
         if let slug = store.pendingInviteSlug {
             store.pendingInviteSlug = nil
-            router.enterMain()
             router.open(.scannedCard(invitePayload(slug: slug)), in: .scan)
-        } else {
-            router.enterMain(presenting: cover)
+        }
+        if let cover {
+            router.present(cover)
         }
     }
 

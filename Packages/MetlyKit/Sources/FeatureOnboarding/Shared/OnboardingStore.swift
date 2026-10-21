@@ -28,8 +28,8 @@ nonisolated enum LocalNetworkAccess: String, Codable, Sendable {
 ///   cleared when setup finishes.
 /// - `pendingInviteSlug` — written when the user taps "Connect with {first}" on DEFERRED_WELCOME.
 ///   When onboarding ends (end of SETUP_PERMISSIONS, or straight after sign-in for an existing account)
-///   `OnboardingCoordinator` opens that person's card (`.scannedCard` in the Scan tab) instead of
-///   CARD_CREATE and clears the slug.
+///   `OnboardingCoordinator` opens that person's card (`.scannedCard` in the Scan tab, under
+///   CARD_CREATE after setup) and clears the slug.
 /// - `localNetworkAccess` — remembered result of the Local Network probe.
 nonisolated struct OnboardingStore {
     let defaults: UserDefaults

@@ -118,9 +118,9 @@ struct SetupProfileView: View {
             modelContext.insert(profile)
             return profile
         }()
-        profile.fullName = form.fullName.trimmingCharacters(in: .whitespacesAndNewlines)
-        profile.jobTitle = form.jobTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-        profile.company = form.company.trimmingCharacters(in: .whitespacesAndNewlines)
+        profile.fullName = form.profileFullName
+        profile.jobTitle = form.profileJobTitle
+        profile.company = form.profileCompany
         profile.photoData = form.photoData
         for (kind, value) in form.contactValues {
             // Keeps any privacy the user already chose; new fields get the SPEC §3.3 defaults.

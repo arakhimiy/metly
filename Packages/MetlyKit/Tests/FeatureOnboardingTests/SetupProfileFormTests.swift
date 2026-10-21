@@ -59,6 +59,22 @@ struct SetupProfileFormTests {
         #expect(SetupProfileForm(telegram: input).normalizedTelegram == expected)
     }
 
+    /// Regression: the API rejects a profile with a contact value over 200 characters (or a name,
+    /// title or company over 80); the rejected profile then never synced, so setup's values never
+    /// reached the server.
+    @Test func contactValuesAreCappedAtTheServerLimit() {
+        let form = SetupProfileForm(fullName: "A", email: String(repeating: "a", count: 250) + "@b.uz")
+        #expect(form.contactValues.first { $0.kind == .email }?.value.count == 200)
+    }
+
+    @Test func nameTitleAndCompanyAreTrimmedAndCapped() {
+        let long = String(repeating: "x", count: 95)
+        let form = SetupProfileForm(fullName: "  Aziza Karimova ", jobTitle: long, company: " Tezkor ")
+        #expect(form.profileFullName == "Aziza Karimova")
+        #expect(form.profileJobTitle.count == 80)
+        #expect(form.profileCompany == "Tezkor")
+    }
+
     @Test func contactValuesAreTrimmedInDisplayOrder() {
         let form = SetupProfileForm(fullName: "A", phone: " +998 90 123 45 67 ", email: " a@b.uz ", telegram: "aziza")
         let values = form.contactValues
