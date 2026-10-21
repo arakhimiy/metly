@@ -5,7 +5,7 @@ import SwiftData
 import SwiftUI
 
 /// SETUP_PERMISSIONS — "Allow Access". Ends setup and enters the app with CARD_CREATE
-/// (or the pending deferred invite's card, see `OnboardingCoordinator`).
+/// (with a pending deferred invite's card waiting in the Scan tab, see `OnboardingCoordinator`).
 struct SetupPermissionsView: View {
     let store: OnboardingStore
 
@@ -43,7 +43,8 @@ struct SetupPermissionsView: View {
         }
         .bottomActionBar {
             Button(action: finish) {
-                Text(store.pendingInviteSlug == nil ? "Create My First Card" : "Continue")
+                // CARD_CREATE follows in every case (a pending invite's card waits in the Scan tab).
+                Text("Create My First Card")
                     .font(.body.weight(.semibold))
                     .frame(maxWidth: .infinity)
             }

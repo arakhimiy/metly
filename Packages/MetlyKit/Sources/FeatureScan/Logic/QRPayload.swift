@@ -6,7 +6,8 @@ nonisolated enum QRPayload: Equatable, Sendable {
     case metlyCard(url: URL, slug: String)
     /// One of the owner's own cards → "That's your card" toast.
     case ownCard(slug: String)
-    /// A foreign contact card (vCard text) → SCANNED_CARD contact review (SPEC §9 Q41).
+    /// A foreign contact card (vCard text; a MECARD arrives converted to vCard) → SCANNED_CARD
+    /// contact review (SPEC §9 Q41).
     case vCard(String)
     /// Any other web link → ALERT_INVALID_QR with "Open in Safari".
     case webLink(URL)

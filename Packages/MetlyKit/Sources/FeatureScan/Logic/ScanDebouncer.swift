@@ -5,14 +5,18 @@ import Foundation
 /// • a code is handled again only after it has been **out of view** for `interval`
 ///   (every sighting extends the window, even while handling is blocked by an alert or push);
 /// • two different codes are never handled less than `minimumGap` apart;
-/// • `pause(for:)` ignores everything for a moment (e.g. right after coming back to SCAN,
-///   so the code that was just handled doesn't immediately re-open its card).
+/// • `screenAppeared(at:)` (back on SCAN) holds back only the code that was just handled, so it
+///   doesn't immediately re-open its card — any other code, including one already in view when
+///   SCAN opens, is handled at once (VisionKit reports a code only once while it stays in view,
+///   so a blanket pause would swallow it);
+/// • `pause(for:)` ignores everything for a moment.
 nonisolated struct ScanDebouncer: Sendable {
     var interval: TimeInterval = 2
     var minimumGap: TimeInterval = 1
 
     private var lastSeen: [String: Date] = [:]
     private var lastHandledAt: Date?
+    private var lastHandledPayload: String?
     private var quietUntil: Date?
 
     init(interval: TimeInterval = 2, minimumGap: TimeInterval = 1) {
@@ -32,12 +36,19 @@ nonisolated struct ScanDebouncer: Sendable {
         if let previous, now.timeIntervalSince(previous) < interval { return false }
         if let lastHandledAt, now.timeIntervalSince(lastHandledAt) < minimumGap { return false }
         lastHandledAt = now
+        lastHandledPayload = payload
         return true
     }
 
     /// Ignores every detection for `duration` (sightings are still recorded).
     mutating func pause(for duration: TimeInterval, from now: Date = .now) {
         quietUntil = now.addingTimeInterval(duration)
+    }
+
+    /// SCAN came (back) on screen: the code that was just handled counts as seen now, so it has to
+    /// leave the frame for `interval` before it opens again. Nothing else is held back.
+    mutating func screenAppeared(at now: Date = .now) {
+        if let lastHandledPayload { lastSeen[lastHandledPayload] = now }
     }
 
     private mutating func prune(now: Date) {

@@ -42,7 +42,8 @@ public struct SetupFlowView: View {
 /// "Connect with {first}" stores `invite.cardSlug` as the pending invite (`OnboardingStore`) and
 /// pushes sign-in. When onboarding ends — after SETUP_PERMISSIONS, or right after sign-in for an
 /// existing account — `OnboardingCoordinator.enterMain` opens
-/// `router.open(.scannedCard(ScannedCardPayload(url:slug:)), in: .scan)` instead of CARD_CREATE.
+/// `router.open(.scannedCard(ScannedCardPayload(url:slug:)), in: .scan)`; after setup CARD_CREATE
+/// is presented on top, so the new user has a card to share back when they tap Connect.
 /// "Not Now" clears it and shows the regular welcome pages.
 public struct DeferredWelcomeView: View {
     public let invite: DeferredInvite

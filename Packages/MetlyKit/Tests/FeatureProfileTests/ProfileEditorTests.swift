@@ -54,6 +54,25 @@ struct ProfileEditorTests {
         withExtendedLifetime(container) {}
     }
 
+    /// Regression: the API rejects a profile whose name / title / company is over 80 characters or a
+    /// contact value over 200 (`openapi.yaml` Profile). A rejected profile stays unsynced until it
+    /// changes again — so every later edit, including making a field Private, never reached the
+    /// public page. Values are capped where they're typed.
+    @Test func valuesAreCappedAtTheServerLimits() throws {
+        let (container, profile) = try makeProfile()
+        let editor = profile.editor
+        editor.textBinding(\.fullName).wrappedValue = String(repeating: "A", count: 120)
+        editor.textBinding(\.jobTitle).wrappedValue = String(repeating: "B", count: 81)
+        editor.textBinding(\.company).wrappedValue = String(repeating: "C", count: 80)
+        editor.valueBinding(for: .website).wrappedValue = "example.com/" + String(repeating: "x", count: 300)
+        #expect(profile.fullName.count == 80)
+        #expect(profile.jobTitle.count == 80)
+        #expect(profile.company.count == 80)
+        #expect(profile.field(.website).value.count == 200)
+        #expect(profile.field(.website).value.hasPrefix("example.com/"))
+        withExtendedLifetime(container) {}
+    }
+
     @Test func choosingTelegramBeforeLinkingAsksToLink() throws {
         let (container, profile) = try makeProfile()
         let recorder = EditRecorder()

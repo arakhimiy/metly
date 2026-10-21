@@ -68,6 +68,17 @@ nonisolated struct SetupProfileForm: Equatable, Sendable {
 
     // MARK: Normalised output
 
+    /// Server limits for the synced profile (`docs/api/openapi.yaml` → Profile, ContactField): a
+    /// longer value gets the whole profile rejected, and a rejected profile doesn't sync again
+    /// until it changes.
+    static let maxTextLength = 80
+    static let maxContactLength = 200
+
+    /// Values written to the profile: trimmed and capped at the server limits.
+    var profileFullName: String { fullName.trimmed.capped(at: Self.maxTextLength) }
+    var profileJobTitle: String { jobTitle.trimmed.capped(at: Self.maxTextLength) }
+    var profileCompany: String { company.trimmed.capped(at: Self.maxTextLength) }
+
     /// Telegram handles are stored with a leading "@" (links like t.me/… are kept as typed).
     var normalizedTelegram: String {
         let value = telegram.trimmed.replacing(" ", with: "")
@@ -77,10 +88,17 @@ nonisolated struct SetupProfileForm: Equatable, Sendable {
 
     /// Contact values written to the profile, in display order.
     var contactValues: [(kind: ContactFieldKind, value: String)] {
-        [(.phone, phone.trimmed), (.email, email.trimmed), (.telegram, normalizedTelegram)]
+        let values: [(kind: ContactFieldKind, value: String)] = [
+            (.phone, phone.trimmed), (.email, email.trimmed), (.telegram, normalizedTelegram),
+        ]
+        return values.map { ($0.kind, $0.value.capped(at: Self.maxContactLength)) }
     }
 }
 
 private extension String {
     nonisolated var trimmed: String { trimmingCharacters(in: .whitespacesAndNewlines) }
+
+    nonisolated func capped(at limit: Int) -> String {
+        count > limit ? String(prefix(limit)) : self
+    }
 }

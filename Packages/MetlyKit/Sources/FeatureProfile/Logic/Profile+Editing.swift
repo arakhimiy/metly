@@ -30,11 +30,23 @@ final class ProfileEditor {
         }
     }
 
+    /// Name, job title or company, capped at `ProfileFieldLimits.text`.
+    func textBinding(_ keyPath: ReferenceWritableKeyPath<Profile, String> & Sendable) -> Binding<String> {
+        Binding {
+            self.profile[keyPath: keyPath]
+        } set: { newValue in
+            let value = ProfileFieldLimits.capped(newValue, at: ProfileFieldLimits.text)
+            guard self.profile[keyPath: keyPath] != value else { return }
+            self.profile[keyPath: keyPath] = value
+            self.profile.markChanged()
+        }
+    }
+
     func valueBinding(for kind: ContactFieldKind) -> Binding<String> {
         Binding {
             self.profile.field(kind).value
         } set: { newValue in
-            self.profile.update(kind) { $0.value = newValue }
+            self.profile.update(kind) { $0.value = ProfileFieldLimits.capped(newValue, at: ProfileFieldLimits.contactValue) }
         }
     }
 
@@ -73,7 +85,10 @@ extension Profile {
 
     /// Applies `ContactFieldRules.normalized` to a field (called when the user leaves it).
     func normalizeField(_ kind: ContactFieldKind) {
-        update(kind) { $0.value = ContactFieldRules.normalized($0.value, for: kind) }
+        update(kind) {
+            // Normalising can add a character (Telegram's "@").
+            $0.value = ProfileFieldLimits.capped(ContactFieldRules.normalized($0.value, for: kind), at: ProfileFieldLimits.contactValue)
+        }
     }
 
     /// Mutates one contact field and marks the profile changed when something actually changed.

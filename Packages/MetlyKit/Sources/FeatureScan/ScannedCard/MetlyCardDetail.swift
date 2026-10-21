@@ -49,7 +49,7 @@ struct MetlyCardDetail: View {
                         EmptyView()
                     } else if existing == nil {
                         Button("Add to People", systemImage: "person.crop.circle.badge.plus", action: addToPeople)
-                    } else if !isConnected, model.connectPhase == .idle || model.connectPhase == .noResponse {
+                    } else if !isConnected, model.offersConnect {
                         Button("Connect", systemImage: "person.badge.plus", action: connect)
                     }
                     Button("Save to Contacts", systemImage: "square.and.arrow.down", action: saveToContacts)

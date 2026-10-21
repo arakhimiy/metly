@@ -78,6 +78,16 @@ struct ScanScreen: View {
         .onDisappear(perform: disappear)
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { camera.refreshAccess() }
+            // iOS turns the torch off in the background; keep the button truthful.
+            if phase == .background { camera.isTorchOn = false }
+        }
+        .onChange(of: isCameraActive) { _, isActive in
+            if isActive {
+                debouncer.screenAppeared()
+            } else {
+                // The feed is torn down under a modal; the torch would otherwise stay lit.
+                camera.isTorchOn = false
+            }
         }
         .onChange(of: camera.isTorchOn) { camera.applyTorch() }
         .onChange(of: mode) { camera.isTorchOn = false }
@@ -85,7 +95,7 @@ struct ScanScreen: View {
 
     private var cameraLayer: some View {
         ZStack {
-            if isVisible {
+            if isCameraActive {
                 ScanCameraFeed(mode: mode, camera: camera, onCode: handleScanned)
                     .ignoresSafeArea()
                     .accessibilityLabel("Camera Viewfinder")
@@ -101,6 +111,11 @@ struct ScanScreen: View {
         }
     }
 
+    /// On screen and not covered by a sheet or cover (`onDisappear` doesn't fire under modals).
+    private var isCameraActive: Bool {
+        ScanCameraPolicy.isCameraActive(isVisible: isVisible, presentations: router.presentations)
+    }
+
     private var ownSlugs: Set<String> {
         Set(cards.map(\.slug).filter { !$0.isEmpty })
     }
@@ -110,8 +125,9 @@ struct ScanScreen: View {
     private func appear() {
         isVisible = true
         camera.refreshAccess()
-        // Coming back from a scanned card: don't re-open it while the code is still in frame.
-        debouncer.pause(for: 1.2)
+        // Coming back from a scanned card: don't re-open it while its code is still in frame
+        // (any other code — including one already in view — is handled right away).
+        debouncer.screenAppeared()
     }
 
     private func disappear() {
@@ -126,7 +142,7 @@ struct ScanScreen: View {
     // MARK: QR codes & links
 
     private func handleScanned(_ payload: String) {
-        let isBlocked = !isVisible || showsInvalidCode || showsPaperNotRead || isReadingCard
+        let isBlocked = !isCameraActive || showsInvalidCode || showsPaperNotRead || isReadingCard
         guard debouncer.shouldHandle(payload, isBlocked: isBlocked) else { return }
         route(QRPayloadClassifier.classify(payload, ownSlugs: ownSlugs), source: .camera)
     }
@@ -139,13 +155,13 @@ struct ScanScreen: View {
         switch payload {
         case .metlyCard(let url, let slug):
             successFeedback += 1
-            router.push(.scannedCard(ScannedCardPayload(url: url, slug: slug)))
+            ScanCameraPolicy.show(.scannedCard(ScannedCardPayload(url: url, slug: slug)), router: router)
         case .ownCard:
             successFeedback += 1
             router.showToast("That’s Your Card", systemImage: "person.crop.rectangle")
         case .vCard(let text):
             successFeedback += 1
-            router.push(.scannedCard(ScannedCardPayload(vCard: text)))
+            ScanCameraPolicy.show(.scannedCard(ScannedCardPayload(vCard: text)), router: router)
         case .webLink(let url):
             showInvalidCode(InvalidCodeAlert(source: source, url: url, domain: payload.displayDomain))
         case .other:
@@ -183,7 +199,7 @@ struct ScanScreen: View {
     private func handlePaperDraft(_ draft: PaperCardDraft) {
         if draft.isReadable {
             successFeedback += 1
-            router.push(.paperReview(draft))
+            ScanCameraPolicy.show(.paperReview(draft), router: router)
         } else {
             warningFeedback += 1
             paperNotRead = PaperNotReadAlert(imageData: draft.imageData)
@@ -192,6 +208,6 @@ struct ScanScreen: View {
     }
 
     private func enterManually(imageData: Data?) {
-        router.push(.paperReview(PaperCardDraft(imageData: imageData)))
+        ScanCameraPolicy.show(.paperReview(PaperCardDraft(imageData: imageData)), router: router)
     }
 }
