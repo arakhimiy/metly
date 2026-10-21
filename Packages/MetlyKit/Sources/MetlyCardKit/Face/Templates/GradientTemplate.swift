@@ -21,7 +21,12 @@ struct GradientTemplate: View {
                 CardText(text: model.fullName, style: style, size: 7, weight: .semibold, tracking: -0.025,
                          minimumScale: 0.6)
                 if !model.jobTitle.isEmpty {
-                    CardText(text: model.jobTitle, style: style, size: 3.2, color: style.muted)
+                    // The title sits right above the QR plate at Minimal density: keep it clear of the plate.
+                    CardCapWidth(maxWidth: model.showsQR
+                                 ? style.bottomBlockWidth(spec: 62, qrInset: 6, qrSize: 23, showsQR: true)
+                                 : style.width) {
+                        CardText(text: model.jobTitle, style: style, size: 3.2, color: style.muted)
+                    }
                 }
             }
             Spacer(minLength: 0)

@@ -89,6 +89,26 @@ import SwiftUI
     }
 }
 
+/// Regression: long names / titles next to the bottom-right QR plate (Professional name, Gradient title).
+#Preview("Long text beside the QR") {
+    ScrollView {
+        VStack(spacing: 16) {
+            ForEach([CardDensity.minimal, .balanced], id: \.self) { density in
+                CardFaceView(design: CardDesign(template: .professional, palette: .ink, appearance: .dark,
+                                                density: density, visibleFields: Set(ContactFieldKind.allCases)),
+                             content: .sampleLong)
+                ForEach(CardAlignment.allCases, id: \.self) { alignment in
+                    CardFaceView(design: CardDesign(template: .gradient, palette: .ink, appearance: .dark,
+                                                    alignment: alignment, density: density,
+                                                    visibleFields: Set(ContactFieldKind.allCases)),
+                                 content: .sampleLong)
+                }
+            }
+        }
+        .padding()
+    }
+}
+
 #Preview("Thumbnail sizes") {
     VStack(alignment: .leading, spacing: 16) {
         HStack {
