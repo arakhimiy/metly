@@ -10,10 +10,14 @@ import UIKit
 /// Offline-first sync between SwiftData and the backend (docs/api/README.md § Sync protocol).
 ///
 /// One pass = push dirty records (`POST /v1/sync/push`) → profile photo/logo uploads →
-/// queued connect-request actions → pull deltas (`GET /v1/sync?since=`) → photo/logo downloads.
+/// queued connect-request actions → pull deltas (`GET /v1/sync?since=`) → photo/logo and
+/// connection avatar downloads.
 /// Triggered (debounced) by local saves, app activation, connectivity returning, realtime
 /// `sync.available`, the `com.metly.app.sync` background task and `requestSync()` calls.
 /// Pauses while offline; failures back off exponentially (2 s … 5 min).
+///
+/// Local deletes are held for `tombstoneGracePeriod` before their tombstone is pushed: the server's
+/// confirmation hard-deletes the record, and the Undo toast (4 s) must still be able to restore it.
 @MainActor
 @Observable
 public final class SyncEngine: SyncServicing {
@@ -30,17 +34,28 @@ public final class SyncEngine: SyncServicing {
     @ObservationIgnored public var shouldSync: () -> Bool = { true }
     @ObservationIgnored var debounceInterval: Duration
     @ObservationIgnored var pullPageSize = 500
+    /// How long a local delete stays local (Undo window + margin) before its tombstone is pushed.
+    @ObservationIgnored var tombstoneGracePeriod: TimeInterval = 6
 
     @ObservationIgnored private let container: ModelContainer
     @ObservationIgnored private let api: any MetlyAPI
     @ObservationIgnored private let network: NetworkMonitor
     @ObservationIgnored private var debounceTask: Task<Void, Never>?
     @ObservationIgnored private var retryTask: Task<Void, Never>?
+    @ObservationIgnored private var heldTombstonesTask: Task<Void, Never>?
+    /// When the tombstones the current pass held back fall due.
+    @ObservationIgnored private var heldTombstonesDue: Date?
     @ObservationIgnored private var running: Task<Void, Never>?
     @ObservationIgnored private var needsAnotherPass = false
     @ObservationIgnored private var failureCount = 0
+    /// Bumped by `reset()`: a pass started before it never writes anything again.
+    @ObservationIgnored private var generation = 0
     @ObservationIgnored private var observers: [any NSObjectProtocol] = []
     @ObservationIgnored private static var backgroundTasksRegistered = false
+
+    /// Avatars are fetched this many at a time; bigger files are ignored.
+    private static let avatarDownloadWidth = 4
+    private static let maxAvatarBytes = 5_000_000
 
     /// - Parameter observeChanges: listen to `ModelContext.didSave`, app activation and
     ///   connectivity (false in unit tests, which call `syncNow()` directly).
@@ -69,31 +84,42 @@ public final class SyncEngine: SyncServicing {
 
     /// Runs a full pass now (or joins the running one and schedules one more pass after it).
     public func syncNow() async {
+        await startPass().value
+    }
+
+    /// The running pass (asked for one more round), or a new one.
+    private func startPass() -> Task<Void, Never> {
         if let running {
             needsAnotherPass = true
-            await running.value
-            return
+            return running
         }
+        let generation = generation
         let task = Task { [weak self] in
             guard let self else { return }
             repeat {
                 self.needsAnotherPass = false
                 await self.performSync()
-            } while self.needsAnotherPass && self.status == .idle
-            self.running = nil
+            } while self.needsAnotherPass && self.status == .idle && self.generation == generation && !Task.isCancelled
+            // After `reset()` a newer pass may own `running`.
+            if self.generation == generation { self.running = nil }
         }
         running = task
-        await task.value
+        return task
     }
 
-    /// Sign-out: stop everything and forget the cursor/bookkeeping.
+    /// Sign-out: stop everything and forget the cursor/bookkeeping. A pass still in flight is
+    /// cancelled and never writes to the store or the bookkeeping again.
     public func reset() {
+        generation += 1
         debounceTask?.cancel()
         retryTask?.cancel()
+        heldTombstonesTask?.cancel()
         running?.cancel()
         debounceTask = nil
         retryTask = nil
+        heldTombstonesTask = nil
         running = nil
+        needsAnotherPass = false
         failureCount = 0
         state.reset()
         status = .idle
@@ -129,20 +155,32 @@ public final class SyncEngine: SyncServicing {
 
     private func runBackgroundTask(_ task: BGTask) {
         scheduleBackgroundSync()
-        let work = Task { [weak self] () -> Bool in
-            guard let self else { return false }
-            await self.syncNow()
-            return self.status == .idle
-        }
+        let work = backgroundPass()
         task.expirationHandler = { work.cancel() }
         Task { @MainActor in
             task.setTaskCompleted(success: await work.value)
         }
     }
 
+    /// The work behind the BGTask. Cancelling it (expiration) cancels the pass itself — awaiting a
+    /// pass doesn't react to cancellation — so `setTaskCompleted` is called before iOS kills the app.
+    func backgroundPass() -> Task<Bool, Never> {
+        Task { [weak self] () -> Bool in
+            guard let self else { return false }
+            let pass = self.startPass()
+            await withTaskCancellationHandler {
+                await pass.value
+            } onCancel: {
+                pass.cancel()
+            }
+            return !Task.isCancelled && self.status == .idle
+        }
+    }
+
     // MARK: Pass
 
     private func performSync() async {
+        let generation = generation
         guard shouldSync() else {
             status = .idle
             return
@@ -152,12 +190,15 @@ public final class SyncEngine: SyncServicing {
             return
         }
         status = .syncing
+        heldTombstonesDue = nil
         do {
             try await pushRecords()
             try await pushProfileImages()
             try await pushConnectRequestActions()
             try await pull()
             try await pullProfileImages()
+            try await pullConnectionAvatars()
+            guard generation == self.generation else { return }
             let now = Date.now
             lastSyncedAt = now
             state.lastSyncedAt = now
@@ -166,9 +207,18 @@ public final class SyncEngine: SyncServicing {
             retryTask = nil
             status = .idle
             scheduleBackgroundSync()
+            scheduleHeldTombstones(due: heldTombstonesDue)
         } catch {
+            // `reset()` (sign-out) happened while this pass was in flight: it owns nothing any more.
+            guard generation == self.generation else { return }
             handle(APIError(error))
         }
+    }
+
+    /// Called after every `await` of a pass, before it writes: a cancelled pass (sign-out `reset()`,
+    /// BGTask expiry) stops even when the response it was waiting for still arrives.
+    private func checkpoint() throws {
+        try Task.checkCancellation()
     }
 
     private func handle(_ error: APIError) {
@@ -196,17 +246,34 @@ public final class SyncEngine: SyncServicing {
         }
     }
 
+    /// Held-back tombstones go out by themselves once their Undo window has passed. `due` comes from
+    /// what the pass's push actually held back (one that fell due mid-pass still gets its pass).
+    private func scheduleHeldTombstones(due: Date?) {
+        heldTombstonesTask?.cancel()
+        heldTombstonesTask = nil
+        guard let due else { return }
+        let delay = max(0, due.timeIntervalSinceNow) + 0.05
+        heldTombstonesTask = Task { [weak self] in
+            do { try await Task.sleep(for: .seconds(delay)) } catch { return }
+            await self?.syncNow()
+        }
+    }
+
     // MARK: Push
 
     private func pushRecords() async throws {
         let context = container.mainContext
         for _ in 0..<20 {
-            let batch = SyncPushBatch.collect(from: context, state: state)
+            let cutoff = Date.now.addingTimeInterval(-tombstoneGracePeriod)
+            let batch = SyncPushBatch.collect(from: context, state: state, tombstonesDeletedBefore: cutoff)
+            heldTombstonesDue = batch.earliestHeldDeletion?.addingTimeInterval(tombstoneGracePeriod)
             guard !batch.isEmpty else { return }
             let response = try await api.sync.push(SyncPushRequest(deviceID: state.installID, changes: batch.changes))
+            try checkpoint()
             var applier = SyncApplier(context: context, mode: .echo(pushed: batch.pushed))
             applier.apply(response.records)
-            if let profile = applier.profile { state.noteRemoteImages(of: profile) }
+            _ = SyncApplier.resolve(applier.pendingLinks, in: context)
+            noteServerAssets(from: applier)
             for result in response.results {
                 switch result.status {
                 case .rejected:
@@ -240,6 +307,7 @@ public final class SyncEngine: SyncServicing {
                 switch (request.syncState, request.direction, request.status) {
                 case (.pendingDelete, .incoming, .pending):
                     _ = try? await api.connect.declineRequest(id: request.id)
+                    try checkpoint()
                     context.delete(request)
                 case (.pendingDelete, _, _):
                     context.delete(request)
@@ -249,20 +317,25 @@ public final class SyncEngine: SyncServicing {
                         continue
                     }
                     let response = try await api.connect.acceptRequest(id: request.id, AcceptConnectRequest(cardID: cardID))
+                    try checkpoint()
                     context.upsert(response.connection)
                     if request.updatedAt == sentAt { context.upsert(response.request) }
                 case (.pendingUpsert, .incoming, .declined):
                     let response = try await api.connect.declineRequest(id: request.id)
+                    try checkpoint()
                     if request.updatedAt == sentAt { context.upsert(response) }
                 case (.pendingUpsert, .outgoing, .cancelled):
                     let response = try await api.connect.cancelRequest(id: request.id)
+                    try checkpoint()
                     if request.updatedAt == sentAt { context.upsert(response) }
                 default:
                     request.syncState = .synced
                 }
             } catch let error as APIError where !error.isTransient && error != .unauthorized && error != .cancelled {
                 // Expired / already answered elsewhere: take the server's view and move on.
-                if let canonical = try? await api.connect.fetchRequest(id: request.id) {
+                let canonical = try? await api.connect.fetchRequest(id: request.id)
+                try checkpoint()
+                if let canonical {
                     context.upsert(canonical)
                 } else {
                     request.syncState = .synced
@@ -289,6 +362,7 @@ public final class SyncEngine: SyncServicing {
             } else {
                 serverProfile = try await api.profile.deleteImage(kind)
             }
+            try checkpoint()
             let url = kind == .photo ? serverProfile.photoURL : serverProfile.logoURL
             state.setImageState(SyncStateStore.ImageState(syncedHash: localHash, syncedURL: url, remoteURL: url), for: kind)
         }
@@ -301,29 +375,40 @@ public final class SyncEngine: SyncServicing {
         var cursor = state.cursor
         var isSnapshot = cursor == nil
         var seen = Set<UUID>()
+        var links: [SyncApplier.PendingLink] = []
         while true {
             let response: SyncPullResponse
             do {
                 response = try await api.sync.pull(since: cursor, limit: pullPageSize)
             } catch let error as APIError where error.statusCode == 410 && cursor != nil {
+                try checkpoint()
                 // Cursor expired (tombstones purged): start over with a full snapshot.
                 cursor = nil
                 state.cursor = nil
                 isSnapshot = true
                 seen = []
+                links = []
                 continue
             }
+            try checkpoint()
             var applier = SyncApplier(context: context, mode: .pull)
             applier.apply(response.changes)
             seen.formUnion(applier.seenIDs)
-            if let profile = applier.profile { state.noteRemoteImages(of: profile) }
+            // A parent can arrive pages after its children (pages follow the change sequence).
+            links = SyncApplier.resolve(links + applier.pendingLinks, in: context)
+            noteServerAssets(from: applier)
             if let entitlement = response.entitlement { serverEntitlement = entitlement }
             try context.save()
             cursor = response.cursor
-            state.cursor = response.cursor
+            // A snapshot only counts once it's complete: until then the next pull starts it over,
+            // otherwise `reconcile` would never run for it.
+            if !isSnapshot { state.cursor = response.cursor }
             guard response.hasMore else { break }
         }
-        if isSnapshot { try reconcile(keeping: seen) }
+        if isSnapshot {
+            try reconcile(keeping: seen)
+            state.cursor = cursor
+        }
     }
 
     /// After a full snapshot, synced local records the server no longer has were deleted while
@@ -359,7 +444,9 @@ public final class SyncEngine: SyncServicing {
             if let url = image.remoteURL {
                 do {
                     downloaded = try await api.profile.downloadAsset(url)
+                    try checkpoint()
                 } catch let error as APIError where error.statusCode == 404 {
+                    try checkpoint()
                     image.syncedURL = url   // gone — don't retry forever
                     state.setImageState(image, for: kind)
                     continue
@@ -377,6 +464,85 @@ public final class SyncEngine: SyncServicing {
         if changed { try context.save() }
     }
 
+    /// Peers' profile photos (server-owned `avatarUrl`) → `Connection.avatarData`. Each URL is
+    /// fetched once, a few at a time off the main actor; failures are retried on the next pass and
+    /// never fail the sync. Only bytes put there by this method are ever cleared.
+    private func pullConnectionAvatars() async throws {
+        let context = container.mainContext
+        var avatars = state.avatars
+        var downloads: [(id: UUID, url: URL)] = []
+        var changed = false
+        for (id, avatar) in avatars where avatar.needsDownload {
+            guard let connection = context.record(Connection.self, id: id), connection.deletedAt == nil else {
+                avatars[id] = nil
+                continue
+            }
+            if let url = avatar.remoteURL {
+                downloads.append((id, url))
+            } else {
+                if avatar.syncedURL != nil, connection.avatarData != nil {
+                    connection.avatarData = nil
+                    changed = true
+                }
+                avatars[id] = nil
+            }
+        }
+
+        if !downloads.isEmpty {
+            let api = api
+            let fetch: @Sendable (UUID, URL) async -> (UUID, URL, Result<Data, APIError>) = { id, url in
+                do {
+                    return (id, url, .success(try await api.profile.downloadAsset(url)))
+                } catch {
+                    return (id, url, .failure(APIError(error)))
+                }
+            }
+            let results = await withTaskGroup(of: (UUID, URL, Result<Data, APIError>).self) { group in
+                var queue = downloads[...]
+                for _ in 0..<min(Self.avatarDownloadWidth, queue.count) {
+                    let next = queue.removeFirst()
+                    group.addTask { await fetch(next.id, next.url) }
+                }
+                var results: [(UUID, URL, Result<Data, APIError>)] = []
+                for await result in group {
+                    results.append(result)
+                    if let next = queue.popFirst() {
+                        group.addTask { await fetch(next.id, next.url) }
+                    }
+                }
+                return results
+            }
+            try checkpoint()
+            for (id, url, result) in results {
+                switch result {
+                case .success(let data):
+                    guard let connection = context.record(Connection.self, id: id), connection.deletedAt == nil else {
+                        avatars[id] = nil
+                        continue
+                    }
+                    if data.count <= Self.maxAvatarBytes {
+                        connection.avatarData = data
+                        changed = true
+                    }
+                    avatars[id]?.syncedURL = url
+                case .failure(let error) where error.statusCode == 404 || error.statusCode == 410:
+                    avatars[id]?.syncedURL = url   // gone — don't retry forever
+                case .failure:
+                    break   // offline / server trouble: next pass
+                }
+            }
+        }
+        state.avatars = avatars
+        if changed { try context.save() }
+    }
+
+    /// Server-owned asset URLs seen while applying records.
+    private func noteServerAssets(from applier: SyncApplier) {
+        if let profile = applier.profile { state.noteRemoteImages(of: profile) }
+        state.noteRemoteAvatars(applier.avatarURLs)
+        state.forgetAvatars(applier.deletedConnectionIDs)
+    }
+
     // MARK: Observation
 
     private func startObserving() {
@@ -391,7 +557,12 @@ public final class SyncEngine: SyncServicing {
     }
 
     private func contextDidSave() {
-        if hasPushableChanges() { requestSync() }
+        if hasPushableChanges() {
+            requestSync()
+        } else {
+            // A fresh delete: push it once Undo is no longer offered.
+            scheduleHeldTombstones(due: SyncPushBatch.nextHeldTombstone(in: container.mainContext, grace: tombstoneGracePeriod))
+        }
     }
 
     private func observeNetwork() {
@@ -411,17 +582,23 @@ public final class SyncEngine: SyncServicing {
         }
     }
 
-    /// True when something local still needs pushing (ignores records the server rejected).
+    /// True when something local needs pushing now (ignores records the server rejected and
+    /// deletes still inside their Undo window).
     public func hasPushableChanges() -> Bool {
         let context = container.mainContext
         let state = state
+        let cutoff = Date.now.addingTimeInterval(-tombstoneGracePeriod)
         func dirty<Model: SyncedRecord>(_ type: Model.Type) -> Bool {
-            SyncPushBatch.dirty(type, in: context).contains {
-                $0.syncState == .pendingDelete || !state.isRejected($0.id, updatedAt: $0.updatedAt)
+            SyncPushBatch.dirty(type, in: context).contains { record in
+                switch record.syncState {
+                case .pendingDelete: SyncPushBatch.isDue(record, cutoff: cutoff)
+                case .pendingUpsert: !state.isRejected(record.id, updatedAt: record.updatedAt)
+                case .synced: false
+                }
             }
         }
         return dirty(Profile.self) || dirty(Card.self) || dirty(Event.self) || dirty(Connection.self)
-            || dirty(FollowUp.self) || dirty(ConnectRequest.self)
+            || dirty(FollowUp.self) || !SyncPushBatch.dirty(ConnectRequest.self, in: context).isEmpty
     }
 
     // MARK: Helpers

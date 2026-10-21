@@ -62,6 +62,38 @@ struct APIClientTests {
         #expect(invalidated.count("called") == 1)
     }
 
+    @Test("Requests waiting on a rejected refresh all fail as .unauthorized, with one invalidation")
+    func concurrentRefreshRejected() async throws {
+        let backend = StubBackend()
+        let invalidated = Recorder()
+        backend.handle { request in
+            if request.url?.path() == "/v1/auth/refresh" {
+                try await Task.sleep(for: .milliseconds(80))   // keep it in flight while the others pile up
+                return (401, [:], .json(APIProblem(.invalidGrant, "Refresh token revoked.")))
+            }
+            return (401, [:], Data())
+        }
+        let client = backend.client(store: InMemorySessionStore(.test())) { invalidated.increment("called") }
+
+        let errors = await withTaskGroup(of: APIError?.self) { group in
+            for _ in 0..<6 {
+                group.addTask {
+                    do {
+                        _ = try await client.send(Endpoint<Item>(.get, "/v1/me"))
+                        return nil
+                    } catch {
+                        return APIError(error)
+                    }
+                }
+            }
+            return await group.reduce(into: [APIError?]()) { $0.append($1) }
+        }
+
+        #expect(errors.count == 6)
+        #expect(errors.allSatisfy { $0 == .unauthorized })
+        #expect(invalidated.count("called") == 1)
+    }
+
     @Test("Tokens about to expire are refreshed before the request")
     func proactiveRefresh() async throws {
         let backend = StubBackend()

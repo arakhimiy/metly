@@ -239,15 +239,7 @@ public extension ModelContext {
     /// accepting a request offline). That record is re-keyed to the server id instead of being
     /// duplicated; its follow-ups follow along through the relationship.
     func matchConnection(for dto: ConnectionDTO) -> Connection? {
-        if let existing = record(Connection.self, id: dto.id) { return existing }
-        guard dto.deletedAt == nil, let remoteID = dto.remoteUserID else { return nil }
-        let synced = SyncState.synced.rawValue
-        let descriptor = FetchDescriptor<Connection>(predicate: #Predicate {
-            $0.remoteUserID == remoteID && $0.deletedAt == nil && $0.syncStateRaw != synced
-        })
-        guard let optimistic = try? fetch(descriptor).first else { return nil }
-        optimistic.id = dto.id
-        return optimistic
+        matchConnectionReportingRekey(for: dto).connection
     }
 
     @discardableResult
@@ -290,5 +282,22 @@ public extension ModelContext {
                            createdAt: profile.createdAt, profileComplete: profile.isSetupComplete)
         return MockSeed.Account(user: user, profile: profile.dto, cards: cards, events: events, connections: connections,
                                 followUps: followUps, connectRequests: requests)
+    }
+}
+
+extension ModelContext {
+    /// `matchConnection(for:)`, plus the id the optimistic record had before it was re-keyed to
+    /// the server's (nil when matched by id). Push echoes know the record by the id it was sent with.
+    func matchConnectionReportingRekey(for dto: ConnectionDTO) -> (connection: Connection?, previousID: UUID?) {
+        if let existing = record(Connection.self, id: dto.id) { return (existing, nil) }
+        guard dto.deletedAt == nil, let remoteID = dto.remoteUserID else { return (nil, nil) }
+        let synced = SyncState.synced.rawValue
+        let descriptor = FetchDescriptor<Connection>(predicate: #Predicate {
+            $0.remoteUserID == remoteID && $0.deletedAt == nil && $0.syncStateRaw != synced
+        })
+        guard let optimistic = try? fetch(descriptor).first else { return (nil, nil) }
+        let previousID = optimistic.id
+        optimistic.id = dto.id
+        return (optimistic, previousID)
     }
 }

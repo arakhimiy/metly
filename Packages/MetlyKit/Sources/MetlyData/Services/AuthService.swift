@@ -42,6 +42,9 @@ public final class AuthService: AuthServicing {
     /// Set by the factory: realtime start/stop and push (un)registration around session changes.
     @ObservationIgnored var onSignedIn: () -> Void = {}
     @ObservationIgnored var onSignedOut: () async -> Void = {}
+    /// Upper bound for sign-out's network clean-up (push unregistration + logout).
+    @ObservationIgnored var signOutNetworkTimeout: Duration = .seconds(10)
+    @ObservationIgnored private var signingOut: Task<Void, Never>?
 
     public init(api: any MetlyAPI, sessionStore: any SessionStore, container: ModelContainer, preferences: AppPreferences,
                 sync: SyncEngine, isMock: Bool, observeRevocation: Bool = true) {
@@ -95,19 +98,45 @@ public final class AuthService: AuthServicing {
                                         fallbackEmail: credential.email, appleUserID: nil)
     }
 
-    /// Safe to call more than once (the UI also wipes defensively).
+    /// Safe to call more than once (the UI also wipes defensively); concurrent calls share one sign-out.
+    /// The UI shows onboarding before this returns, so a new sign-in may start meanwhile: it waits
+    /// for this sign-out to finish (`completeSignIn`), so the late wipe can't erase the new session.
     public func signOut() async {
+        if let signingOut { return await signingOut.value }
+        let task = Task {
+            await self.performSignOut()
+            self.signingOut = nil
+        }
+        signingOut = task
+        await task.value
+    }
+
+    private func performSignOut() async {
         let refreshToken = sessionStore.load()?.refreshToken
-        if isSignedIn, refreshToken != nil {
-            // Best effort — never block local sign-out on the network.
+        let hadSession = isSignedIn && refreshToken != nil
+        // Push unregistration needs a working session, and logout revokes it: unregister first,
+        // or this device keeps receiving the old account's notifications. Both are best effort and
+        // bounded — a slow server never keeps the device half signed out.
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.endServerSession(revoking: hadSession ? refreshToken : nil) }
+            group.addTask { [limit = signOutNetworkTimeout] in try? await Task.sleep(for: limit) }
+            await group.next()
+            group.cancelAll()
+        }
+        wipeLocalAccount()
+    }
+
+    private func endServerSession(revoking refreshToken: String?) async {
+        await onSignedOut()
+        if let refreshToken {
             try? await api.auth.logout(LogoutRequest(refreshToken: refreshToken))
         }
-        await wipeLocalAccount()
     }
 
     public func deleteAccount() async throws {
         try await api.account.deleteAccount()
-        await wipeLocalAccount()
+        await onSignedOut()
+        wipeLocalAccount()
     }
 
     public func requestDataExport() async throws {
@@ -156,6 +185,8 @@ public final class AuthService: AuthServicing {
 
     private func completeSignIn(_ response: AuthResponse, suggestedName: String?, fallbackEmail: String?,
                                 appleUserID: String?) async throws -> AuthResult {
+        // A sign-out still talking to the server would otherwise wipe this new session when it ends.
+        if let signingOut { await signingOut.value }
         let context = container.mainContext
         // A different account than the one whose data is on this device → start clean.
         let previousUser = sync.state.lastUserID
@@ -181,9 +212,8 @@ public final class AuthService: AuthServicing {
         return AuthResult(needsSetup: !profileComplete, suggestedName: suggestedName, email: session.email)
     }
 
-    private func wipeLocalAccount() async {
-        await onSignedOut()
-        // Everything below is synchronous; the store wipe is the last step.
+    /// Synchronous on purpose: nothing can interleave between stopping sync and wiping the store.
+    private func wipeLocalAccount() {
         sync.reset()
         sessionStore.clear()
         preferences.reset()

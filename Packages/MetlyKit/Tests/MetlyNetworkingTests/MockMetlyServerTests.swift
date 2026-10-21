@@ -108,6 +108,85 @@ struct MockMetlyServerTests {
         #expect(status == .expired)
     }
 
+    @Test("A request to someone you blocked is dropped silently: never accepted, it just expires")
+    func requestToBlockedPeerExpires() async throws {
+        let server = server()
+        let sardor = MockSeed.connectionIDs[1]
+        _ = try await server.blockConnection(id: sardor)
+        let stream = await server.connectEvents()
+        let request = try await server.sendRequest(SendConnectRequest(toSlug: "sardor-r4t5", cardID: MockSeed.workCardID, method: .scan))
+        var status: ConnectRequestStatus?
+        for await event in stream {
+            if case .requestUpdated(let updated, _) = event, updated.id == request.id {
+                status = updated.status
+                break
+            }
+        }
+        #expect(status == .expired)
+        #expect(await server.liveRecords().connections.first { $0.id == sardor }?.isBlocked == true)
+    }
+
+    @Test("An older or expired transaction doesn't downgrade an active subscription")
+    func staleTransactionKeepsActiveEntitlement() async throws {
+        func jws(_ productID: String, expires: Date) throws -> String {
+            let payload = try JSONSerialization.data(withJSONObject: ["productId": productID,
+                                                                      "expiresDate": expires.timeIntervalSince1970 * 1000])
+            let base64URL = payload.base64EncodedString().replacingOccurrences(of: "+", with: "-")
+                .replacingOccurrences(of: "/", with: "_").replacingOccurrences(of: "=", with: "")
+            return "eyJhbGciOiJFUzI1NiJ9.\(base64URL).c2ln"
+        }
+        let server = server()
+        let yearly = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("com.metly.pro.yearly",
+                                                                                         expires: .now.addingTimeInterval(365 * 86_400))))
+        #expect(yearly.plan == .pro)
+
+        let stale = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("com.metly.pro.monthly",
+                                                                                        expires: .now.addingTimeInterval(-86_400))))
+        #expect(stale.plan == .pro)
+        #expect(try await server.fetchEntitlement().productID == "com.metly.pro.yearly")
+        #expect(await server.plan == .pro)
+    }
+
+    @Test("Accepting uses the receiver's own current event for name, place and city — never mixed with the request's")
+    func acceptUsesOwnEventContext() async throws {
+        let server = server()   // the demo's incoming request was made during Tashkent Tech Week (Hyatt Regency)
+        _ = try await server.endEvent(id: MockSeed.eventID)
+        let now = Date.now
+        let summit = EventDTO(id: UUID(), name: "Samarkand Summit", place: "Registan Hall", city: "Samarkand", startDate: now,
+                              endDate: now.addingTimeInterval(3600), cardID: MockSeed.workCardID, status: .active,
+                              createdAt: now, updatedAt: now)
+        _ = try await server.upsertEvent(summit)
+
+        let response = try await server.acceptRequest(id: MockSeed.incomingRequestID, AcceptConnectRequest(cardID: MockSeed.workCardID))
+
+        #expect(response.connection.context.eventName == "Samarkand Summit")
+        #expect(response.connection.context.place == "Registan Hall")
+        #expect(response.connection.context.city == "Samarkand")
+        #expect(response.connection.context.eventID == summit.id)
+        #expect(response.connection.eventID == summit.id)
+    }
+
+    @Test("Live (Nearby/Tap) incoming requests expire after their short lifetime; async ones last 7 days")
+    func liveIncomingRequestExpires() async throws {
+        let server = server()
+        let stream = await server.connectEvents()
+        let live = try #require(await server.simulateIncomingRequest(fromSlug: "kamila-x1y2", method: .nearby))
+        let scanned = try #require(await server.simulateIncomingRequest(fromSlug: "sardor-r4t5", method: .scan))
+        #expect(try #require(scanned.expiresAt) > .now.addingTimeInterval(6 * 86_400))
+        let liveExpiry = try #require(live.expiresAt)
+        try #require(liveExpiry < .now.addingTimeInterval(120), "a Nearby request must not stay acceptable for days")
+
+        var status: ConnectRequestStatus?
+        for await event in stream {
+            if case .requestUpdated(let updated, _) = event, updated.id == live.id {
+                status = updated.status
+                break
+            }
+        }
+        #expect(status == .expired)
+        #expect(try await server.fetchRequest(id: scanned.id).status == .pending)
+    }
+
     @Test func incomingRequestAcceptCreatesConnection() async throws {
         let server = server()
         let response = try await server.acceptRequest(id: MockSeed.incomingRequestID, AcceptConnectRequest(cardID: MockSeed.workCardID))

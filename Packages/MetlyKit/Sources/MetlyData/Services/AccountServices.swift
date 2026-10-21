@@ -49,7 +49,8 @@ public final class DeferredLinkService: DeferredLinkServicing {
     }
 }
 
-/// Sends StoreKit 2 transactions to the server and mirrors the confirmed plan into `Entitlements`.
+/// Sends StoreKit 2 transactions to the server; a server-confirmed Pro plan StoreKit doesn't see is
+/// mirrored into `Entitlements` (StoreKit-derived values are never overridden).
 @MainActor
 public final class SubscriptionVerifier: SubscriptionVerifying {
     private let api: any MetlyAPI
@@ -74,7 +75,12 @@ public final class SubscriptionVerifier: SubscriptionVerifying {
         return entitlement
     }
 
+    /// StoreKit stays the source of truth (`SubscriptionManager`): a reply — possibly for a superseded,
+    /// expired or refunded transaction forwarded from `Transaction.updates` — never overrides a Pro plan
+    /// StoreKit proves. It can only add Pro that StoreKit doesn't see (bought under another Apple ID);
+    /// downgrades arrive through StoreKit itself.
     private func apply(_ entitlement: EntitlementDTO) {
+        guard !entitlements.isPro, entitlement.plan == .pro else { return }
         entitlements.plan = entitlement.plan
         entitlements.productID = entitlement.productID
         entitlements.renewsAt = entitlement.renewsAt ?? entitlement.expiresAt

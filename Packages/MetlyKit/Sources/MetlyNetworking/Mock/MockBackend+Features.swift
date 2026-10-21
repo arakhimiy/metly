@@ -80,15 +80,21 @@ extension MockBackend {
         return request
     }
 
-    mutating func createIncomingRequest(from peer: MockSeed.Peer, method: ConnectMethod, now: Date) -> ConnectRequestDTO {
+    /// Live methods (Nearby, Tap Phones) expire after `liveLifetime` (60 s on the real server); the
+    /// others after 7 days.
+    mutating func createIncomingRequest(from peer: MockSeed.Peer, method: ConnectMethod, liveLifetime: TimeInterval,
+                                        now: Date) -> ConnectRequestDTO {
         let event = events.values.first { $0.status == .active }
+        let lifetime = Self.isLive(method) ? liveLifetime : 7 * 86_400
         let request = ConnectRequestDTO(id: UUID(), direction: .incoming, peer: peer.summary, myCardID: nil, method: method,
                                         status: .pending, eventName: event?.name, place: event?.place, createdAt: now,
-                                        expiresAt: now.addingTimeInterval(7 * 86_400), updatedAt: now)
+                                        expiresAt: now.addingTimeInterval(lifetime), updatedAt: now)
         requests[request.id] = request
         touch(.connectRequest, request.id)
         return request
     }
+
+    static func isLive(_ method: ConnectMethod) -> Bool { method == .nearby || method == .tapPhones }
 
     /// Marks a request accepted and creates the owner's connection to the peer.
     mutating func completeRequest(id: UUID, myCardID: UUID?, now: Date) throws -> ConnectAcceptResponse {
@@ -131,11 +137,18 @@ extension MockBackend {
                 connection.setValue(field.value, for: field.kind)
             }
         }
-        if existing != nil, connection.context.eventName != (request.eventName ?? event?.name) {
+        // The owner's side of the meeting: their own active event as a whole (name, venue, city) —
+        // never the requester's venue next to the owner's city. Without one: what the request carried.
+        let context = if let event {
+            MeetingContext(eventID: event.id, eventName: event.name, place: event.place.isEmpty ? nil : event.place,
+                           city: event.city.isEmpty ? nil : event.city, metAt: now)
+        } else {
+            MeetingContext(eventName: request.eventName, place: request.place, metAt: now)
+        }
+        if existing != nil, connection.context.eventName != context.eventName {
             connection.previousMeetings.insert(connection.context, at: 0)
         }
-        connection.context = MeetingContext(eventID: event?.id, eventName: request.eventName ?? event?.name,
-                                            place: request.place ?? event?.place, city: event?.city, metAt: now)
+        connection.context = context
         connection.eventID = event?.id
         connection.updatedAt = now
         connection.deletedAt = nil
@@ -237,6 +250,11 @@ extension MockBackend {
             if let millis = json["expiresDate"] as? Double { expiresAt = Date(timeIntervalSince1970: millis / 1000) }
             originalTransactionID = (json["originalTransactionId"] as? String) ?? (json["originalTransactionId"] as? Int).map(String.init)
             environment = json["environment"] as? String ?? environment
+        }
+        // Account-level state: an older/expired transaction (an upgraded-from plan, a refund replayed by
+        // `Transaction.updates`) never replaces a subscription that is active for longer.
+        if entitlement.plan == .pro, let activeUntil = entitlement.expiresAt, activeUntil > now, expiresAt < activeUntil {
+            return entitlement
         }
         entitlement = EntitlementDTO(plan: expiresAt > now ? .pro : .free, productID: productID, expiresAt: expiresAt,
                                      willRenew: true, renewsAt: expiresAt, originalTransactionID: originalTransactionID,

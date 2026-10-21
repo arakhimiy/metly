@@ -19,6 +19,9 @@ person.note = text
 person.markChanged()          // synced automatically, also offline
 reminder.markDeleted()        // tombstone → pushed → hard-deleted after the server confirms
 ```
+Deletes stay local for ~6 s before the tombstone is pushed, so an Undo toast (`record.restore()`) works
+for its whole 4 s. Peers' profile photos (`connection.avatarUrl`) are downloaded by the sync engine into
+`Connection.avatarData` — read `avatarData`, never fetch avatars yourself.
 
 Sync status for UI (skeletons, "Last synced"): `services.sync.status` (`.idle / .syncing / .offline /
 .failed(message)`) and `services.sync.lastSyncedAt` — `AppServices.sync` is the `@Observable`
@@ -71,7 +74,9 @@ updates by itself); listen only to react in UI:
 ```
 `client.realtimeState` (`.connecting/.connected/.disconnected`) is observable. With the mock,
 `client.mockServer?.simulateIncomingRequest()` and `simulateShareBack(name:phone:telegram:)` drive
-these flows from DEBUG buttons/previews.
+these flows from DEBUG buttons/previews. Like the server, a simulated Nearby / Tap Phones request
+expires after 60 s (`connect.request.updated` with `expired`); scan / email-lookup ones last 7 days.
+Requests you send to someone you blocked are never accepted (they expire → `.noResponse`).
 
 ### Errors
 Every call throws `APIError` (`MetlyNetworking`): `.offline`, `.timedOut`, `.unauthorized`,
@@ -165,8 +170,12 @@ connections (their `updatedAt` = max(own, event's)).
 - One live connection per (owner, `remoteUserId`). A pushed connection that duplicates another live
   one for the same Metly user is merged into the existing record (newer `updatedAt` wins, empty
   fields are filled), returned as canonical, and the pushed id is tombstoned (both in `records`).
+  Follow-ups that reference the pushed id — in the same push (they are usually created together) or
+  later — are stored against the surviving connection and returned with its id; never cascade-delete them.
   `POST /v1/connect/requests/{id}/accept` reuses that connection too. (The app creates a connection
   optimistically when accepting offline; this keeps it from duplicating.)
+- Pull pages follow the change sequence, so a parent edited after its children can arrive pages later;
+  the device links children once the parent arrives (no need to reorder pages).
 - Slugs are globally unique and never reused (deleted cards keep their slug retired).
 
 ### Slugs & publishing

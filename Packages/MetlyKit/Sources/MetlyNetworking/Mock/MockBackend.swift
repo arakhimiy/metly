@@ -20,6 +20,8 @@ struct MockBackend: Sendable {
     var assets: [URL: Data] = [:]
     /// Slugs of deleted cards (public page shows "unavailable", never reassigned).
     var retiredSlugs: Set<String> = []
+    /// Duplicate connection id → the twin it was merged into (children follow the survivor).
+    var mergedConnectionIDs: [UUID: UUID] = [:]
 
     /// Change feed: record id → sequence number of its latest change (records and tombstones).
     private(set) var changeLog: [UUID: (seq: Int, type: SyncRecordType)] = [:]
@@ -228,6 +230,14 @@ struct MockBackend: Sendable {
             let tombstone = TombstoneDTO(type: .connection, id: incoming.id, deletedAt: incoming.updatedAt)
             tombstones[incoming.id] = tombstone
             touch(.connection, incoming.id)
+            mergedConnectionIDs[incoming.id] = twin.id
+            // Follow-ups of the duplicate (this push or later ones) belong to the survivor.
+            for (id, var followUp) in followUps where followUp.connectionID == incoming.id {
+                followUp.connectionID = twin.id
+                followUps[id] = followUp
+                touch(.followUp, id)
+                canonical.followUps.append(followUp)
+            }
             canonical.connections.append(merged)
             canonical.tombstones.append(tombstone)
             return SyncResultDTO(type: .connection, id: incoming.id, status: .applied)
@@ -252,6 +262,7 @@ struct MockBackend: Sendable {
         }
         var followUp = incoming
         followUp.deletedAt = nil
+        if let survivor = followUp.connectionID.flatMap({ mergedConnectionIDs[$0] }) { followUp.connectionID = survivor }
         followUps[followUp.id] = followUp
         tombstones[followUp.id] = nil
         touch(.followUp, followUp.id)

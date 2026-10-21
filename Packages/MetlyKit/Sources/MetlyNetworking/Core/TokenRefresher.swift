@@ -34,26 +34,28 @@ actor TokenRefresher {
 
         let store = store
         let refreshCall = refreshCall
+        let onInvalidated = onInvalidated
+        // The outcome is decided inside the shared task, so every caller waiting on it gets the
+        // same mapped error (not the raw `400/401 invalid_grant`).
         let task = Task<AuthSession, any Error> {
-            let tokens = try await refreshCall(session.refreshToken)
-            let updated = session.refreshed(with: tokens)
-            try store.save(updated)
-            return updated
+            do {
+                let tokens = try await refreshCall(session.refreshToken)
+                let updated = session.refreshed(with: tokens)
+                try store.save(updated)
+                return updated
+            } catch {
+                let apiError = APIError(error)
+                if case .server(let status, _) = apiError, [400, 401, 403].contains(status) {
+                    // invalid_grant / revoked / reused refresh token → the session is dead.
+                    store.clear()
+                    onInvalidated()
+                    throw APIError.unauthorized
+                }
+                throw apiError
+            }
         }
         inFlight = task
         defer { inFlight = nil }
-
-        do {
-            return try await task.value
-        } catch {
-            let apiError = APIError(error)
-            if case .server(let status, _) = apiError, [400, 401, 403].contains(status) {
-                // invalid_grant / revoked / reused refresh token → the session is dead.
-                store.clear()
-                onInvalidated()
-                throw APIError.unauthorized
-            }
-            throw apiError
-        }
+        return try await task.value
     }
 }
