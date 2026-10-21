@@ -31,11 +31,11 @@ struct RootView: View {
         .animation(.default, value: router.phase)
         .toastHost(level: 0)
         .task { await bootstrap() }
-        // Session expired / Apple ID revoked while running.
+        // Session expired / Apple ID revoked while running: back to sign-in, but keep local data —
+        // unsynced offline edits survive, and signing in as a different account wipes first.
         .onChange(of: services.auth.isSignedIn) { _, signedIn in
             guard !signedIn, router.phase == .main || router.phase == .setup else { return }
             router.signedOut()
-            Task { await services.auth.signOut() }
         }
     }
 
