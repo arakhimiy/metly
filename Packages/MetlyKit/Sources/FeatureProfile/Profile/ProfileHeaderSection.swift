@@ -20,7 +20,7 @@ struct ProfileHeaderSection: View {
                 AvatarPickerButton(profile: profile)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    TextField("Full Name", text: editor.binding(\.fullName))
+                    TextField("Full Name", text: editor.textBinding(\.fullName))
                         .font(.title3.bold())
                         .textContentType(.name)
                         .textInputAutocapitalization(.words)
@@ -30,7 +30,7 @@ struct ProfileHeaderSection: View {
 
                     Divider()
 
-                    TextField("Job Title", text: editor.binding(\.jobTitle))
+                    TextField("Job Title", text: editor.textBinding(\.jobTitle))
                         .textContentType(.jobTitle)
                         .textInputAutocapitalization(.words)
                         .submitLabel(.next)
@@ -43,7 +43,7 @@ struct ProfileHeaderSection: View {
             LabeledFieldRow(title: "Company") {
                 SettingsIcon("building.2.fill", color: .gray)
             } field: {
-                TextField("Company", text: editor.binding(\.company))
+                TextField("Company", text: editor.textBinding(\.company))
                     .textContentType(.organizationName)
                     .textInputAutocapitalization(.words)
                     .submitLabel(.next)

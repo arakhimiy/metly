@@ -51,11 +51,11 @@ struct ProfileForm: View {
         let editor = profile.editor
         switch field {
         case .name:
-            editor.binding(\.fullName).wrappedValue = profile.fullName.trimmingCharacters(in: .whitespacesAndNewlines)
+            editor.textBinding(\.fullName).wrappedValue = profile.fullName.trimmingCharacters(in: .whitespacesAndNewlines)
         case .jobTitle:
-            editor.binding(\.jobTitle).wrappedValue = profile.jobTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+            editor.textBinding(\.jobTitle).wrappedValue = profile.jobTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         case .company:
-            editor.binding(\.company).wrappedValue = profile.company.trimmingCharacters(in: .whitespacesAndNewlines)
+            editor.textBinding(\.company).wrappedValue = profile.company.trimmingCharacters(in: .whitespacesAndNewlines)
         case .contact(let kind):
             profile.normalizeField(kind)
         }

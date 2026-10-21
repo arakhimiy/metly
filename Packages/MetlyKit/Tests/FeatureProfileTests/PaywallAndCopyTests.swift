@@ -32,6 +32,15 @@ struct PaywallAndCopyTests {
         #expect(!titles.contains { $0.split(separator: " ").contains("ai") })
     }
 
+    /// No products (StoreKit configuration not active, storefront without them) must show the
+    /// marketing + Try Again / Restore state instead of StoreKit's bare "Subscription Unavailable".
+    @Test func paywallFallsBackWhenNoProPlanLoads() {
+        #expect(PaywallAvailability(loadedProductIDs: []) == .unavailable)
+        #expect(PaywallAvailability(loadedProductIDs: ["com.metly.app.tip.small"]) == .unavailable)
+        #expect(PaywallAvailability(loadedProductIDs: [ProProduct.monthly.id]) == .available)
+        #expect(PaywallAvailability(loadedProductIDs: ProProduct.allIDs) == .available)
+    }
+
     @Test func yearlyPlanSaves44Percent() {
         #expect(PaywallPricing.savingsPercent(yearly: Decimal(string: "19.99")!, monthly: Decimal(string: "2.99")!) == 44)
         #expect(PaywallPricing.savingsPercent(yearly: 40, monthly: 3) == nil)
