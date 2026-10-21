@@ -39,21 +39,50 @@ struct RootView: View {
         }
     }
 
+    /// Picks the first screen without waiting on the network (cold launch used to sit on a blank
+    /// screen for seconds). Slow checks run after the UI is up.
     private func bootstrap() async {
         guard router.phase == .launching else { return }
         if services.auth.isSignedIn {
-            guard await checkAppleCredential() else {
-                router.signedOut()
-                await services.auth.signOut()
-                return
-            }
             let profile = modelContext.currentProfile()
             router.phase = profile?.isSetupComplete == true ? .main : .setup
             services.sync.requestSync()
-        } else if !services.preferences.hasCompletedOnboarding, let invite = await services.deferredLinks.claimPendingInvite() {
+            // Apple ID revoked while the app was closed → sign out (async, after first frame).
+            if await !checkAppleCredential() {
+                router.signedOut()
+                await services.auth.signOut()
+            }
+        } else if !services.preferences.hasCompletedOnboarding,
+                  let invite = await claimInvite(timeout: .seconds(1)) {
             router.phase = .deferredWelcome(invite)
         } else {
             router.phase = .onboarding
         }
+    }
+
+    /// First launch only: give install attribution a short window, then show onboarding.
+    private func claimInvite(timeout: Duration) async -> DeferredInvite? {
+        let deferredLinks = services.deferredLinks
+        let gate = ResumeOnce()
+        return await withCheckedContinuation { continuation in
+            Task {
+                let invite = await deferredLinks.claimPendingInvite()
+                if gate.claim() { continuation.resume(returning: invite) }
+            }
+            Task {
+                try? await Task.sleep(for: timeout)
+                if gate.claim() { continuation.resume(returning: nil) }
+            }
+        }
+    }
+}
+
+/// Lets exactly one of two racing main-actor tasks resume a continuation.
+@MainActor
+private final class ResumeOnce {
+    private var done = false
+    func claim() -> Bool {
+        defer { done = true }
+        return !done
     }
 }
