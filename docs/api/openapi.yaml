@@ -654,7 +654,7 @@ paths:
         Reminder delivery is server-scheduled at `dueAt` in the device `timeZone` via APNs
         (PUSH_FOLLOWUP, category with "Open Telegram" / "Snooze 1 Day") or the Telegram bot when
         `notificationPrefs.delivery == telegramBot`. The app also schedules a local notification as an
-        offline fallback (the server push carries `apns-collapse-id = followUpId` so they don't double).
+        offline fallback (the server push carries `apns-collapse-id = followup.{FOLLOWUPID-UPPERCASE}` (the app's local notification id) so they don't double).
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/FollowUp' } } }
@@ -898,7 +898,7 @@ paths:
       description: |
         Verify the JWS (x5c chain to Apple Root CA G3, bundleId `com.metly.app`, environment), then
         confirm with the App Store Server API (`/inApps/v1/subscriptions/{originalTransactionId}`).
-        Products: `com.metly.pro.yearly`, `com.metly.pro.monthly`. Link `originalTransactionId` ↔ user
+        Products: `com.metly.app.pro.yearly`, `com.metly.app.pro.monthly`. Link `originalTransactionId` ↔ user
         (`appAccountToken` = user id when the app sets it); one transaction cannot unlock two accounts.
       parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
       requestBody:
@@ -1602,7 +1602,7 @@ components:
       required: [plan, willRenew, isInBillingRetry, limits]
       properties:
         plan: { $ref: '#/components/schemas/Plan' }
-        productId: { type: [string, 'null'], enum: [com.metly.pro.yearly, com.metly.pro.monthly, null] }
+        productId: { type: [string, 'null'], enum: [com.metly.app.pro.yearly, com.metly.app.pro.monthly, null] }
         expiresAt: { $ref: '#/components/schemas/NullableTimestamp' }
         willRenew: { type: boolean }
         renewsAt: { $ref: '#/components/schemas/NullableTimestamp' }

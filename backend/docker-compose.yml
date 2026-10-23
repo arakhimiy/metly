@@ -1,0 +1,30 @@
+# Production-like local stack: PostgreSQL + the API image.
+#   docker compose up --build        → http://localhost:3000/health/ready
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: metly
+      POSTGRES_PASSWORD: metly
+      POSTGRES_DB: metly
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U metly"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://metly:metly@db:5432/metly
+      PORT: 3000
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

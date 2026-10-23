@@ -1,0 +1,485 @@
+// Metly data model. Wire contract: docs/api/openapi.yaml; sync and conflict rules: docs/api/README.md.
+//
+// Synced records (profile, card, event, connection, follow-up) keep the client-generated id, the
+// client-authored updatedAt (last write wins) and a tombstone in deletedAt. Every write bumps the
+// owner's change counter (users.seq) and stamps it on the row, which is what GET /v1/sync pages by.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AuthProvider {
+  apple
+  google
+}
+
+enum Plan {
+  free
+  pro
+}
+
+model User {
+  id        String    @id @db.Uuid
+  email     String?
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  /// Monotonic per-user change counter; the sync cursor encodes a value of it.
+  seq               BigInt @default(0)
+  /// Highest seq whose tombstone was purged; older cursors get 410 cursor_expired.
+  tombstoneFloorSeq BigInt @default(0) @map("tombstone_floor_seq")
+
+  telegramChatId String? @unique @map("telegram_chat_id")
+
+  identities     AuthIdentity[]
+  refreshTokens  RefreshToken[]
+  profile        Profile?
+  cards          Card[]
+  events         Event[]
+  connections    Connection[]
+  followUps      FollowUp[]
+  devices        Device[]
+  entitlement    Entitlement?
+  blocks         Block[]           @relation("blocker")
+  connectSessions ConnectSession[]
+
+  @@map("users")
+}
+
+model AuthIdentity {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @map("user_id") @db.Uuid
+  provider  AuthProvider
+  /// Apple `sub` / Google `sub`.
+  subject   String
+  email     String?
+  /// Apple refresh token from the authorization code; needed for /auth/revoke on account deletion.
+  appleRefreshToken String? @map("apple_refresh_token")
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, subject])
+  @@index([userId])
+  @@map("auth_identities")
+}
+
+/// Opaque, single-use refresh tokens. Only the SHA-256 is stored. A rotated token's child is derived
+/// deterministically, so a retry inside the grace window gets the same pair back.
+model RefreshToken {
+  id          String    @id @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  familyId    String    @map("family_id") @db.Uuid
+  tokenHash   String    @unique @map("token_hash")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt   DateTime  @map("expires_at") @db.Timestamptz(3)
+  rotatedAt   DateTime? @map("rotated_at") @db.Timestamptz(3)
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ───────────────────────────── Synced records ─────────────────────────────
+
+model Profile {
+  id               String    @id @db.Uuid
+  userId           String    @unique @map("user_id") @db.Uuid
+  fullName         String    @map("full_name")
+  jobTitle         String    @map("job_title")
+  company          String
+  photoUrl         String?   @map("photo_url")
+  logoUrl          String?   @map("logo_url")
+  /// ContactField[]
+  contactFields    Json      @map("contact_fields")
+  defaultCardId    String?   @map("default_card_id") @db.Uuid
+  linksPaused      Boolean   @map("links_paused")
+  notificationPrefs Json     @map("notification_prefs")
+  privacySettings  Json      @map("privacy_settings")
+  isSetupComplete  Boolean   @map("is_setup_complete")
+  createdAt        DateTime  @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @map("updated_at") @db.Timestamptz(3)
+  deletedAt        DateTime? @map("deleted_at") @db.Timestamptz(3)
+  seq              BigInt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, seq])
+  @@map("profiles")
+}
+
+model Card {
+  id          String    @id @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  name        String
+  /// Assigned on the first accepted write; immutable; registered in `slugs` forever.
+  slug        String?   @unique
+  sortOrder   Int       @map("sort_order")
+  /// CardDesign
+  design      Json
+  isReadOnly  Boolean   @default(false) @map("is_read_only")
+  views       Int       @default(0)
+  saves       Int       @default(0)
+  shareBacks  Int       @default(0) @map("share_backs")
+  scans       Int       @default(0)
+  /// Authenticates Apple Wallet's calls for this card's pass (serial = card id).
+  passAuthToken String  @map("pass_auth_token")
+  /// Last change to what a public surface shows (web page, vCard, Wallet pass).
+  contentUpdatedAt DateTime @map("content_updated_at") @db.Timestamptz(3)
+  createdAt   DateTime  @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  seq         BigInt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, seq])
+  @@map("cards")
+}
+
+/// Every slug ever issued. Never deleted, so a slug is never handed out twice.
+model Slug {
+  slug      String   @id
+  cardId    String   @map("card_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@map("slugs")
+}
+
+model Event {
+  id                      String    @id @db.Uuid
+  userId                  String    @map("user_id") @db.Uuid
+  name                    String
+  place                   String
+  city                    String
+  startDate               DateTime  @map("start_date") @db.Timestamptz(3)
+  endDate                 DateTime  @map("end_date") @db.Timestamptz(3)
+  cardId                  String?   @map("card_id") @db.Uuid
+  status                  String
+  calendarEventIdentifier String?   @map("calendar_event_identifier")
+  endedAt                 DateTime? @map("ended_at") @db.Timestamptz(3)
+  summarySentAt           DateTime? @map("summary_sent_at") @db.Timestamptz(3)
+  createdAt               DateTime  @map("created_at") @db.Timestamptz(3)
+  updatedAt               DateTime  @map("updated_at") @db.Timestamptz(3)
+  deletedAt               DateTime? @map("deleted_at") @db.Timestamptz(3)
+  seq                     BigInt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, seq])
+  @@index([status, endDate])
+  @@map("events")
+}
+
+model Connection {
+  id               String    @id @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  remoteUserId     String?   @map("remote_user_id") @db.Uuid
+  fullName         String    @map("full_name")
+  jobTitle         String    @map("job_title")
+  company          String
+  phone            String
+  email            String
+  telegram         String
+  website          String
+  linkedin         String
+  avatarUrl        String?   @map("avatar_url")
+  /// CardSnapshot | null
+  theirCard        Json?     @map("their_card")
+  mySharedCardId   String?   @map("my_shared_card_id") @db.Uuid
+  source           String
+  /// MeetingContext
+  context          Json
+  /// MeetingContext[]
+  previousMeetings Json      @map("previous_meetings")
+  eventId          String?   @map("event_id") @db.Uuid
+  note             String
+  tags             Json
+  isMerged         Boolean   @map("is_merged")
+  isPendingMerge   Boolean   @map("is_pending_merge")
+  isBlocked        Boolean   @map("is_blocked")
+  /// Set by an accepted, mutual connect; one-sided connections (scan, paper, share-back) never unlock
+  /// the owner's Connections-level fields for the remote user.
+  isMutual         Boolean   @default(false) @map("is_mutual")
+  createdAt        DateTime  @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @map("updated_at") @db.Timestamptz(3)
+  deletedAt        DateTime? @map("deleted_at") @db.Timestamptz(3)
+  seq              BigInt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, seq])
+  @@index([userId, remoteUserId])
+  @@index([remoteUserId])
+  @@map("connections")
+}
+
+/// A pushed connection that was merged into another one; follow-ups pointing at the old id are
+/// re-pointed to the survivor, now and in later writes.
+model ConnectionAlias {
+  aliasId     String   @id @map("alias_id") @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  survivorId  String   @map("survivor_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([userId])
+  @@map("connection_aliases")
+}
+
+model FollowUp {
+  id              String    @id @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  connectionId    String?   @map("connection_id") @db.Uuid
+  title           String
+  channel         String
+  dueAt           DateTime  @map("due_at") @db.Timestamptz(3)
+  isDone          Boolean   @map("is_done")
+  completedAt     DateTime? @map("completed_at") @db.Timestamptz(3)
+  /// dueAt the last reminder was delivered for (a moved due date re-arms the reminder).
+  remindedForDueAt DateTime? @map("reminded_for_due_at") @db.Timestamptz(3)
+  createdAt       DateTime  @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @map("updated_at") @db.Timestamptz(3)
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(3)
+  seq             BigInt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, seq])
+  @@index([isDone, dueAt])
+  @@map("follow_ups")
+}
+
+// ───────────────────────────── Connect ─────────────────────────────
+
+model ConnectSession {
+  id        String    @id @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  token     String    @unique
+  cardId    String    @map("card_id") @db.Uuid
+  eventId   String?   @map("event_id") @db.Uuid
+  method    String
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(3)
+  endedAt   DateTime? @map("ended_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("connect_sessions")
+}
+
+/// One row per request; each side sees it through its own direction and status. A decline is stored
+/// but shown to the requester as `pending` until expiresAt, then `expired` (never "declined").
+model ConnectRequest {
+  id           String    @id @db.Uuid
+  fromUserId   String    @map("from_user_id") @db.Uuid
+  toUserId     String    @map("to_user_id") @db.Uuid
+  fromCardId   String    @map("from_card_id") @db.Uuid
+  toCardId     String?   @map("to_card_id") @db.Uuid
+  method       String
+  /// pending | accepted | declined | cancelled (expiry is derived from expiresAt)
+  status       String
+  /// Silently dropped (blocked either way): never delivered, expires for the requester.
+  isSuppressed Boolean   @default(false) @map("is_suppressed")
+  eventId      String?   @map("event_id") @db.Uuid
+  eventName    String?   @map("event_name")
+  place        String?
+  fromConnectionId String? @map("from_connection_id") @db.Uuid
+  toConnectionId   String? @map("to_connection_id") @db.Uuid
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  respondedAt  DateTime? @map("responded_at") @db.Timestamptz(3)
+  expiresAt    DateTime  @map("expires_at") @db.Timestamptz(3)
+  updatedAt    DateTime  @map("updated_at") @db.Timestamptz(3)
+  /// Change counters of each side, so the request appears in both users' sync pulls.
+  fromSeq      BigInt    @map("from_seq")
+  toSeq        BigInt    @map("to_seq")
+  /// Set once the expiry was published to both sides' sync.
+  expiryPublishedAt DateTime? @map("expiry_published_at") @db.Timestamptz(3)
+
+  @@index([fromUserId, fromSeq])
+  @@index([toUserId, toSeq])
+  @@index([status, expiresAt])
+  @@map("connect_requests")
+}
+
+model Block {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  blockedUserId String?  @map("blocked_user_id") @db.Uuid
+  connectionId  String?  @map("connection_id") @db.Uuid
+  fullName      String   @map("full_name")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation("blocker", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blockedUserId])
+  @@index([blockedUserId])
+  @@map("blocks")
+}
+
+// ───────────────────────────── Public web ─────────────────────────────
+
+model ShareBack {
+  id                String    @id @db.Uuid
+  cardId            String    @map("card_id") @db.Uuid
+  ownerId           String    @map("owner_id") @db.Uuid
+  /// Null when the share-back was discarded (blocked sender or paused card).
+  connectionId      String?   @map("connection_id") @db.Uuid
+  createdConnection Boolean   @default(false) @map("created_connection")
+  addedPhone        String?   @map("added_phone")
+  addedTelegram     String?   @map("added_telegram")
+  removalTokenHash  String    @map("removal_token_hash")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  removedAt         DateTime? @map("removed_at") @db.Timestamptz(3)
+
+  @@index([cardId, createdAt])
+  @@map("share_backs")
+}
+
+/// Visitor de-duplication for the 30-minute "view" window and web analytics.
+model CardVisit {
+  id          BigInt   @id @default(autoincrement())
+  cardId      String   @map("card_id") @db.Uuid
+  visitorHash String   @map("visitor_hash")
+  type        String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([cardId, visitorHash, type, createdAt])
+  @@index([createdAt])
+  @@map("card_visits")
+}
+
+/// "Get the app" clicks on a card page, matched by POST /v1/deferred-links/claim within 2 h.
+model DeferredClick {
+  id         String    @id @db.Uuid
+  token      String    @unique
+  cardId     String    @map("card_id") @db.Uuid
+  ownerId    String    @map("owner_id") @db.Uuid
+  eventName  String?   @map("event_name")
+  ipPrefix   String    @map("ip_prefix")
+  userAgent  String    @map("user_agent")
+  locale     String?
+  timeZone   String?   @map("time_zone")
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  claimedAt  DateTime? @map("claimed_at") @db.Timestamptz(3)
+  claimedInstallId String? @unique @map("claimed_install_id")
+
+  @@index([ipPrefix, createdAt])
+  @@map("deferred_clicks")
+}
+
+// ───────────────────────────── Devices, subscriptions, integrations ─────────────────────────────
+
+model Device {
+  userId          String   @map("user_id") @db.Uuid
+  deviceId        String   @map("device_id")
+  apnsToken       String   @map("apns_token")
+  apnsEnvironment String   @map("apns_environment")
+  appVersion      String   @map("app_version")
+  osVersion       String   @map("os_version")
+  locale          String
+  timeZone        String   @map("time_zone")
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, deviceId])
+  @@index([apnsToken])
+  @@map("devices")
+}
+
+model Entitlement {
+  userId                String    @id @map("user_id") @db.Uuid
+  plan                  Plan      @default(free)
+  productId             String?   @map("product_id")
+  originalTransactionId String?   @unique @map("original_transaction_id")
+  expiresAt             DateTime? @map("expires_at") @db.Timestamptz(3)
+  willRenew             Boolean   @default(false) @map("will_renew")
+  renewsAt              DateTime? @map("renews_at") @db.Timestamptz(3)
+  environment           String?
+  isInBillingRetry      Boolean   @default(false) @map("is_in_billing_retry")
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("entitlements")
+}
+
+model AppStoreNotification {
+  notificationUUID String   @id @map("notification_uuid")
+  notificationType String   @map("notification_type")
+  subtype          String?
+  originalTransactionId String? @map("original_transaction_id")
+  receivedAt       DateTime @default(now()) @map("received_at") @db.Timestamptz(3)
+
+  @@map("app_store_notifications")
+}
+
+model TelegramLinkToken {
+  tokenHash String   @id @map("token_hash")
+  userId    String   @map("user_id") @db.Uuid
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+
+  @@index([userId])
+  @@map("telegram_link_tokens")
+}
+
+model PassRegistration {
+  deviceLibraryIdentifier String   @map("device_library_identifier")
+  serialNumber            String   @map("serial_number")
+  pushToken               String   @map("push_token")
+  createdAt               DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@id([deviceLibraryIdentifier, serialNumber])
+  @@index([serialNumber])
+  @@map("pass_registrations")
+}
+
+model Upload {
+  id          String    @id @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  kind        String
+  objectKey   String    @map("object_key")
+  contentType String    @map("content_type")
+  byteSize    Int       @map("byte_size")
+  expiresAt   DateTime  @map("expires_at") @db.Timestamptz(3)
+  committedAt DateTime? @map("committed_at") @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([userId])
+  @@map("uploads")
+}
+
+model DataExportRequest {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  email       String?
+  requestedAt DateTime  @default(now()) @map("requested_at") @db.Timestamptz(3)
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(3)
+
+  @@index([userId])
+  @@map("data_export_requests")
+}
+
+/// First response of a create/command call, replayed for retries with the same Idempotency-Key (24 h).
+model IdempotencyRecord {
+  scope        String
+  key          String
+  requestHash  String   @map("request_hash")
+  status       Int
+  body         Json?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@id([scope, key])
+  @@index([createdAt])
+  @@map("idempotency_records")
+}

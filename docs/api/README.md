@@ -237,8 +237,8 @@ exactly what the share-back added (tombstone if it created the connection).
 Types: `connect_request`, `connect_result`, `shareback_received`, `card_saved`, `followup_due`,
 `event_summary`, `weekly_summary`, `product_news`, each gated by the matching `notificationPrefs`
 toggle. Payload carries `type` and ids (`connectionId`, `requestId`, `followUpId`, `eventId`) for
-deep links. Follow-up reminders: category `FOLLOWUP` with actions "Open Telegram" / "Snooze 1 Day",
-`apns-collapse-id = followUpId` (the app also schedules a local notification as an offline fallback).
+deep links. Follow-up reminders: category `FOLLOW_UP_{TELEGRAM|EMAIL|CALL}` (or `FOLLOW_UP`) with actions "Open Telegram" / "Snooze 1 Day",
+`apns-collapse-id = followup.{FOLLOWUPID-UPPERCASE}` (the app's local notification id) (the app also schedules a local notification as an offline fallback).
 Lock-screen privacy: no note text in pushes.
 
 ### Other server jobs

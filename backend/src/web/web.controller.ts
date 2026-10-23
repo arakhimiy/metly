@@ -1,0 +1,146 @@
+import { randomBytes } from 'node:crypto';
+import { Controller, Get, Inject, Param, Query, Req, Res } from '@nestjs/common';
+import type { Request, Response } from 'express';
+import { RateLimit } from '../common/rate-limit';
+import { clientIp, Public } from '../common/request';
+import { ENV, type Env } from '../config/env';
+import { DeferredLinksService } from './deferred-links.service';
+import { renderCardPage, renderUnavailablePage, pageCsp } from './page';
+import { PublicCardService } from './public-card.service';
+import { buildVCard, vcardFilename } from './vcard';
+import { platformFromUserAgent } from './visitor';
+import { WebStatsService } from './web-stats.service';
+
+/** metly.link: the card page, its vCard, "Get the app" and the Apple app-site association. */
+@Controller()
+@Public()
+export class WebController {
+  constructor(
+    private readonly cards: PublicCardService,
+    private readonly stats: WebStatsService,
+    private readonly deferred: DeferredLinksService,
+    @Inject(ENV) private readonly env: Env,
+  ) {}
+
+  /** `/c/{slug}` (HTML) and `/c/{slug}.vcf` (vCard) — one route, Express matches both. */
+  @Get('c/:slug')
+  @RateLimit('publicCard')
+  async page(@Param('slug') rawSlug: string, @Req() req: Request, @Res() res: Response) {
+    if (/\.vcf$/i.test(rawSlug)) return this.vcard(rawSlug.slice(0, -4), req, res);
+    const resolved = await this.cards.resolve(rawSlug);
+    const nonce = randomBytes(16).toString('base64');
+    res.setHeader('Content-Security-Policy', pageCsp(nonce));
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    res.type('html');
+    if (resolved.status === 'available') {
+      const userAgent = req.get('user-agent') ?? '';
+      res.status(200).send(
+        renderCardPage({
+          view: this.cards.view(resolved),
+          nonce,
+          platform: platformFromUserAgent(userAgent),
+          appStoreId: this.env.APP_STORE_ID,
+        }),
+      );
+      return;
+    }
+    const status = resolved.status === 'paused' ? 200 : resolved.status === 'deleted' ? 410 : 404;
+    res.status(status).send(renderUnavailablePage({ nonce, kind: resolved.status === 'unknown' ? 'notFound' : 'unavailable' }));
+  }
+
+  private async vcard(rawSlug: string, req: Request, res: Response) {
+    const resolved = await this.cards.resolve(rawSlug);
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    if (resolved.status !== 'available') {
+      res.status(404).type('text/plain; charset=utf-8').setHeader('Cache-Control', 'no-store');
+      res.send('Not found');
+      return;
+    }
+    const view = this.cards.view(resolved);
+    const body = buildVCard({
+      fullName: view.fullName,
+      jobTitle: view.profile.jobTitle,
+      company: view.profile.company,
+      fields: view.fields,
+      url: view.url,
+      photoUrl: view.photoUrl,
+    });
+    await this.stats.record(view.card, { type: 'save' }, { ip: clientIp(req), userAgent: req.get('user-agent') ?? '' });
+    const filename = vcardFilename(view.fullName, view.slug);
+    res.status(200);
+    res.setHeader('Content-Type', 'text/vcard; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Cache-Control', 'no-store');
+    res.send(body);
+  }
+
+  /**
+   * "Get the app": stores a deferred-link click (network prefix, user agent, locale, time zone — never
+   * the full IP), counts a `get_app` event and redirects to the App Store (or the site without one).
+   */
+  @Get('c/:slug/get-app')
+  @RateLimit('analytics')
+  async getApp(
+    @Param('slug') rawSlug: string,
+    @Query('tz') tz: string | undefined,
+    @Query('lang') lang: string | undefined,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const resolved = await this.cards.resolve(rawSlug);
+    const appStoreUrl = this.env.APP_STORE_ID ? `https://apps.apple.com/app/id${encodeURIComponent(this.env.APP_STORE_ID)}` : this.env.WEB_BASE_URL;
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    if (resolved.status === 'available') {
+      const visitor = {
+        ip: clientIp(req),
+        userAgent: req.get('user-agent') ?? '',
+        acceptLanguage: req.get('accept-language') ?? undefined,
+        locale: typeof lang === 'string' ? lang : undefined,
+        timeZone: typeof tz === 'string' ? tz : undefined,
+      };
+      await this.deferred.recordClick(resolved.card, visitor);
+      await this.stats.record(resolved.card, { type: 'get_app' }, visitor);
+    }
+    res.redirect(302, appStoreUrl);
+  }
+
+  @Get('.well-known/apple-app-site-association')
+  aasaWellKnown(@Res() res: Response) {
+    this.aasa(res);
+  }
+
+  @Get('apple-app-site-association')
+  aasaRoot(@Res() res: Response) {
+    this.aasa(res);
+  }
+
+  /** Universal links for `/c/*` (except the `.vcf` and get-app routes) and shared web credentials. */
+  private aasa(res: Response) {
+    const team = this.env.APPLE_TEAM_ID;
+    const appIDs = team ? this.env.APPLE_BUNDLE_IDS.map((bundleId) => `${team}.${bundleId}`) : [];
+    const body = {
+      applinks: {
+        apps: [],
+        details: appIDs.length
+          ? [
+              {
+                appIDs,
+                components: [
+                  { '/': '/c/*.vcf', exclude: true, comment: 'vCard downloads stay in the browser' },
+                  { '/': '/c/*/get-app', exclude: true, comment: 'App Store redirect' },
+                  { '/': '/c/*', comment: 'Card pages' },
+                ],
+                paths: ['NOT /c/*.vcf', 'NOT /c/*/get-app', '/c/*'],
+              },
+            ]
+          : [],
+      },
+      webcredentials: { apps: appIDs },
+    };
+    res.status(200).setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.send(JSON.stringify(body));
+  }
+}
