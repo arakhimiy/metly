@@ -56,6 +56,12 @@ extension LiveMetlyAPI: AuthAPI {
     public func logout(_ request: LogoutRequest) async throws {
         let _: EmptyResponse = try await send(.post, "/v1/auth/logout", body: request, auth: true, idempotent: true)
     }
+
+    #if DEBUG
+    public func signInForDevelopment(_ request: DevSignInRequest) async throws -> AuthResponse {
+        try await send(.post, "/v1/auth/dev", body: request, auth: false, idempotent: true)
+    }
+    #endif
 }
 
 extension LiveMetlyAPI: AccountAPI {

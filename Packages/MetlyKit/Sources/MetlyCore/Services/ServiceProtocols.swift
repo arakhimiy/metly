@@ -64,7 +64,22 @@ public protocol AuthServicing: AnyObject {
     func deleteAccount() async throws
     /// "Download My Data" — server emails an export link.
     func requestDataExport() async throws
+    #if DEBUG
+    /// True when a real backend (not the in-app mock) answers — the test sign-in only exists there.
+    var supportsTestSignIn: Bool { get }
+    /// Signs in as a test account named `name` on a local backend (`POST /v1/auth/dev`).
+    func signInForDevelopment(name: String) async throws -> AuthResult
+    #endif
 }
+
+#if DEBUG
+extension AuthServicing {
+    public var supportsTestSignIn: Bool { false }
+    public func signInForDevelopment(name: String) async throws -> AuthResult {
+        throw CancellationError()
+    }
+}
+#endif
 
 public enum SyncStatus: Equatable, Sendable {
     case idle

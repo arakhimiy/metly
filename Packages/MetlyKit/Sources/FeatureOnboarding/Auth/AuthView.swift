@@ -12,6 +12,10 @@ struct AuthView: View {
     @Environment(AppServices.self) private var services
     @Environment(\.webAuthenticationSession) private var webAuthenticationSession
     @State private var model: SignInModel
+    #if DEBUG
+    @State private var isAskingTestName = false
+    @State private var testName = ""
+    #endif
 
     init(mode: AuthMode, model: SignInModel = SignInModel()) {
         self.mode = mode
@@ -29,6 +33,12 @@ struct AuthView: View {
                                         onAppleRequest: model.configure,
                                         onAppleCompletion: completeApple,
                                         onGoogle: signInWithGoogle)
+                    #if DEBUG
+                    if services.auth.supportsTestSignIn {
+                        Button("Sign in as a test user") { isAskingTestName = true }
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    #endif
                     if mode == .signUp {
                         SignInPrompt()
                     }
@@ -51,7 +61,29 @@ struct AuthView: View {
         } message: { failure in
             Text(failure.message)
         }
+        #if DEBUG
+        .alert("Test user", isPresented: $isAskingTestName) {
+            TextField("Full name", text: $testName)
+                .textContentType(.name)
+            Button("Sign In") { signInForDevelopment() }
+                .disabled(testName.trimmingCharacters(in: .whitespaces).isEmpty)
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Debug builds only. Signs in on the local Metly backend; the same name returns to the same account.")
+        }
+        #endif
     }
+
+    #if DEBUG
+    private func signInForDevelopment() {
+        let name = testName
+        Task {
+            if let outcome = await model.signInForDevelopment(name: name, auth: services.auth) {
+                finish(outcome)
+            }
+        }
+    }
+    #endif
 
     private func completeApple(_ result: Result<ASAuthorization, any Error>) {
         Task {

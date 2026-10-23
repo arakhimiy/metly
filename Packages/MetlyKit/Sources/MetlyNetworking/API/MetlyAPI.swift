@@ -11,7 +11,19 @@ public protocol AuthAPI: Sendable {
     func signInWithGoogle(_ request: GoogleSignInRequest) async throws -> AuthResponse
     /// `POST /v1/auth/logout` — revokes the refresh token (best effort; local sign-out never waits on it).
     func logout(_ request: LogoutRequest) async throws
+    #if DEBUG
+    /// `POST /v1/auth/dev` — only a local backend with `DEV_AUTH_ENABLED` answers it.
+    func signInForDevelopment(_ request: DevSignInRequest) async throws -> AuthResponse
+    #endif
 }
+
+#if DEBUG
+extension AuthAPI {
+    public func signInForDevelopment(_ request: DevSignInRequest) async throws -> AuthResponse {
+        throw APIError.serverRequired("Test sign-in needs a local Metly backend.")
+    }
+}
+#endif
 
 public protocol AccountAPI: Sendable {
     /// `GET /v1/me`

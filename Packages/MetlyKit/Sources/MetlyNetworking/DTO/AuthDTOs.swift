@@ -52,6 +52,19 @@ public struct GoogleSignInRequest: Codable, Sendable, Hashable {
     }
 }
 
+#if DEBUG
+/// `POST /v1/auth/dev` — local backends only (`DEV_AUTH_ENABLED`), for devices that can't use Sign in with Apple.
+public struct DevSignInRequest: Codable, Sendable, Hashable {
+    public var subject: String
+    public var fullName: String?
+
+    public init(subject: String, fullName: String?) {
+        self.subject = subject
+        self.fullName = fullName
+    }
+}
+#endif
+
 public struct RefreshRequest: Codable, Sendable, Hashable {
     public var refreshToken: String
     public init(refreshToken: String) { self.refreshToken = refreshToken }

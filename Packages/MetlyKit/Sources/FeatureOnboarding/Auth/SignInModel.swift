@@ -63,6 +63,17 @@ final class SignInModel {
         }
     }
 
+    #if DEBUG
+    // MARK: Test sign-in (local backend)
+
+    func signInForDevelopment(name: String, auth: any AuthServicing) async -> SignInOutcome? {
+        await perform(.apple) {
+            let result = try await auth.signInForDevelopment(name: name)
+            return SignInOutcome(result: result, provider: .apple, suggestedName: result.suggestedName ?? name, email: result.email)
+        }
+    }
+    #endif
+
     // MARK: Private
 
     private func perform(_ provider: AuthProvider, _ work: () async throws -> SignInOutcome) async -> SignInOutcome? {

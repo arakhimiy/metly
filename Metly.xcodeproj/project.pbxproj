@@ -137,6 +137,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AA0000000000000000001101 /* Build configuration list for PBXNativeTarget "Metly" */;
 			buildPhases = (
+				AA0000000000000000001005 /* Require backend URL for Release */,
 				AA0000000000000000001001 /* Sources */,
 				AA0000000000000000000801 /* Frameworks */,
 				AA0000000000000000001003 /* Resources */,
@@ -238,6 +239,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AA0000000000000000001005 /* Require backend URL for Release */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Require backend URL for Release";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# A Release build without METLY_API_BASE_URL would silently ship MockMetlyServer.\nif [ \"$CONFIGURATION\" = \"Release\" ] && [ -z \"$METLY_API_BASE_URL\" ]; then\n  echo \"error: METLY_API_BASE_URL is not set for Release; the app would run on MockMetlyServer.\"\n  exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AA0000000000000000001001 /* Sources */ = {

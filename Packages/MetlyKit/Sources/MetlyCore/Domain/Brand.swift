@@ -26,6 +26,10 @@ public enum Brand {
         let parts = url.pathComponents.filter { $0 != "/" }
         if url.host() == linkHost, parts.count == 2, parts[0] == "c" { return parts[1] }
         if url.scheme == urlScheme, url.host() == "c", let first = parts.first { return first }
+        #if DEBUG
+        // A local backend serves card pages from its own host (e.g. http://my-mac.local:3000/c/{slug}).
+        if ["http", "https"].contains(url.scheme ?? ""), parts.count == 2, parts[0] == "c" { return parts[1] }
+        #endif
         return nil
     }
 }

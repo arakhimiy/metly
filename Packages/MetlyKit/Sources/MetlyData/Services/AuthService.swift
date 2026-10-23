@@ -98,6 +98,19 @@ public final class AuthService: AuthServicing {
                                         fallbackEmail: credential.email, appleUserID: nil)
     }
 
+    #if DEBUG
+    public var supportsTestSignIn: Bool { !isMock }
+
+    /// Same account for the same name, so a reinstall signs back into it.
+    public func signInForDevelopment(name: String) async throws -> AuthResult {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let subject = "ios-" + trimmed.lowercased().filter { $0.isLetter || $0.isNumber }
+        let response = try await api.auth.signInForDevelopment(DevSignInRequest(subject: subject, fullName: trimmed))
+        return try await completeSignIn(response, suggestedName: response.suggestedName ?? trimmed, fallbackEmail: nil,
+                                        appleUserID: nil)
+    }
+    #endif
+
     /// Safe to call more than once (the UI also wipes defensively); concurrent calls share one sign-out.
     /// The UI shows onboarding before this returns, so a new sign-in may start meanwhile: it waits
     /// for this sign-out to finish (`completeSignIn`), so the late wipe can't erase the new session.

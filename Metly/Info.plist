@@ -58,6 +58,12 @@
 		<string>com.metly.app.refresh</string>
 		<string>com.metly.app.sync</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<!-- Plain HTTP only to the local network (a development backend on this Mac); the internet stays HTTPS-only. -->
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>
