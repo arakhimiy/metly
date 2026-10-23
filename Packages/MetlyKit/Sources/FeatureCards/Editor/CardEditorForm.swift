@@ -69,7 +69,8 @@ struct CardEditorForm: View {
             EditorTypeSection(design: $draft.design)
         case .fields:
             CardFieldsSection(fields: profile?.contactFields ?? ContactField.defaults, design: $draft.design,
-                              footer: "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with.")
+                              footer: "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with.",
+                              onEditValue: { kind, value in profile?.setContactValue(value, for: kind) })
         case .media:
             EditorMediaSection(draft: $draft, profile: profile)
         }

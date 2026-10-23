@@ -5,7 +5,6 @@ import SwiftUI
 
 /// HOME tab root (SPEC §2.5.7): offline banner · event row · My Cards · Follow Up Today · Recent.
 struct HomeScreen: View {
-    @Environment(AppRouter.self) private var router
     @Environment(AppServices.self) private var services
 
     @Query(filter: #Predicate<Profile> { $0.deletedAt == nil }) private var profiles: [Profile]
@@ -39,12 +38,8 @@ struct HomeScreen: View {
         }
         .listStyle(.insetGrouped)
         .tracksDayChanges($clock)   // "Follow Up Today" rolls over at midnight / when back in the foreground
+        // No avatar button here: Profile is a tab one tap away, so a second way in only adds clutter.
         .navigationTitle(greeting(for: profile))
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                ProfileAvatarButton(profile: profile, action: openProfile)
-            }
-        }
         .refreshable { await services.sync.syncNow() }
     }
 
@@ -60,7 +55,4 @@ struct HomeScreen: View {
         return cards.first
     }
 
-    private func openProfile() {
-        router.select(.profile)
-    }
 }

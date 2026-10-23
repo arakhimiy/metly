@@ -109,6 +109,15 @@ extension MetlySchemaV1 {
                 contactFields.sort { ContactFieldKind.allCases.firstIndex(of: $0.kind)! < ContactFieldKind.allCases.firstIndex(of: $1.kind)! }
             }
         }
+
+        /// A user edit of one field's value (its privacy stays); queues the profile for sync.
+        public func setContactValue(_ value: String, for kind: ContactFieldKind) {
+            var updated = field(kind)
+            guard updated.value != value else { return }
+            updated.value = value
+            setField(updated)
+            markChanged()
+        }
     }
 
     // MARK: Card (the owner's own cards)

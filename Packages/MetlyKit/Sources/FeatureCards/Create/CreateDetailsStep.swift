@@ -11,6 +11,8 @@ struct CreateDetailsStep: View {
     let content: CardFaceContent
     /// The profile's fields (values + privacy).
     let fields: [ContactField]
+    /// Saves a value typed for a field the profile doesn't have yet.
+    let onEditField: (ContactFieldKind, String) -> Void
     let onPublish: () -> Void
 
     @FocusState private var isNameFocused: Bool
@@ -39,7 +41,8 @@ struct CreateDetailsStep: View {
             }
 
             CardFieldsSection(fields: fields, design: $design,
-                              footer: "Values come from your profile. Change privacy there.")
+                              footer: "Values come from your profile. Change privacy there.",
+                              onEditValue: onEditField)
         }
         .navigationTitle("Details")
         .navigationBarTitleDisplayMode(.inline)

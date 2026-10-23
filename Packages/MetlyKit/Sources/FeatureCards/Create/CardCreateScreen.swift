@@ -71,7 +71,9 @@ struct CardCreateScreen: View {
                             onRequirePro: showPaywall, onContinue: { path.append(.details) })
         case .details:
             CreateDetailsStep(design: $design, name: $name, content: previewContent,
-                              fields: profiles.first?.contactFields ?? ContactField.defaults, onPublish: publish)
+                              fields: profiles.first?.contactFields ?? ContactField.defaults,
+                              onEditField: { kind, value in profiles.first?.setContactValue(value, for: kind) },
+                              onPublish: publish)
         }
     }
 

@@ -8,11 +8,14 @@ struct CardFieldsSection: View {
     let fields: [ContactField]
     @Binding var design: CardDesign
     let footer: String
+    /// Saves a value typed into a field that is still empty in the profile (nil: read-only rows).
+    var onEditValue: ((ContactFieldKind, String) -> Void)?
 
     var body: some View {
         Section {
             ForEach(ContactFieldKind.allCases) { kind in
-                CardFieldToggleRow(field: field(kind), isOn: isShown(kind))
+                CardFieldToggleRow(field: field(kind), isOn: isShown(kind),
+                                   onEditValue: onEditValue.map { save in { save(kind, $0) } })
             }
         } header: {
             Text("Show on This Card")

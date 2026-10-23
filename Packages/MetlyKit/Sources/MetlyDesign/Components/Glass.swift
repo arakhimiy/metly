@@ -14,12 +14,14 @@ public extension View {
     }
 
     /// Prominent call-to-action button style (glass prominent on iOS 26, bordered prominent before).
+    /// The label is forced white: inside a List row SwiftUI tints a Label's icon with the accent color,
+    /// which made it vanish on the accent-colored button ("Show QR").
     @ViewBuilder
     func prominentButtonStyle() -> some View {
         if #available(iOS 26, *) {
-            self.buttonStyle(.glassProminent)
+            self.foregroundStyle(.white).buttonStyle(.glassProminent)
         } else {
-            self.buttonStyle(.borderedProminent)
+            self.foregroundStyle(.white).buttonStyle(.borderedProminent)
         }
     }
 
