@@ -9,8 +9,8 @@ struct ScanCameraFeed: View {
     var body: some View {
         switch camera.backend {
         case .dataScanner:
+            // One scanner for both modes: switching never restarts the camera.
             DataScannerView(mode: mode, camera: camera, onCode: onCode)
-                .id(mode)
         case .captureSession:
             CaptureSessionView(mode: mode, camera: camera, onCode: onCode)
         case .placeholder:

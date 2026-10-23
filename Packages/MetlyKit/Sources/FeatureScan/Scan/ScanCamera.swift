@@ -30,8 +30,6 @@ final class ScanCamera {
     @ObservationIgnored private var photoCapturer: PhotoCapturer?
     @ObservationIgnored private var attachedToken: UUID?
     @ObservationIgnored private let isPreview: Bool
-    /// Text VisionKit currently sees in Paper mode — fallback when the still photo reads nothing.
-    @ObservationIgnored var liveLines: [OCRLine] = []
 
     init() {
         access = .current
@@ -108,7 +106,6 @@ final class ScanCamera {
         guard attachedToken == token else { return }
         attachedToken = nil
         photoCapturer = nil
-        liveLines = []
     }
 
     func capturePhoto() async throws -> UIImage {

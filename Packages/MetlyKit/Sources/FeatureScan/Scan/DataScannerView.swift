@@ -2,29 +2,26 @@ import SwiftUI
 import Vision
 import VisionKit
 
-/// VisionKit's live scanner. QR mode recognises QR codes only; Paper mode highlights text so the
-/// user sees the card is readable, and the shutter takes a still for accurate OCR.
-/// Recreate it (`.id(mode)`) when the mode changes — its data types are fixed at init.
+/// VisionKit's live scanner, one instance for both modes. It only looks for QR codes; Paper mode
+/// ignores them and the shutter takes a still that is read on device (`PaperCardReader`).
+///
+/// Every VisionKit option is fixed at init, so a scanner per mode meant tearing the camera down and
+/// loading the text-recognition models on each mode switch — the screen froze. Live text
+/// highlighting isn't worth that: the still photo is what gets read anyway.
 struct DataScannerView: UIViewControllerRepresentable {
     let mode: ScanMode
     let camera: ScanCamera
     let onCode: (String) -> Void
 
     func makeUIViewController(context: Context) -> DataScannerViewController {
-        let qr: [VNBarcodeSymbology] = [.qr]
-        // Latin (English / Uzbek) and Cyrillic (Russian) cards, limited to what this device supports.
-        let languages = ["en-US", "ru-RU"].filter(DataScannerViewController.supportedTextRecognitionLanguages.contains)
-        let types: Set<DataScannerViewController.RecognizedDataType> = mode == .qr
-            ? [.barcode(symbologies: qr)]
-            : [.text(languages: languages)]
         let scanner = DataScannerViewController(
-            recognizedDataTypes: types,
-            qualityLevel: mode == .qr ? .fast : .balanced,
-            recognizesMultipleItems: mode == .paper,
+            recognizedDataTypes: [.barcode(symbologies: [VNBarcodeSymbology.qr])],
+            qualityLevel: .fast,
+            recognizesMultipleItems: false,
             isHighFrameRateTrackingEnabled: false,
             isPinchToZoomEnabled: true,
             isGuidanceEnabled: true,
-            isHighlightingEnabled: mode == .paper
+            isHighlightingEnabled: false
         )
         scanner.delegate = context.coordinator
         context.coordinator.token = camera.attach { [weak scanner] in
@@ -36,10 +33,13 @@ struct DataScannerView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ scanner: DataScannerViewController, context: Context) {
         context.coordinator.parent = self
-        // Start once SwiftUI has put the controller on screen.
         guard !context.coordinator.hasStarted else { return }
         context.coordinator.hasStarted = true
-        Task { @MainActor in
+        // `startScanning()` spins the camera up on the main thread; let the screen finish appearing
+        // first so the tab switch stays smooth, then start (unless the screen already went away).
+        Task { @MainActor [weak scanner] in
+            try? await Task.sleep(for: .milliseconds(150))
+            guard let scanner, scanner.view.window != nil, !scanner.isScanning else { return }
             do {
                 try scanner.startScanning()
             } catch {
@@ -68,23 +68,25 @@ struct DataScannerView: UIViewControllerRepresentable {
 
         func dataScanner(_ dataScanner: DataScannerViewController, didAdd addedItems: [RecognizedItem],
                          allItems: [RecognizedItem]) {
+            // Paper mode ignores QR codes in frame.
+            guard parent.mode == .qr else { return }
             for case .barcode(let barcode) in addedItems {
                 if let payload = barcode.payloadStringValue { parent.onCode(payload) }
             }
-            updateLiveText(allItems)
         }
 
+        /// A code already in frame when switching back to QR mode only ever arrives as an update
+        /// (SCAN's debouncer drops the repeats).
         func dataScanner(_ dataScanner: DataScannerViewController, didUpdate updatedItems: [RecognizedItem],
                          allItems: [RecognizedItem]) {
-            updateLiveText(allItems)
-        }
-
-        func dataScanner(_ dataScanner: DataScannerViewController, didRemove removedItems: [RecognizedItem],
-                         allItems: [RecognizedItem]) {
-            updateLiveText(allItems)
+            guard parent.mode == .qr else { return }
+            for case .barcode(let barcode) in updatedItems {
+                if let payload = barcode.payloadStringValue { parent.onCode(payload) }
+            }
         }
 
         func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
+            guard parent.mode == .qr else { return }
             if case .barcode(let barcode) = item, let payload = barcode.payloadStringValue {
                 parent.onCode(payload)
             }
@@ -93,18 +95,6 @@ struct DataScannerView: UIViewControllerRepresentable {
         func dataScanner(_ dataScanner: DataScannerViewController,
                          becameUnavailableWithError error: DataScannerViewController.ScanningUnavailable) {
             parent.camera.dataScannerFailed = true
-        }
-
-        /// Paper mode: keep what VisionKit reads (top to bottom) as an OCR fallback for the shutter.
-        private func updateLiveText(_ items: [RecognizedItem]) {
-            guard parent.mode == .paper else { return }
-            let texts = items.compactMap { item -> RecognizedItem.Text? in
-                if case .text(let text) = item { return text }
-                return nil
-            }
-            parent.camera.liveLines = texts
-                .sorted { $0.bounds.topLeft.y < $1.bounds.topLeft.y }
-                .map { OCRLine($0.transcript, height: Double(abs($0.bounds.bottomLeft.y - $0.bounds.topLeft.y))) }
         }
     }
 }

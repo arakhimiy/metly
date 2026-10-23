@@ -189,7 +189,7 @@ struct ScanScreen: View {
             defer { isReadingCard = false }
             do {
                 let photo = try await camera.capturePhoto()
-                handlePaperDraft(await PaperCardReader.read(photo, liveLines: camera.liveLines))
+                handlePaperDraft(await PaperCardReader.read(photo))
             } catch {
                 handlePaperDraft(PaperCardDraft())
             }
