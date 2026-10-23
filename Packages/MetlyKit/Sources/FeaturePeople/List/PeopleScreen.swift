@@ -52,6 +52,7 @@ struct PeopleScreen: View {
             }
         }
         .navigationTitle("People")
+        .toolbarTitleDisplayMode(.inlineLarge)
         .searchable(text: $query, prompt: "Search")
         .refreshable { await services.sync.syncNow() }
         .toolbar {

@@ -10,6 +10,7 @@ struct ProfileScreen: View {
             ProfileForm(profile: profile)
         }
         .navigationTitle("Profile")
+        .toolbarTitleDisplayMode(.inlineLarge)
     }
 }
 
@@ -30,6 +31,7 @@ struct ProfileForm: View {
             SettingsLinksSection()
             SignOutSection()
         }
+        .contentMargins(.top, 8, for: .scrollContent)
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {

@@ -37,9 +37,12 @@ struct HomeScreen: View {
             }
         }
         .listStyle(.insetGrouped)
+        .contentMargins(.top, 8, for: .scrollContent)
         .tracksDayChanges($clock)   // "Follow Up Today" rolls over at midnight / when back in the foreground
         // No avatar button here: Profile is a tab one tap away, so a second way in only adds clutter.
         .navigationTitle(greeting(for: profile))
+        // Large title inside the bar: no empty bar row above "Hi, {name}" (tab roots share this).
+        .toolbarTitleDisplayMode(.inlineLarge)
         .refreshable { await services.sync.syncNow() }
     }
 
