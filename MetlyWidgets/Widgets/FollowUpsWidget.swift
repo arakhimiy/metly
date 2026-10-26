@@ -20,7 +20,8 @@ struct FollowUpsWidget: Widget {
             .containerBackground(WidgetBackgrounds.standard, for: .widget)
         }
         .configurationDisplayName("Follow-ups")
-        .description(Text("Reminders due today. Tap one to open it in \(Brand.appName)."))
+        // A static string: WidgetKit traps on interpolated descriptions (crashed the extension on device).
+        .description("Reminders due today. Tap one to open it.")
         .supportedFamilies([.systemMedium])
     }
 }
