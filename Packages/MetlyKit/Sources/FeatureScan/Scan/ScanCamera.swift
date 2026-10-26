@@ -1,19 +1,18 @@
 @preconcurrency import AVFoundation
 import Observation
 import UIKit
-import VisionKit
 
 /// Takes a still photo with whichever camera backend is on screen.
 typealias PhotoCapturer = @MainActor () async throws -> UIImage
 
 /// SCAN's camera state: permission, which backend runs, torch and still capture.
-/// The backend views (`DataScannerView`, `CaptureSessionView`) register themselves here.
+/// The camera view (`CaptureSessionView`) registers itself here.
 @Observable
 final class ScanCamera {
     enum Backend: Equatable {
-        /// VisionKit live scanner (A12+, camera authorised).
-        case dataScanner
-        /// AVFoundation fallback (`AVCaptureMetadataOutput` + photo output).
+        /// AVFoundation: `AVCaptureMetadataOutput` for QR codes + photo output for paper cards.
+        /// Not VisionKit's DataScannerViewController: it owns the camera, so the torch (set on the
+        /// device from outside) froze its preview in the dark.
         case captureSession
         /// Previews: a dark stand-in for the camera feed.
         case placeholder
@@ -24,8 +23,6 @@ final class ScanCamera {
 
     var access: CameraAccess
     var isTorchOn = false
-    /// VisionKit reported it can't run (e.g. camera taken by another app) → AVFoundation takes over.
-    var dataScannerFailed = false
 
     @ObservationIgnored private var photoCapturer: PhotoCapturer?
     @ObservationIgnored private var attachedToken: UUID?
@@ -47,11 +44,7 @@ final class ScanCamera {
 
     var backend: Backend {
         guard access == .authorized else { return .none }
-        if isPreview { return .placeholder }
-        if !dataScannerFailed, DataScannerViewController.isSupported, DataScannerViewController.isAvailable {
-            return .dataScanner
-        }
-        return .captureSession
+        return isPreview ? .placeholder : .captureSession
     }
 
     var hasTorch: Bool {

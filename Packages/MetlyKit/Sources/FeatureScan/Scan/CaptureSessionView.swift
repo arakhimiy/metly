@@ -1,7 +1,7 @@
 @preconcurrency import AVFoundation
 import SwiftUI
 
-/// Camera preview + QR detection on AVFoundation (fallback when VisionKit can't run).
+/// Camera preview + QR detection on AVFoundation.
 struct CaptureSessionView: UIViewRepresentable {
     let mode: ScanMode
     let camera: ScanCamera

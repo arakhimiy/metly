@@ -1,8 +1,8 @@
 @preconcurrency import AVFoundation
 import UIKit
 
-/// AVFoundation fallback for devices where VisionKit's `DataScannerViewController` isn't
-/// available: QR codes via `AVCaptureMetadataOutput`, stills via `AVCapturePhotoOutput`.
+/// SCAN's camera: QR codes via `AVCaptureMetadataOutput`, stills via `AVCapturePhotoOutput`.
+/// Owning the session keeps the torch, focus and low-light settings under our control.
 final class CaptureSessionScanner: NSObject {
     let runner = CaptureSessionRunner()
     /// Called on the main actor for every QR payload in a frame (debounced by SCAN).
@@ -42,6 +42,8 @@ final class CaptureSessionScanner: NSObject {
         if (try? device.lockForConfiguration()) != nil {
             if device.isFocusModeSupported(.continuousAutoFocus) { device.focusMode = .continuousAutoFocus }
             if device.isAutoFocusRangeRestrictionSupported { device.autoFocusRangeRestriction = .near }
+            // Codes and cards are read in dim venues; let the camera brighten when it can.
+            if device.isLowLightBoostSupported { device.automaticallyEnablesLowLightBoostWhenAvailable = true }
             device.unlockForConfiguration()
         }
         isConfigured = true
