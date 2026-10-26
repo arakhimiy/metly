@@ -6,7 +6,7 @@ import VisionKit
 /// Takes a still photo with whichever camera backend is on screen.
 typealias PhotoCapturer = @MainActor () async throws -> UIImage
 
-/// SCAN's camera state: permission, which backend runs, torch, still capture and live text.
+/// SCAN's camera state: permission, which backend runs, torch and still capture.
 /// The backend views (`DataScannerView`, `CaptureSessionView`) register themselves here.
 @Observable
 final class ScanCamera {
@@ -30,6 +30,9 @@ final class ScanCamera {
     @ObservationIgnored private var photoCapturer: PhotoCapturer?
     @ObservationIgnored private var attachedToken: UUID?
     @ObservationIgnored private let isPreview: Bool
+    @ObservationIgnored private var cachedBackCamera: AVCaptureDevice?
+    @ObservationIgnored private var didLookUpBackCamera = false
+    @ObservationIgnored private let torchQueue = DispatchQueue(label: "com.metly.app.scan.torch")
 
     init() {
         access = .current
@@ -53,7 +56,16 @@ final class ScanCamera {
 
     var hasTorch: Bool {
         guard !isPreview else { return true }
-        return AVCaptureDevice.default(for: .video)?.hasTorch == true
+        return backCamera?.hasTorch == true
+    }
+
+    /// Looked up once: device discovery is too slow to repeat on every SwiftUI update.
+    private var backCamera: AVCaptureDevice? {
+        if !didLookUpBackCamera {
+            didLookUpBackCamera = true
+            cachedBackCamera = AVCaptureDevice.default(for: .video)
+        }
+        return cachedBackCamera
     }
 
     // MARK: Permission
@@ -71,23 +83,33 @@ final class ScanCamera {
     // MARK: Torch
 
     /// Applies `isTorchOn` to the back camera; resets it when the torch can't turn on (e.g. overheated).
+    /// The device is configured on a serial background queue: `lockForConfiguration()` waits while the
+    /// running scanner holds the camera, and doing that on the main thread froze SCAN.
     func applyTorch() {
         guard !isPreview else { return }
-        guard let device = AVCaptureDevice.default(for: .video), device.hasTorch else {
+        guard let device = backCamera, device.hasTorch else {
             isTorchOn = false
             return
         }
-        let mode: AVCaptureDevice.TorchMode = isTorchOn ? .on : .off
-        guard device.isTorchModeSupported(mode), !isTorchOn || device.isTorchAvailable else {
-            isTorchOn = false
-            return
+        let on = isTorchOn
+        torchQueue.async { [weak self] in
+            guard !Self.setTorch(on, on: device), on else { return }
+            Task { @MainActor in
+                if self?.isTorchOn == true { self?.isTorchOn = false }
+            }
         }
+    }
+
+    nonisolated private static func setTorch(_ on: Bool, on device: AVCaptureDevice) -> Bool {
+        let mode: AVCaptureDevice.TorchMode = on ? .on : .off
+        guard device.isTorchModeSupported(mode), !on || device.isTorchAvailable else { return false }
         do {
             try device.lockForConfiguration()
             device.torchMode = mode
             device.unlockForConfiguration()
+            return true
         } catch {
-            isTorchOn = false
+            return false
         }
     }
 
