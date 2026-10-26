@@ -4,7 +4,7 @@ import Testing
 
 @Test func cardURLRoundTrip() {
     let url = Brand.cardURL(slug: "aziza-w7k2")
-    #expect(url.absoluteString == "https://metly.link/c/aziza-w7k2")
+    #expect(url.absoluteString == "https://tanishly.app/c/aziza-w7k2")
     #expect(Brand.slug(from: url) == "aziza-w7k2")
 }
 

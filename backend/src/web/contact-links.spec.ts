@@ -24,12 +24,12 @@ describe('contact links', () => {
   });
 
   it('website adds https and refuses other schemes', () => {
-    expect(websiteUrl('metly.link/about')).toBe('https://metly.link/about');
-    expect(websiteUrl('http://metly.link')).toBe('http://metly.link/');
+    expect(websiteUrl('tanishly.app/about')).toBe('https://tanishly.app/about');
+    expect(websiteUrl('http://tanishly.app')).toBe('http://tanishly.app/');
     expect(websiteUrl('javascript:alert(1)') ?? 'https://').toMatch(/^https:\/\//);
     expect(websiteUrl('javascript://alert(1)')).toBeNull();
     expect(websiteUrl('ftp://x.y')).toBeNull();
-    expect(contactAction({ kind: 'website', value: 'https://www.metly.link/', privacy: 'public' })?.display).toBe('metly.link');
+    expect(contactAction({ kind: 'website', value: 'https://www.tanishly.app/', privacy: 'public' })?.display).toBe('tanishly.app');
   });
 
   it('linkedin builds profile URLs', () => {

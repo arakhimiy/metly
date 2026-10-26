@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  title: Metly API
+  title: Tanishly API
   version: 1.0.0
-  summary: Backend contract for the Metly iOS app (digital business card + personal CRM).
+  summary: Backend contract for the Tanishly iOS app (digital business card + personal CRM).
   description: |
     Contract authored by the iOS team; the app ships against `MockMetlyServer` (an in-memory
     implementation of this document) until the backend exists. **Read `docs/api/README.md` first** —
@@ -24,7 +24,7 @@ info:
       same key → `409 idempotency_conflict`.
     - Errors: non-2xx responses carry an `Error` body. `5xx` messages are never shown to users.
     - Lists use cursor pagination: `?cursor=&limit=` → `{ "items": [...], "nextCursor": "…" | null }`.
-    - Clients send `X-Metly-Client: ios/<version> (<build>)` and `Accept-Language`.
+    - Clients send `X-Tanishly-Client: ios/<version> (<build>)` and `Accept-Language`.
 
     ## Rate limits
     Per user (authenticated) or per IP (public). Responses carry `X-RateLimit-Limit`,
@@ -33,11 +33,11 @@ info:
     public card GET 120/min/IP · share-back 5/hour per IP per card and 50/day per card ·
     analytics events 60/min/IP · deferred-link claim 10/hour/IP.
   contact:
-    email: support@metly.link
+    email: support@tanishly.app
 servers:
-  - url: https://api.metly.link
+  - url: https://api.tanishly.app
     description: Production
-  - url: https://api.staging.metly.link
+  - url: https://api.staging.tanishly.app
     description: Staging
 
 security:
@@ -50,7 +50,7 @@ tags:
   - name: Cards
   - name: Wallet
   - name: Public web
-    description: Unauthenticated endpoints used by the `metly.link` web page (recipients without the app).
+    description: Unauthenticated endpoints used by the `tanishly.app` web page (recipients without the app).
   - name: Public profiles
   - name: Connections
   - name: Follow-ups
@@ -72,7 +72,7 @@ paths:
       summary: Sign in with Apple → session
       description: |
         Verify `identityToken` against Apple's JWKS (`iss=https://appleid.apple.com`,
-        `aud=com.metly.app`, `exp`, and `nonce` = SHA-256 of the raw `nonce` when present). Exchange
+        `aud=app.tanishly.ios`, `exp`, and `nonce` = SHA-256 of the raw `nonce` when present). Exchange
         `authorizationCode` for a refresh token and **store it** — it is needed to revoke on account
         deletion (Apple requirement). Apple sends `fullName`/`email` only on the first authorization;
         persist them. Creates the user on first sign-in (`isNewUser: true`).
@@ -278,7 +278,7 @@ paths:
     post:
       tags: [Profile]
       operationId: block
-      summary: Block a Metly user (by userId or via one of my connections)
+      summary: Block a Tanishly user (by userId or via one of my connections)
       description: |
         Blocked users: my public pages return `404` to their authenticated public-profile lookups,
         I disappear from their Nearby results, their connect requests are dropped silently, and their
@@ -409,11 +409,11 @@ paths:
       operationId: getWalletPass
       summary: Signed Apple Wallet pass (`.pkpass`)
       description: |
-        Generic pass (`passTypeIdentifier` e.g. `pass.com.metly.app.card`, serial = card id) signed
+        Generic pass (`passTypeIdentifier` e.g. `pass.app.tanishly.ios.card`, serial = card id) signed
         server-side with the Pass Type ID certificate + Apple WWDR intermediate. Front: name,
         title · company, **Public** fields only (never Connections/Private — it can leave the device);
-        QR (`PKBarcodeFormatQR`, message = `https://metly.link/c/{slug}`, ISO-8859-1). Colors from the
-        card palette, logo = Metly mark. Include `webServiceURL = https://api.metly.link/passkit` and a
+        QR (`PKBarcodeFormatQR`, message = `https://tanishly.app/c/{slug}`, ISO-8859-1). Colors from the
+        card palette, logo = Tanishly mark. Include `webServiceURL = https://api.tanishly.app/passkit` and a
         per-pass `authenticationToken` so passes update when the card changes (PassKit web service below).
       parameters: [{ $ref: '#/components/parameters/CardId' }]
       responses:
@@ -486,7 +486,7 @@ paths:
       summary: Server-rendered public card page
       description: |
         Platform-adaptive page (iOS Safari / Android Chrome / in-app browsers / desktop) with Open Graph
-        tags and the Smart App Banner `<meta name="apple-itunes-app" content="app-id=…, app-argument=https://metly.link/c/{slug}">`.
+        tags and the Smart App Banner `<meta name="apple-itunes-app" content="app-id=…, app-argument=https://tanishly.app/c/{slug}">`.
         Shows **Public ∩ visible** fields only. Paused/deleted → "This card isn't available right now."
         with no personal data (HTTP 200 for paused, 410 for deleted). Never index (`noindex`).
         `?src=qr` marks QR scans for stats. Also serves `/.well-known/apple-app-site-association`
@@ -579,7 +579,7 @@ paths:
     get:
       tags: [Public profiles]
       operationId: getPublicProfile
-      summary: A scanned Metly QR as visible to the signed-in viewer (SCANNED_CARD)
+      summary: A scanned Tanishly QR as visible to the signed-in viewer (SCANNED_CARD)
       description: |
         Like `/api/public/cards/{slug}` plus `owner.userId` and `viewer`. If the viewer is a live
         connection of the owner (owner has a connection with `remoteUserId = viewer`), also include the
@@ -896,9 +896,9 @@ paths:
       operationId: verifyTransaction
       summary: StoreKit 2 signed transaction → entitlement
       description: |
-        Verify the JWS (x5c chain to Apple Root CA G3, bundleId `com.metly.app`, environment), then
+        Verify the JWS (x5c chain to Apple Root CA G3, bundleId `app.tanishly.ios`, environment), then
         confirm with the App Store Server API (`/inApps/v1/subscriptions/{originalTransactionId}`).
-        Products: `com.metly.app.pro.yearly`, `com.metly.app.pro.monthly`. Link `originalTransactionId` ↔ user
+        Products: `app.tanishly.ios.pro.yearly`, `app.tanishly.ios.pro.monthly`. Link `originalTransactionId` ↔ user
         (`appAccountToken` = user id when the app sets it); one transaction cannot unlock two accounts.
       parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
       requestBody:
@@ -937,9 +937,9 @@ paths:
     post:
       tags: [Integrations]
       operationId: requestTelegramLink
-      summary: Reminder delivery via @MetlyRemindBot — get a one-time bot deep link
+      summary: Reminder delivery via @TanishlyBot — get a one-time bot deep link
       description: |
-        Returns `https://t.me/MetlyRemindBot?start=<one-time token>` (TTL 15 min). When the user taps
+        Returns `https://t.me/TanishlyBot?start=<one-time token>` (TTL 15 min). When the user taps
         Start, the bot webhook binds the Telegram chat to the user and sets
         `notificationPrefs.telegramLinked = true` (+ `sync.available`). Reminders then arrive in the chat
         with a reply link when `delivery == telegramBot`.
@@ -1379,7 +1379,7 @@ components:
           required: [fullName, jobTitle, company, phone, email, telegram, website, linkedin, source, context,
                      previousMeetings, note, tags, isMerged, isPendingMerge, isBlocked]
           properties:
-            remoteUserId: { type: [string, 'null'], format: uuid, description: 'Set when the person is a Metly user.' }
+            remoteUserId: { type: [string, 'null'], format: uuid, description: 'Set when the person is a Tanishly user.' }
             fullName: { type: string }
             jobTitle: { type: string }
             company: { type: string }
@@ -1602,7 +1602,7 @@ components:
       required: [plan, willRenew, isInBillingRetry, limits]
       properties:
         plan: { $ref: '#/components/schemas/Plan' }
-        productId: { type: [string, 'null'], enum: [com.metly.app.pro.yearly, com.metly.app.pro.monthly, null] }
+        productId: { type: [string, 'null'], enum: [app.tanishly.ios.pro.yearly, app.tanishly.ios.pro.monthly, null] }
         expiresAt: { $ref: '#/components/schemas/NullableTimestamp' }
         willRenew: { type: boolean }
         renewsAt: { $ref: '#/components/schemas/NullableTimestamp' }

@@ -6,7 +6,7 @@ import Testing
 
 @Suite("QR code")
 struct QRCodeTests {
-    private let url = "https://metly.link/c/kamola-7f3k"
+    private let url = "https://tanishly.app/c/kamola-7f3k"
 
     @Test func producesUprightMatrix() throws {
         let matrix = try #require(QRCodeGenerator.matrix(for: url))
@@ -22,7 +22,7 @@ struct QRCodeTests {
         #expect(image.height == image.width)
     }
 
-    @Test(arguments: ["https://metly.link/c/kamola-7f3k", "Hello, Ўзбекистон 😀"])
+    @Test(arguments: ["https://tanishly.app/c/kamola-7f3k", "Hello, Ўзбекистон 😀"])
     func imageDecodesBackToPayload(_ payload: String) throws {
         let image = try #require(QRCodeGenerator.cgImage(for: payload, scale: 8))
         let detector = try #require(CIDetector(ofType: CIDetectorTypeQRCode, context: nil,
@@ -45,7 +45,7 @@ struct QRCodeTests {
     }
 
     @Test func describesPayloadForVoiceOver() {
-        #expect(QRPayloadDescription(payload: url).spoken == "Link to metly.link/c/kamola-7f3k")
+        #expect(QRPayloadDescription(payload: url).spoken == "Link to tanishly.app/c/kamola-7f3k")
         let vcard = VCardBuilder.make(content: .sample, url: nil)
         #expect(QRPayloadDescription(payload: vcard).spoken == "Contact card for Kamola Rashidova")
     }

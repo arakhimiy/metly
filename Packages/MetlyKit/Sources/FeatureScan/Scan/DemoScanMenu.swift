@@ -13,10 +13,10 @@ struct DemoScanMenu: View {
         Menu {
             Section("\(Brand.appName) Cards") {
                 Button("Kamila · Already Connected") { onPayload(ScanSamples.kamilaURL) }
-                Button("Bekzod · Accepts Requests") { onPayload("https://metly.link/c/bekzod-b8n3") }
-                Button("Nodira · Never Answers") { onPayload("https://metly.link/c/nodira-n5m1") }
-                Button("Lola · Paused Card") { onPayload("https://metly.link/c/lola-p0z3") }
-                Button("My Work Card") { onPayload("https://metly.link/c/aziza-w7k2") }
+                Button("Bekzod · Accepts Requests") { onPayload("https://tanishly.app/c/bekzod-b8n3") }
+                Button("Nodira · Never Answers") { onPayload("https://tanishly.app/c/nodira-n5m1") }
+                Button("Lola · Paused Card") { onPayload("https://tanishly.app/c/lola-p0z3") }
+                Button("My Work Card") { onPayload("https://tanishly.app/c/aziza-w7k2") }
             }
             Section("Other QR Codes") {
                 Button("vCard Contact") { onPayload(ScanSamples.vCard) }

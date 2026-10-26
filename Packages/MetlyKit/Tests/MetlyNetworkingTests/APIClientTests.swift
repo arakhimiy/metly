@@ -198,7 +198,7 @@ struct APIClientTests {
         let backend = StubBackend()
         let recorder = Recorder()
         backend.handle { request in
-            for field in ["Authorization", "Content-Type", "Accept", "X-Metly-Client"] {
+            for field in ["Authorization", "Content-Type", "Accept", "X-Tanishly-Client"] {
                 recorder.append("\(field)=\(request.value(forHTTPHeaderField: field) ?? "nil")", to: request.url?.path() ?? "")
             }
             return (200, [:], .json(Item(value: "ok")))
@@ -206,12 +206,12 @@ struct APIClientTests {
         let api = LiveMetlyAPI(client: backend.client(store: InMemorySessionStore(.test(access: "tok"))), urlSession: backend.session())
         _ = try await api.client.send(try Endpoint<Item>(.put, "/v1/cards/x", body: Item(value: "x")))
         #expect(recorder.list("/v1/cards/x") == ["Authorization=Bearer tok", "Content-Type=application/json",
-                                                 "Accept=application/json", "X-Metly-Client=ios/test"])
+                                                 "Accept=application/json", "X-Tanishly-Client=ios/test"])
 
         let ticket = UploadTicket(uploadID: "up_1", uploadURL: URL(string: "https://\(backend.host)/upload/up_1")!,
                                   headers: ["Content-Type": "image/jpeg"], expiresAt: .now.addingTimeInterval(60))
         try await api.upload(Data([0xFF, 0xD8, 0xFF]), using: ticket)
-        #expect(recorder.list("/upload/up_1") == ["Authorization=nil", "Content-Type=image/jpeg", "Accept=nil", "X-Metly-Client=nil"])
+        #expect(recorder.list("/upload/up_1") == ["Authorization=nil", "Content-Type=image/jpeg", "Accept=nil", "X-Tanishly-Client=nil"])
     }
 
     @Test("Offline fails fast as .offline")

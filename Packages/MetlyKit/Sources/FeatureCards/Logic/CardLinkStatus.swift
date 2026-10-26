@@ -23,7 +23,7 @@ nonisolated enum CardLinkStatus: Equatable, Sendable {
         return nil
     }
 
-    /// "metly.link/c/aziza-w7k2" / "Publishing…" / "Not published yet".
+    /// "tanishly.app/c/aziza-w7k2" / "Publishing…" / "Not published yet".
     var displayText: String {
         switch self {
         case .live(let url): Self.shortText(for: url)

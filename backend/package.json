@@ -1,8 +1,8 @@
 {
-  "name": "metly-backend",
+  "name": "tanishly-api",
   "version": "1.0.0",
   "private": true,
-  "description": "Metly API: auth, offline-first sync, connect, public card pages, Wallet, subscriptions.",
+  "description": "Tanishly API: auth, offline-first sync, connect, public card pages, Wallet, subscriptions.",
   "license": "UNLICENSED",
   "type": "commonjs",
   "engines": {

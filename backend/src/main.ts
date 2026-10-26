@@ -16,7 +16,7 @@ async function bootstrap() {
   configureApp(app);
   await app.listen(env.PORT, '0.0.0.0');
   await app.get(RealtimeService).attach(app.getHttpServer() as Server);
-  app.get(Logger).log(`Metly API listening on :${env.PORT}`);
+  app.get(Logger).log(`Tanishly API listening on :${env.PORT}`);
 }
 
 void bootstrap();

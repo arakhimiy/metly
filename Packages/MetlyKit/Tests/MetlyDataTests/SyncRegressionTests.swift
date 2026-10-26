@@ -198,7 +198,7 @@ struct SyncRegressionTests {
                                  note: "Met at the Uzum booth", createdAt: .now.addingTimeInterval(-600),
                                  updatedAt: .now.addingTimeInterval(-600))
         await harness.server.simulateRemoteChanges(SyncChanges(connections: [twin]))
-        // Before pulling it, the app creates its own record for the same Metly user (offline accept).
+        // Before pulling it, the app creates its own record for the same Tanishly user (offline accept).
         let local = Connection(fullName: "Bobur Aliev", source: .nearby)
         local.remoteUserID = peer
         harness.context.insert(local)
@@ -378,18 +378,18 @@ struct SubscriptionRegressionTests {
     func serverReplyNeverDowngradesStoreKitPro() async throws {
         let server = MockMetlyServer(seed: .demo, configuration: .instant)
         let entitlements = Entitlements(plan: .pro)   // what SubscriptionManager derived from StoreKit
-        entitlements.productID = "com.metly.pro.yearly"
+        entitlements.productID = "app.tanishly.ios.pro.yearly"
         let renews = Date.now.addingTimeInterval(300 * 86_400)
         entitlements.renewsAt = renews
         entitlements.willRenew = true
         let verifier = SubscriptionVerifier(api: server, entitlements: entitlements)
 
         // Transaction.updates delivers the expired/refunded monthly plan the user had upgraded from.
-        _ = try await verifier.verify(signedTransaction: Self.jws(productID: "com.metly.pro.monthly",
+        _ = try await verifier.verify(signedTransaction: Self.jws(productID: "app.tanishly.ios.pro.monthly",
                                                                    expires: .now.addingTimeInterval(-86_400)))
 
         #expect(entitlements.plan == .pro)
-        #expect(entitlements.productID == "com.metly.pro.yearly")
+        #expect(entitlements.productID == "app.tanishly.ios.pro.yearly")
         #expect(entitlements.renewsAt == renews)
         #expect(entitlements.willRenew)
     }
@@ -399,10 +399,10 @@ struct SubscriptionRegressionTests {
         let server = MockMetlyServer(seed: .demo, configuration: .instant)
         let entitlements = Entitlements(plan: .free)
         let verifier = SubscriptionVerifier(api: server, entitlements: entitlements)
-        _ = try await verifier.verify(signedTransaction: Self.jws(productID: "com.metly.pro.yearly",
+        _ = try await verifier.verify(signedTransaction: Self.jws(productID: "app.tanishly.ios.pro.yearly",
                                                                    expires: .now.addingTimeInterval(365 * 86_400)))
         #expect(entitlements.plan == .pro)
-        #expect(entitlements.productID == "com.metly.pro.yearly")
+        #expect(entitlements.productID == "app.tanishly.ios.pro.yearly")
     }
 }
 

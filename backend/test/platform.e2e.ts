@@ -140,7 +140,7 @@ describe('platform: devices, push and jobs', () => {
       expect(sent[0]!.token).toBe(token);
       expect(sent[0]!.environment).toBe('sandbox');
       expect(sent[0]!.headers).toMatchObject({
-        'apns-topic': 'com.metly.app',
+        'apns-topic': 'app.tanishly.ios',
         'apns-push-type': 'alert',
         'apns-priority': '10',
         'apns-collapse-id': `followup.${due.id.toUpperCase()}`,
@@ -156,7 +156,7 @@ describe('platform: devices, push and jobs', () => {
         followUpId: due.id,
         connectionId: person.id,
         followUpID: due.id.toUpperCase(),
-        link: `metly://reminder/${due.id.toUpperCase()}`,
+        link: `tanishly://reminder/${due.id.toUpperCase()}`,
       });
       const stored = await prisma.followUp.findUniqueOrThrow({ where: { id: due.id } });
       expect(stored.remindedForDueAt?.toISOString()).toBe(due.dueAt);

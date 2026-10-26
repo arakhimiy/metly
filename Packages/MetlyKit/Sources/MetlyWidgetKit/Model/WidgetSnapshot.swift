@@ -21,7 +21,7 @@ nonisolated public struct WidgetSnapshot: Codable, Hashable, Sendable {
 
     public var schemaVersion: Int
     public var generatedAt: Date
-    /// nil = signed out (or setup not finished): widgets show "Open Metly".
+    /// nil = signed out (or setup not finished): widgets show "Open Tanishly".
     public var owner: WidgetOwner?
     /// Every live card, in the user's order.
     public var cards: [WidgetCard]
@@ -157,7 +157,7 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
     public var id: UUID
     public var name: String
     public var design: CardDesign
-    /// `https://metly.link/c/{slug}`; nil until the card is published.
+    /// `https://tanishly.app/c/{slug}`; nil until the card is published.
     public var url: URL?
     /// Public, design-visible, non-empty fields in display order.
     public var fields: [ContactField]

@@ -1,7 +1,7 @@
 import Foundation
 import MetlyCore
 
-// Endpoint groups of the Metly backend (docs/api/openapi.yaml). Implemented by `LiveMetlyAPI`
+// Endpoint groups of the Tanishly backend (docs/api/openapi.yaml). Implemented by `LiveMetlyAPI`
 // (URLSession) and `MockMetlyServer` (in-memory). Every method throws `APIError`.
 
 public protocol AuthAPI: Sendable {
@@ -20,7 +20,7 @@ public protocol AuthAPI: Sendable {
 #if DEBUG
 extension AuthAPI {
     public func signInForDevelopment(_ request: DevSignInRequest) async throws -> AuthResponse {
-        throw APIError.serverRequired("Test sign-in needs a local Metly backend.")
+        throw APIError.serverRequired("Test sign-in needs a local Tanishly backend.")
     }
 }
 #endif
@@ -53,7 +53,7 @@ public protocol ProfileAPI: Sendable {
     func deleteImage(_ kind: ProfileImageKind) async throws -> ProfileDTO
     /// GET an asset URL returned by the API (photos/logos/avatars).
     func downloadAsset(_ url: URL) async throws -> Data
-    /// `POST /v1/integrations/telegram/link` — reminder delivery via @MetlyRemindBot.
+    /// `POST /v1/integrations/telegram/link` — reminder delivery via @TanishlyBot.
     func requestTelegramLink() async throws -> TelegramLinkDTO
     /// `DELETE /v1/integrations/telegram/link`
     func unlinkTelegram() async throws
@@ -157,7 +157,7 @@ public protocol RealtimeAPI: Sendable {
 }
 
 public protocol PublicProfilesAPI: Sendable {
-    /// `GET /v1/public-profiles/{slug}` — scanned Metly QR, as visible to the signed-in viewer.
+    /// `GET /v1/public-profiles/{slug}` — scanned Tanishly QR, as visible to the signed-in viewer.
     func publicProfile(slug: String) async throws -> PublicCardDTO
 }
 

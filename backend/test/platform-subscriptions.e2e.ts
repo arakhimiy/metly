@@ -21,8 +21,8 @@ function transaction(overrides: Record<string, unknown> = {}) {
   return {
     transactionId: String(3_000_000_000 + Math.floor(Math.random() * 1e9)),
     originalTransactionId,
-    bundleId: 'com.metly.app',
-    productId: 'com.metly.app.pro.yearly',
+    bundleId: 'app.tanishly.ios',
+    productId: 'app.tanishly.ios.pro.yearly',
     subscriptionGroupIdentifier: '21500001',
     purchaseDate: t - DAY,
     originalPurchaseDate: t - DAY,
@@ -58,7 +58,7 @@ function notification(type: string, tx: Record<string, unknown>, opts: { renewal
       notificationUUID: opts.uuid ?? randomUUID(),
       data: {
         environment: 'Xcode',
-        bundleId: 'com.metly.app',
+        bundleId: 'app.tanishly.ios',
         bundleVersion: '42',
         signedTransactionInfo: jws(tx),
         signedRenewalInfo: jws(opts.renewal ?? renewal(tx)),
@@ -99,7 +99,7 @@ describe('platform: App Store subscriptions', () => {
     expectSchema('Entitlement', res.body);
     expect(res.body).toMatchObject({
       plan: 'pro',
-      productId: 'com.metly.app.pro.yearly',
+      productId: 'app.tanishly.ios.pro.yearly',
       originalTransactionId: tx.originalTransactionId,
       environment: 'Xcode',
       willRenew: true,
@@ -127,7 +127,7 @@ describe('platform: App Store subscriptions', () => {
 
   it('rejects other products, unaccepted environments and unconfigured verification', async () => {
     const s = await signIn(app);
-    expect((await verify(s, transaction({ productId: 'com.metly.pro.yearly' })).expect(400)).body.code).toBe('invalid_request');
+    expect((await verify(s, transaction({ productId: 'com.example.other.yearly' })).expect(400)).body.code).toBe('invalid_request');
     // APP_STORE_ENVIRONMENT defaults to Sandbox: Production data is not accepted.
     await verify(s, transaction({ environment: 'Production' })).expect(400);
     // Sandbox purchases need the App Store Server API credentials (not set in tests).
@@ -140,9 +140,9 @@ describe('platform: App Store subscriptions', () => {
     const s = await signIn(app);
     const long = transaction({ expiresDate: Date.now() + 300 * DAY });
     await verify(s, long).expect(200);
-    const short = transaction({ productId: 'com.metly.app.pro.monthly', expiresDate: Date.now() + 20 * DAY });
+    const short = transaction({ productId: 'app.tanishly.ios.pro.monthly', expiresDate: Date.now() + 20 * DAY });
     const res = await verify(s, short).expect(200);
-    expect(res.body).toMatchObject({ productId: 'com.metly.app.pro.yearly', originalTransactionId: long.originalTransactionId });
+    expect(res.body).toMatchObject({ productId: 'app.tanishly.ios.pro.yearly', originalTransactionId: long.originalTransactionId });
     const expired = transaction({ expiresDate: Date.now() - DAY, purchaseDate: Date.now() - 40 * DAY });
     expect((await verify(s, expired).expect(200)).body.originalTransactionId).toBe(long.originalTransactionId);
   });

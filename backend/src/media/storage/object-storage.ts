@@ -1,5 +1,5 @@
 /**
- * The few object-storage operations Metly needs (S3 / Cloudflare R2 / Backblaze B2, or memory in tests).
+ * The few object-storage operations Tanishly needs (S3 / Cloudflare R2 / Backblaze B2, or memory in tests).
  *
  * Key layout (one bucket):
  * - `uploads/{userId}/{uploadId}` — raw client uploads (private, presigned PUT, deleted on commit);

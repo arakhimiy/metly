@@ -6,17 +6,17 @@ import Testing
 
 @Suite("QR payload classification")
 struct QRPayloadClassifierTests {
-    private let kamila = QRPayload.metlyCard(url: URL(string: "https://metly.link/c/kamila-x1y2")!, slug: "kamila-x1y2")
+    private let kamila = QRPayload.metlyCard(url: URL(string: "https://tanishly.app/c/kamila-x1y2")!, slug: "kamila-x1y2")
 
-    @Test("Metly card links in every spelling", arguments: [
-        "https://metly.link/c/kamila-x1y2",
-        "http://metly.link/c/kamila-x1y2",
-        "metly.link/c/kamila-x1y2",
-        "https://www.metly.link/c/kamila-x1y2",
+    @Test("Tanishly card links in every spelling", arguments: [
+        "https://tanishly.app/c/kamila-x1y2",
+        "http://tanishly.app/c/kamila-x1y2",
+        "tanishly.app/c/kamila-x1y2",
+        "https://www.tanishly.app/c/kamila-x1y2",
         "HTTPS://METLY.LINK/C/KAMILA-X1Y2",
-        "https://metly.link/c/kamila-x1y2/?src=qr",
-        "  https://metly.link/c/kamila-x1y2\n",
-        "metly://c/kamila-x1y2",
+        "https://tanishly.app/c/kamila-x1y2/?src=qr",
+        "  https://tanishly.app/c/kamila-x1y2\n",
+        "tanishly://c/kamila-x1y2",
     ])
     func metlyLinks(raw: String) {
         #expect(QRPayloadClassifier.classify(raw) == kamila)
@@ -25,9 +25,9 @@ struct QRPayloadClassifierTests {
     @Test("The owner's own card is recognised")
     func ownCard() {
         let own: Set = ["aziza-w7k2", "aziza-p3x9"]
-        #expect(QRPayloadClassifier.classify("https://metly.link/c/aziza-w7k2", ownSlugs: own) == .ownCard(slug: "aziza-w7k2"))
+        #expect(QRPayloadClassifier.classify("https://tanishly.app/c/aziza-w7k2", ownSlugs: own) == .ownCard(slug: "aziza-w7k2"))
         #expect(QRPayloadClassifier.classify("METLY.LINK/C/AZIZA-P3X9", ownSlugs: own) == .ownCard(slug: "aziza-p3x9"))
-        #expect(QRPayloadClassifier.classify("https://metly.link/c/kamila-x1y2", ownSlugs: own) == kamila)
+        #expect(QRPayloadClassifier.classify("https://tanishly.app/c/kamila-x1y2", ownSlugs: own) == kamila)
     }
 
     @Test("vCards are passed through untouched")
@@ -73,7 +73,7 @@ struct QRPayloadClassifierTests {
         ("HTTP://WWW.UZUM.UZ", "uzum.uz"),
         ("www.payme.uz", "payme.uz"),
         ("example.org/menu", "example.org"),
-        ("https://metly.link/pricing", "metly.link"),
+        ("https://tanishly.app/pricing", "tanishly.app"),
     ])
     func webLinks(raw: String, domain: String) {
         let result = QRPayloadClassifier.classify(raw)

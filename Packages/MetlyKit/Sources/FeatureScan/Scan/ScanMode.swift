@@ -15,7 +15,7 @@ enum ScanMode: String, CaseIterable, Identifiable, Hashable {
 
     var hint: String {
         switch self {
-        case .qr: "Point at a Metly or vCard QR code"
+        case .qr: "Point at a Tanishly or vCard QR code"
         case .paper: "Fit the business card inside the frame"
         }
     }

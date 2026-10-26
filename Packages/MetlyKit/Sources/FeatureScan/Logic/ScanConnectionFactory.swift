@@ -7,7 +7,7 @@ import SwiftData
 /// Creates and finds the `Connection` records behind Scan's "Add to People", offline Connect,
 /// vCard Save and paper Save. New records are stamped with the active event (SPEC §3.17).
 enum ScanConnectionFactory {
-    /// Someone's Metly card → a connection carrying their card snapshot and visible fields.
+    /// Someone's Tanishly card → a connection carrying their card snapshot and visible fields.
     @discardableResult
     static func insertConnection(from snapshot: CardSnapshot, remoteUserID: UUID?, sharedCardID: UUID? = nil,
                                  source: ConnectionSource = .scanQR, in context: ModelContext,
@@ -50,7 +50,7 @@ enum ScanConnectionFactory {
 
     // MARK: Matching
 
-    /// The live connection to a Metly user, if the owner already has them in People.
+    /// The live connection to a Tanishly user, if the owner already has them in People.
     static func existing(remoteUserID: UUID?, among people: [Connection]) -> Connection? {
         guard let remoteUserID else { return nil }
         return people.first { $0.remoteUserID == remoteUserID && !$0.isDeleted }

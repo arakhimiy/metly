@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// "Nearby on Metly" row: avatar, name, "{title} · {company}", Connect → Waiting… (SPEC §2.5.26).
+/// "Nearby on Tanishly" row: avatar, name, "{title} · {company}", Connect → Waiting… (SPEC §2.5.26).
 struct NearbyPersonRow: View {
     enum Status: Equatable {
         case ready(canConnect: Bool)

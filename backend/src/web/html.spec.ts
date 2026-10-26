@@ -43,7 +43,7 @@ describe('html template', () => {
 
 describe('safeUrl', () => {
   it('allows http(s), tel and mailto', () => {
-    expect(safeUrl('https://metly.link/c/a')).toBe('https://metly.link/c/a');
+    expect(safeUrl('https://tanishly.app/c/a')).toBe('https://tanishly.app/c/a');
     expect(safeUrl('tel:+998901234567')).toBe('tel:+998901234567');
     expect(safeUrl('mailto:a@b.uz')).toBe('mailto:a@b.uz');
   });
@@ -61,6 +61,6 @@ describe('safeUrl', () => {
 
   it('safeHttpUrl only allows http(s)', () => {
     expect(safeHttpUrl('tel:123')).toBeNull();
-    expect(safeHttpUrl('https://cdn.metly.link/p.jpg')).toBe('https://cdn.metly.link/p.jpg');
+    expect(safeHttpUrl('https://cdn.tanishly.app/p.jpg')).toBe('https://cdn.tanishly.app/p.jpg');
   });
 });

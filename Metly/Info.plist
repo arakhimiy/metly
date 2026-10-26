@@ -3,28 +3,28 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Metly uses the camera to scan QR codes and paper business cards.</string>
+	<string>Tanishly uses the camera to scan QR codes and paper business cards.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Metly finds people nearby who also use Metly so you can swap cards.</string>
+	<string>Tanishly finds people nearby who also use Tanishly so you can swap cards.</string>
 	<key>NSNearbyInteractionUsageDescription</key>
-	<string>Metly detects when you hold your iPhone near someone else's to swap cards.</string>
+	<string>Tanishly detects when you hold your iPhone near someone else's to swap cards.</string>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>_metly-connect._tcp</string>
-		<string>_metly-connect._udp</string>
+		<string>_tanishly._tcp</string>
+		<string>_tanishly._udp</string>
 	</array>
 	<key>NSContactsUsageDescription</key>
-	<string>Metly saves the people you meet to your Contacts when you ask it to.</string>
+	<string>Tanishly saves the people you meet to your Contacts when you ask it to.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Metly uses the microphone to dictate private notes. Audio isn't stored.</string>
+	<string>Tanishly uses the microphone to dictate private notes. Audio isn't stored.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Metly turns your voice into a private note on your iPhone.</string>
+	<string>Tanishly turns your voice into a private note on your iPhone.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Metly saves card images and Lock Screen wallpapers to your Photos.</string>
+	<string>Tanishly saves card images and Lock Screen wallpapers to your Photos.</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Metly suggests events from your calendar so new contacts are tagged automatically.</string>
+	<string>Tanishly suggests events from your calendar so new contacts are tagged automatically.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Metly fills in where you met someone. Your location is never shared.</string>
+	<string>Tanishly fills in where you met someone. Your location is never shared.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>tg</string>
@@ -34,10 +34,10 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.metly.app</string>
+			<string>app.tanishly.ios</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>metly</string>
+				<string>tanishly</string>
 			</array>
 		</dict>
 	</array>
@@ -55,8 +55,8 @@
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.metly.app.refresh</string>
-		<string>com.metly.app.sync</string>
+		<string>app.tanishly.ios.refresh</string>
+		<string>app.tanishly.ios.sync</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>

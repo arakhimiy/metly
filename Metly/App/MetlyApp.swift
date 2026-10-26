@@ -23,7 +23,7 @@ struct MetlyApp: App {
         do {
             container = try MetlyModelContainer.make()
         } catch {
-            fatalError("Could not open the Metly store: \(error)")
+            fatalError("Could not open the Tanishly store: \(error)")
         }
         #if DEBUG
         // `-MetlyDemoData` launch argument: start signed in with the prototype's demo account.
@@ -38,7 +38,7 @@ struct MetlyApp: App {
         self.environment = environment
         services = environment.services
         client = environment.client
-        environment.syncEngine.registerBackgroundTasks()   // BGTask "com.metly.app.sync"
+        environment.syncEngine.registerBackgroundTasks()   // BGTask "app.tanishly.ios.sync"
         AppDelegate.services = services
         subscriptionManager.start(services: services)
 

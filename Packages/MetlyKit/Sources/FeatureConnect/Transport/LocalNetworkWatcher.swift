@@ -23,7 +23,7 @@ nonisolated enum LocalNetworkWatcher {
                 break
             }
         }
-        browser.start(queue: DispatchQueue(label: "com.metly.app.connect.local-network"))
+        browser.start(queue: DispatchQueue(label: "app.tanishly.ios.connect.local-network"))
         return browser
     }
 

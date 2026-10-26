@@ -52,7 +52,7 @@ final class NearbyInteractionRanger {
         let (events, continuation) = AsyncStream.makeStream(of: RangingEvent.self, bufferingPolicy: .bufferingNewest(16))
         proxy = RangingDelegateProxy(continuation: continuation)
         session.delegate = proxy
-        session.delegateQueue = DispatchQueue(label: "com.metly.app.connect.ranging")
+        session.delegateQueue = DispatchQueue(label: "app.tanishly.ios.connect.ranging")
         pump = Task { [session] in
             for await event in events {
                 if case .suspensionEnded = event, let configuration = session.configuration {

@@ -48,7 +48,7 @@ public struct WidgetMessageView: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// "Open Metly to make your first card."
+    /// "Open Tanishly to make your first card."
     public static var noCard: WidgetMessageView {
         WidgetMessageView(systemImage: "rectangle.stack.badge.plus", title: "Create Your Card",
                           message: "Open \(Brand.appName) to make your first card.")

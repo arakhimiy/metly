@@ -47,7 +47,7 @@ export interface VCardInput {
   company: string;
   /** Already filtered to Public ∩ visibleFields. */
   fields: ContactField[];
-  /** The card page (labelled "Metly"). */
+  /** The card page (labelled "Tanishly"). */
   url?: string | null;
   photoUrl?: string | null;
 }
@@ -96,7 +96,7 @@ export function buildVCard(input: VCardInput): string {
         break;
     }
   }
-  if (input.url) labelled(input.url, 'Metly');
+  if (input.url) labelled(input.url, 'Tanishly');
   const photo = safeHttpUrl(input.photoUrl);
   if (photo) lines.push(`PHOTO;VALUE=URI:${uri(photo)}`);
   lines.push('END:VCARD');

@@ -36,7 +36,7 @@ struct PaywallAndCopyTests {
     /// marketing + Try Again / Restore state instead of StoreKit's bare "Subscription Unavailable".
     @Test func paywallFallsBackWhenNoProPlanLoads() {
         #expect(PaywallAvailability(loadedProductIDs: []) == .unavailable)
-        #expect(PaywallAvailability(loadedProductIDs: ["com.metly.app.tip.small"]) == .unavailable)
+        #expect(PaywallAvailability(loadedProductIDs: ["app.tanishly.ios.tip.small"]) == .unavailable)
         #expect(PaywallAvailability(loadedProductIDs: [ProProduct.monthly.id]) == .available)
         #expect(PaywallAvailability(loadedProductIDs: ProProduct.allIDs) == .available)
     }

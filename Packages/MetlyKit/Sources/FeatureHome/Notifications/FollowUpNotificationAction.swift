@@ -9,7 +9,7 @@ nonisolated public enum FollowUpNotificationAction: Equatable, Sendable {
     case openChannel(followUpID: UUID)
     /// "Snooze 1 Day" (handled in the background).
     case snooze(followUpID: UUID)
-    /// Another notification carrying a `link` (`metly://…`) — routed through the app's deep links.
+    /// Another notification carrying a `link` (`tanishly://…`) — routed through the app's deep links.
     case openLink(URL)
     /// Dismissed, or nothing we understand.
     case ignore

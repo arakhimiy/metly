@@ -3,7 +3,7 @@ import MetlyCore
 
 /// Namespace for the API layer (owned by the Data & Sync agent).
 public enum MetlyNetworking {
-    public static let defaultBaseURL = URL(string: "https://api.metly.link")!
+    public static let defaultBaseURL = URL(string: "https://api.tanishly.app")!
 
     /// Info.plist key holding the API base URL (`$(METLY_API_BASE_URL)` build setting).
     public static let baseURLInfoKey = "MetlyAPIBaseURL"

@@ -81,7 +81,7 @@ export function buildPassJson(input: PassInput): Record<string, unknown> {
     dataDetectorTypes: f.kind === 'phone' ? ['PKDataDetectorTypePhoneNumber'] : f.kind === 'telegram' ? [] : ['PKDataDetectorTypeLink'],
   }));
   if (url) backFields.push({ key: 'card-url', label: 'Card', value: url, dataDetectorTypes: ['PKDataDetectorTypeLink'] });
-  backFields.push({ key: 'about', label: 'Metly', value: 'This pass updates automatically when the card changes.' });
+  backFields.push({ key: 'about', label: 'Tanishly', value: 'This pass updates automatically when the card changes.' });
 
   const name = profile.fullName.trim() || card.name;
   return {
@@ -91,9 +91,9 @@ export function buildPassJson(input: PassInput): Record<string, unknown> {
     serialNumber: card.id,
     authenticationToken: card.passAuthToken,
     webServiceURL: input.webServiceURL,
-    organizationName: 'Metly',
-    description: `${name} — Metly card`,
-    logoText: 'Metly',
+    organizationName: 'Tanishly',
+    description: `${name} — Tanishly card`,
+    logoText: 'Tanishly',
     backgroundColor: rgb(colors.background),
     foregroundColor: rgb(colors.foreground),
     labelColor: rgb(colors.accent),

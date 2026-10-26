@@ -27,7 +27,7 @@ const input = (overrides: { deletedAt?: Date | null; slug?: string | null; jobTi
   profile: {
     fullName: 'Kamola Yusupova',
     jobTitle: overrides.jobTitle ?? 'Product Manager',
-    company: overrides.company ?? 'Metly',
+    company: overrides.company ?? 'Tanishly',
     contactFields: [
       { kind: 'phone', value: '+998901234567', privacy: 'public' },
       { kind: 'email', value: 'kamola@metly.test', privacy: 'connections' },
@@ -36,7 +36,7 @@ const input = (overrides: { deletedAt?: Date | null; slug?: string | null; jobTi
       { kind: 'linkedin', value: 'kamola', privacy: 'public' },
     ],
   },
-  passTypeIdentifier: 'pass.com.metly.app.card',
+  passTypeIdentifier: 'pass.app.tanishly.ios.card',
   teamIdentifier: 'TEAM123456',
   webServiceURL: 'https://api.metly.test/passkit',
   webBaseUrl: 'https://metly.test',
@@ -47,16 +47,16 @@ describe('buildPassJson', () => {
     const pass = buildPassJson(input());
     expect(pass).toMatchObject({
       formatVersion: 1,
-      passTypeIdentifier: 'pass.com.metly.app.card',
+      passTypeIdentifier: 'pass.app.tanishly.ios.card',
       teamIdentifier: 'TEAM123456',
       serialNumber: '7b0c2f3e-1d2a-4c5b-9e8f-0a1b2c3d4e5f',
       authenticationToken: 'token-token-token-token-1234',
       webServiceURL: 'https://api.metly.test/passkit',
-      organizationName: 'Metly',
+      organizationName: 'Tanishly',
     });
     const generic = pass.generic as Record<string, { key: string; value: string }[]>;
     expect(generic.primaryFields![0]!.value).toBe('Kamola Yusupova');
-    expect(generic.secondaryFields![0]!.value).toBe('Product Manager · Metly');
+    expect(generic.secondaryFields![0]!.value).toBe('Product Manager · Tanishly');
     expect(pass.voided).toBeUndefined();
   });
 

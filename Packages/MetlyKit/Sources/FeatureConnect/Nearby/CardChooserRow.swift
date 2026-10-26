@@ -43,7 +43,7 @@ struct CardChooserRow: View {
         .contentShape(.rect)
     }
 
-    /// "metly.link/c/aziza-w7k2".
+    /// "tanishly.app/c/aziza-w7k2".
     private static func displayLink(_ url: URL) -> String {
         guard let host = url.host() else { return url.absoluteString }
         return host + url.path()

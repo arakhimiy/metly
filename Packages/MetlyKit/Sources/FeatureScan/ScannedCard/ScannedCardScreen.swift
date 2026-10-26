@@ -2,7 +2,7 @@ import MetlyCore
 import MetlyData
 import SwiftUI
 
-/// SCANNED_CARD (SPEC §2.5.9): loads the scanned Metly card (or reads a foreign vCard) and
+/// SCANNED_CARD (SPEC §2.5.9): loads the scanned Tanishly card (or reads a foreign vCard) and
 /// shows it with Connect / Add to People / Save to Contacts.
 struct ScannedCardScreen: View {
     let payload: ScannedCardPayload

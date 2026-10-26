@@ -57,7 +57,7 @@ export function profile(overrides: Record<string, unknown> = {}) {
     id: randomUUID(),
     fullName: 'Kamola Yusupova',
     jobTitle: 'Product Manager',
-    company: 'Metly',
+    company: 'Tanishly',
     contactFields: [
       { kind: 'phone', value: '+998901234567', privacy: 'public' },
       { kind: 'email', value: 'kamola@metly.test', privacy: 'connections' },

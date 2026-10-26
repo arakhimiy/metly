@@ -9,7 +9,7 @@ struct MockMetlyServerTests {
         MockMetlyServer(seed: seed, configuration: .instant)
     }
 
-    @Test("Publishing assigns a {firstname}-{4} slug and a metly.link URL")
+    @Test("Publishing assigns a {firstname}-{4} slug and a tanishly.app URL")
     func slugAssignment() async throws {
         let server = server(.newAccount)
         let now = Date.now
@@ -136,14 +136,14 @@ struct MockMetlyServerTests {
             return "eyJhbGciOiJFUzI1NiJ9.\(base64URL).c2ln"
         }
         let server = server()
-        let yearly = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("com.metly.pro.yearly",
+        let yearly = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("app.tanishly.ios.pro.yearly",
                                                                                          expires: .now.addingTimeInterval(365 * 86_400))))
         #expect(yearly.plan == .pro)
 
-        let stale = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("com.metly.pro.monthly",
+        let stale = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("app.tanishly.ios.pro.monthly",
                                                                                         expires: .now.addingTimeInterval(-86_400))))
         #expect(stale.plan == .pro)
-        #expect(try await server.fetchEntitlement().productID == "com.metly.pro.yearly")
+        #expect(try await server.fetchEntitlement().productID == "app.tanishly.ios.pro.yearly")
         #expect(await server.plan == .pro)
     }
 
@@ -258,7 +258,7 @@ struct MockMetlyServerTests {
         #expect(applied.records.connections.first?.note == "New edit")
     }
 
-    @Test("A second connection for the same Metly user merges into the first")
+    @Test("A second connection for the same Tanishly user merges into the first")
     func connectionUniquePerRemoteUser() async throws {
         let server = server()
         let kamilaID = MockSeed.peers[0].userID
@@ -339,7 +339,7 @@ struct MockMetlyServerTests {
 @Suite("KeychainSessionStore", .enabled(if: KeychainProbe.isAvailable, "Keychain needs an entitled host"))
 struct KeychainSessionStoreTests {
     @Test func saveLoadClear() throws {
-        let service = "com.metly.tests.\(UUID().uuidString)"
+        let service = "app.tanishly.tests.\(UUID().uuidString)"
         let store = KeychainSessionStore(service: service)
         #expect(store.load() == nil)
         let session = AuthSession.test(access: "a1", refresh: "r1")
@@ -361,7 +361,7 @@ struct KeychainSessionStoreTests {
 
 enum KeychainProbe {
     static let isAvailable: Bool = {
-        let store = KeychainSessionStore(service: "com.metly.tests.probe")
+        let store = KeychainSessionStore(service: "app.tanishly.tests.probe")
         do {
             try store.save(.test())
             store.clear()

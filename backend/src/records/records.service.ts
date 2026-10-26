@@ -234,7 +234,7 @@ export class RecordsService {
     }
     const designChanged = !live || !sameJson(live.design, incoming.design);
     if (!plan.pro && designChanged && designUsesPro(incoming.design)) {
-      return { status: 'rejected', error: ApiError.proRequired('Editorial and the Ocean and Ember palettes need Metly Pro.') };
+      return { status: 'rejected', error: ApiError.proRequired('Editorial and the Ocean and Ember palettes need Tanishly Pro.') };
     }
     if (live?.isReadOnly && (designChanged || live.name !== incoming.name)) {
       return { status: 'rejected', error: ApiError.proRequired('This card is read-only on the Free plan.') };
@@ -394,7 +394,7 @@ export class RecordsService {
     }
     const live = existing && !existing.deletedAt ? existing : null;
 
-    // One live connection per (owner, remoteUserId): a second record for the same Metly user merges
+    // One live connection per (owner, remoteUserId): a second record for the same Tanishly user merges
     // into the existing one and the pushed id is tombstoned (README § Uniqueness).
     if (!live && incoming.remoteUserId) {
       const twin = await tx.connection.findFirst({

@@ -1,7 +1,7 @@
 import Foundation
 import MetlyCore
 
-/// `metly://` links opened by widgets, the Control Center control and App Shortcuts.
+/// `tanishly://` links opened by widgets, the Control Center control and App Shortcuts.
 /// The app's `DeepLinkHandler` resolves them (hosts `qr`, `followups`, `reminder`, …).
 nonisolated public enum WidgetDeepLink {
     /// QR_FULLSCREEN for `cardID`, or for the card to share at tap time when nil.
@@ -34,11 +34,11 @@ nonisolated public enum WidgetDeepLink {
 
 /// Widget `kind` identifiers (stable — renaming one removes it from people's Home Screens).
 nonisolated public enum WidgetKind {
-    public static let myQR = "com.metly.app.widget.qr"
-    public static let card = "com.metly.app.widget.card"
-    public static let followUps = "com.metly.app.widget.followups"
-    public static let lockScreenQR = "com.metly.app.widget.lockqr"
-    public static let showQRControl = "com.metly.app.control.showqr"
+    public static let myQR = "app.tanishly.ios.widget.qr"
+    public static let card = "app.tanishly.ios.widget.card"
+    public static let followUps = "app.tanishly.ios.widget.followups"
+    public static let lockScreenQR = "app.tanishly.ios.widget.lockqr"
+    public static let showQRControl = "app.tanishly.ios.control.showqr"
 
     public static let all = [myQR, card, followUps, lockScreenQR]
 }

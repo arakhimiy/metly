@@ -1,6 +1,6 @@
 /// Feature-internal pushes inside the onboarding NavigationStacks.
 enum OnboardingRoute: Hashable {
-    /// AUTH_SIGNUP — "Create your Metly".
+    /// AUTH_SIGNUP — "Create your Tanishly".
     case signUp
     /// AUTH_SIGNUP in sign-in mode ("Already have an account? Sign In").
     case signIn

@@ -58,7 +58,7 @@ struct ReminderPersonLabel: View {
 }
 
 /// Quick picks (Tomorrow · In 3 Days · Next Week), Date (min today) and Time (default 10:00),
-/// with the "Metly will remind you …" summary.
+/// with the "Tanishly will remind you …" summary.
 struct ReminderWhenSection: View {
     @Binding var form: ReminderForm
     let minimumDay: Date

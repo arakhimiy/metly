@@ -56,7 +56,7 @@ public enum MetlyServiceFactory {
             mockServer = nil
         } else {
             // Separate Keychain item so mock tokens never reach a real backend.
-            sessionStore = KeychainSessionStore(service: "com.metly.app.session.mock")
+            sessionStore = KeychainSessionStore(service: "app.tanishly.ios.session.mock")
             let session = sessionStore.load()
             let seed: MockMetlyServer.Seed = if let snapshot = container.mainContext.mockAccountSnapshot(email: session?.email,
                                                                                                      userID: session?.userID) {

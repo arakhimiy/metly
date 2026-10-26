@@ -18,7 +18,7 @@ struct JSONCodingTests {
 
     @Test("ID / URL suffixes travel as Id / Url")
     func keySuffixes() throws {
-        let connection = ConnectionDTO(id: UUID(), remoteUserID: UUID(), fullName: "Kamila", avatarURL: URL(string: "https://a.metly.link/x.jpg"),
+        let connection = ConnectionDTO(id: UUID(), remoteUserID: UUID(), fullName: "Kamila", avatarURL: URL(string: "https://a.tanishly.app/x.jpg"),
                                        mySharedCardID: UUID(), source: .nearby, context: MeetingContext(eventID: UUID(), metAt: fixedDate),
                                        eventID: UUID(), createdAt: fixedDate, updatedAt: fixedDate)
         let text = try json(connection)
@@ -61,7 +61,7 @@ struct JSONCodingTests {
 
     @Test func recordRoundTrips() throws {
         let profile = ProfileDTO(id: UUID(), fullName: "Aziza Karimova", jobTitle: "Designer", company: "Tezkor",
-                                 photoURL: URL(string: "https://assets.metly.link/p.jpg"), contactFields: ContactField.defaults,
+                                 photoURL: URL(string: "https://assets.tanishly.app/p.jpg"), contactFields: ContactField.defaults,
                                  defaultCardID: UUID(), linksPaused: true, notificationPrefs: NotificationPrefs(),
                                  privacySettings: PrivacySettings(), isSetupComplete: true, createdAt: fixedDate, updatedAt: fixedDate)
         #expect(try roundTrip(profile) == profile)
@@ -159,7 +159,7 @@ struct JSONCodingTests {
         #expect(MetlyNetworking.parseBaseURL("   ") == nil)
         #expect(MetlyNetworking.parseBaseURL(nil) == nil)
         #expect(MetlyNetworking.parseBaseURL("ftp://x") == nil)
-        #expect(MetlyNetworking.parseBaseURL("https://api.metly.link")?.host() == "api.metly.link")
+        #expect(MetlyNetworking.parseBaseURL("https://api.tanishly.app")?.host() == "api.tanishly.app")
         #expect(MetlyNetworking.configuredBaseURL(bundle: .main, defaults: UserDefaults(suiteName: UUID().uuidString)!,
                                                   arguments: ["-MetlyUseMockServer"]) == nil)
     }

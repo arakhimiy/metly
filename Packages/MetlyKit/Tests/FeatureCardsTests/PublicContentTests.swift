@@ -81,7 +81,7 @@ struct PublicContentTests {
         // Offline → automatic vCard (still carrying the link as a URL line).
         let offline = QRCodeMode.resolve(url: published.url, isOnline: false, prefersOffline: nil, publicContent: publicContent)
         #expect(offline.isOffline)
-        #expect(offline.payload.contains("metly.link/c/aziza-w7k2"))
+        #expect(offline.payload.contains("tanishly.app/c/aziza-w7k2"))
         #expect(!offline.payload.contains("aziza@tezkor.uz"))
 
         // The switch overrides the default either way.
@@ -99,7 +99,7 @@ struct PublicContentTests {
         #expect(CardLinkStatus(url: url, isOnline: false) == .live(url))
         #expect(CardLinkStatus(url: nil, isOnline: true) == .publishing)
         #expect(CardLinkStatus(url: nil, isOnline: false) == .waitingForNetwork)
-        #expect(CardLinkStatus(url: url, isOnline: true).displayText == "metly.link/c/aziza-w7k2")
+        #expect(CardLinkStatus(url: url, isOnline: true).displayText == "tanishly.app/c/aziza-w7k2")
         #expect(CardLinkStatus.publishing.url == nil)
     }
 }

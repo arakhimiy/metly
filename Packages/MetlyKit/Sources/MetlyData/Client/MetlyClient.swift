@@ -9,7 +9,7 @@ public enum ConnectTarget: Sendable, Hashable {
     /// A discovery token seen over Nearby / Tap Phones.
     case nearbyToken(String)
     case user(UUID)
-    /// A scanned `metly.link/c/{slug}`.
+    /// A scanned `tanishly.app/c/{slug}`.
     case slug(String)
 }
 
@@ -150,7 +150,7 @@ public final class MetlyClient {
 
     // MARK: Public profiles (SCANNED_CARD)
 
-    /// The card behind a scanned `metly.link/c/{slug}`; `status != .available` → show the
+    /// The card behind a scanned `tanishly.app/c/{slug}`; `status != .available` → show the
     /// "This card isn't available right now." state. `snapshot` feeds `CardFaceView`.
     public func publicProfile(slug: String) async throws -> PublicCardDTO {
         try await api.publicProfiles.publicProfile(slug: slug)
@@ -240,7 +240,7 @@ public final class MetlyClient {
         return outcome(for: latest, connection: nil) ?? .noResponse
     }
 
-    /// The live local connection to a Metly user: removed (tombstoned) records never count, and a
+    /// The live local connection to a Tanishly user: removed (tombstoned) records never count, and a
     /// non-blocked one is preferred.
     private func liveConnection(toPeer peer: UUID) -> Connection? {
         let descriptor = FetchDescriptor<Connection>(predicate: #Predicate { $0.remoteUserID == peer && $0.deletedAt == nil })

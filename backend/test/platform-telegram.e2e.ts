@@ -27,7 +27,7 @@ describe('platform: telegram reminders', () => {
     // env is read by createApp() → loadEnv().
     process.env.TELEGRAM_BOT_TOKEN = BOT_TOKEN;
     process.env.TELEGRAM_WEBHOOK_SECRET = SECRET;
-    process.env.TELEGRAM_BOT_USERNAME = 'MetlyRemindBot';
+    process.env.TELEGRAM_BOT_USERNAME = 'TanishlyBot';
     vi.stubGlobal(
       'fetch',
       vi.fn(async (url: string | URL, init?: RequestInit) => {
@@ -83,7 +83,7 @@ describe('platform: telegram reminders', () => {
     const res = await http().post('/v1/integrations/telegram/link').set(s.auth).set('Idempotency-Key', randomUUID()).expect(200);
     expectSchema('TelegramLink', res.body);
     const url = new URL(res.body.botUrl as string);
-    expect(url.origin + url.pathname).toBe('https://t.me/MetlyRemindBot');
+    expect(url.origin + url.pathname).toBe('https://t.me/TanishlyBot');
     expect(Date.parse(res.body.expiresAt) - Date.now()).toBeGreaterThan(14 * 60_000);
     return url.searchParams.get('start')!;
   };

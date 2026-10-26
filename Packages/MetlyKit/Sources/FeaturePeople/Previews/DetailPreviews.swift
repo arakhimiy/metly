@@ -20,7 +20,7 @@ import SwiftUI
     NavigationStack {
         PreviewPerson(name: "Timur Nazarov", prepare: { person, _ in
             person.isMerged = true
-            person.note = "Met at the coffee line. Builds infra at Yandex; wants to try Metly for their team."
+            person.note = "Met at the coffee line. Builds infra at Yandex; wants to try Tanishly for their team."
             person.phone = "+998 93 555 12 34"
             person.previousMeetings = [MeetingContext(eventName: "Product Meetup", place: "IT Park", city: "Tashkent",
                                                       metAt: .now.addingTimeInterval(-40 * 86_400))]

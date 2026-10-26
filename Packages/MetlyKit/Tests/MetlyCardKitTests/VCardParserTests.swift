@@ -10,7 +10,7 @@ struct VCardParserTests {
     }
 
     @Test func roundTripsBuiltVCard() throws {
-        let vcard = VCardBuilder.make(content: .sample, url: URL(string: "https://metly.link/c/kamola-7f3k"))
+        let vcard = VCardBuilder.make(content: .sample, url: URL(string: "https://tanishly.app/c/kamola-7f3k"))
         let draft = try #require(VCardParser.parse(vcard))
         #expect(draft.fullName == "Kamola Rashidova")
         #expect(draft.jobTitle == "Product Designer")
@@ -19,7 +19,7 @@ struct VCardParserTests {
         #expect(value(draft, .phone) == "+998 90 123 45 67")
         #expect(value(draft, .email) == "kamola@tezkor.uz")
         #expect(value(draft, .telegram) == "@kamola.r")
-        #expect(value(draft, .website) == "kamola.design")   // the metly.link card URL is not a website
+        #expect(value(draft, .website) == "kamola.design")   // the tanishly.app card URL is not a website
         #expect(value(draft, .linkedin) == "in/kamolarashidova")
     }
 

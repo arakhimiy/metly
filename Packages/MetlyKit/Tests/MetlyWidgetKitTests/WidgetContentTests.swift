@@ -23,7 +23,7 @@ struct WidgetContentTests {
         let display = try #require(content.display)
         #expect(display.card.id == personalCardID)
         #expect(display.followsShareCard)
-        #expect(content.url.absoluteString == "metly://qr")
+        #expect(content.url.absoluteString == "tanishly://qr")
     }
 
     @Test("A configured card opens its own QR; a deleted one falls back to the card to share")
@@ -32,7 +32,7 @@ struct WidgetContentTests {
         let chosen = CardWidgetContent.resolve(snapshot: snapshot, cardID: personalCardID, at: testNow)
         #expect(chosen.display?.card.id == personalCardID)
         #expect(chosen.display?.followsShareCard == false)
-        #expect(chosen.url.absoluteString == "metly://qr/\(personalCardID.uuidString)")
+        #expect(chosen.url.absoluteString == "tanishly://qr/\(personalCardID.uuidString)")
 
         let stale = CardWidgetContent.resolve(snapshot: snapshot, cardID: eventCardID, at: testNow)
         #expect(stale.display?.card.id == workCardID)
@@ -123,11 +123,11 @@ struct WidgetContentTests {
     @Test("Deep links match DeepLinkHandler's hosts")
     func deepLinks() {
         let id = UUID(uuidString: "6F0C1E52-3B7A-4C1D-9E3F-6A7B8C9D0E11")!
-        #expect(WidgetDeepLink.qr().absoluteString == "metly://qr")
-        #expect(WidgetDeepLink.qr(cardID: id).absoluteString == "metly://qr/6F0C1E52-3B7A-4C1D-9E3F-6A7B8C9D0E11")
-        #expect(WidgetDeepLink.followUps.absoluteString == "metly://followups")
-        #expect(WidgetDeepLink.reminder(id).absoluteString == "metly://reminder/6F0C1E52-3B7A-4C1D-9E3F-6A7B8C9D0E11")
-        #expect(WidgetDeepLink.startEvent.absoluteString == "metly://event/start")
+        #expect(WidgetDeepLink.qr().absoluteString == "tanishly://qr")
+        #expect(WidgetDeepLink.qr(cardID: id).absoluteString == "tanishly://qr/6F0C1E52-3B7A-4C1D-9E3F-6A7B8C9D0E11")
+        #expect(WidgetDeepLink.followUps.absoluteString == "tanishly://followups")
+        #expect(WidgetDeepLink.reminder(id).absoluteString == "tanishly://reminder/6F0C1E52-3B7A-4C1D-9E3F-6A7B8C9D0E11")
+        #expect(WidgetDeepLink.startEvent.absoluteString == "tanishly://event/start")
         #expect(WidgetDeepLink.qr(cardID: id).pathComponents.filter { $0 != "/" } == [id.uuidString])
     }
 

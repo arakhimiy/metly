@@ -17,7 +17,7 @@ const WebEventBody = z.object({
   referrer: z.string().max(2048).nullish(),
 });
 
-/** JSON endpoints used by the metly.link page (openapi tag "Public web"). */
+/** JSON endpoints used by the tanishly.app page (openapi tag "Public web"). */
 @Controller('api/public')
 @Public()
 export class PublicApiController {

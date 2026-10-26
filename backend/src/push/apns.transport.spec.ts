@@ -42,7 +42,7 @@ describe('ApnsTransport', () => {
       {
         token: 'abcd',
         environment: 'sandbox',
-        headers: { 'apns-topic': 'com.metly.app', 'apns-push-type': 'alert', 'apns-priority': '10', 'apns-collapse-id': 'c1' },
+        headers: { 'apns-topic': 'app.tanishly.ios', 'apns-push-type': 'alert', 'apns-priority': '10', 'apns-collapse-id': 'c1' },
         payload: { aps: { alert: { title: 'T', body: 'B' } }, type: 'followup_due' },
       },
       { userId: 'u', deviceId: 'd' },
@@ -51,7 +51,7 @@ describe('ApnsTransport', () => {
     const req = seen[0]!;
     expect(req.headers[':method']).toBe('POST');
     expect(req.headers[':path']).toBe('/3/device/abcd');
-    expect(req.headers['apns-topic']).toBe('com.metly.app');
+    expect(req.headers['apns-topic']).toBe('app.tanishly.ios');
     expect(req.headers['apns-collapse-id']).toBe('c1');
     expect(JSON.parse(req.body)).toEqual({ aps: { alert: { title: 'T', body: 'B' } }, type: 'followup_due' });
     const jwt = String(req.headers.authorization).replace(/^bearer /, '');
@@ -67,7 +67,7 @@ describe('ApnsTransport', () => {
   it('reports APNs errors with their reason and refreshes an expired provider token once', async () => {
     seen.length = 0;
     const t = transport();
-    const headers = { 'apns-topic': 'com.metly.app', 'apns-push-type': 'alert', 'apns-priority': '10' } as const;
+    const headers = { 'apns-topic': 'app.tanishly.ios', 'apns-push-type': 'alert', 'apns-priority': '10' } as const;
     respond = () => ({ status: 410, body: { reason: 'Unregistered', timestamp: 1 } });
     expect(await t.send({ token: 'dead', environment: 'sandbox', headers, payload: {} }, { userId: 'u', deviceId: 'd' })).toEqual({
       status: 410,

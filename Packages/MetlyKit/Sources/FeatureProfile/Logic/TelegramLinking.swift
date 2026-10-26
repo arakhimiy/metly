@@ -1,7 +1,7 @@
 import Foundation
 import MetlyCore
 
-/// Deep link that starts the reminder bot (`@MetlyRemindBot`) with a linking token.
+/// Deep link that starts the reminder bot (`@TanishlyBot`) with a linking token.
 nonisolated enum TelegramLinking {
     /// TODO(backend): replace with a one-time token issued by the API (e.g. `POST /v1/me/telegram/link-token`).
     /// The bot receives it via `/start <token>`, links the chat to the account and the server flips
@@ -11,7 +11,7 @@ nonisolated enum TelegramLinking {
         UUID().uuidString.replacing("-", with: "").lowercased()
     }
 
-    /// `https://t.me/MetlyRemindBot?start={token}` — Telegram allows `[A-Za-z0-9_-]{1,64}`.
+    /// `https://t.me/TanishlyBot?start={token}` — Telegram allows `[A-Za-z0-9_-]{1,64}`.
     static func startURL(token: String) -> URL? {
         var components = URLComponents()
         components.scheme = "https"

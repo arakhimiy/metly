@@ -1,4 +1,4 @@
-# Deploying Metly
+# Deploying Tanishly
 
 The API is one Docker image (`backend/Dockerfile`) plus a PostgreSQL database. It runs on any host
 that runs containers. Everything optional (push, Wallet, uploads, subscriptions, Telegram, mail) is
@@ -9,11 +9,11 @@ switched on by setting its environment variables; until then those endpoints ans
 
 | Item | Why | Notes |
 |---|---|---|
-| Domain `metly.link` | Printed QR codes encode `https://metly.link/c/{slug}` — it can never change afterwards | Registrar of choice; DNS can stay with the registrar or move to Cloudflare |
-| `api.metly.link` | The app's `METLY_API_BASE_URL` | CNAME/A to the API host |
-| `metly.link/c/*` and `/.well-known/apple-app-site-association` | Web card page + Universal Links | Served by the same API (point the apex at it, or proxy those paths) |
-| Privacy Policy, Terms, Support pages | App Store requires a privacy policy URL; the app links `metly.link/privacy`, `/terms`, `/help` | Any static host |
-| `support@metly.link` | Shown in the app and App Store listing | Email forwarding at the registrar is enough |
+| Domain `tanishly.app` | Printed QR codes encode `https://tanishly.app/c/{slug}` — it can never change afterwards | Registrar of choice; DNS can stay with the registrar or move to Cloudflare |
+| `api.tanishly.app` | The app's `METLY_API_BASE_URL` | CNAME/A to the API host |
+| `tanishly.app/c/*` and `/.well-known/apple-app-site-association` | Web card page + Universal Links | Served by the same API (point the apex at it, or proxy those paths) |
+| Privacy Policy, Terms, Support pages | App Store requires a privacy policy URL; the app links `tanishly.app/privacy`, `/terms`, `/help` | Any static host |
+| `support@tanishly.app` | Shown in the app and App Store listing | Email forwarding at the registrar is enough |
 | Apple Developer Program team | App Store, TestFlight, Push, Sign in with Apple, Wallet, Associated Domains | The team that owns the app also owns users' Sign in with Apple identifiers — pick the final team before launch (moving later needs a user-migration) |
 
 ## 2. Hosting
@@ -26,7 +26,7 @@ Requirements: containers, managed PostgreSQL 16+ with daily backups, HTTPS, WebS
 - **Production:** a small always-on instance (1 vCPU, 1 GB) and managed PostgreSQL with backups is
   plenty for the first tens of thousands of users.
 - **Uzbekistan data localisation:** the Law on Personal Data requires personal data of citizens of
-  Uzbekistan to be stored on servers located in Uzbekistan. If Metly targets users there, host the
+  Uzbekistan to be stored on servers located in Uzbekistan. If Tanishly targets users there, host the
   database (and the API) in a local data centre or get legal advice before launch. The image is
   host-agnostic, so this is a deployment choice, not a code change.
 
@@ -43,17 +43,17 @@ Copy `backend/.env.example`; production refuses to boot when `JWT_SECRET` is the
 |---|---|
 | `NODE_ENV` | `production` |
 | `DATABASE_URL` | managed PostgreSQL URL (with `sslmode=require` if the provider needs it) |
-| `WEB_BASE_URL` | `https://metly.link` (never change after launch) |
-| `API_BASE_URL` | `https://api.metly.link` |
+| `WEB_BASE_URL` | `https://tanishly.app` (never change after launch) |
+| `API_BASE_URL` | `https://api.tanishly.app` |
 | `JWT_SECRET` | `openssl rand -base64 48` |
-| `APPLE_BUNDLE_IDS` | `com.metly.app` |
+| `APPLE_BUNDLE_IDS` | `app.tanishly.ios` |
 | `APPLE_TEAM_ID`, `APPLE_SIGNIN_KEY_ID`, `APPLE_SIGNIN_PRIVATE_KEY` | Sign in with Apple key (.p8) — needed to revoke tokens on account deletion (App Store rule) |
 | `GOOGLE_CLIENT_IDS` | iOS OAuth client id from Google Cloud Console |
-| `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_PRIVATE_KEY`, `APNS_TOPIC` | APNs auth key (.p8); topic `com.metly.app` |
+| `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_PRIVATE_KEY`, `APNS_TOPIC` | APNs auth key (.p8); topic `app.tanishly.ios` |
 | `APP_STORE_ISSUER_ID`, `APP_STORE_KEY_ID`, `APP_STORE_PRIVATE_KEY`, `APP_STORE_APP_APPLE_ID`, `APP_STORE_ENVIRONMENT` | App Store Server API key; `Production` after release |
 | `PASS_TYPE_IDENTIFIER`, `PASS_TEAM_ID`, `PASS_CERT_PEM`, `PASS_KEY_PEM`, `PASS_KEY_PASSPHRASE`, `PASS_WWDR_PEM` | Wallet pass certificate + Apple WWDR G4 |
 | `S3_*` | Cloudflare R2 (or S3) bucket for photos/logos; `S3_PUBLIC_BASE_URL` = the public bucket/CDN URL |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` | @MetlyRemindBot; set the bot webhook to `https://api.metly.link/v1/integrations/telegram/webhook` with that secret |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` | @TanishlyBot; set the bot webhook to `https://api.tanishly.app/v1/integrations/telegram/webhook` with that secret |
 | `RESEND_API_KEY`, `MAIL_FROM` | data-export emails |
 | `APP_STORE_ID` | numeric App Store id, after the listing exists (Smart App Banner, "Get the app") |
 
@@ -64,7 +64,7 @@ Multi-line keys can be stored with literal `\n`; the app restores newlines.
 ```bash
 docker build -t metly-api backend
 docker run --env-file backend/.env -p 3000:3000 metly-api   # applies migrations, then serves
-curl https://api.metly.link/health/ready
+curl https://api.tanishly.app/health/ready
 ```
 
 The container runs `prisma migrate deploy` before starting, so a deploy is: build, push, restart.
@@ -72,12 +72,12 @@ Migrations are additive; roll back by deploying the previous image (do not roll 
 
 ## 5. Apple configuration checklist
 
-1. Identifiers: App ID `com.metly.app` (Sign in with Apple, Push, Associated Domains, App Groups,
-   Wallet), `com.metly.app.widgets`, App Group `group.com.metly.app`, Pass Type ID
-   `pass.com.metly.app.card`.
+1. Identifiers: App ID `app.tanishly.ios` (Sign in with Apple, Push, Associated Domains, App Groups,
+   Wallet), `app.tanishly.ios.widgets`, App Group `group.app.tanishly.ios`, Pass Type ID
+   `pass.app.tanishly.ios.card`.
 2. Keys: Sign in with Apple key, APNs key (can be one key with both), App Store Server API key.
-3. App Store Connect: app record, subscriptions `com.metly.app.pro.monthly` and
-   `com.metly.app.pro.yearly` in one group, App Store Server Notifications V2 URL
-   `https://api.metly.link/v1/webhooks/app-store` (production and sandbox).
-4. Xcode Release configuration: `DEVELOPMENT_TEAM`, `METLY_API_BASE_URL=https://api.metly.link`
+3. App Store Connect: app record, subscriptions `app.tanishly.ios.pro.monthly` and
+   `app.tanishly.ios.pro.yearly` in one group, App Store Server Notifications V2 URL
+   `https://api.tanishly.app/v1/webhooks/app-store` (production and sandbox).
+4. Xcode Release configuration: `DEVELOPMENT_TEAM`, `METLY_API_BASE_URL=https://api.tanishly.app`
    (the Release build fails without it, by design), `GOOGLE_CLIENT_ID`.

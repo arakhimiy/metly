@@ -4,7 +4,7 @@ import MetlyData
 import MetlyDesign
 import SwiftUI
 
-/// AUTH_SIGNUP — "Create your Metly" (or "Welcome Back" in sign-in mode).
+/// AUTH_SIGNUP — "Create your Tanishly" (or "Welcome Back" in sign-in mode).
 struct AuthView: View {
     let mode: AuthMode
 
@@ -69,7 +69,7 @@ struct AuthView: View {
                 .disabled(testName.trimmingCharacters(in: .whitespaces).isEmpty)
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Debug builds only. Signs in on the local Metly backend; the same name returns to the same account.")
+            Text("Debug builds only. Signs in on the local Tanishly backend; the same name returns to the same account.")
         }
         #endif
     }

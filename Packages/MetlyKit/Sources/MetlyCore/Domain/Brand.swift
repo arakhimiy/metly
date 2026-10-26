@@ -2,26 +2,26 @@ import Foundation
 
 /// Product constants. Never hard-code the domain or app name elsewhere.
 public enum Brand {
-    public static let appName = "Metly"
-    public static let proName = "Metly Pro"
-    public static let linkHost = "metly.link"
-    public static let supportEmail = "support@metly.link"
-    public static let telegramBot = "MetlyRemindBot"
+    public static let appName = "Tanishly"
+    public static let proName = "Tanishly Pro"
+    public static let linkHost = "tanishly.app"
+    public static let supportEmail = "support@tanishly.app"
+    public static let telegramBot = "TanishlyBot"
     /// From `MetlyAppGroup` in the app's and the widget's Info.plist (`METLY_APP_GROUP` build setting),
     /// so a personal-team Debug build can use its own group. Tests and previews get the release group.
     public static let appGroup = Bundle.main.object(forInfoDictionaryKey: "MetlyAppGroup") as? String
-        ?? "group.com.metly.app"
-    public static let urlScheme = "metly"
+        ?? "group.app.tanishly.ios"
+    public static let urlScheme = "tanishly"
 
-    public static let termsURL = URL(string: "https://metly.link/terms")!
-    public static let privacyURL = URL(string: "https://metly.link/privacy")!
-    public static let helpURL = URL(string: "https://metly.link/help")!
+    public static let termsURL = URL(string: "https://tanishly.app/terms")!
+    public static let privacyURL = URL(string: "https://tanishly.app/privacy")!
+    public static let helpURL = URL(string: "https://tanishly.app/help")!
 
     public static func cardURL(slug: String) -> URL {
         URL(string: "https://\(linkHost)/c/\(slug)")!
     }
 
-    /// Extracts the slug from `https://metly.link/c/{slug}` (also accepts `metly://c/{slug}`).
+    /// Extracts the slug from `https://tanishly.app/c/{slug}` (also accepts `tanishly://c/{slug}`).
     public static func slug(from url: URL) -> String? {
         let parts = url.pathComponents.filter { $0 != "/" }
         if url.host() == linkHost, parts.count == 2, parts[0] == "c" { return parts[1] }

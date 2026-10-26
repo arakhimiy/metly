@@ -1,7 +1,7 @@
 import AppIntents
 import MetlyWidgetKit
 
-/// "Show my follow-ups in Metly" — opens FOLLOWUPS (`metly://followups`).
+/// "Show my follow-ups in Tanishly" — opens FOLLOWUPS (`tanishly://followups`).
 nonisolated struct OpenFollowUpsIntent: AppIntent {
     static let title: LocalizedStringResource = "Open Follow-ups"
     static let description = IntentDescription("Shows your follow-up reminders.")

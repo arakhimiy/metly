@@ -378,7 +378,7 @@ export class ConnectService {
 
   /**
    * Accepts `request` inside the caller's transaction (both users already locked): a mutual
-   * connection on each side (reused when one exists for the same Metly user), the request settled,
+   * connection on each side (reused when one exists for the same Tanishly user), the request settled,
    * and every other pending request between the two settled as accepted too (README rule).
    */
   async applyAccept(tx: Tx, request: ConnectRequest, toCardId: string | null, now: Date, effects: Effects): Promise<AcceptResult> {
@@ -509,7 +509,7 @@ export class ConnectService {
         id: randomUUID(),
         userId: ownerId,
         remoteUserId: remoteId,
-        fullName: remoteProfile?.fullName ?? 'Metly user',
+        fullName: remoteProfile?.fullName ?? 'Tanishly user',
         jobTitle: remoteProfile?.jobTitle ?? '',
         company: remoteProfile?.company ?? '',
         phone: contact.phone ?? '',

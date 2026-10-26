@@ -47,7 +47,7 @@ struct OnboardingStoreTests {
     @Test func invitePayloadPointsAtPublicCard() {
         let payload = OnboardingCoordinator.invitePayload(slug: "jasur-p4y1")
         #expect(payload.slug == "jasur-p4y1")
-        #expect(payload.url?.absoluteString == "https://metly.link/c/jasur-p4y1")
+        #expect(payload.url?.absoluteString == "https://tanishly.app/c/jasur-p4y1")
         #expect(payload.vCard == nil)
     }
 

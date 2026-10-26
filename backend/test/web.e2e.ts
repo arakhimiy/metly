@@ -18,7 +18,7 @@ const ownerFields = [
   { kind: 'phone', value: '+998 90 123 45 67', privacy: 'public' },
   { kind: 'email', value: 'kamola@metly.test', privacy: 'connections' },
   { kind: 'telegram', value: '@kamola_secret', privacy: 'private' },
-  { kind: 'website', value: 'metly.link', privacy: 'public' },
+  { kind: 'website', value: 'tanishly.app', privacy: 'public' },
   { kind: 'linkedin', value: '', privacy: 'public' },
 ];
 
@@ -86,7 +86,7 @@ describe('public web', () => {
         status: 'available',
         url: `https://metly.test/c/${o.slug}`,
         cardName: 'Work',
-        owner: { fullName: 'Kamola Yusupova', firstName: 'Kamola', jobTitle: 'Product Manager', company: 'Metly' },
+        owner: { fullName: 'Kamola Yusupova', firstName: 'Kamola', jobTitle: 'Product Manager', company: 'Tanishly' },
       });
       expect(res.body.owner.userId).toBeUndefined();
       expect(res.body.viewer).toBeUndefined();
@@ -100,7 +100,7 @@ describe('public web', () => {
       const c = card({ design: { ...design, visibleFields: ['website'] } });
       const res = await push(session, { profile: profile({ contactFields: ownerFields }), cards: [c] });
       const body = (await http().get(`/api/public/cards/${res.body.records.cards[0].slug}`).expect(200)).body;
-      expect(body.fields).toEqual([{ kind: 'website', value: 'metly.link', privacy: 'public' }]);
+      expect(body.fields).toEqual([{ kind: 'website', value: 'tanishly.app', privacy: 'public' }]);
     });
 
     it('paused → only slug and status', async () => {
@@ -136,9 +136,9 @@ describe('public web', () => {
       expect(res.text).toContain(`<script nonce="${nonce}">`);
       expect(res.text).toContain(`<style nonce="${nonce}">`);
       expect(res.text).toContain('<meta name="robots" content="noindex, nofollow">');
-      expect(res.text).toContain('property="og:title" content="Kamola Yusupova · Metly"');
+      expect(res.text).toContain('property="og:title" content="Kamola Yusupova · Tanishly"');
       expect(res.text).toContain('href="tel:+998901234567"');
-      expect(res.text).toContain('href="https://metly.link/"');
+      expect(res.text).toContain('href="https://tanishly.app/"');
       expect(res.text).toContain(`href="/c/${o.slug}.vcf"`);
       expect(res.text).toContain('Exchange contacts with Kamola');
       expect(res.text).not.toContain('kamola@metly.test');
@@ -184,7 +184,7 @@ describe('public web', () => {
 
   describe('GET /c/{slug}.vcf', () => {
     it('serves a vCard 3.0 of the public fields and counts one save per visitor', async () => {
-      const o = await owner({ profile: { company: 'Metly, Inc.', jobTitle: 'PM; Growth' } });
+      const o = await owner({ profile: { company: 'Tanishly, Inc.', jobTitle: 'PM; Growth' } });
       const ip = nextIp();
       const res = await http().get(`/c/${o.slug}.vcf`).set('User-Agent', IPHONE).set('X-Forwarded-For', ip).expect(200);
       expect(res.headers['content-type']).toBe('text/vcard; charset=utf-8');
@@ -193,10 +193,10 @@ describe('public web', () => {
       expect(text.startsWith('BEGIN:VCARD\r\nVERSION:3.0\r\n')).toBe(true);
       expect(text).toContain('N:Yusupova;Kamola;;;\r\n');
       expect(text).toContain('FN:Kamola Yusupova\r\n');
-      expect(text).toContain('ORG:Metly\\, Inc.\r\n');
+      expect(text).toContain('ORG:Tanishly\\, Inc.\r\n');
       expect(text).toContain('TITLE:PM\\; Growth\r\n');
       expect(text).toContain('TEL;TYPE=CELL:+998 90 123 45 67\r\n');
-      expect(text).toContain('URL:https://metly.link/\r\n');
+      expect(text).toContain('URL:https://tanishly.app/\r\n');
       expect(text).toContain(`.URL:https://metly.test/c/${o.slug}\r\n`);
       expect(text).not.toContain('EMAIL');
       expect(text).not.toContain('kamola_secret');
@@ -463,7 +463,7 @@ describe('public web', () => {
       expect(res.body.invite).toMatchObject({
         inviteId: click.id,
         cardSlug: o.slug,
-        owner: { userId: o.session.userId, fullName: 'Kamola Yusupova', jobTitle: 'Product Manager', company: 'Metly' },
+        owner: { userId: o.session.userId, fullName: 'Kamola Yusupova', jobTitle: 'Product Manager', company: 'Tanishly' },
         card: { cardName: 'Work', fullName: 'Kamola Yusupova' },
       });
       expect(res.body.invite.card.fields.map((f: { kind: string }) => f.kind)).toEqual(['phone', 'website']);
@@ -537,13 +537,13 @@ describe('public web with App Store and team ids', () => {
     for (const path of ['/.well-known/apple-app-site-association', '/apple-app-site-association']) {
       const res = await request(app.getHttpServer()).get(path).expect(200);
       expect(res.headers['content-type']).toMatch(/^application\/json/);
-      expect(res.body.applinks.details[0].appIDs).toEqual(['TEAM123456.com.metly.app']);
+      expect(res.body.applinks.details[0].appIDs).toEqual(['TEAM123456.app.tanishly.ios']);
       expect(res.body.applinks.details[0].components).toContainEqual({ '/': '/c/*', comment: 'Card pages' });
-      expect(res.body.webcredentials.apps).toEqual(['TEAM123456.com.metly.app']);
+      expect(res.body.webcredentials.apps).toEqual(['TEAM123456.app.tanishly.ios']);
     }
   });
 
-  it('adds the Smart App Banner and a "Get Metly" button that redirects to the App Store', async () => {
+  it('adds the Smart App Banner and a "Get Tanishly" button that redirects to the App Store', async () => {
     const session = await signIn(app);
     const c = card({ design: allFields });
     const pushed = await request(app.getHttpServer())

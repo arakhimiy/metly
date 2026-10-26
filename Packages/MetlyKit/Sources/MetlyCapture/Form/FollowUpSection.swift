@@ -72,7 +72,7 @@ private struct FollowUpDetailRows: View {
     }
 }
 
-/// Footer copy: "Metly will remind you tomorrow at 10:00. Only you see it."
+/// Footer copy: "Tanishly will remind you tomorrow at 10:00. Only you see it."
 enum FollowUpSummary {
     static func footer(for draft: CaptureDraft, now: Date = .now, calendar: Calendar = .current) -> String {
         if let followUp = draft.followUp {

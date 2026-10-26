@@ -1,4 +1,4 @@
-# Metly API & Sync
+# Tanishly API & Sync
 
 Two audiences: **feature agents** (how to talk to the server from SwiftUI) and the **backend team**
 (what the server must do). The wire contract is `openapi.yaml` next to this file; `MockMetlyServer`
@@ -41,7 +41,7 @@ import MetlyNetworking
 | Need | Call | Notes |
 |---|---|---|
 | Publish now (CARD_CREATE "Publish", Editor "Done") | `try await client.publish(card)` | Writes the server slug back to `card`. On error show ALERT_PUBLISH_FAILED — the card stays a draft and sync publishes it later. |
-| Scanned Metly QR (SCANNED_CARD) | `try await client.publicProfile(slug:)` | `status != .available` → unavailable state. `.snapshot` feeds `CardFaceView`. `Brand.slug(from: url)` extracts the slug. |
+| Scanned Tanishly QR (SCANNED_CARD) | `try await client.publicProfile(slug:)` | `status != .available` → unavailable state. `.snapshot` feeds `CardFaceView`. `Brand.slug(from: url)` extracts the slug. |
 | Wallet pass | `try await client.walletPass(for: card)` | `.pkpass` `Data` for `PKAddPassesViewController`. The mock throws `APIError.serverRequired("Wallet passes need the server.")` — show its `localizedDescription`. |
 | Card stats | `try await client.refreshStats(for: card)` | Also stored on `card.stats`. |
 | Connect: session & peers | `client.startConnectSession(cardID:eventID:method:)` → advertise `discoveryToken`; `client.resolvePeers(tokens:)` | In the simulator use `client.demoNearbyTokens` (mock people) since there are no MPC peers. |
@@ -168,7 +168,7 @@ connections (their `updatedAt` = max(own, event's)).
 
 ### Uniqueness
 - One live connection per (owner, `remoteUserId`). A pushed connection that duplicates another live
-  one for the same Metly user is merged into the existing record (newer `updatedAt` wins, empty
+  one for the same Tanishly user is merged into the existing record (newer `updatedAt` wins, empty
   fields are filled), returned as canonical, and the pushed id is tombstoned (both in `records`).
   Follow-ups that reference the pushed id — in the same push (they are usually created together) or
   later — are stored against the surviving connection and returned with its id; never cascade-delete them.
@@ -181,7 +181,7 @@ connections (their `updatedAt` = max(own, event's)).
 ### Slugs & publishing
 - First accepted write of a card assigns `slug = {firstname}-{4}`: first name from `profile.fullName`,
   ASCII-folded, lowercase, `[a-z0-9]` only (fallback `card`); suffix from `abcdefghjkmnpqrstuvwxyz23456789`.
-  Slugs are immutable in v1 (no custom slugs). URL: `https://metly.link/c/{slug}`.
+  Slugs are immutable in v1 (no custom slugs). URL: `https://tanishly.app/c/{slug}`.
 - There are no server-side drafts: every accepted card is published. `publishState: draft` only exists
   on a device that hasn't synced the card yet.
 - Pause: `profile.linksPaused` (global "Pause All Links") → every card `isPaused`, public pages show
@@ -256,7 +256,7 @@ share-back; consider Cloudflare Turnstile (`captchaToken`) if spam appears.
 ### Open backend questions
 - Email-change / provider linking (Apple + Google on one account) — out of v1.
 - Analytics opt-in endpoint (`shareAnalytics`) — not specified yet.
-- Exact pass design and Pass Type ID (`pass.com.metly.app.card` proposed).
+- Exact pass design and Pass Type ID (`pass.app.tanishly.ios.card` proposed).
 
 
 ### Privacy rule: who counts as "connected" (public profiles)

@@ -8,7 +8,7 @@ import { ShareBackService } from './shareback.service';
 import { WebController } from './web.controller';
 import { WebStatsService } from './web-stats.service';
 
-/** metly.link: public card page, vCard, public JSON, share-back, web analytics, AASA, deferred links. */
+/** tanishly.app: public card page, vCard, public JSON, share-back, web analytics, AASA, deferred links. */
 @Module({
   imports: [RecordsModule],
   controllers: [WebController, PublicApiController, DeferredLinksController],

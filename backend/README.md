@@ -1,4 +1,4 @@
-# Metly API
+# Tanishly API
 
 NestJS 12 · TypeScript 6 · PostgreSQL (Prisma 7) · Node 24. Implements `../docs/api/openapi.yaml`
 (wire contract) and `../docs/api/README.md` (sync protocol, conflict rules, share-back, Free limits).
@@ -47,7 +47,7 @@ src/
   subscriptions/ EntitlementsService (plan + limits)
   push/          PushService.notify(userId, message) — frozen API
   connect/       connect sessions, peers, requests, blocks, public profiles
-  web/           metly.link pages, vCard, public JSON, share-back, web analytics, AASA, deferred links
+  web/           tanishly.app pages, vCard, public JSON, share-back, web analytics, AASA, deferred links
   platform/      devices + APNs, jobs, Telegram, App Store subscriptions
   media/         uploads (S3), Apple Wallet + PassKit web service, data export
 ```

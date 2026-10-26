@@ -5,8 +5,8 @@ import Testing
 @Suite("Duplicate-detection debounce")
 struct ScanDebouncerTests {
     private let start = Date(timeIntervalSinceReferenceDate: 800_000_000)
-    private let kamila = "https://metly.link/c/kamila-x1y2"
-    private let sardor = "https://metly.link/c/sardor-r4t5"
+    private let kamila = "https://tanishly.app/c/kamila-x1y2"
+    private let sardor = "https://tanishly.app/c/sardor-r4t5"
     private let web = "https://example.com"
 
     /// A camera sighting: payload, seconds after `start`, whether the screen is blocked.

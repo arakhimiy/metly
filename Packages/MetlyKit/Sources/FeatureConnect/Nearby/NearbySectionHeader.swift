@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Section header for the live list: a small searching glyph + "Nearby on Metly".
+/// Section header for the live list: a small searching glyph + "Nearby on Tanishly".
 struct NearbySectionHeader: View {
     var isSearching: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion

@@ -1,9 +1,9 @@
 import Foundation
 
-/// Metly Pro auto-renewable subscriptions (subscription group "Metly Pro", see `Metly/Metly.storekit`).
+/// Tanishly Pro auto-renewable subscriptions (subscription group "Tanishly Pro", see `Metly/Metly.storekit`).
 nonisolated public enum ProProduct: String, CaseIterable, Sendable {
-    case yearly = "com.metly.app.pro.yearly"
-    case monthly = "com.metly.app.pro.monthly"
+    case yearly = "app.tanishly.ios.pro.yearly"
+    case monthly = "app.tanishly.ios.pro.monthly"
 
     /// Every Pro product ID, yearly first (the recommended plan).
     public static let allIDs: [String] = allCases.map(\.rawValue)

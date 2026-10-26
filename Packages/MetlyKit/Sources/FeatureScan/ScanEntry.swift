@@ -14,7 +14,7 @@ public struct ScanView: View {
     }
 }
 
-/// SCANNED_CARD (SPEC §2.5.9) — a scanned / pasted Metly link or a foreign vCard.
+/// SCANNED_CARD (SPEC §2.5.9) — a scanned / pasted Tanishly link or a foreign vCard.
 public struct ScannedCardView: View {
     public let payload: ScannedCardPayload
 

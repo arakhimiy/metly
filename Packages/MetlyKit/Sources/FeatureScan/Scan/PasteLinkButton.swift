@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Native `PasteButton` for Metly links (SCAN "Paste Link") — reads the clipboard without
+/// Native `PasteButton` for Tanishly links (SCAN "Paste Link") — reads the clipboard without
 /// the "Allow Paste" prompt because the user tapped the system button.
 struct PasteLinkButton: View {
     let onPaste: (String) -> Void
@@ -12,6 +12,6 @@ struct PasteLinkButton: View {
         .buttonBorderShape(.capsule)
         .controlSize(.large)
         .labelStyle(.titleAndIcon)
-        .accessibilityHint("Opens a Metly card link from the clipboard")
+        .accessibilityHint("Opens a Tanishly card link from the clipboard")
     }
 }

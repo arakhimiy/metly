@@ -16,7 +16,7 @@ function testCertificate(): { cert: string; key: string } | null {
   try {
     execFileSync(
       'openssl',
-      ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-keyout', join(dir, 'key.pem'), '-out', join(dir, 'cert.pem'), '-days', '2', '-subj', '/CN=Pass Type ID: pass.com.metly.app.card/OU=TEAM123456'],
+      ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-keyout', join(dir, 'key.pem'), '-out', join(dir, 'cert.pem'), '-days', '2', '-subj', '/CN=Pass Type ID: pass.app.tanishly.ios.card/OU=TEAM123456'],
       { stdio: 'pipe' },
     );
     return { cert: readFileSync(join(dir, 'cert.pem'), 'utf8'), key: readFileSync(join(dir, 'key.pem'), 'utf8') };
@@ -28,7 +28,7 @@ function testCertificate(): { cert: string; key: string } | null {
 }
 
 const certificate = testCertificate();
-const PASS_TYPE = 'pass.com.metly.app.card';
+const PASS_TYPE = 'pass.app.tanishly.ios.card';
 const PUSH_TOKEN = 'a'.repeat(64);
 
 async function until(check: () => boolean, timeoutMs = 3000, refresh?: () => Promise<void>) {
@@ -97,7 +97,7 @@ describe.skipIf(!certificate)('Apple Wallet', () => {
       serialNumber: cardId,
       authenticationToken: token,
       webServiceURL: 'https://api.metly.test/passkit',
-      organizationName: 'Metly',
+      organizationName: 'Tanishly',
       backgroundColor: 'rgb(8, 17, 31)',
     });
     expect(pass.barcodes[0]).toMatchObject({ format: 'PKBarcodeFormatQR', message: `https://metly.test/c/${stored.slug}`, messageEncoding: 'iso-8859-1' });
@@ -157,7 +157,7 @@ describe.skipIf(!certificate)('Apple Wallet', () => {
     expect(Number(changed.body.lastUpdated)).toBeGreaterThan(Number(tag));
 
     // Log endpoint.
-    await request(server()).post('/passkit/v1/log').send({ logs: ['Web service error for pass.com.metly.app.card'] }).expect(200);
+    await request(server()).post('/passkit/v1/log').send({ logs: ['Web service error for pass.app.tanishly.ios.card'] }).expect(200);
 
     // Unregister.
     await request(server()).delete(`${base}/${cardId}`).expect(401);

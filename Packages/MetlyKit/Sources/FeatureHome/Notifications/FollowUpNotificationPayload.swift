@@ -22,7 +22,7 @@ nonisolated struct FollowUpNotificationPayload: Equatable, Sendable {
     let body: String
     let categoryIdentifier: String
     let fireDate: Date
-    /// `metly://reminder/{id}` — the same link widgets use.
+    /// `tanishly://reminder/{id}` — the same link widgets use.
     let link: URL
     /// Changes whenever anything visible, the fire date or the time zone changes (skip re-adding
     /// unchanged requests). The trigger is wall-clock time in the zone it was built in, so a request

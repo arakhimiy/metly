@@ -78,7 +78,7 @@ public enum PaywallTrigger: String, Hashable, Sendable {
     case settings, cardLimit, followUpLimit, eventLimit, proTemplate, proPalette, eventExport
 }
 
-/// What the scanner found (Metly link or a foreign vCard).
+/// What the scanner found (Tanishly link or a foreign vCard).
 public struct ScannedCardPayload: Hashable, Sendable {
     public var url: URL?
     public var slug: String?

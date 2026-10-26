@@ -11,7 +11,7 @@ import { buildVCard, vcardFilename } from './vcard';
 import { platformFromUserAgent } from './visitor';
 import { WebStatsService } from './web-stats.service';
 
-/** metly.link: the card page, its vCard, "Get the app" and the Apple app-site association. */
+/** tanishly.app: the card page, its vCard, "Get the app" and the Apple app-site association. */
 @Controller()
 @Public()
 export class WebController {

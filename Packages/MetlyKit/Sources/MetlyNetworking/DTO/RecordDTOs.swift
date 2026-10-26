@@ -104,7 +104,7 @@ public struct CardDTO: SyncRecordDTO {
     public var name: String
     /// Server-owned: `{firstname}-{4 chars}`, assigned on first publish, immutable in v1.
     public var slug: String?
-    /// Server-owned: `https://metly.link/c/{slug}`.
+    /// Server-owned: `https://tanishly.app/c/{slug}`.
     public var url: URL?
     public var sortOrder: Int
     public var design: CardDesign

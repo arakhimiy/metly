@@ -6,7 +6,7 @@ import UIKit
 
 @Suite("VCardBuilder")
 struct VCardBuilderTests {
-    private let cardURL = URL(string: "https://metly.link/c/kamola-7f3k")!
+    private let cardURL = URL(string: "https://tanishly.app/c/kamola-7f3k")!
 
     private func lines(_ vcard: String) -> [String] {
         VCardText.unfold(vcard).split(separator: "\n").map(String.init)
@@ -41,7 +41,7 @@ struct VCardBuilderTests {
         let all = lines(VCardBuilder.make(content: .sample, url: cardURL))
         #expect(all.contains("item2.URL:https://www.linkedin.com/in/kamolarashidova"))
         #expect(all.contains("item2.X-ABLabel:LinkedIn"))
-        #expect(all.contains("item3.URL:https://metly.link/c/kamola-7f3k"))
+        #expect(all.contains("item3.URL:https://tanishly.app/c/kamola-7f3k"))
         #expect(all.contains("item3.X-ABLabel:\(Brand.appName)"))
     }
 

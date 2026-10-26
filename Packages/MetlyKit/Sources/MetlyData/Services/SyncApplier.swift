@@ -94,7 +94,7 @@ struct SyncApplier {
 
     mutating func apply(_ dto: ConnectionDTO) {
         let context = context
-        // An optimistic local record for the same Metly user is re-keyed to the server id; a push
+        // An optimistic local record for the same Tanishly user is re-keyed to the server id; a push
         // echo still knows it by the id it was sent with.
         let match = context.matchConnectionReportingRekey(for: dto)
         var tookServerVersion = false

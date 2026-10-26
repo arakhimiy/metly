@@ -37,31 +37,31 @@ describe('buildVCard', () => {
     const card = buildVCard({
       fullName: 'Kamola  Yusupova',
       jobTitle: 'PM; Growth',
-      company: 'Metly, Inc.',
+      company: 'Tanishly, Inc.',
       fields: [
         { kind: 'phone', value: '+998 90 123 45 67', privacy: 'public' },
         { kind: 'email', value: 'kamola@metly.uz', privacy: 'public' },
         { kind: 'telegram', value: '@kamola_y', privacy: 'public' },
-        { kind: 'website', value: 'metly.link', privacy: 'public' },
+        { kind: 'website', value: 'tanishly.app', privacy: 'public' },
         { kind: 'linkedin', value: 'in/kamola', privacy: 'public' },
       ],
-      url: 'https://metly.link/c/kamola-ab12',
-      photoUrl: 'https://cdn.metly.link/p.jpg',
+      url: 'https://tanishly.app/c/kamola-ab12',
+      photoUrl: 'https://cdn.tanishly.app/p.jpg',
     });
     expect(card.startsWith('BEGIN:VCARD\r\nVERSION:3.0\r\n')).toBe(true);
     expect(card.endsWith('END:VCARD\r\n')).toBe(true);
     expect(card).toContain('N:Yusupova;Kamola;;;\r\n');
     expect(card).toContain('FN:Kamola Yusupova\r\n');
-    expect(card).toContain('ORG:Metly\\, Inc.\r\n');
+    expect(card).toContain('ORG:Tanishly\\, Inc.\r\n');
     expect(card).toContain('TITLE:PM\\; Growth\r\n');
     expect(card).toContain('TEL;TYPE=CELL:+998 90 123 45 67\r\n');
     expect(card).toContain('EMAIL;TYPE=INTERNET:kamola@metly.uz\r\n');
-    expect(card).toContain('URL:https://metly.link/\r\n');
+    expect(card).toContain('URL:https://tanishly.app/\r\n');
     expect(card).toContain('item1.URL:https://t.me/kamola_y\r\n');
     expect(card).toContain('item1.X-ABLabel:Telegram\r\n');
     expect(card).toContain('item2.URL:https://www.linkedin.com/in/kamola\r\n');
-    expect(card).toContain('item3.URL:https://metly.link/c/kamola-ab12\r\n');
-    expect(card).toContain('PHOTO;VALUE=URI:https://cdn.metly.link/p.jpg\r\n');
+    expect(card).toContain('item3.URL:https://tanishly.app/c/kamola-ab12\r\n');
+    expect(card).toContain('PHOTO;VALUE=URI:https://cdn.tanishly.app/p.jpg\r\n');
     expect(card).not.toMatch(/[^\r]\n/);
   });
 

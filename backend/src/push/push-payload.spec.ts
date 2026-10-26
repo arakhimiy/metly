@@ -31,12 +31,12 @@ describe('push payload', () => {
       followUpId: ID,
       connectionId: ID,
       followUpID: ID.toUpperCase(),
-      link: `metly://reminder/${ID.toUpperCase()}`,
+      link: `tanishly://reminder/${ID.toUpperCase()}`,
     });
-    expect(deepLinkData({ connectionId: ID }).link).toBe(`metly://person/${ID.toUpperCase()}`);
-    expect(deepLinkData({ requestId: ID }).link).toBe('metly://people');
+    expect(deepLinkData({ connectionId: ID }).link).toBe(`tanishly://person/${ID.toUpperCase()}`);
+    expect(deepLinkData({ requestId: ID }).link).toBe('tanishly://people');
     expect(deepLinkData({ eventId: ID })).toEqual({ eventId: ID });
-    expect(deepLinkData({ connectionId: ID, link: 'metly://people' }).link).toBe('metly://people');
+    expect(deepLinkData({ connectionId: ID, link: 'tanishly://people' }).link).toBe('tanishly://people');
   });
 
   it('builds the aps dictionary; summaries are silent; data cannot override aps or type', () => {
@@ -46,7 +46,7 @@ describe('push payload', () => {
       aps: { alert: { title: 'Aziza wants to connect', body: 'ICT Week' }, sound: 'default', category: 'C', 'thread-id': 't' },
       type: 'connect_request',
       requestId: ID,
-      link: 'metly://people',
+      link: 'tanishly://people',
     });
     expect(apnsPayload({ type: 'weekly_summary', title: 'Week', body: '3 new' }).aps).toEqual({ alert: { title: 'Week', body: '3 new' } });
     const long = apnsPayload({ type: 'product_news', title: 't', body: 'x'.repeat(5000) });
@@ -54,8 +54,8 @@ describe('push payload', () => {
   });
 
   it('sets the APNs headers', () => {
-    expect(apnsHeaders('com.metly.app', { type: 'followup_due', title: '', body: '', collapseId: 'followup.X' })).toEqual({
-      'apns-topic': 'com.metly.app',
+    expect(apnsHeaders('app.tanishly.ios', { type: 'followup_due', title: '', body: '', collapseId: 'followup.X' })).toEqual({
+      'apns-topic': 'app.tanishly.ios',
       'apns-push-type': 'alert',
       'apns-priority': '10',
       'apns-collapse-id': 'followup.X',

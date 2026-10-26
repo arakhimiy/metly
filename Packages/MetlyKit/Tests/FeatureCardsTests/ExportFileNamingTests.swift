@@ -31,7 +31,7 @@ struct ExportFileNamingTests {
     @Test func fallbacks() {
         #expect(ExportFileNaming.baseName(fullName: "", cardName: "Work") == "Work Card")
         #expect(ExportFileNaming.baseName(fullName: "Aziza", cardName: " ") == "Aziza Card")
-        #expect(ExportFileNaming.baseName(fullName: "///", cardName: "") == "Metly Card")
+        #expect(ExportFileNaming.baseName(fullName: "///", cardName: "") == "Tanishly Card")
     }
 
     @Test func longNamesAreTruncated() {

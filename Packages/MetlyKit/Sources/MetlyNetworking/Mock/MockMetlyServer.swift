@@ -134,13 +134,13 @@ public actor MockMetlyServer: MetlyAPI {
         return notice
     }
 
-    /// The connected Metly user changed their profile photo: sets the server-owned `avatarUrl` of
+    /// The connected Tanishly user changed their profile photo: sets the server-owned `avatarUrl` of
     /// connection `id` (nil `data` removes it) and emits `.syncAvailable`. Returns the asset URL.
     @discardableResult
     public func simulateAvatar(connectionID id: UUID, data: Data?) -> URL? {
         guard var connection = backend.connections[id] else { return nil }
         if let previous = connection.avatarURL { backend.assets[previous] = nil }
-        let url = data.map { _ in URL(string: "https://assets.mock.metly.link/avatar/\(UUID().uuidString.lowercased()).jpg")! }
+        let url = data.map { _ in URL(string: "https://assets.mock.tanishly.app/avatar/\(UUID().uuidString.lowercased()).jpg")! }
         if let url, let data { backend.assets[url] = data }
         connection.avatarURL = url
         backend.connections[id] = connection
@@ -283,7 +283,7 @@ extension MockMetlyServer: ProfileAPI {
         try await serve()
         guard request.byteSize <= 5_000_000 else { throw APIError.mock(413, .payloadTooLarge, "Images must be 5 MB or smaller.") }
         let id = "up_\(UUID().uuidString.lowercased())"
-        return UploadTicket(uploadID: id, uploadURL: URL(string: "https://uploads.mock.metly.link/\(id)")!,
+        return UploadTicket(uploadID: id, uploadURL: URL(string: "https://uploads.mock.tanishly.app/\(id)")!,
                             headers: ["Content-Type": request.contentType], expiresAt: .now.addingTimeInterval(900))
     }
 
@@ -296,7 +296,7 @@ extension MockMetlyServer: ProfileAPI {
         try await serve()
         guard let data = backend.pendingUploads.removeValue(forKey: uploadID) else { throw APIError.notFound("Upload") }
         guard var profile = backend.profile else { throw APIError.notFound("Profile") }
-        let url = URL(string: "https://assets.mock.metly.link/\(kind.rawValue)/\(UUID().uuidString.lowercased()).jpg")!
+        let url = URL(string: "https://assets.mock.tanishly.app/\(kind.rawValue)/\(UUID().uuidString.lowercased()).jpg")!
         backend.assets[url] = data
         switch kind {
         case .photo: profile.photoURL = url
@@ -456,7 +456,7 @@ extension MockMetlyServer: ConnectionsAPI, BlocksAPI {
         }
         try await serve()
         guard let userID = request.userID else { throw APIError.mock(422, .validationFailed, "userId or connectionId is required.") }
-        let block = BlockDTO(userID: userID, connectionID: nil, fullName: MockSeed.peer(userID: userID)?.fullName ?? "Metly user",
+        let block = BlockDTO(userID: userID, connectionID: nil, fullName: MockSeed.peer(userID: userID)?.fullName ?? "Tanishly user",
                              blockedAt: .now)
         backend.blocks[userID] = block
         return block

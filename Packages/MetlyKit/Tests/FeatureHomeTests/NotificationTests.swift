@@ -49,7 +49,7 @@ struct NotificationPayloadTests {
     @Test func userInfoCarriesIDAndReminderLink() {
         let info = payload().userInfo
         #expect(info["followUpID"] == id.uuidString)
-        #expect(info["link"] == "metly://reminder/\(id.uuidString)")
+        #expect(info["link"] == "tanishly://reminder/\(id.uuidString)")
         #expect(info["fingerprint"] != nil)
     }
 
@@ -128,8 +128,8 @@ struct NotificationActionTests {
     @Test func otherNotificationsFollowTheirLink() {
         let other = FollowUpNotificationAction(actionIdentifier: UNNotificationDefaultActionIdentifier,
                                                categoryIdentifier: "CONNECT_REQUEST", requestIdentifier: "remote-1",
-                                               userInfo: ["link": "metly://people"])
-        #expect(other == .openLink(URL(string: "metly://people")!))
+                                               userInfo: ["link": "tanishly://people"])
+        #expect(other == .openLink(URL(string: "tanishly://people")!))
         let unknown = FollowUpNotificationAction(actionIdentifier: UNNotificationDefaultActionIdentifier,
                                                  categoryIdentifier: "", requestIdentifier: "remote-2", userInfo: [:])
         #expect(unknown == .ignore)

@@ -5,7 +5,7 @@ import { type PageColors, pageColors } from './palette';
 import type { PublicView } from './public-card.service';
 import type { WebPlatform } from './visitor';
 
-// Server-rendered metly.link pages (SPEC WEB_CARD / WEB_SHAREBACK_SHEET / WEB_CONFIRMATION /
+// Server-rendered tanishly.app pages (SPEC WEB_CARD / WEB_SHAREBACK_SHEET / WEB_CONFIRMATION /
 // WEB_UNAVAILABLE). No framework: one HTML document, one nonce'd <style>, one nonce'd <script>.
 // Every user value goes through `html` (escape-by-default); URLs through `safeUrl`.
 
@@ -353,7 +353,7 @@ function head(opts: {
 <title>${opts.title}</title>
 <meta name="description" content="${opts.description}">
 <meta property="og:type" content="profile">
-<meta property="og:site_name" content="Metly">
+<meta property="og:site_name" content="Tanishly">
 <meta property="og:title" content="${opts.title}">
 <meta property="og:description" content="${opts.description}">
 ${opts.ogUrl ? html`<meta property="og:url" content="${opts.ogUrl}">` : ''}
@@ -442,15 +442,15 @@ export function renderCardPage(opts: CardPageOptions): string {
     ? html`<meta name="apple-itunes-app" content="app-id=${appStoreId}, app-argument=${view.url}">`
     : undefined;
   const cta = appStoreId
-    ? html`<section class="cta"><div><strong>Want a card like this?</strong><span>Free, 30 seconds.</span></div><a class="btn primary" href="${getAppHref}" data-get-app>Get Metly</a></section>`
+    ? html`<section class="cta"><div><strong>Want a card like this?</strong><span>Free, 30 seconds.</span></div><a class="btn primary" href="${getAppHref}" data-get-app>Get Tanishly</a></section>`
     : '';
 
   const doc = html`<!doctype html>
 <html lang="en">
 ${head({
   nonce,
-  title: `${view.fullName} · Metly`,
-  description: role || 'Digital business card on Metly',
+  title: `${view.fullName} · Tanishly`,
+  description: role || 'Digital business card on Tanishly',
   colors,
   extraCss: CARD_CSS,
   ogUrl: view.url,
@@ -469,7 +469,7 @@ ${telegram ? html`<a class="btn" href="${telegram.href}" target="_blank" rel="no
 <p class="shared" id="shared" hidden>${ICONS.check}<span>Your contact was sent to ${first}.</span><button class="link" type="button" id="remove-inline">Remove my contact</button></p>
 </div>
 ${cta}
-<p class="foot">Made with Metly · Only public details are shown</p>
+<p class="foot">Made with Tanishly · Only public details are shown</p>
 </main>
 <dialog id="sheet" aria-labelledby="sheet-title">
 <form id="sb-form" novalidate autocomplete="on">
@@ -516,7 +516,7 @@ export function renderUnavailablePage(opts: { nonce: string; kind: UnavailableKi
       : { title: 'We couldn’t find this card.', body: 'Check the link, or ask the person to share their card again.' };
   return html`<!doctype html>
 <html lang="en">
-${head({ nonce: opts.nonce, title: 'Metly', description: copy.title, colors, extraCss: UNAVAILABLE_CSS })}
+${head({ nonce: opts.nonce, title: 'Tanishly', description: copy.title, colors, extraCss: UNAVAILABLE_CSS })}
 <body>
 <main class="wrap">
 <div class="empty">
@@ -524,7 +524,7 @@ ${head({ nonce: opts.nonce, title: 'Metly', description: copy.title, colors, ext
 <h1>${copy.title}</h1>
 <p>${copy.body}</p>
 </div>
-<p class="foot">Made with Metly</p>
+<p class="foot">Made with Tanishly</p>
 </main>
 </body>
 </html>`.value;

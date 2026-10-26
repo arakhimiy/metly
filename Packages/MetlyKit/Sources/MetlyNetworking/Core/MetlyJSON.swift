@@ -1,6 +1,6 @@
 import Foundation
 
-/// The one JSON dialect spoken with the Metly backend (see `docs/api/openapi.yaml`).
+/// The one JSON dialect spoken with the Tanishly backend (see `docs/api/openapi.yaml`).
 ///
 /// - Keys are lowerCamelCase. Swift's `…ID` / `…IDs` / `…URL` suffixes travel as `…Id` / `…Ids` / `…Url`
 ///   (`cardID` ⇄ `cardId`, `photoURL` ⇄ `photoUrl`), so Swift models keep Swift naming.

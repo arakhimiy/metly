@@ -38,14 +38,14 @@ struct ReminderFormTests {
 
     @Test func summaryNamesTheDay() {
         var form = ReminderForm.new(personID: nil, channel: .telegram, now: testNow, calendar: testCalendar)
-        #expect(form.summary(now: testNow, calendar: testCalendar, locale: usLocale).hasPrefix("Metly will remind you tomorrow at 10:00"))
+        #expect(form.summary(now: testNow, calendar: testCalendar, locale: usLocale).hasPrefix("Tanishly will remind you tomorrow at 10:00"))
 
         form.day = date(2026, 9, 29)
-        #expect(form.summary(now: testNow, calendar: testCalendar, locale: usLocale).hasPrefix("Metly will remind you on Tue, Sep 29 at 10:00"))
+        #expect(form.summary(now: testNow, calendar: testCalendar, locale: usLocale).hasPrefix("Tanishly will remind you on Tue, Sep 29 at 10:00"))
 
         form.day = date(2026, 9, 26)
         form.time = date(2026, 9, 26, 18, 0)
-        #expect(form.summary(now: testNow, calendar: testCalendar, locale: usLocale).hasPrefix("Metly will remind you today at 6:00"))
+        #expect(form.summary(now: testNow, calendar: testCalendar, locale: usLocale).hasPrefix("Tanishly will remind you today at 6:00"))
 
         form.time = date(2026, 9, 26, 9, 0)
         #expect(form.summary(now: testNow, calendar: testCalendar, locale: usLocale).hasPrefix("This time has already passed"))

@@ -44,7 +44,7 @@ const schema = z
     APNS_KEY_ID: optional,
     APNS_TEAM_ID: optional,
     APNS_PRIVATE_KEY: pem,
-    APNS_TOPIC: z.string().default('com.metly.app'),
+    APNS_TOPIC: z.string().default('app.tanishly.ios'),
 
     APP_STORE_ISSUER_ID: optional,
     APP_STORE_KEY_ID: optional,
@@ -52,7 +52,7 @@ const schema = z
     APP_STORE_APP_APPLE_ID: optional,
     APP_STORE_ENVIRONMENT: z.enum(['Production', 'Sandbox', 'Xcode', 'LocalTesting']).default('Sandbox'),
 
-    PASS_TYPE_IDENTIFIER: z.string().default('pass.com.metly.app.card'),
+    PASS_TYPE_IDENTIFIER: z.string().default('pass.app.tanishly.ios.card'),
     PASS_TEAM_ID: optional,
     PASS_CERT_PEM: pem,
     PASS_KEY_PEM: pem,
@@ -66,7 +66,7 @@ const schema = z
     S3_SECRET_ACCESS_KEY: optional,
     S3_PUBLIC_BASE_URL: optional,
 
-    TELEGRAM_BOT_USERNAME: z.string().default('MetlyRemindBot'),
+    TELEGRAM_BOT_USERNAME: z.string().default('TanishlyBot'),
     TELEGRAM_BOT_TOKEN: optional,
     TELEGRAM_WEBHOOK_SECRET: optional,
 
@@ -74,7 +74,7 @@ const schema = z
 
     /** Transactional mail (data export links). Empty → exports stay queued. */
     RESEND_API_KEY: optional,
-    MAIL_FROM: z.string().default('Metly <no-reply@metly.link>'),
+    MAIL_FROM: z.string().default('Tanishly <no-reply@tanishly.app>'),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV !== 'production') return;

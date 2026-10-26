@@ -41,7 +41,7 @@ export function reminderMessage(r: ReminderText): string {
 }
 
 /**
- * Reminder delivery through @MetlyRemindBot: one-time deep links, the bot webhook that binds a chat to
+ * Reminder delivery through @TanishlyBot: one-time deep links, the bot webhook that binds a chat to
  * a user, and `sendMessage` for reminders. `users.telegram_chat_id` is the source of truth;
  * `notificationPrefs.telegramLinked` on the profile mirrors it (server-owned, synced with a seq bump).
  */
@@ -94,22 +94,22 @@ export class TelegramService {
     if (start) {
       const token = start[1];
       if (!token) {
-        await this.sendMessage(chat, 'Open Metly → Profile → Settings → Notifications and tap “Connect Telegram” to get reminders here.');
+        await this.sendMessage(chat, 'Open Tanishly → Profile → Settings → Notifications and tap “Connect Telegram” to get reminders here.');
         return;
       }
       const linked = await this.bind(chat, token);
       await this.sendMessage(
         chat,
         linked
-          ? 'You’re connected. Metly will send your follow-up reminders here.'
-          : 'This link has expired. Open Metly → Settings → Notifications and connect Telegram again.',
+          ? 'You’re connected. Tanishly will send your follow-up reminders here.'
+          : 'This link has expired. Open Tanishly → Settings → Notifications and connect Telegram again.',
       );
       return;
     }
     if (/^\/stop(?:@\w+)?$/.test(text)) {
       const user = await this.prisma.user.findUnique({ where: { telegramChatId: chat }, select: { id: true } });
       if (user) await this.unlinkByChat(chat);
-      await this.sendMessage(chat, 'Disconnected. Reminders will arrive as notifications from the Metly app.');
+      await this.sendMessage(chat, 'Disconnected. Reminders will arrive as notifications from the Tanishly app.');
     }
   }
 

@@ -1,6 +1,6 @@
 import Foundation
 
-/// URLSession-based HTTP client for the Metly API.
+/// URLSession-based HTTP client for the Tanishly API.
 ///
 /// - Bearer auth from a `SessionStore`, proactive refresh shortly before expiry.
 /// - Single-flight token refresh on `401` (concurrent requests share one `POST /v1/auth/refresh`),
@@ -22,7 +22,7 @@ public final class APIClient: Sendable {
         let transport = HTTPTransport(baseURL: baseURL, session: urlSession, retryPolicy: retryPolicy,
                                       defaultHeaders: [
                                           "Accept": "application/json",
-                                          "X-Metly-Client": "ios/\(appVersion)",
+                                          "X-Tanishly-Client": "ios/\(appVersion)",
                                           "Accept-Language": Locale.preferredLanguages.prefix(3).joined(separator: ", "),
                                       ])
         self.transport = transport

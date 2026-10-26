@@ -63,7 +63,7 @@ export class BlocksService {
         orderBy: { createdAt: 'asc' },
       });
       for (const c of connections) if (!c.isBlocked) await this.setBlocked(ctx, c, true);
-      const fullName = connections[0]?.fullName || target.profile?.fullName || 'Metly user';
+      const fullName = connections[0]?.fullName || target.profile?.fullName || 'Tanishly user';
       return this.upsertBlock(ctx.tx, userId, blockedId, connections[0]?.id ?? null, fullName);
     });
     return blockToWire(result);
@@ -83,7 +83,7 @@ export class BlocksService {
     return { block: result.block, connection: connectionToWire(result.connection) };
   }
 
-  /** `id` is the blocked user's id, or — for a block of a non-Metly contact — the connection id. */
+  /** `id` is the blocked user's id, or — for a block of a non-Tanishly contact — the connection id. */
   async unblock(userId: string, idRaw: string) {
     const id = pathUuid(idRaw, 'userId');
     await this.records.write(userId, async (ctx) => {

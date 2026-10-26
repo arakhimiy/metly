@@ -1,7 +1,7 @@
 import Foundation
 import MetlyNetworking
 
-/// The live "Nearby on Metly" list: resolved peers de-duplicated by user, blocked people and
+/// The live "Nearby on Tanishly" list: resolved peers de-duplicated by user, blocked people and
 /// yourself filtered out, kept in first-seen order so rows don't jump around.
 nonisolated struct NearbyPeerList: Equatable, Sendable {
     private(set) var people: [NearbyPerson] = []

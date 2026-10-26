@@ -18,7 +18,7 @@ nonisolated enum NearbyTransportState: Equatable, Sendable {
 
 nonisolated enum NearbyTransportEvent: Equatable, Sendable {
     case state(NearbyTransportState)
-    /// A device advertising Metly Connect, with its opaque server discovery token.
+    /// A device advertising Tanishly Connect, with its opaque server discovery token.
     case found(NearbyPeerHandle, token: String)
     case lost(NearbyPeerHandle)
     /// A private data link to the device is open (Tap Phones uses it to swap NearbyInteraction tokens).

@@ -34,8 +34,8 @@ const QUIET: ReadonlySet<PushType> = new Set(['event_summary', 'weekly_summary']
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * Keys the app reads besides the contract ids: `followUpID` + `link` (`metly://reminder/{ID}`) on
- * reminders (FollowUpNotificationAction), and `link` (`metly://person/{id}`, `metly://people`) routed
+ * Keys the app reads besides the contract ids: `followUpID` + `link` (`tanishly://reminder/{ID}`) on
+ * reminders (FollowUpNotificationAction), and `link` (`tanishly://person/{id}`, `tanishly://people`) routed
  * through DeepLinkHandler for everything else. Callers' own `link` wins.
  */
 export function deepLinkData(data: Record<string, string> = {}): Record<string, string> {
@@ -43,10 +43,10 @@ export function deepLinkData(data: Record<string, string> = {}): Record<string, 
   const followUpId = data.followUpId;
   if (followUpId && UUID.test(followUpId)) {
     out.followUpID ??= followUpId.toUpperCase();
-    out.link ??= `metly://reminder/${followUpId.toUpperCase()}`;
+    out.link ??= `tanishly://reminder/${followUpId.toUpperCase()}`;
   }
-  if (!out.link && data.connectionId && UUID.test(data.connectionId)) out.link = `metly://person/${data.connectionId.toUpperCase()}`;
-  if (!out.link && data.requestId) out.link = 'metly://people';
+  if (!out.link && data.connectionId && UUID.test(data.connectionId)) out.link = `tanishly://person/${data.connectionId.toUpperCase()}`;
+  if (!out.link && data.requestId) out.link = 'tanishly://people';
   return out;
 }
 

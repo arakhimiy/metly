@@ -13,7 +13,7 @@ import UIKit
 /// queued connect-request actions → pull deltas (`GET /v1/sync?since=`) → photo/logo and
 /// connection avatar downloads.
 /// Triggered (debounced) by local saves, app activation, connectivity returning, realtime
-/// `sync.available`, the `com.metly.app.sync` background task and `requestSync()` calls.
+/// `sync.available`, the `app.tanishly.ios.sync` background task and `requestSync()` calls.
 /// Pauses while offline; failures back off exponentially (2 s … 5 min).
 ///
 /// Local deletes are held for `tombstoneGracePeriod` before their tombstone is pushed: the server's
@@ -21,7 +21,7 @@ import UIKit
 @MainActor
 @Observable
 public final class SyncEngine: SyncServicing {
-    public static let backgroundTaskIdentifier = "com.metly.app.sync"
+    public static let backgroundTaskIdentifier = "app.tanishly.ios.sync"
 
     public private(set) var status: SyncStatus = .idle
     public private(set) var lastSyncedAt: Date?
@@ -127,7 +127,7 @@ public final class SyncEngine: SyncServicing {
         serverEntitlement = nil
     }
 
-    // MARK: Background task (BGAppRefreshTask `com.metly.app.sync`)
+    // MARK: Background task (BGAppRefreshTask `app.tanishly.ios.sync`)
 
     /// Call once from the app target before launch finishes (e.g. `MetlyApp.init`).
     public func registerBackgroundTasks() {

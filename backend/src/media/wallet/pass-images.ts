@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import { hexString } from './pass-json';
 
 /**
- * The Metly mark drawn as vector shapes (no fonts needed — slim container images have none):
+ * The Tanishly mark drawn as vector shapes (no fonts needed — slim container images have none):
  * a rounded square with an "M" in a 100×100 box.
  */
 function markSvg(size: number, fill: string, ink: string): string {

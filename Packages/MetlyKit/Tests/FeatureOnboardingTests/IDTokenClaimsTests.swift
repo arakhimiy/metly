@@ -30,11 +30,11 @@ struct IDTokenClaimsTests {
 
     @Test func decodesAppleStyleClaims() throws {
         // Apple: string "true", private relay email, no name, aud as array is also accepted.
-        let token = Self.jwt(#"{"iss":"https://appleid.apple.com","aud":["com.metly.app"],"sub":"001234.abcd","email":"x7y2@privaterelay.appleid.com","email_verified":"true"}"#)
+        let token = Self.jwt(#"{"iss":"https://appleid.apple.com","aud":["app.tanishly.ios"],"sub":"001234.abcd","email":"x7y2@privaterelay.appleid.com","email_verified":"true"}"#)
         let claims = try #require(IDTokenClaims.decode(jwt: token))
         #expect(claims.email == "x7y2@privaterelay.appleid.com")
         #expect(claims.emailVerified == true)
-        #expect(claims.audience == ["com.metly.app"])
+        #expect(claims.audience == ["app.tanishly.ios"])
         #expect(claims.displayName == nil)
     }
 
@@ -64,7 +64,7 @@ struct IDTokenClaimsTests {
     }
 
     @Test func readsEmailFromAppleIdentityToken() {
-        let token = Data(Self.jwt(#"{"sub":"1","aud":"com.metly.app","email":"aziza@icloud.com"}"#).utf8)
+        let token = Data(Self.jwt(#"{"sub":"1","aud":"app.tanishly.ios","email":"aziza@icloud.com"}"#).utf8)
         #expect(AppleCredentialMapper.email(fromIdentityToken: token) == "aziza@icloud.com")
         #expect(AppleCredentialMapper.email(fromIdentityToken: nil) == nil)
     }

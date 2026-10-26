@@ -37,7 +37,7 @@ struct WidgetSnapshotBuilderTests {
     func publishedCardEncodesLink() throws {
         let work = try #require(build(makeInput()).card(id: workCardID))
         #expect(work.url == Brand.cardURL(slug: "aziza-k7m2"))
-        #expect(work.qrPayload == "https://metly.link/c/aziza-k7m2")
+        #expect(work.qrPayload == "https://tanishly.app/c/aziza-k7m2")
         #expect(!work.usesOfflineQR)
     }
 

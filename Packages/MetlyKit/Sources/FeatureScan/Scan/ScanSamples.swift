@@ -5,7 +5,7 @@ import SwiftUI
 
 /// Sample scans for previews and the DEBUG demo menu (mock-server slugs, a vCard, a paper card).
 enum ScanSamples {
-    static let kamilaURL = "https://metly.link/c/kamila-x1y2"
+    static let kamilaURL = "https://tanishly.app/c/kamila-x1y2"
 
     static let vCard = """
     BEGIN:VCARD

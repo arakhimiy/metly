@@ -98,7 +98,7 @@ export class SubscriptionsService {
     const tx = await this.appStore.verifyTransaction(input.signedTransaction);
     const originalTransactionId = tx.originalTransactionId;
     if (!originalTransactionId) throw ApiError.badRequest('The transaction has no originalTransactionId.');
-    if (!isProProductId(tx.productId)) throw ApiError.badRequest('This product does not unlock Metly Pro.');
+    if (!isProProductId(tx.productId)) throw ApiError.badRequest('This product does not unlock Tanishly Pro.');
     await this.assertAccountToken(tx, userId);
 
     let snapshot: SubscriptionSnapshot | null = null;
@@ -171,7 +171,7 @@ export class SubscriptionsService {
       }
       const owner = await tx.entitlement.findUnique({ where: { originalTransactionId: snapshot.originalTransactionId } });
       if (owner && owner.userId !== userId) {
-        if (opts.strictOwner) throw new ApiError(409, 'conflict', 'This App Store subscription already unlocks another Metly account.');
+        if (opts.strictOwner) throw new ApiError(409, 'conflict', 'This App Store subscription already unlocks another Tanishly account.');
         return current;
       }
       const next = nextEntitlement(current, snapshot, now);
@@ -255,7 +255,7 @@ export class SubscriptionsService {
     const token = tx.appAccountToken?.toLowerCase();
     if (!token || token === userId || !z.uuid().safeParse(token).success) return;
     const other = await this.prisma.user.findUnique({ where: { id: token }, select: { id: true } });
-    if (other) throw new ApiError(409, 'conflict', 'This App Store subscription was bought for another Metly account.');
+    if (other) throw new ApiError(409, 'conflict', 'This App Store subscription was bought for another Tanishly account.');
   }
 
   private peekEnvironment(jws: string): string {
