@@ -78,14 +78,15 @@ ${section.body.map((part) => (Array.isArray(part) ? html`<ul>${part.map((item) =
   return shell(lang, `${doc.title} · Tanishly`, kind, `/${kind}`, body);
 }
 
-export function renderHomePage(lang: LegalLang, appStoreId: string | undefined): string {
+/** `download`: the App Store listing, or before it exists the beta (TestFlight) link. */
+export function renderHomePage(lang: LegalLang, download?: { url: string; beta: boolean }): string {
   const ui = UI[lang];
   const body = html`
 <section class="hero">
   <h1>Tanishly</h1>
   <p>${ui.tagline}</p>
-  ${appStoreId
-    ? html`<a class="cta" href="https://apps.apple.com/app/id${appStoreId}">${ui.getApp}</a>`
+  ${download
+    ? html`<a class="cta" href="${download.url}">${download.beta ? ui.tryBeta : ui.getApp}</a>`
     : html`<span class="soon">${ui.soon}</span>`}
 </section>`;
   return shell(lang, `Tanishly — ${ui.tagline}`, 'home', '/', body);

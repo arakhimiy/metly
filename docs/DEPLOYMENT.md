@@ -56,6 +56,7 @@ Copy `backend/.env.example`; production refuses to boot when `JWT_SECRET` is the
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` | @TanishlyBot; set the bot webhook to `https://api.tanishly.app/v1/integrations/telegram/webhook` with that secret |
 | `RESEND_API_KEY`, `MAIL_FROM` | data-export emails |
 | `APP_STORE_ID` | numeric App Store id, after the listing exists (Smart App Banner, "Get the app") |
+| `APP_DOWNLOAD_URL` | before the listing exists: TestFlight public link for "Get the app" (hidden on Android, no Smart App Banner) |
 
 Multi-line keys can be stored with literal `\n`; the app restores newlines.
 

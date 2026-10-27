@@ -19,7 +19,10 @@ export interface CardPageOptions {
   platform: WebPlatform;
   lang: Lang;
   /** App Store id: Smart App Banner + "Get the app" (both hidden without it). */
+  /** Smart App Banner; only once the App Store listing exists. */
   appStoreId?: string;
+  /** Show "Get the app" (App Store or the pre-release TestFlight link). */
+  appAvailable?: boolean;
 }
 
 const ICONS: Record<string, SafeHtml> = {
@@ -140,6 +143,7 @@ const CARD_CSS = String.raw`
 .cta strong{font-size:15px}
 .cta span{font-size:13px;color:var(--muted)}
 .cta .btn{width:auto;min-height:40px;font-size:15px}
+.p-android .cta{display:none}
 dialog{width:100%;max-width:460px;max-height:calc(100dvh - 24px);margin:auto auto 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom));border:0;border-radius:22px 22px 0 0;background:var(--bg);color:var(--fg);overflow:auto;box-shadow:0 -8px 40px rgba(0,0,0,.25)}
 dialog::backdrop{background:rgba(0,0,0,.45)}
 dialog:not([open]){display:none}
@@ -445,7 +449,7 @@ function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText): Sa
 }
 
 export function renderCardPage(opts: CardPageOptions): string {
-  const { view, nonce, platform, lang, appStoreId } = opts;
+  const { view, nonce, platform, lang, appStoreId, appAvailable } = opts;
   const t = CARD_PAGE_TEXT[lang];
   const colors = pageColors(view.design);
   const first = view.firstName;
@@ -457,7 +461,7 @@ export function renderCardPage(opts: CardPageOptions): string {
   const banner = appStoreId
     ? html`<meta name="apple-itunes-app" content="app-id=${appStoreId}, app-argument=${view.url}">`
     : undefined;
-  const cta = appStoreId
+  const cta = appAvailable
     ? html`<section class="cta"><div><strong>${t.ctaTitle}</strong><span>${t.ctaSubtitle}</span></div><a class="btn primary" href="${getAppHref}" data-get-app>${t.ctaButton}</a></section>`
     : '';
 

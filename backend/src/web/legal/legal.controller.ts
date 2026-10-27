@@ -1,7 +1,7 @@
 import { Controller, Get, Inject, Query, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { Public } from '../../common/request';
-import { ENV, type Env } from '../../config/env';
+import { appDownloadUrl, ENV, type Env } from '../../config/env';
 import type { LegalDocKind } from './legal-content';
 import { pickLang, renderHomePage, renderLegalPage, STATIC_PAGE_CSP } from './legal-page';
 
@@ -13,7 +13,9 @@ export class LegalController {
 
   @Get()
   home(@Query('lang') lang: unknown, @Req() req: Request, @Res() res: Response) {
-    this.send(res, renderHomePage(pickLang(lang, req.get('accept-language')), this.env.APP_STORE_ID));
+    const url = appDownloadUrl(this.env);
+    const download = url ? { url, beta: !this.env.APP_STORE_ID } : undefined;
+    this.send(res, renderHomePage(pickLang(lang, req.get('accept-language')), download));
   }
 
   @Get('privacy')

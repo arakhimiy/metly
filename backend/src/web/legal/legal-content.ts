@@ -21,7 +21,7 @@ export interface LegalDoc {
 export const LEGAL_UPDATED = '2026-10-27';
 export const SUPPORT_EMAIL = 'support@tanishly.app';
 
-export const UI: Record<LegalLang, { updated: string; privacy: string; terms: string; help: string; contact: string; tagline: string; getApp: string; soon: string }> = {
+export const UI: Record<LegalLang, { updated: string; privacy: string; terms: string; help: string; contact: string; tagline: string; getApp: string; tryBeta: string; soon: string }> = {
   uz: {
     updated: 'Oxirgi yangilanish',
     privacy: 'Maxfiylik siyosati',
@@ -30,6 +30,7 @@ export const UI: Record<LegalLang, { updated: string; privacy: string; terms: st
     contact: 'Savollar bo‘lsa, yozing',
     tagline: 'Raqamli vizitka va tanishlaringiz uchun shaxsiy daftar.',
     getApp: 'App Store’dan yuklab olish',
+    tryBeta: 'iPhone uchun beta versiyani sinab ko‘ring',
     soon: 'Tez orada App Store’da',
   },
   ru: {
@@ -40,6 +41,7 @@ export const UI: Record<LegalLang, { updated: string; privacy: string; terms: st
     contact: 'Если остались вопросы, напишите нам',
     tagline: 'Цифровая визитка и личный блокнот для ваших знакомств.',
     getApp: 'Скачать в App Store',
+    tryBeta: 'Попробовать бета-версию для iPhone',
     soon: 'Скоро в App Store',
   },
   en: {
@@ -50,6 +52,7 @@ export const UI: Record<LegalLang, { updated: string; privacy: string; terms: st
     contact: 'Still have a question? Write to us',
     tagline: 'A digital business card and a private notebook for the people you meet.',
     getApp: 'Download on the App Store',
+    tryBeta: 'Try the iPhone beta',
     soon: 'Coming soon to the App Store',
   },
 };

@@ -601,3 +601,40 @@ describe('public web with App Store and team ids', () => {
     expect(redirect.headers.location).toBe('https://apps.apple.com/app/id6700000001');
   });
 });
+
+describe('public web with a pre-release download link', () => {
+  let app: NestExpressApplication;
+  const saved = process.env.APP_DOWNLOAD_URL;
+  const beta = 'https://testflight.apple.com/join/AbCd1234';
+
+  beforeAll(async () => {
+    process.env.APP_DOWNLOAD_URL = beta;
+    app = await createApp();
+  });
+  afterAll(async () => {
+    await app.close();
+    if (saved === undefined) delete process.env.APP_DOWNLOAD_URL;
+    else process.env.APP_DOWNLOAD_URL = saved;
+  });
+
+  it('shows "Get Tanishly" without a Smart App Banner and redirects to the beta link', async () => {
+    const session = await signIn(app);
+    const pushed = await request(app.getHttpServer())
+      .post('/v1/sync/push')
+      .set(session.auth)
+      .send({ deviceId: 'd', changes: { profile: profile(), cards: [card({ design: allFields })] } })
+      .expect(200);
+    const slug = pushed.body.records.cards[0].slug;
+    const page = await request(app.getHttpServer()).get(`/c/${slug}`).set('User-Agent', IPHONE).expect(200);
+    expect(page.text).not.toContain('apple-itunes-app');
+    expect(page.text).toContain(`href="/c/${slug}/get-app"`);
+    const redirect = await request(app.getHttpServer()).get(`/c/${slug}/get-app`).set('User-Agent', IPHONE).expect(302);
+    expect(redirect.headers.location).toBe(beta);
+  });
+
+  it('links the home page to the beta', async () => {
+    const home = await request(app.getHttpServer()).get('/?lang=en').expect(200);
+    expect(home.text).toContain(`<a class="cta" href="${beta}">Try the iPhone beta</a>`);
+    expect(home.text).not.toContain('Coming soon to the App Store');
+  });
+});

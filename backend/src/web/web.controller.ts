@@ -3,7 +3,7 @@ import { Controller, Get, Inject, Param, Query, Req, Res } from '@nestjs/common'
 import type { Request, Response } from 'express';
 import { RateLimit } from '../common/rate-limit';
 import { clientIp, Public } from '../common/request';
-import { ENV, type Env } from '../config/env';
+import { appDownloadUrl, ENV, type Env } from '../config/env';
 import { pickLang } from '../i18n/lang';
 import { DeferredLinksService } from './deferred-links.service';
 import { renderCardPage, renderUnavailablePage, pageCsp } from './page';
@@ -46,6 +46,7 @@ export class WebController {
           platform: platformFromUserAgent(userAgent),
           lang,
           appStoreId: this.env.APP_STORE_ID,
+          appAvailable: appDownloadUrl(this.env) !== undefined,
         }),
       );
       return;
@@ -82,7 +83,7 @@ export class WebController {
 
   /**
    * "Get the app": stores a deferred-link click (network prefix, user agent, locale, time zone — never
-   * the full IP), counts a `get_app` event and redirects to the App Store (or the site without one).
+   * the full IP), counts a `get_app` event and redirects to the App Store (or the TestFlight link, or the site).
    */
   @Get('c/:slug/get-app')
   @RateLimit('analytics')
@@ -94,7 +95,7 @@ export class WebController {
     @Res() res: Response,
   ) {
     const resolved = await this.cards.resolve(rawSlug);
-    const appStoreUrl = this.env.APP_STORE_ID ? `https://apps.apple.com/app/id${encodeURIComponent(this.env.APP_STORE_ID)}` : this.env.WEB_BASE_URL;
+    const appStoreUrl = appDownloadUrl(this.env) ?? this.env.WEB_BASE_URL;
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('X-Robots-Tag', 'noindex, nofollow');
     if (resolved.status === 'available') {

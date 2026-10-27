@@ -71,6 +71,8 @@ const schema = z
     TELEGRAM_WEBHOOK_SECRET: optional,
 
     APP_STORE_ID: optional,
+    /** "Get the app" link before the App Store listing exists, e.g. the TestFlight public link. */
+    APP_DOWNLOAD_URL: optional,
 
     /** Transactional mail (data export links). Empty → exports stay queued. */
     RESEND_API_KEY: optional,
@@ -88,6 +90,9 @@ const schema = z
     if (env.APPLE_BUNDLE_IDS.length === 0) {
       ctx.addIssue({ code: 'custom', path: ['APPLE_BUNDLE_IDS'], message: 'is required in production' });
     }
+    if (env.APP_DOWNLOAD_URL && !env.APP_DOWNLOAD_URL.startsWith('https://')) {
+      ctx.addIssue({ code: 'custom', path: ['APP_DOWNLOAD_URL'], message: 'must be https in production' });
+    }
     for (const key of ['WEB_BASE_URL', 'API_BASE_URL'] as const) {
       if (!env[key].startsWith('https://')) {
         ctx.addIssue({ code: 'custom', path: [key], message: 'must be https in production' });
@@ -104,6 +109,12 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
     throw new Error(`Invalid environment:\n${lines.join('\n')}`);
   }
   return parsed.data;
+}
+
+/** Where "Get the app" leads: the App Store listing, else the pre-release link (TestFlight), else nowhere. */
+export function appDownloadUrl(env: Pick<Env, 'APP_STORE_ID' | 'APP_DOWNLOAD_URL'>): string | undefined {
+  if (env.APP_STORE_ID) return `https://apps.apple.com/app/id${encodeURIComponent(env.APP_STORE_ID)}`;
+  return env.APP_DOWNLOAD_URL;
 }
 
 /** Injection token for the parsed environment. */
