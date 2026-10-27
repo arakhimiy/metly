@@ -83,7 +83,7 @@ public extension ModelContext {
     }
 
     func record<T: SyncedRecord>(_ type: T.Type, id: UUID) -> T? {
-        var descriptor = FetchDescriptor<T>(predicate: #Predicate { $0.id == id })
+        var descriptor = FetchDescriptor<T>(predicate: T.idPredicate(id))
         descriptor.fetchLimit = 1
         return try? fetch(descriptor).first
     }

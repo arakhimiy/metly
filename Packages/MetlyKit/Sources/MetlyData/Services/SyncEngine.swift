@@ -416,8 +416,7 @@ public final class SyncEngine: SyncServicing {
     private func reconcile(keeping seen: Set<UUID>) throws {
         let context = container.mainContext
         func prune<Model: SyncedRecord>(_ type: Model.Type) throws {
-            let synced = SyncState.synced.rawValue
-            let descriptor = FetchDescriptor<Model>(predicate: #Predicate { $0.syncStateRaw == synced })
+            let descriptor = FetchDescriptor<Model>(predicate: Model.syncStatePredicate(SyncState.synced.rawValue, equal: true))
             for record in try context.fetch(descriptor) where !seen.contains(record.id) {
                 context.delete(record)
             }

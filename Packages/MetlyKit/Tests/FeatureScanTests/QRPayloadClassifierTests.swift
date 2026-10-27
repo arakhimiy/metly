@@ -13,7 +13,7 @@ struct QRPayloadClassifierTests {
         "http://tanishly.app/c/kamila-x1y2",
         "tanishly.app/c/kamila-x1y2",
         "https://www.tanishly.app/c/kamila-x1y2",
-        "HTTPS://METLY.LINK/C/KAMILA-X1Y2",
+        "HTTPS://TANISHLY.APP/C/KAMILA-X1Y2",
         "https://tanishly.app/c/kamila-x1y2/?src=qr",
         "  https://tanishly.app/c/kamila-x1y2\n",
         "tanishly://c/kamila-x1y2",
@@ -26,7 +26,7 @@ struct QRPayloadClassifierTests {
     func ownCard() {
         let own: Set = ["aziza-w7k2", "aziza-p3x9"]
         #expect(QRPayloadClassifier.classify("https://tanishly.app/c/aziza-w7k2", ownSlugs: own) == .ownCard(slug: "aziza-w7k2"))
-        #expect(QRPayloadClassifier.classify("METLY.LINK/C/AZIZA-P3X9", ownSlugs: own) == .ownCard(slug: "aziza-p3x9"))
+        #expect(QRPayloadClassifier.classify("TANISHLY.APP/C/AZIZA-P3X9", ownSlugs: own) == .ownCard(slug: "aziza-p3x9"))
         #expect(QRPayloadClassifier.classify("https://tanishly.app/c/kamila-x1y2", ownSlugs: own) == kamila)
     }
 

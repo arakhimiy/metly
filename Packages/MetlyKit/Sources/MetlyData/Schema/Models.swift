@@ -27,6 +27,11 @@ public protocol SyncedRecord: PersistentModel {
     var updatedAt: Date { get set }
     var syncStateRaw: String { get set }
     var deletedAt: Date? { get set }
+
+    /// Predicates on the sync fields, spelled out per model (SyncPredicates.swift): a `#Predicate` over a
+    /// generic `Model: SyncedRecord` traps inside SwiftData in optimised (Release) builds.
+    static func syncStatePredicate(_ raw: String, equal: Bool) -> Predicate<Self>
+    static func idPredicate(_ id: UUID) -> Predicate<Self>
 }
 
 public extension SyncedRecord {

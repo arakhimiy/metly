@@ -284,8 +284,7 @@ struct SyncPushBatch {
     }
 
     static func dirty<Model: SyncedRecord>(_ type: Model.Type, in context: ModelContext) -> [Model] {
-        let synced = SyncState.synced.rawValue
-        let descriptor = FetchDescriptor<Model>(predicate: #Predicate { $0.syncStateRaw != synced })
+        let descriptor = FetchDescriptor<Model>(predicate: Model.syncStatePredicate(SyncState.synced.rawValue, equal: false))
         return ((try? context.fetch(descriptor)) ?? []).sorted { $0.updatedAt < $1.updatedAt }
     }
 
@@ -293,9 +292,8 @@ struct SyncPushBatch {
     static func nextHeldTombstone(in context: ModelContext, grace: TimeInterval, now: Date = .now) -> Date? {
         guard grace > 0 else { return nil }
         let cutoff = now.addingTimeInterval(-grace)
-        let pendingDelete = SyncState.pendingDelete.rawValue
         func earliest<Model: SyncedRecord>(_ type: Model.Type) -> Date? {
-            let descriptor = FetchDescriptor<Model>(predicate: #Predicate { $0.syncStateRaw == pendingDelete })
+            let descriptor = FetchDescriptor<Model>(predicate: Model.syncStatePredicate(SyncState.pendingDelete.rawValue, equal: true))
             return ((try? context.fetch(descriptor)) ?? [])
                 .filter { !isDue($0, cutoff: cutoff) }
                 .map { ($0.deletedAt ?? $0.updatedAt).addingTimeInterval(grace) }
