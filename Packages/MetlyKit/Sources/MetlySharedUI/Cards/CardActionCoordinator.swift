@@ -29,7 +29,7 @@ public final class CardActionCoordinator {
         case .copyLink:
             guard let url = card.url else { return }
             UIPasteboard.general.url = url
-            router.showToast("Link Copied", systemImage: "link")
+            router.showToast(String(localized: "Link Copied"), systemImage: "link")
         case .share:
             router.present(.share(cardID: card.id))
         case .showQR:
@@ -47,11 +47,11 @@ public final class CardActionCoordinator {
             profile.defaultCardID = card.id
             profile.markChanged()
             services.sync.requestSync()
-            router.showToast("\(card.name) is your default", systemImage: "checkmark.circle")
+            router.showToast(String(localized: "\(card.name) is your default"), systemImage: "checkmark.circle")
         case .delete:
             switch CardManagement.planDeletion(of: card.id, cards: Self.summaries(context), defaultID: context.currentProfile()?.defaultCardID) {
             case .blockedLastCard:
-                router.showToast("You need at least one card", systemImage: "exclamationmark.circle")
+                router.showToast(String(localized: "You need at least one card"), systemImage: "exclamationmark.circle")
             case .delete:
                 cardPendingDelete = card
                 pendingContext = (context, router, services)
@@ -86,7 +86,7 @@ public final class CardActionCoordinator {
         if services.preferences.activeCardID == card.id { services.preferences.activeCardID = nil }
         cardPendingDelete = nil
         services.sync.requestSync()
-        router.showToast("Card Deleted", systemImage: "trash")
+        router.showToast(String(localized: "Card Deleted"), systemImage: "trash")
     }
 
     func showPaywall() {

@@ -12,12 +12,12 @@ struct EditorMediaSection: View {
         MediaPickerSection(kind: .photo, imageData: draft.photo.resolved(profile?.photoData),
                            edit: $draft.photo, showOnCard: $draft.design.showPhoto,
                            note: draft.design.templateShowsPhoto ? nil
-                               : "The \(draft.design.template.title) template doesn’t show a photo.")
+                               : String(localized: "The \(draft.design.template.title) template doesn’t show a photo."))
 
         MediaPickerSection(kind: .logo, imageData: draft.logo.resolved(profile?.logoData),
                            edit: $draft.logo, showOnCard: $draft.design.showLogo,
                            note: draft.design.templateShowsLogo ? nil
-                               : "The \(draft.design.template.title) template doesn’t show a logo.")
+                               : String(localized: "The \(draft.design.template.title) template doesn’t show a logo."))
 
         Section {
             Toggle("Show QR Code", isOn: $draft.design.showQR)

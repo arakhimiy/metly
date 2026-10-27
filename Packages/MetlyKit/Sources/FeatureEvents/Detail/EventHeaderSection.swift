@@ -46,7 +46,7 @@ private struct EventStatusLine: View {
     }
 
     private var endedText: String {
-        guard let endedAt = event.endedAt else { return "Ended" }
-        return "Ended \(endedAt.formatted(.dateTime.month(.abbreviated).day()))"
+        guard let endedAt = event.endedAt else { return String(localized: "Ended") }
+        return String(localized: "Ended \(endedAt.formatted(.dateTime.month(.abbreviated).day()))")
     }
 }

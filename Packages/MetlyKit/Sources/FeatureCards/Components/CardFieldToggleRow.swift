@@ -85,13 +85,13 @@ struct CardFieldToggleRow: View {
     }
 
     private var subtitle: String {
-        if field.privacy == .private { return "Private — hidden from all cards" }
-        let value = field.isEmpty ? "Not added in Profile" : field.value
+        if field.privacy == .private { return String(localized: "Private — hidden from all cards") }
+        let value = field.isEmpty ? String(localized: "Not added in Profile") : field.value
         return "\(value) · \(field.privacy.title)"
     }
 
     private var accessibilityValue: String {
-        if field.privacy == .private { return "Private, hidden from all cards" }
-        return field.isEmpty ? "Not added in Profile" : field.value
+        if field.privacy == .private { return String(localized: "Private, hidden from all cards") }
+        return field.isEmpty ? String(localized: "Not added in Profile") : field.value
     }
 }

@@ -16,16 +16,16 @@ struct QuickActionsSection: View {
             let layout = dynamicTypeSize.isAccessibilitySize
                 ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
             layout {
-                QuickActionButton(title: "Message", systemImage: "message.fill", isEnabled: canMessage,
+                QuickActionButton(title: String(localized: "Message"), systemImage: "message.fill", isEnabled: canMessage,
                                   accessibilityLabel: messageLabel, action: message)
-                QuickActionButton(title: "Call", systemImage: "phone.fill",
+                QuickActionButton(title: String(localized: "Call"), systemImage: "phone.fill",
                                   isEnabled: ContactLinks.call(person.phone) != nil,
-                                  accessibilityLabel: "Call \(firstName)", action: call)
-                QuickActionButton(title: "Mail", systemImage: "envelope.fill",
+                                  accessibilityLabel: String(localized: "Call \(firstName)"), action: call)
+                QuickActionButton(title: String(localized: "Mail"), systemImage: "envelope.fill",
                                   isEnabled: ContactLinks.mail(person.email) != nil,
-                                  accessibilityLabel: "Email \(firstName)", action: mail)
-                QuickActionButton(title: "Save", systemImage: "person.crop.circle.badge.plus", isEnabled: true,
-                                  accessibilityLabel: "Save \(firstName) to Contacts", action: onSave)
+                                  accessibilityLabel: String(localized: "Email \(firstName)"), action: mail)
+                QuickActionButton(title: String(localized: "Save"), systemImage: "person.crop.circle.badge.plus", isEnabled: true,
+                                  accessibilityLabel: String(localized: "Save \(firstName) to Contacts"), action: onSave)
             }
         }
         .listRowBackground(Color.clear)
@@ -40,7 +40,7 @@ struct QuickActionsSection: View {
 
     private var messageLabel: String {
         ContactLinks.telegramHandle(person.telegram) != nil
-            ? "Message \(firstName) on Telegram" : "Message \(firstName)"
+            ? String(localized: "Message \(firstName) on Telegram") : String(localized: "Message \(firstName)")
     }
 
     /// Telegram first (app, then t.me in Safari), otherwise Messages.

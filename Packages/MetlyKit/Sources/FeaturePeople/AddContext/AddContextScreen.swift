@@ -68,8 +68,8 @@ struct AddContextScreen: View {
     }
 
     private var title: String {
-        guard let person, !person.note.isEmpty || !person.tags.isEmpty else { return "Add Context" }
-        return "Edit Context"
+        guard let person, !person.note.isEmpty || !person.tags.isEmpty else { return String(localized: "Add Context") }
+        return String(localized: "Edit Context")
     }
 
     private func mergeCandidate(for person: Connection) -> Connection? {
@@ -88,7 +88,7 @@ struct AddContextScreen: View {
         mergeCount += 1
         loadedID = nil
         targetID = justMet.id
-        router.showToast("Merged with your QR note", systemImage: "arrow.triangle.merge")
+        router.showToast(String(localized: "Merged with your QR note"), systemImage: "arrow.triangle.merge")
     }
 
     private func save() {
@@ -100,6 +100,6 @@ struct AddContextScreen: View {
             return
         }
         router.dismiss()
-        router.showToast(result.toastMessage(otherwise: "Context Saved"), systemImage: "checkmark.circle")
+        router.showToast(result.toastMessage(otherwise: String(localized: "Context Saved")), systemImage: "checkmark.circle")
     }
 }

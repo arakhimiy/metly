@@ -206,12 +206,12 @@ final class IncomingRequestBannerModel {
         guard let request = modelContext.record(ConnectRequest.self, id: shown.id),
               IncomingRequestBannerPolicy.isAnswerable(request, blockedUserIDs: blocked, now: now()) else {
             finish(shown)
-            router.showToast("This request has expired", systemImage: "clock.badge.xmark")
+            router.showToast(String(localized: "This request has expired"), systemImage: "clock.badge.xmark")
             update()
             return
         }
         guard let cardID = request.myCardID ?? modelContext.cardToShare()?.id else {
-            router.showToast("Create a card first, then accept.", systemImage: "rectangle.stack.badge.plus")
+            router.showToast(String(localized: "Create a card first, then accept."), systemImage: "rectangle.stack.badge.plus")
             return
         }
 

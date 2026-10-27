@@ -112,7 +112,11 @@ final class ScannedCardModel {
     func connect(to card: PublicCardDTO, client: MetlyClient, modelContext: ModelContext, router: AppRouter) async {
         guard let snapshot = card.snapshot else { return }
         guard let cardID = modelContext.cardToShare()?.id else {
-            fail("Create a card first — it’s what \(card.owner?.firstName ?? "they") will get back.")
+            if let firstName = card.owner?.firstName {
+                fail(String(localized: "Create a card first — it’s what \(firstName) will get back."))
+            } else {
+                fail(String(localized: "Create a card first — it’s what they will get back."))
+            }
             return
         }
         connectPhase = .sending

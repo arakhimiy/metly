@@ -68,6 +68,6 @@ struct ContactInfoSection: View {
 
     private func copy(_ field: ContactField) {
         UIPasteboard.general.string = field.value
-        router.showToast("\(field.kind.title) Copied", systemImage: "doc.on.doc")
+        router.showToast(String(localized: "\(field.kind.title) Copied"), systemImage: "doc.on.doc")
     }
 }

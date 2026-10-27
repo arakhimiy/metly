@@ -46,10 +46,10 @@ import MetlyCore
 /// Constants shared by every capture surface.
 public enum MetlyCapture {
     /// Preset tag chips (SPEC §3.14). Custom tags are added next to them.
-    public static let presetTags = ["Investor", "Client", "Hiring", "Partner", "Friend"]
+    public static let presetTags = [String(localized: "Investor"), String(localized: "Client"), String(localized: "Hiring"), String(localized: "Partner"), String(localized: "Friend")]
 
     /// Default reminder title when the user leaves "To Do" empty.
-    public static let defaultFollowUpTitle = "Follow up"
+    public static let defaultFollowUpTitle = String(localized: "Follow up")
 
     /// Default reminder time (local).
     public static let defaultFollowUpHour = 10

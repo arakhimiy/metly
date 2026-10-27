@@ -14,19 +14,19 @@ public struct SettingsAlert: Identifiable, Equatable, Sendable {
     }
 
     public static let microphoneOff = SettingsAlert(
-        title: "Microphone Is Off",
-        message: "Allow microphone access in Settings › \(Brand.appName) to add notes by voice.")
+        title: String(localized: "Microphone Is Off"),
+        message: String(localized: "Allow microphone access in Settings › \(Brand.appName) to add notes by voice."))
 
     public static let speechOff = SettingsAlert(
-        title: "Speech Recognition Is Off",
-        message: "Allow speech recognition in Settings › \(Brand.appName) to add notes by voice.")
+        title: String(localized: "Speech Recognition Is Off"),
+        message: String(localized: "Allow speech recognition in Settings › \(Brand.appName) to add notes by voice."))
 
     public static let locationOff = SettingsAlert(
-        title: "Turn On in Settings",
-        message: "Open iOS Settings › \(Brand.appName) to allow location access.")
+        title: String(localized: "Turn On in Settings"),
+        message: String(localized: "Open iOS Settings › \(Brand.appName) to allow location access."))
 
     public static func permission(_ name: String) -> SettingsAlert {
-        SettingsAlert(title: "Turn On in Settings", message: "Open iOS Settings › \(Brand.appName) to allow \(name).")
+        SettingsAlert(title: String(localized: "Turn On in Settings"), message: String(localized: "Open iOS Settings › \(Brand.appName) to allow \(name)."))
     }
 }
 

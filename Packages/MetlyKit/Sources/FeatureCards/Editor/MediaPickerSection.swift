@@ -83,29 +83,29 @@ enum MediaKind {
 
     var title: String {
         switch self {
-        case .photo: "Photo"
-        case .logo: "Logo"
+        case .photo: String(localized: "Photo")
+        case .logo: String(localized: "Logo")
         }
     }
 
     var chooseTitle: String {
         switch self {
-        case .photo: "Choose Photo…"
-        case .logo: "Choose Logo…"
+        case .photo: String(localized: "Choose Photo…")
+        case .logo: String(localized: "Choose Logo…")
         }
     }
 
     var removeTitle: String {
         switch self {
-        case .photo: "Remove Photo"
-        case .logo: "Remove Logo"
+        case .photo: String(localized: "Remove Photo")
+        case .logo: String(localized: "Remove Logo")
         }
     }
 
     var footer: String {
         switch self {
-        case .photo: "Shows on Modern, Split and Stack. Your photo is shared by all your cards."
-        case .logo: "Shows on Professional. Your logo is shared by all your cards."
+        case .photo: String(localized: "Shows on Modern, Split and Stack. Your photo is shared by all your cards.")
+        case .logo: String(localized: "Shows on Professional. Your logo is shared by all your cards.")
         }
     }
 

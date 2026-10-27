@@ -31,5 +31,5 @@ struct LinkPauseToggle: View {
 
 /// Footer copy shared by every place that shows the pause switch.
 enum LinkPauseCopy {
-    static let footer = "Paused links show an inactive page. Printed QR codes work again when you resume."
+    static let footer = String(localized: "Paused links show an inactive page. Printed QR codes work again when you resume.")
 }

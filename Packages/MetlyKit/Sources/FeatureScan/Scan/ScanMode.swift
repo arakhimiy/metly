@@ -8,15 +8,15 @@ enum ScanMode: String, CaseIterable, Identifiable, Hashable {
 
     var title: String {
         switch self {
-        case .qr: "QR Code"
-        case .paper: "Paper Card"
+        case .qr: String(localized: "QR Code")
+        case .paper: String(localized: "Paper Card")
         }
     }
 
     var hint: String {
         switch self {
-        case .qr: "Point at a Tanishly or vCard QR code"
-        case .paper: "Fit the business card inside the frame"
+        case .qr: String(localized: "Point at a Tanishly or vCard QR code")
+        case .paper: String(localized: "Fit the business card inside the frame")
         }
     }
 

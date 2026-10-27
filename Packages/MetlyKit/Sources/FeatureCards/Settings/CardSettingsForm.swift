@@ -111,12 +111,12 @@ struct CardSettingsForm: View {
         if isOn {
             CardLibrary.setDefault(card, profile: profile)
             services.sync.requestSync()
-            router.showToast("\(card.name) is your default", systemImage: "checkmark.circle")
+            router.showToast(String(localized: "\(card.name) is your default"), systemImage: "checkmark.circle")
         } else if CardLibrary.isDefault(card, among: cards, profile: profile) {
             // At least one card is always the default. Nothing observable changed, so the switch
             // would stay off on screen — rebuild it so it shows the real (on) state again.
             defaultToggleResets += 1
-            router.showToast("Pick another card as default", systemImage: "info.circle")
+            router.showToast(String(localized: "Pick another card as default"), systemImage: "info.circle")
         }
     }
 
@@ -159,7 +159,7 @@ struct CardSettingsForm: View {
         CardLibrary.duplicate(card, in: modelContext)
         try? modelContext.save()
         services.sync.requestSync()
-        router.showToast("Card Duplicated", systemImage: "plus.square.on.square")
+        router.showToast(String(localized: "Card Duplicated"), systemImage: "plus.square.on.square")
     }
 
     private func delete() {

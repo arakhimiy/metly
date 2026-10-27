@@ -45,7 +45,7 @@ struct EarlierMeetingsSection: View {
             Section("Earlier Meetings") {
                 ForEach(meetings, id: \.self) { meeting in
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(meeting.eventName ?? MeetingFormatting.place(meeting) ?? "Meeting")
+                        Text(meeting.eventName ?? MeetingFormatting.place(meeting) ?? String(localized: "Meeting"))
                             .font(.body)
                         Text(MeetingFormatting.placeAndDate(meeting))
                             .font(.subheadline)

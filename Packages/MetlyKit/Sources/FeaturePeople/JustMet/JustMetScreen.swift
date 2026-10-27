@@ -80,7 +80,7 @@ struct JustMetScreen: View {
         // still saved without the reminder (toast falls back to "Saved {first}").
         let result = draft.apply(to: person, in: modelContext, limits: services.entitlements.limits)
         router.dismiss()
-        let fallback = trimmed.isEmpty ? "Saved" : "Saved \(PersonName.first(trimmed))"
+        let fallback = trimmed.isEmpty ? String(localized: "Saved") : String(localized: "Saved \(PersonName.first(trimmed))")
         router.showToast(result.toastMessage(otherwise: fallback), systemImage: "checkmark.circle")
     }
 }

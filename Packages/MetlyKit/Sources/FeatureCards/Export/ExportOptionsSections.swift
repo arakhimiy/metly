@@ -34,7 +34,7 @@ struct ExportOptionsSections: View {
             }
         case .wallet:
             Section {
-                ExportOptionRow(title: "Apple Wallet", subtitle: "QR on the pass, updates when you edit", isSelected: true) {}
+                ExportOptionRow(title: String(localized: "Apple Wallet"), subtitle: String(localized: "QR on the pass, updates when you edit"), isSelected: true) {}
             } header: {
                 Text("Pass")
             } footer: {

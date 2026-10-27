@@ -14,18 +14,18 @@ struct InvalidCodeAlert: Equatable {
     var url: URL?
     var domain: String?
 
-    static let title = "No Business Card Found"
+    static let title = String(localized: "No Business Card Found")
 
     var message: String {
         switch (source, domain) {
         case (.camera, let domain?):
-            "This QR code opens \(domain). It isn’t a \(Brand.appName) or vCard code."
+            String(localized: "This QR code opens \(domain). It isn’t a \(Brand.appName) or vCard code.")
         case (.camera, nil):
-            "This QR code isn’t a \(Brand.appName) or vCard code."
+            String(localized: "This QR code isn’t a \(Brand.appName) or vCard code.")
         case (.clipboard, let domain?):
-            "This link opens \(domain). It isn’t a \(Brand.appName) card link."
+            String(localized: "This link opens \(domain). It isn’t a \(Brand.appName) card link.")
         case (.clipboard, nil):
-            "The copied text isn’t a \(Brand.appName) card link. Copy a link like \(Brand.linkHost)/c/… and try again."
+            String(localized: "The copied text isn’t a \(Brand.appName) card link. Copy a link like \(Brand.linkHost)/c/… and try again.")
         }
     }
 }
@@ -35,6 +35,6 @@ struct PaperNotReadAlert: Equatable {
     /// The photo, kept for PAPER_REVIEW when the user types the details in.
     var imageData: Data?
 
-    static let title = "Couldn’t Read the Card"
-    static let message = "Hold the card flat in good light, or type the details yourself."
+    static let title = String(localized: "Couldn’t Read the Card")
+    static let message = String(localized: "Hold the card flat in good light, or type the details yourself.")
 }

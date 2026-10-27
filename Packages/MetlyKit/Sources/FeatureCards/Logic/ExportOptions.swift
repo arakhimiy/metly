@@ -27,10 +27,10 @@ nonisolated struct ExportOptions: Hashable, Sendable {
 extension CardExportTab {
     nonisolated var title: String {
         switch self {
-        case .image: "Image"
-        case .pdf: "PDF"
-        case .wallet: "Wallet"
-        case .lockScreen: "Lock Screen"
+        case .image: String(localized: "Image")
+        case .pdf: String(localized: "PDF")
+        case .wallet: String(localized: "Wallet")
+        case .lockScreen: String(localized: "Lock Screen")
         }
     }
 }

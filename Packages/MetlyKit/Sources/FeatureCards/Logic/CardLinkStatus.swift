@@ -27,8 +27,8 @@ nonisolated enum CardLinkStatus: Equatable, Sendable {
     var displayText: String {
         switch self {
         case .live(let url): Self.shortText(for: url)
-        case .publishing: "Publishing…"
-        case .waitingForNetwork: "Not published yet"
+        case .publishing: String(localized: "Publishing…")
+        case .waitingForNetwork: String(localized: "Not published yet")
         }
     }
 
@@ -36,8 +36,8 @@ nonisolated enum CardLinkStatus: Equatable, Sendable {
     var explanation: String? {
         switch self {
         case .live: nil
-        case .publishing: "Your link appears in a moment, as soon as the card is published."
-        case .waitingForNetwork: "Your card is saved as a draft and will publish when you’re back online."
+        case .publishing: String(localized: "Your link appears in a moment, as soon as the card is published.")
+        case .waitingForNetwork: String(localized: "Your card is saved as a draft and will publish when you’re back online.")
         }
     }
 

@@ -144,7 +144,7 @@ private struct NotificationSettingsForm: View {
         let services = services
         openURL(url) { accepted in
             guard accepted else {
-                router.showToast("Couldn’t Open Telegram", systemImage: "exclamationmark.triangle")
+                router.showToast(String(localized: "Couldn’t Open Telegram"), systemImage: "exclamationmark.triangle")
                 return
             }
             // TODO(backend): wait for the bot to confirm the link (synced `telegramLinked`) instead of assuming it.
@@ -153,7 +153,7 @@ private struct NotificationSettingsForm: View {
                 $0.delivery = .telegramBot
             }
             services.sync.requestSync()
-            router.showToast("Telegram Connected", systemImage: "paperplane.fill")
+            router.showToast(String(localized: "Telegram Connected"), systemImage: "paperplane.fill")
         }
     }
 

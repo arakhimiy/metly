@@ -32,6 +32,6 @@ struct ShareCardHeader: View {
     }
 
     private var subtitle: String {
-        isPaused && status.url != nil ? "\(status.displayText) · Paused" : status.displayText
+        isPaused && status.url != nil ? String(localized: "\(status.displayText) · Paused") : status.displayText
     }
 }

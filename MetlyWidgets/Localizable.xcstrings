@@ -1,0 +1,237 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@" : {
+      "shouldTranslate" : false
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ %3$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ Card" : {},
+    "%@ QR code" : {},
+    "%@ template" : {},
+    "%@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%lld new connections this week" : {},
+    "%lld reminders" : {},
+    "1 new connection this week" : {},
+    "1 reminder" : {},
+    "Add one right after you connect — it takes 2 seconds." : {},
+    "All Caught Up" : {},
+    "Anyone with your link" : {},
+    "Balanced" : {
+      "comment" : "Card density"
+    },
+    "Call" : {
+      "comment" : "Phone call: button and follow-up channel"
+    },
+    "Card" : {},
+    "Card to Share" : {},
+    "Choose %@ and tap a QR Code widget." : {},
+    "Choose Card" : {},
+    "Choose Lock Screen, then tap the area below the time." : {},
+    "Choose which card the widget shows." : {},
+    "Connections" : {
+      "comment" : "Field privacy level: visible to people you've connected with"
+    },
+    "Contact card" : {},
+    "Contact card for %@" : {},
+    "Control Center" : {},
+    "Control · Opens your QR full screen from anywhere." : {},
+    "Create Your Card" : {},
+    "Create a card to show its QR." : {},
+    "Dark" : {
+      "comment" : "Appearance: app or card"
+    },
+    "Default" : {
+      "comment" : "Badge of the default card; also the system card typeface"
+    },
+    "Default card" : {},
+    "Detailed" : {
+      "comment" : "Card density: most contact rows"
+    },
+    "Email" : {},
+    "Follow Up Today" : {},
+    "Follow up" : {},
+    "Follow-up ID" : {},
+    "Follow-ups" : {},
+    "Home Screen" : {},
+    "How to Add" : {},
+    "Light" : {
+      "comment" : "Appearance: app or card"
+    },
+    "Link Paused" : {},
+    "Link paused. Your QR shows an inactive page." : {},
+    "Link to %@" : {},
+    "LinkedIn" : {},
+    "Lock Screen" : {},
+    "Mark %@ done" : {},
+    "Mark Follow-up Done" : {},
+    "Medium widget. Tap a reminder to open it in %@, or tap the circle to mark it done." : {},
+    "Medium · Reminders due today, with a Done button." : {},
+    "Medium · Your card and this week's new connections." : {},
+    "Minimal" : {
+      "comment" : "Card density: fewest contact rows"
+    },
+    "Mono" : {},
+    "My QR" : {},
+    "Next: %@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Next: %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "No Follow-ups Yet" : {},
+    "No new connections this week" : {},
+    "Not published yet" : {},
+    "Nothing due today." : {},
+    "Only you" : {},
+    "Open %@ to make your first card." : {},
+    "Opens the reminder" : {},
+    "Opens your QR code full screen." : {},
+    "Opens your reminders." : {},
+    "Overdue" : {},
+    "PRO" : {},
+    "People you've connected with" : {},
+    "Phone" : {},
+    "Preview of the Card widget" : {},
+    "Preview of the Follow-ups widget" : {},
+    "Preview of the Lock Screen QR widgets" : {},
+    "Preview of the My QR widget" : {},
+    "Preview of the Show My QR control" : {},
+    "Previews show sample details until you create a card. Touch and hold a widget, then tap Edit Widget to choose which card it shows." : {},
+    "Private" : {
+      "comment" : "Field privacy level"
+    },
+    "Public" : {
+      "comment" : "Field privacy level"
+    },
+    "QR Code" : {},
+    "QR code" : {},
+    "QR code for %@" : {},
+    "Rectangular and circular · Scan to connect." : {},
+    "Reminders due today. Tap one to open it." : {},
+    "Requires %@" : {},
+    "Rounded" : {
+      "comment" : "Card typeface; also the rounded-corners image export style"
+    },
+    "Same, with the card you share right now." : {},
+    "Say a phrase to Siri, or find these actions in Shortcuts and Spotlight." : {},
+    "Scan to connect" : {},
+    "Search for %@ and choose Show My QR." : {},
+    "Search for %@, choose My QR, Card or Follow-ups, then tap Add Widget." : {},
+    "Serif" : {},
+    "Show ${card}" : {},
+    "Show My QR" : {},
+    "Show QR" : {},
+    "Show my %@ QR" : {},
+    "Show my card in %@" : {},
+    "Show my follow-ups in %@" : {},
+    "Shows your QR code full screen" : {},
+    "Sign in to %@ to see your follow-ups." : {},
+    "Sign in to show your QR code here." : {},
+    "Sign in to show your QR." : {},
+    "Sign in to show your card here." : {},
+    "Siri & Shortcuts" : {},
+    "Small · Your QR, one tap away." : {},
+    "Someone" : {},
+    "Start an event in %@" : {},
+    "Step %lld: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Step %1$lld: %2$@"
+          }
+        }
+      }
+    },
+    "Swipe down from the top-right corner of the screen." : {},
+    "System" : {
+      "comment" : "App appearance: follow the iOS setting"
+    },
+    "Tags everyone you meet with the event." : {},
+    "Tap Edit, then tap Add Widget." : {},
+    "Telegram" : {},
+    "Today" : {},
+    "Tomorrow" : {},
+    "Touch and hold a widget, then tap Edit Widget to choose which card it shows." : {},
+    "Touch and hold an empty area of your Home Screen until the apps jiggle." : {},
+    "Touch and hold an empty area, then tap Add a Control." : {},
+    "Touch and hold your Lock Screen, then tap Customize." : {},
+    "Undo" : {},
+    "Website" : {},
+    "Widgets" : {},
+    "Yesterday" : {},
+    "You can also put it on the Lock Screen or the Action button." : {},
+    "Your Name" : {},
+    "Your QR on the Lock Screen. Anyone can scan it." : {},
+    "Your QR shows right on the Lock Screen, so people can scan it without you unlocking. Tap it to open it full screen." : {},
+    "Your QR, one tap away." : {},
+    "Your card and this week's new connections. Tap to show your QR." : {},
+    "Your default card, or your event's card" : {},
+    "via Nearby" : {},
+    "via QR" : {},
+    "via Tap" : {},
+    "via paper card" : {},
+    "via web" : {},
+    "“%@”" : {
+      "shouldTranslate" : false
+    }
+  },
+  "version" : "1.0"
+}

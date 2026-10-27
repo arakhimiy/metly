@@ -1,0 +1,1464 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
+    " and " : {},
+    "%@" : {
+      "shouldTranslate" : false
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ %3$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ %@ density shows up to %lld contact lines, so ^[%lld field](inflect: true) won’t fit." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ density shows up to %3$lld contact lines, so ^[%4$lld field](inflect: true) won’t fit."
+          }
+        }
+      }
+    },
+    "%@ Card" : {},
+    "%@ Card Published" : {},
+    "%@ Card Saved" : {},
+    "%@ Copied" : {},
+    "%@ Ended" : {},
+    "%@ Guessed from the card’s layout." : {},
+    "%@ Is a Pro Template" : {},
+    "%@ Privacy" : {},
+    "%@ QR code" : {},
+    "%@ The Free plan has room for %lld more." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ The Free plan has room for %2$lld more."
+          }
+        }
+      }
+    },
+    "%@ The Free plan has room for 1 more." : {},
+    "%@ card" : {},
+    "%@ didn’t respond. Try again later, or add them to People now." : {},
+    "%@ didn’t respond. Try again or show your QR." : {},
+    "%@ field" : {},
+    "%@ has no Telegram username saved." : {},
+    "%@ has no email address saved." : {},
+    "%@ has no phone number saved." : {},
+    "%@ is already in your People." : {},
+    "%@ is your default" : {},
+    "%@ looks at your calendar on this iPhone only to suggest events. Only the event you pick is saved." : {},
+    "%@ never sells your data. Notes you write are only visible to you." : {},
+    "%@ only uses these when you connect or scan. Change them anytime in Settings." : {},
+    "%@ plans couldn’t be loaded from the App Store. Check your connection and try again." : {},
+    "%@ template" : {},
+    "%@ typeface" : {},
+    "%@ wants to connect" : {},
+    "%@ wants to connect with you" : {},
+    "%@ will remind you on %@ at %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ will remind you on %2$@ at %3$@."
+          }
+        }
+      }
+    },
+    "%@ will remind you on %@ at %@. Only you see it." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ will remind you on %2$@ at %3$@. Only you see it."
+          }
+        }
+      }
+    },
+    "%@ will remind you today at %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ will remind you today at %2$@."
+          }
+        }
+      }
+    },
+    "%@ will remind you today at %@. Only you see it." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ will remind you today at %2$@. Only you see it."
+          }
+        }
+      }
+    },
+    "%@ will remind you tomorrow at %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ will remind you tomorrow at %2$@."
+          }
+        }
+      }
+    },
+    "%@ will remind you tomorrow at %@. Only you see it." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ will remind you tomorrow at %2$@. Only you see it."
+          }
+        }
+      }
+    },
+    "%@ will see your request. You’re connected as soon as they accept." : {},
+    "%@ with its link and QR code" : {},
+    "%@ with their links and QR codes" : {},
+    "%@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ · %lld days" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$lld days"
+          }
+        }
+      }
+    },
+    "%@ · 1 day" : {},
+    "%@ · Paused" : {},
+    "%@ · Print-ready" : {},
+    "%@ · Retina" : {},
+    "%@ · ^[%lld new connection](inflect: true)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · ^[%2$lld new connection](inflect: true)"
+          }
+        }
+      }
+    },
+    "%@ · new connections are added automatically" : {},
+    "%@ · notes and follow-ups included" : {},
+    "%@ · via %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · via %2$@"
+          }
+        }
+      }
+    },
+    "%@ × %@ px" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ × %2$@ px"
+          }
+        }
+      }
+    },
+    "%@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@, Default" : {},
+    "%@, not added in Profile yet" : {},
+    "%@. Text contrast meets WCAG AA." : {},
+    "%@’s card" : {},
+    "%lld cards" : {},
+    "%lld fields found" : {},
+    "%lld follow-ups are scheduled." : {},
+    "%lld have notes." : {},
+    "%lld more due today." : {},
+    "%lld new connections this week" : {},
+    "%lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "%lld people" : {},
+    "%lld reminders" : {},
+    "%lld reminders set for tomorrow" : {},
+    "%lld · Unlimited" : {},
+    "%lldd" : {},
+    "%lldh" : {},
+    "%lldm" : {},
+    "%lldmo" : {},
+    "%lldy" : {},
+    "1 Day Later" : {},
+    "1 Week Later" : {},
+    "1 card" : {},
+    "1 follow-up is scheduled." : {},
+    "1 has a note." : {},
+    "1 new connection this week" : {},
+    "1 person" : {},
+    "1 reminder" : {},
+    "1 reminder set for tomorrow" : {},
+    "10 cards up, for a print shop" : {},
+    "3 Days Later" : {},
+    "85 × 55 mm, 3 mm bleed, crop marks" : {},
+    "A minimal layout to build on" : {},
+    "A new event can’t start in the past." : {},
+    "A4 Sheet" : {},
+    "About" : {},
+    "About You" : {},
+    "Accept" : {},
+    "Accept %@’s request" : {},
+    "Accept their request when it appears." : {},
+    "Accepting" : {},
+    "Accepting shares your %@ card." : {},
+    "Account Deleted" : {},
+    "Actions for %@ Card" : {},
+    "Active Follow-ups" : {},
+    "Active event, %@" : {},
+    "Activity" : {},
+    "Add" : {},
+    "Add Context" : {},
+    "Add Note" : {},
+    "Add Notes While You Remember" : {},
+    "Add Note…" : {},
+    "Add Photo" : {},
+    "Add Reminder…" : {},
+    "Add Tag" : {},
+    "Add a name to save." : {},
+    "Add a note while you still remember the conversation. Only you can see it." : {},
+    "Add an event name." : {},
+    "Add one right after you connect — it takes 2 seconds." : {},
+    "Add to Apple Wallet" : {},
+    "Add to Contacts" : {},
+    "Add to People" : {},
+    "Add to People keeps %@ with your notes without sending a request." : {},
+    "Added to Contacts" : {},
+    "Added to Wallet" : {},
+    "Alignment" : {},
+    "Alignment applies to the Minimal, Bold and Gradient templates." : {},
+    "All" : {},
+    "All Caught Up" : {},
+    "All People" : {},
+    "Allow" : {},
+    "Allow Access" : {},
+    "Allow Camera Access" : {},
+    "Allow Local Network access in Settings › %@ to find people nearby. You can still show your QR code." : {},
+    "Allow Notifications" : {},
+    "Allow Photos Access" : {},
+    "Allow camera access in Settings to scan cards. You can still paste a link." : {},
+    "Allow camera access to scan QR codes and paper business cards." : {},
+    "Allow full calendar access in Settings to see your events here." : {},
+    "Allow microphone access in Settings › %@ to add notes by voice." : {},
+    "Allow speech recognition in Settings › %@ to add notes by voice." : {},
+    "Allowed" : {},
+    "Already have an account?" : {},
+    "Always black on a white plate. Logos never go on the code." : {},
+    "Analytics never include your contacts, notes or the people you meet." : {},
+    "And %lld more. Notes stay private — only you can see them." : {},
+    "Anonymous usage that helps improve %@" : {},
+    "Anyone with your link" : {},
+    "Appear in Connect for people around you" : {},
+    "Appearance" : {},
+    "Apple Wallet" : {},
+    "Apple Wallet becomes available once your card is published." : {},
+    "Ask them to open Connect in %@, or show your QR code instead." : {},
+    "Asks for access to your calendar" : {},
+    "Auto" : {},
+    "Balanced" : {
+      "comment" : "Card density"
+    },
+    "Blank Card" : {},
+    "Block" : {},
+    "Block %@" : {},
+    "Block %@?" : {},
+    "Blocked" : {},
+    "Blocked People" : {},
+    "Blocked people can't see your cards or send you connect requests. They aren't told you blocked them." : {},
+    "Both of you need %@ open on the Connect screen." : {},
+    "Brightness Raised" : {},
+    "By continuing you agree to the " : {},
+    "CSV File" : {},
+    "CSV Preview" : {},
+    "Calendar Access Is Off" : {},
+    "Calendar access is restricted on this iPhone." : {},
+    "Call" : {
+      "comment" : "Phone call: button and follow-up channel"
+    },
+    "Call %@" : {},
+    "Calls this number. Touch and hold to copy." : {},
+    "Camera" : {},
+    "Camera Access Needed" : {},
+    "Camera Is Restricted" : {},
+    "Camera Unavailable" : {},
+    "Camera Viewfinder" : {},
+    "Camera access is restricted on this iPhone. You can still paste a link." : {},
+    "Cancel" : {},
+    "Cancel Request" : {},
+    "Cancel Request to %@" : {},
+    "Card" : {},
+    "Card %lld" : {
+      "comment" : "Default card name when every suggestion is taken"
+    },
+    "Card Actions" : {},
+    "Card Appearance" : {},
+    "Card Deleted" : {},
+    "Card Duplicated" : {},
+    "Card Limit Reached" : {},
+    "Card Name" : {},
+    "Card Published" : {},
+    "Card Saved" : {},
+    "Card Settings…" : {},
+    "Card Shared" : {},
+    "Card Unavailable" : {},
+    "Card to Share" : {},
+    "Cards" : {},
+    "Center" : {},
+    "Change Photo" : {},
+    "Change or remove your photo" : {},
+    "Change your plan or cancel in your App Store account." : {},
+    "Changes the person" : {},
+    "Check your connection and try again." : {},
+    "Check your connection. Your card is saved as a draft and will publish when you’re back online." : {},
+    "Check your email — it looks incomplete." : {},
+    "Choose %@ and tap a QR Code widget." : {},
+    "Choose Lock Screen, then tap the area below the time." : {},
+    "Choose Logo…" : {},
+    "Choose Photo…" : {},
+    "Choose a Person" : {},
+    "Choose a card to share first." : {},
+    "Choose a person first" : {},
+    "Choose a photo" : {},
+    "Choose sounds, banners and Lock Screen previews in iOS Settings." : {},
+    "Choose which card people you connect with receive" : {},
+    "Choose who you want to follow up with." : {},
+    "City" : {},
+    "City (optional)" : {},
+    "Client" : {},
+    "Close" : {},
+    "Color" : {},
+    "Company" : {},
+    "Conference" : {
+      "comment" : "Suggested card name"
+    },
+    "Connect" : {},
+    "Connect Nearby" : {},
+    "Connect Requests" : {},
+    "Connect Telegram" : {},
+    "Connect Telegram Bot" : {},
+    "Connect needs the internet to swap cards. Your QR code still works offline." : {},
+    "Connect request" : {},
+    "Connect to see what %@ shares with connections only." : {},
+    "Connect to the internet to see this card." : {},
+    "Connect with %@" : {},
+    "Connect with other %@ users around you. You send your card and get theirs back. To share with someone without the app, use Show My QR." : {},
+    "Connect with people around you" : {},
+    "Connected" : {},
+    "Connected with %@" : {},
+    "Connected · %@" : {},
+    "Connecting with %@…" : {},
+    "Connection Not Found" : {},
+    "Connection Removed" : {},
+    "Connection Saved" : {},
+    "Connections" : {
+      "comment" : "Field privacy level: visible to people you've connected with"
+    },
+    "Contact Card" : {},
+    "Contact Details" : {},
+    "Contact Info" : {},
+    "Contact Saved" : {},
+    "Contact Support" : {},
+    "Contact card" : {},
+    "Contact card for %@" : {},
+    "Contact only · works offline" : {},
+    "Context Saved" : {},
+    "Context Saves Itself" : {},
+    "Continue" : {},
+    "Continue with Google" : {},
+    "Control Center" : {},
+    "Control · Opens your QR full screen from anywhere." : {},
+    "Copied" : {},
+    "Copy" : {},
+    "Copy (card name suffix)" : {
+      "comment" : "Noun appended to a duplicated card name: “Work Copy”",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Copy"
+          }
+        }
+      }
+    },
+    "Copy Link" : {},
+    "Corners" : {},
+    "Couldn’t Add to Wallet" : {},
+    "Couldn’t Connect" : {},
+    "Couldn’t Delete Account" : {},
+    "Couldn’t Load Photo" : {},
+    "Couldn’t Load the Card" : {},
+    "Couldn’t Open Telegram" : {},
+    "Couldn’t Publish Card" : {},
+    "Couldn’t Read This Contact" : {},
+    "Couldn’t Read the Card" : {},
+    "Couldn’t Request Your Data" : {},
+    "Couldn’t Restore Purchases" : {},
+    "Couldn’t Save" : {},
+    "Couldn’t Save Your Profile" : {},
+    "Couldn’t Sign In" : {},
+    "Couldn’t Start Connect" : {},
+    "Couldn’t Use This Image" : {},
+    "Couldn’t create the file. Try again." : {},
+    "Create My First Card" : {},
+    "Create Your Card" : {},
+    "Create Your First Card" : {},
+    "Create a card first — it’s what %@ will get back." : {},
+    "Create a card first — it’s what they will get back." : {},
+    "Create a card first, then accept." : {},
+    "Create a card first, then connect with people nearby." : {},
+    "Create a card to get your QR code." : {},
+    "Create a card to show its QR." : {},
+    "Create your %@" : {},
+    "Create your account to save %@’s card and share yours back. It takes a minute." : {},
+    "Current Plan" : {},
+    "Custom…" : {},
+    "Dark" : {
+      "comment" : "Appearance: app or card"
+    },
+    "Date" : {},
+    "Dates" : {},
+    "Debug builds only. Signs in on the local Tanishly backend; the same name returns to the same account." : {},
+    "Decline" : {},
+    "Decline %@’s Request?" : {},
+    "Decline %@’s request" : {},
+    "Default" : {
+      "comment" : "Badge of the default card; also the system card typeface"
+    },
+    "Default Card" : {},
+    "Default card" : {},
+    "Delete" : {},
+    "Delete Account" : {},
+    "Delete Account?" : {},
+    "Delete Card" : {},
+    "Delete Reminder" : {},
+    "Delete Reminder?" : {},
+    "Delete Your Account?" : {},
+    "Delete “%@” Card?" : {},
+    "Deleting your account doesn’t cancel %@. Cancel it in your App Store subscriptions first." : {},
+    "Deliver Reminders Via" : {},
+    "Density" : {},
+    "Design review you promised at %@." : {},
+    "Detailed" : {
+      "comment" : "Card density: most contact rows"
+    },
+    "Details" : {},
+    "Detected Details" : {},
+    "Device" : {},
+    "Dictate" : {},
+    "Dictate Note" : {},
+    "Dictation on this iPhone isn't available for your language right now. You can still type your note." : {},
+    "Dictation stopped. Try again." : {},
+    "Discard Changes" : {},
+    "Discard Changes?" : {},
+    "Disconnect Telegram" : {},
+    "Discovery" : {},
+    "Dismiss" : {},
+    "Done" : {},
+    "Download My Data" : {},
+    "Download My Data First" : {},
+    "Duplicate Card" : {},
+    "Each card decides what it shows." : {},
+    "Earlier Meetings" : {},
+    "Edit" : {},
+    "Edit Card" : {},
+    "Edit Context" : {},
+    "Edit Design" : {},
+    "Edit Event" : {},
+    "Edit Reminder" : {},
+    "Editorial, Ocean, Ember and more" : {},
+    "Edits the reminder" : {},
+    "Edit…" : {},
+    "Email" : {},
+    "Email %@" : {},
+    "Email Address Copied" : {},
+    "Empty" : {},
+    "End %@ first, or upgrade to run several events at once." : {},
+    "End %@?" : {},
+    "End Event" : {},
+    "Ended" : {},
+    "Ended %@" : {},
+    "Ends" : {},
+    "Enter Manually" : {},
+    "Event" : {},
+    "Event Not Found" : {},
+    "Event Resumed" : {},
+    "Event Started" : {},
+    "Event Summary" : {},
+    "Event Updated" : {},
+    "Event name" : {},
+    "Event · 2d ago" : {},
+    "Event, place and time are added the moment you connect. Add a note by voice." : {},
+    "Event: %@" : {},
+    "Events" : {},
+    "Every connection, note and follow-up" : {},
+    "Every template and palette" : {},
+    "Everyone you connect with is added to this event — by QR, Nearby, Tap Phones, your web page or a paper card. It ends by itself after the last day and shows you a summary." : {},
+    "Everyone you meet is tagged automatically" : {},
+    "Example notification: Follow up with %@. Design review you promised at %@. Choices: Tomorrow, In 3 Days, Next Week." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Example notification: Follow up with %1$@. Design review you promised at %2$@. Choices: Tomorrow, In 3 Days, Next Week."
+          }
+        }
+      }
+    },
+    "Example: %@, met at %@, %@, today. Voice note: wants a design review next week." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Example: %1$@, met at %2$@, %3$@, today. Voice note: wants a design review next week."
+          }
+        }
+      }
+    },
+    "Expires" : {},
+    "Export" : {},
+    "Export %lld Contacts" : {},
+    "Export 1 Contact" : {},
+    "Export Your Events" : {},
+    "Export events to CSV" : {},
+    "Export to CSV" : {},
+    "Exporting events is part of %@." : {},
+    "Exports show only your Public details." : {},
+    "Export…" : {},
+    "Fields" : {},
+    "Filled in automatically" : {},
+    "Filled in automatically. Tap a field to change it." : {},
+    "Fills in the event details" : {},
+    "Filter" : {},
+    "Find Me by Email" : {},
+    "Finding where you are…" : {},
+    "Fit the business card inside the frame" : {},
+    "Flashlight" : {},
+    "Follow Up" : {},
+    "Follow Up Today" : {},
+    "Follow Up on Time" : {},
+    "Follow Up with Everyone I Haven’t Yet (%lld)" : {},
+    "Follow up" : {},
+    "Follow up from %@" : {},
+    "Follow up with %@" : {},
+    "Follow-up" : {},
+    "Follow-up %@" : {},
+    "Follow-up Limit Reached" : {},
+    "Follow-up Reminders" : {},
+    "Follow-up Reminders Are Off" : {},
+    "Follow-up done" : {},
+    "Follow-up overdue" : {},
+    "Follow-ups" : {},
+    "Format" : {},
+    "Free" : {},
+    "Free: 1 active event" : {},
+    "Free: 2 cards" : {},
+    "Free: 5 active" : {},
+    "Friend" : {},
+    "From %@" : {},
+    "From Your Calendar" : {},
+    "Full Name" : {},
+    "Full name" : {},
+    "Full rectangle, for print and slides" : {},
+    "Gently tap the tops of your iPhones together." : {},
+    "Get Started" : {},
+    "Get reminded to follow up on time and hear about connect requests." : {},
+    "Google couldn’t confirm your account. Try again." : {},
+    "Google sign-in didn’t finish securely. Try again." : {},
+    "Google sign-in didn’t finish. Try again." : {},
+    "Google sign-in isn’t available in this version. Continue with Apple instead." : {},
+    "Gradient Background" : {},
+    "Guessed from the card’s layout. Check it." : {},
+    "Help" : {},
+    "Help & Support" : {},
+    "Help Center" : {},
+    "Here’s my card" : {},
+    "Hi there" : {},
+    "Hi, %@" : {},
+    "Hide" : {},
+    "Hide Done" : {},
+    "Hiring" : {},
+    "Hold Phones Together" : {},
+    "Hold the card flat in good light, or type the details yourself." : {},
+    "Hold the top of your iPhone near theirs. %@ needs to be open on both phones." : {},
+    "Home" : {},
+    "Home Screen" : {},
+    "How do you want to start?" : {},
+    "How to Add" : {},
+    "If they share their contact from your page later, %@ asks before merging the two." : {},
+    "If you cancel, you keep Pro until the end of this billing period. Cards beyond two become read-only after that." : {},
+    "Image" : {},
+    "Image is larger than %lld bytes." : {},
+    "In 3 Days" : {},
+    "In Progress" : {},
+    "Included" : {},
+    "Incoming Request" : {},
+    "Investor" : {},
+    "Is this who you met at %@?" : {},
+    "It may have been deleted on another device." : {},
+    "It may have been removed on another device." : {},
+    "It takes a minute. You can make your first card right after." : {},
+    "Its link and QR code will stop working. People you’ve connected with keep your details." : {},
+    "Job Title" : {},
+    "Keep Editing" : {},
+    "Keeps the request in People" : {},
+    "Know when someone wants to connect" : {},
+    "Later" : {},
+    "Leading" : {},
+    "Leave empty to show the card you share right now." : {},
+    "Light" : {
+      "comment" : "Appearance: app or card"
+    },
+    "Link" : {},
+    "Link Copied" : {},
+    "Link Paused" : {},
+    "Link paused. Your QR shows an inactive page." : {},
+    "Link sent to your email" : {},
+    "Link to %@" : {},
+    "LinkedIn" : {},
+    "Links Paused" : {},
+    "Links Resumed" : {},
+    "Listening… tap the mic to stop" : {},
+    "Loading Card…" : {},
+    "Loading people" : {},
+    "Local Network Access Needed" : {},
+    "Lock Screen" : {},
+    "Logo" : {},
+    "Looking for People Nearby" : {},
+    "Mail" : {},
+    "Manage Subscription" : {},
+    "Mark %@ done" : {},
+    "Mark as Not Done" : {},
+    "Marked Done" : {},
+    "Media" : {},
+    "Medium widget. Tap a reminder to open it in %@, or tap the circle to mark it done." : {},
+    "Medium · Reminders due today, with a Done button." : {},
+    "Medium · Your card and this week's new connections." : {},
+    "Meeting" : {},
+    "Merge" : {},
+    "Merged" : {},
+    "Merged with your QR note" : {},
+    "Merging keeps your note and adds the contact details they shared." : {},
+    "Message" : {},
+    "Message %@" : {},
+    "Message %@ on Telegram" : {},
+    "Met" : {},
+    "Met %@" : {},
+    "Met At" : {
+      "comment" : "When you met the person"
+    },
+    "Microphone Is Off" : {},
+    "Minimal" : {
+      "comment" : "Card density: fewest contact rows"
+    },
+    "Mode" : {},
+    "Mono" : {},
+    "Monthly" : {},
+    "Move Down" : {},
+    "Move Up" : {},
+    "Moved Back" : {},
+    "My Cards" : {},
+    "My QR" : {},
+    "Name" : {},
+    "Name and email came from your Apple ID. Each card decides what it shows." : {},
+    "Name and email came from your Google account. Each card decides what it shows." : {},
+    "Nearby" : {},
+    "Nearby Devices" : {},
+    "Nearby Interactions are off for %@. Tapping still works, but turning them on makes it more reliable." : {},
+    "Nearby on %@" : {},
+    "Needs a published card and an internet connection." : {},
+    "Never Forget Someone You Meet" : {},
+    "New Card" : {},
+    "New Reminder" : {},
+    "New connections and card views" : {},
+    "New connections are added to this event" : {},
+    "New connections won’t be added to it. You’ll get a summary." : {},
+    "Next Week" : {},
+    "Next: %@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Next: %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "Nine layouts, ready for your details" : {},
+    "No Blocked People" : {},
+    "No Business Card Found" : {},
+    "No Card to Show" : {},
+    "No Connections Yet" : {},
+    "No Events Yet" : {},
+    "No Follow-ups Yet" : {},
+    "No Note Yet" : {},
+    "No One Added" : {},
+    "No One Nearby Yet" : {},
+    "No One Yet" : {},
+    "No One to Export" : {},
+    "No Profile" : {},
+    "No Tags" : {},
+    "No card yet" : {},
+    "No cards yet" : {},
+    "No follow-up" : {},
+    "No follow-ups are scheduled." : {},
+    "No follow-ups yet. Add one right after you connect — it takes 2 seconds." : {},
+    "No new connections this week" : {},
+    "No note yet" : {},
+    "No purchases to restore" : {},
+    "Nobody was added to this event." : {},
+    "None" : {},
+    "None have notes yet." : {},
+    "Not Now" : {},
+    "Not Them" : {},
+    "Not added in Profile" : {},
+    "Not connected" : {},
+    "Not published" : {},
+    "Not published yet" : {},
+    "Note" : {},
+    "Nothing due today." : {},
+    "Nothing due today. %lld coming up." : {},
+    "Nothing on your calendar for the next two weeks." : {},
+    "Notification Settings" : {},
+    "Notifications" : {},
+    "Notifications Are Off" : {},
+    "Notifications are turned off for %@ in iOS Settings. You won’t hear about connect requests or follow-ups." : {},
+    "Now" : {},
+    "OK" : {},
+    "Off" : {},
+    "Offline QR" : {},
+    "On" : {},
+    "On the day you picked, with the reason" : {},
+    "One Active Event on Free" : {},
+    "Only You" : {},
+    "Only people with Connect open and Show in Nearby on appear here." : {},
+    "Only you" : {},
+    "Only you can see this. Audio isn't stored." : {},
+    "Only you see your reminders. The other person is never notified." : {},
+    "Open" : {},
+    "Open %@" : {},
+    "Open %@ and tap Start. Reminders arrive in the chat with a link to reply." : {},
+    "Open %@ to make your first card." : {},
+    "Open Connect" : {},
+    "Open Follow-ups" : {},
+    "Open Mail" : {},
+    "Open Person" : {},
+    "Open Settings" : {},
+    "Open Telegram" : {},
+    "Open iOS Settings" : {},
+    "Open iOS Settings › %@ to allow %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open iOS Settings › %1$@ to allow %2$@."
+          }
+        }
+      }
+    },
+    "Open iOS Settings › %@ to allow location access." : {},
+    "Open iOS Settings › %@ › Photos and choose Add Photos Only to save your card." : {},
+    "Open in People" : {},
+    "Open in Safari" : {},
+    "Opening %@" : {},
+    "Opening Safari" : {},
+    "Opens Add Context" : {},
+    "Opens Telegram. Touch and hold to copy." : {},
+    "Opens a Tanishly card link from the clipboard" : {},
+    "Opens in Numbers, Excel and other spreadsheet apps." : {},
+    "Opens the event" : {},
+    "Opens the page. Touch and hold to copy." : {},
+    "Opens the reminder" : {},
+    "Opens your QR code full screen so someone can scan it." : {},
+    "Opens your QR code full screen." : {},
+    "Opens your reminders." : {},
+    "Opens your requests in People" : {},
+    "Order" : {},
+    "Order on Home. Tap Edit to drag cards into a new order." : {},
+    "Other" : {},
+    "Overdue" : {},
+    "PDF" : {},
+    "PRO" : {},
+    "Page" : {},
+    "Palette" : {},
+    "Paper Card" : {},
+    "Partner" : {},
+    "Pass" : {},
+    "Pause All Links" : {},
+    "Paused links show an inactive page. Printed QR codes work again when you resume." : {},
+    "Payment is charged to your Apple ID. Your subscription renews automatically until canceled. Cancel anytime in Settings at least 24 hours before renewal." : {},
+    "People" : {},
+    "People You Met" : {},
+    "People who scan it see an inactive page." : {},
+    "People with your email can send a connect request" : {},
+    "People you block can't see your cards. You can block someone from their page in People." : {},
+    "People you connect with get your %@ card, and you get theirs." : {},
+    "People you connect with show up here. Open Connect at your next event." : {},
+    "People you connect with while this event is active are added here automatically." : {},
+    "People you meet at this event will appear here." : {},
+    "People you've connected with" : {},
+    "Person" : {},
+    "Personal" : {
+      "comment" : "Suggested card name"
+    },
+    "Phone" : {},
+    "Photo" : {},
+    "Photo of the business card" : {},
+    "Pick a Date…" : {},
+    "Pick a conference or meetup to fill in the name, place and dates." : {},
+    "Pick a day in one tap. %@ reminds you why, so you know what to say." : {},
+    "Pick a day. %@ reminds you with your note." : {},
+    "Pick a layout. Your details fill it in." : {},
+    "Pick another card as default" : {},
+    "Place" : {},
+    "Placeholder Name" : {},
+    "Places" : {},
+    "Plan" : {},
+    "Plans Unavailable" : {},
+    "Point at a Tanishly or vCard QR code" : {},
+    "Preview" : {},
+    "Preview Public Page" : {},
+    "Preview of the Card widget" : {},
+    "Preview of the Follow-ups widget" : {},
+    "Preview of the Lock Screen QR widgets" : {},
+    "Preview of the My QR widget" : {},
+    "Preview of the Show My QR control" : {},
+    "Previews show sample details until you create a card. Touch and hold a widget, then tap Edit Widget to choose which card it shows." : {},
+    "Privacy" : {},
+    "Privacy & Data" : {},
+    "Privacy Policy" : {},
+    "Private" : {
+      "comment" : "Field privacy level"
+    },
+    "Private Note" : {},
+    "Private notes are included only in your export. Nothing is sent to the people you met." : {},
+    "Private — hidden from all cards" : {},
+    "Private, hidden from all cards" : {},
+    "Pro" : {},
+    "Pro · %@" : {},
+    "Product Designer · Company" : {},
+    "Product News" : {},
+    "Profile" : {},
+    "Profile Photo" : {},
+    "Progress" : {},
+    "Public" : {
+      "comment" : "Field privacy level"
+    },
+    "Public: anyone with your link. Connections: people you’ve connected with. Private: only you — it never appears on a card." : {},
+    "Publish Card" : {},
+    "Publishes when you’re back online" : {},
+    "Publishes your %@ card" : {},
+    "Publishing" : {},
+    "Publishing…" : {},
+    "Purchase Failed" : {},
+    "Purchases Restored" : {},
+    "Push Notifications" : {},
+    "QR Code" : {},
+    "QR code" : {},
+    "QR code for %@" : {},
+    "QR on the pass, updates when you edit" : {},
+    "Rate %@" : {},
+    "Read on your iPhone. Check the details before saving." : {},
+    "Read-Only Card" : {},
+    "Read-only" : {},
+    "Reading the card…" : {},
+    "Reads the business card inside the frame" : {},
+    "Recent" : {},
+    "Rectangular and circular · Scan to connect." : {},
+    "Remember everyone you meet and follow up on time." : {},
+    "Reminder" : {},
+    "Reminder Deleted" : {},
+    "Reminder Not Found" : {},
+    "Reminder Set" : {},
+    "Reminder Updated" : {},
+    "Reminder set for %@ at %@. Pick a day to reschedule." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Reminder set for %1$@ at %2$@. Pick a day to reschedule."
+          }
+        }
+      }
+    },
+    "Reminder: %@" : {},
+    "Reminders" : {},
+    "Remove" : {},
+    "Remove %@?" : {},
+    "Remove Connection" : {},
+    "Remove Logo" : {},
+    "Remove Photo" : {},
+    "Renews" : {},
+    "Reply Via" : {},
+    "Request Declined" : {},
+    "Request Sent" : {},
+    "Requests" : {},
+    "Required" : {},
+    "Requires %@" : {},
+    "Resolution" : {},
+    "Restore Purchases" : {},
+    "Resume Event" : {},
+    "Resume Links" : {},
+    "Resume to keep adding new connections to this event." : {},
+    "Retake" : {},
+    "Retake Photo" : {},
+    "Rounded" : {
+      "comment" : "Card typeface; also the rounded-corners image export style"
+    },
+    "Run Several Events" : {},
+    "Same, with the card you share right now." : {},
+    "Save" : {},
+    "Save %@ to Contacts" : {},
+    "Save %lld%% with yearly — just %@ a month" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Save %1$lld%% with yearly — just %2$@ a month"
+          }
+        }
+      }
+    },
+    "Save Image or PDF" : {},
+    "Save Wallpaper" : {},
+    "Save to Contacts" : {},
+    "Save to Files" : {},
+    "Save to Photos" : {},
+    "Saved" : {},
+    "Saved %@" : {},
+    "Saved to Files" : {},
+    "Saved to Photos" : {},
+    "Saved · Reminder Set" : {},
+    "Say a phrase to Siri, or find these actions in Shortcuts and Spotlight." : {},
+    "Scan" : {},
+    "Scan Business Cards" : {},
+    "Scan Card" : {},
+    "Scan Mode" : {},
+    "Scan a Card" : {},
+    "Scan other people’s cards" : {},
+    "Scan someone's card or open Connect. Your notes about them stay private." : {},
+    "Scan to connect" : {},
+    "Scan with the camera — no app needed" : {},
+    "Scanned Card" : {},
+    "Search" : {},
+    "Search for %@ and choose Show My QR." : {},
+    "Search for %@, choose My QR, Card or Follow-ups, then tap Add Widget." : {},
+    "See %@" : {},
+    "See All" : {},
+    "See Pro" : {},
+    "Send deck" : {},
+    "Sending your card…" : {},
+    "Sending…" : {},
+    "Sends %@ a request to swap cards" : {},
+    "Sends your card and asks for theirs" : {},
+    "Serif" : {},
+    "Set as Default" : {},
+    "Sets a reminder for tomorrow at 10:00 for each person without one." : {},
+    "Several events at once" : {},
+    "Share" : {},
+    "Share Card" : {},
+    "Share Link…" : {},
+    "Share Now" : {},
+    "Share Usage Analytics" : {},
+    "Share your card, remember where you met, and follow up on time." : {},
+    "Shared via your web page" : {},
+    "Share…" : {},
+    "Sharing" : {},
+    "Show" : {},
+    "Show Done" : {},
+    "Show Me in Nearby" : {},
+    "Show My QR" : {},
+    "Show My QR Code" : {},
+    "Show QR" : {},
+    "Show QR Code" : {},
+    "Show QR for ${card}" : {},
+    "Show my %@ QR" : {},
+    "Show my card in %@" : {},
+    "Show my follow-ups in %@" : {},
+    "Show on Card" : {},
+    "Show on This Card" : {},
+    "Showing %lld of %lld rows." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Showing %1$lld of %2$lld rows."
+          }
+        }
+      }
+    },
+    "Shows actions for this card" : {},
+    "Shows on Modern, Split and Stack. Your photo is shared by all your cards." : {},
+    "Shows on Professional. Your logo is shared by all your cards." : {},
+    "Shows the QR code" : {},
+    "Shows up to %lld contact lines." : {},
+    "Shows your QR code full screen" : {},
+    "Shows your QR code. Touch and hold for card actions." : {},
+    "Shows your follow-up reminders." : {},
+    "Sign In" : {},
+    "Sign In with Google" : {},
+    "Sign Out" : {},
+    "Sign Out?" : {},
+    "Sign in again to sync your changes." : {},
+    "Sign in as a test user" : {},
+    "Sign in didn't return an identity token. Try again." : {},
+    "Sign in to %@ to see your follow-ups." : {},
+    "Sign in to show your QR code here." : {},
+    "Sign in to show your QR." : {},
+    "Sign in to show your card here." : {},
+    "Sign in with Apple didn’t finish. Try again." : {},
+    "Sign in with the account you used before. Your cards and people sync automatically." : {},
+    "Sign out and sign in again to set up your profile." : {},
+    "Signed in as %@" : {},
+    "Signing In" : {},
+    "Signing In…" : {},
+    "Simulate" : {},
+    "Simulate Tap" : {},
+    "Single Card" : {},
+    "Siri & Shortcuts" : {},
+    "Skip" : {},
+    "Small · Your QR, one tap away." : {},
+    "Snooze" : {},
+    "Snooze %@" : {},
+    "Snooze 1 Day" : {},
+    "Snoozed to %@" : {},
+    "Someone" : {},
+    "Someone You Met" : {
+      "comment" : "Name for a person saved without a name"
+    },
+    "Someone at %@" : {
+      "comment" : "Name for a person saved without a name; %@ is the event"
+    },
+    "Someone with the same phone, email or Telegram is already in your People." : {},
+    "Something went wrong on our side. Try again later." : {},
+    "Speech Recognition Is Off" : {},
+    "Square" : {},
+    "Start" : {},
+    "Start Event" : {},
+    "Start an event from Home. Everyone you meet there is grouped together." : {},
+    "Start an event in %@" : {},
+    "Start from a Template" : {},
+    "Starts" : {},
+    "Starts event mode so everyone you meet is added to the event." : {},
+    "Stay within a few meters of each other." : {},
+    "Step %lld: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Step %1$lld: %2$@"
+          }
+        }
+      }
+    },
+    "Stop" : {},
+    "Stop Dictation" : {},
+    "Style" : {},
+    "Subscription" : {},
+    "Subscriptions are billed through your Apple ID. Cancel at least 24 hours before renewal." : {},
+    "Suggest Events From Calendar" : {},
+    "Summaries arrive quietly, without sound." : {},
+    "Swipe down from the top-right corner of the screen." : {},
+    "Swipe left or touch and hold a person for more actions." : {},
+    "Swipe right on a reminder to mark it done, or left to snooze it." : {},
+    "System" : {
+      "comment" : "App appearance: follow the iOS setting"
+    },
+    "Tag" : {},
+    "Tags" : {},
+    "Tags everyone you meet with the event." : {},
+    "Tags help you find people later." : {},
+    "Tags: %@" : {},
+    "Take Photo" : {},
+    "Take every connection, note and follow-up with you as a CSV file." : {},
+    "Tap Edit, then tap Add Widget." : {},
+    "Tap Phones" : {},
+    "Tap Phones Isn’t Available" : {},
+    "Tap a day to reschedule." : {},
+    "Telegram" : {},
+    "Telegram Bot" : {},
+    "Telegram Connected" : {},
+    "Telegram Username" : {},
+    "Template" : {},
+    "Templates" : {},
+    "Terms" : {},
+    "Terms of Service" : {},
+    "Terms of Use" : {},
+    "Test user" : {},
+    "That’s Your Card" : {},
+    "The %@ template doesn’t show a logo." : {},
+    "The %@ template doesn’t show a photo." : {},
+    "The App Store couldn’t verify this purchase. Try Restore Purchases, or contact support if this keeps happening." : {},
+    "The Free plan includes 1 active event. Upgrade to run several at once, each with its own summary." : {},
+    "The Free plan includes 2 cards, so this one can’t be edited. Upgrade to edit it again." : {},
+    "The Free plan includes 2 cards. Delete one, or upgrade to %@ for unlimited cards." : {},
+    "The Free plan includes 2 cards. Upgrade for a card for every side of your work." : {},
+    "The Free plan includes 2 cards. Upgrade to %@ to duplicate this one." : {},
+    "The Free plan includes 5 active reminders. Upgrade and never lose track of a promise." : {},
+    "The Free plan includes 5 active reminders. You have %lld. Mark one done, or upgrade for unlimited reminders." : {},
+    "The Gradient template is always gradient." : {},
+    "The QR code holds a contact card without a name or contact details." : {},
+    "The QR keeps a 4-module quiet zone and error correction level M in every format." : {},
+    "The bot sends each reminder with a one-tap link to the chat." : {},
+    "The copied text isn’t a %@ card link. Copy a link like %@/c/… and try again." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The copied text isn’t a %1$@ card link. Copy a link like %2$@/c/… and try again."
+          }
+        }
+      }
+    },
+    "The event also ends by itself after the last day." : {},
+    "The event can’t end before it starts." : {},
+    "The event ends by itself after the last day, so pick today or later." : {},
+    "The export couldn’t be created. Try again." : {},
+    "The image couldn’t be saved to Photos. Try again." : {},
+    "The pass couldn’t be read. Try again in a moment." : {},
+    "The request was cancelled." : {},
+    "The server sent an unexpected response." : {},
+    "The server took too long to respond. Try again." : {},
+    "Their %@ Card" : {},
+    "Their Name" : {},
+    "Their name (optional)" : {},
+    "They won’t be notified." : {},
+    "This Card" : {},
+    "This QR code isn’t a %@ or vCard code." : {},
+    "This QR code opens %@. It isn’t a %@ or vCard code." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This QR code opens %1$@. It isn’t a %2$@ or vCard code."
+          }
+        }
+      }
+    },
+    "This Week" : {},
+    "This can’t be undone." : {},
+    "This card is read-only on the Free plan." : {},
+    "This card isn’t available right now. The link may be paused or removed — ask the person for a new one." : {},
+    "This card no longer exists." : {},
+    "This card was deleted." : {},
+    "This device can't scan with a camera. You can still paste a link." : {},
+    "This device can’t add passes to Apple Wallet." : {},
+    "This event may have been removed." : {},
+    "This fills in your cards. You can change it anytime." : {},
+    "This iPhone can’t tell when another phone is held close. Use Nearby to find the person instead." : {},
+    "This is your card." : {},
+    "This link opens %@. It isn’t a %@ card link." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This link opens %1$@. It isn’t a %2$@ card link."
+          }
+        }
+      }
+    },
+    "This permanently deletes your profile, %@, and your notes on %@. Printed QR codes will show an inactive page." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This permanently deletes your profile, %1$@, and your notes on %2$@. Printed QR codes will show an inactive page."
+          }
+        }
+      }
+    },
+    "This person may have been removed." : {},
+    "This request has expired" : {},
+    "This request is no longer available." : {},
+    "This template sets its own typeface." : {},
+    "This time has already passed. Pick a later time to be reminded." : {},
+    "Time" : {},
+    "Tips. %@" : {},
+    "Title" : {
+      "comment" : "Job title"
+    },
+    "To Do" : {},
+    "Today" : {},
+    "Today, %@" : {},
+    "Tomorrow" : {},
+    "Too many requests. Wait a moment and try again." : {},
+    "Touch and hold a widget, then tap Edit Widget to choose which card it shows." : {},
+    "Touch and hold an empty area of your Home Screen until the apps jiggle." : {},
+    "Touch and hold an empty area, then tap Add a Control." : {},
+    "Touch and hold to copy" : {},
+    "Touch and hold your Lock Screen, then tap Customize." : {},
+    "Transparent corners, like the card in the app" : {},
+    "Try Again" : {},
+    "Try a different photo." : {},
+    "Try again in a moment." : {},
+    "Turn On Notifications" : {},
+    "Turn On Show in Nearby" : {},
+    "Turn On in Settings" : {},
+    "Turn on notifications for %@ in iOS Settings so you’re reminded on time." : {},
+    "Turned off. Opens iOS Settings to allow access." : {},
+    "Two sample business cards with a QR code" : {},
+    "Type" : {},
+    "Typeface" : {},
+    "Unblock" : {},
+    "Unblock %@" : {},
+    "Unblock %@ in Profile › Privacy & Data › Blocked People to connect." : {},
+    "Unblocked %@" : {},
+    "Undo" : {},
+    "Unlimited Cards" : {},
+    "Unlimited Follow-ups" : {},
+    "Unlimited cards" : {},
+    "Unlimited cards, follow-ups and events, every template and palette, and event export to CSV." : {},
+    "Unlimited follow-up reminders" : {},
+    "Unlock Editorial" : {},
+    "Unlock Every Palette" : {},
+    "Upgrade" : {},
+    "Upgrade to %@" : {},
+    "Upgrade to %@ to use Editorial and every palette." : {},
+    "Upgrade to Export" : {},
+    "Upgrade to use Ocean, Ember and the Editorial template." : {},
+    "Upgrade to use the Editorial template and every palette." : {},
+    "Use Current Location" : {},
+    "Use Nearby" : {},
+    "Used for Connect, events and widgets." : {},
+    "Used for Connect, your QR code and sharing until the event ends." : {},
+    "Values come from your profile. Change privacy there." : {},
+    "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with." : {},
+    "View" : {},
+    "Viewed %lld times, saved %lld times, shared back %lld times" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Viewed %1$lld times, saved %2$lld times, shared back %3$lld times"
+          }
+        }
+      }
+    },
+    "Viewed %lld · Saved %lld · Shared back %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Viewed %1$lld · Saved %2$lld · Shared back %3$lld"
+          }
+        }
+      }
+    },
+    "Voice Notes Unavailable" : {},
+    "Waiting for %@ to accept" : {},
+    "Waiting for %@…" : {},
+    "Waiting for Approval" : {},
+    "Waiting…" : {},
+    "Wallet" : {},
+    "Wallet passes need the server. Try again when you’re online." : {},
+    "Wallpaper Saved" : {},
+    "Wants a design review next week." : {},
+    "Website" : {},
+    "Weekly Summary" : {},
+    "Welcome Back" : {},
+    "Welcome to %@" : {},
+    "What did you talk about?" : {},
+    "When" : {},
+    "When an event ends: who you met and what’s left" : {},
+    "When someone adds you to Contacts" : {},
+    "When someone nearby wants your card" : {},
+    "Where You Met" : {},
+    "Where is it?" : {},
+    "Where?" : {},
+    "Who Can See Your %@" : {},
+    "Who Did You Just Meet?" : {},
+    "Who did you just meet?" : {},
+    "Widgets" : {},
+    "With Notes" : {},
+    "With both off, only people you share your link or QR code with can reach you." : {},
+    "Wi‑Fi and Bluetooth should be turned on." : {},
+    "Work" : {
+      "comment" : "Suggested card name"
+    },
+    "Works without internet. Contact only, no analytics or Connect." : {},
+    "Writes an email. Touch and hold to copy." : {},
+    "Yearly" : {},
+    "Yesterday" : {},
+    "You and %@ are connected. Add context while it’s fresh." : {},
+    "You can also put it on the Lock Screen or the Action button." : {},
+    "You can change everything later in the editor." : {},
+    "You can sign back in with Apple or Google." : {},
+    "You didn’t add anyone at this event." : {},
+    "You met %@ at %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "You met %1$@ at %2$@."
+          }
+        }
+      }
+    },
+    "You met %@." : {},
+    "You met %lld people." : {},
+    "You met 1 person." : {},
+    "You need at least one card" : {},
+    "You shared your %@ card with %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "You shared your %1$@ card with %2$@."
+          }
+        }
+      }
+    },
+    "You won’t be notified when a follow-up is due." : {},
+    "You won’t be reminded to follow up with %@." : {},
+    "You're offline. Check your connection and try again." : {},
+    "You're offline. Your QR code still works." : {},
+    "Your %@ card and %@’s card" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your %1$@ card and %2$@’s card"
+          }
+        }
+      }
+    },
+    "Your Card Is Live" : {},
+    "Your Card Is Ready" : {},
+    "Your Data" : {},
+    "Your Name" : {},
+    "Your QR note + their web share-back" : {},
+    "Your QR shows right on the Lock Screen, so people can scan it without you unlocking. Tap it to open it full screen." : {},
+    "Your card is saved as a draft and will publish when you’re back online." : {},
+    "Your card isn’t published yet, so the QR shares your contact details." : {},
+    "Your card isn’t published yet, so the QR shares your contact details. Export again once it’s published to use your link." : {},
+    "Your cards will look like they don’t exist to them." : {},
+    "Your changes to this card won’t be saved." : {},
+    "Your default card is used for Connect, events and widgets." : {},
+    "Your default card, or your event's card" : {},
+    "Your details fill every layout. You can switch any time." : {},
+    "Your link appears in a moment, as soon as the card is published." : {},
+    "Your links are paused, so this page shows as unavailable until you resume them." : {},
+    "Your name is required. It appears on every card." : {},
+    "Your name, title and company appear on every card." : {},
+    "Your note will be deleted. They keep the card you shared." : {},
+    "Your note: “%@”" : {},
+    "Your public page appears once your default card is published." : {},
+    "Your session has expired. Sign in again." : {},
+    "Your subscription won’t renew. You keep Pro until %@. Cards beyond two become read-only after that." : {},
+    "You’ll get an email with a copy of everything." : {},
+    "You’ll share your %@ card." : {},
+    "You’re Connected" : {},
+    "You’re Hidden from Nearby" : {},
+    "You’re Offline" : {},
+    "You’re offline, so %@ was saved to People. Connect again when you’re back online." : {},
+    "You’re offline. Connect to the internet and try again." : {},
+    "You’re using every active reminder the Free plan includes." : {},
+    "You’ve blocked %@." : {},
+    "^[%lld field](inflect: true) found" : {},
+    "^[%lld new connection](inflect: true)" : {},
+    "^[%lld person](inflect: true) · ^[%lld note](inflect: true) · ^[%lld follow-up](inflect: true)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "^[%1$lld person](inflect: true) · ^[%2$lld note](inflect: true) · ^[%3$lld follow-up](inflect: true)"
+          }
+        }
+      }
+    },
+    "^[%lld reminder](inflect: true)" : {},
+    "e.g. Work" : {},
+    "now" : {},
+    "on %@" : {
+      "comment" : "Fragment: “… will remind you on Tue, Sep 29”"
+    },
+    "today" : {
+      "comment" : "Fragment: “… will remind you today”"
+    },
+    "tomorrow" : {
+      "comment" : "Fragment: “… will remind you tomorrow”"
+    },
+    "via %@" : {},
+    "via Nearby" : {},
+    "via QR" : {},
+    "via Tap" : {},
+    "via paper card" : {},
+    "via web" : {},
+    "wants to connect with you" : {
+      "comment" : "Shown on its own line under the person's name"
+    },
+    "“%@”" : {
+      "shouldTranslate" : false
+    },
+    "“Show in Nearby” is off, so people around you can’t find you. Turn it on to swap cards, or show your QR code instead." : {}
+  },
+  "version" : "1.0"
+}

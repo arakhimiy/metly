@@ -6,7 +6,7 @@ enum EventCSVColumn: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// Header cell (also the toggle title).
+    /// Header cell of the file — stays English so spreadsheets and CRMs can map the columns.
     var header: String {
         switch self {
         case .name: "Name"
@@ -23,6 +23,26 @@ enum EventCSVColumn: String, CaseIterable, Identifiable, Sendable {
         case .note: "Note"
         case .tags: "Tags"
         case .followUp: "Follow-up"
+        }
+    }
+
+    /// Toggle title on the export screen.
+    var title: String {
+        switch self {
+        case .name: String(localized: "Name")
+        case .jobTitle: String(localized: "Title", comment: "Job title")
+        case .company: String(localized: "Company")
+        case .phone: String(localized: "Phone")
+        case .email: String(localized: "Email")
+        case .telegram: String(localized: "Telegram")
+        case .website: String(localized: "Website")
+        case .linkedin: String(localized: "LinkedIn")
+        case .event: String(localized: "Event")
+        case .metAt: String(localized: "Met At", comment: "When you met the person")
+        case .place: String(localized: "Place")
+        case .note: String(localized: "Note")
+        case .tags: String(localized: "Tags")
+        case .followUp: String(localized: "Follow-up")
         }
     }
 

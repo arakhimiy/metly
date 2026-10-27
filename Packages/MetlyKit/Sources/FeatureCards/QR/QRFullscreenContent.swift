@@ -61,8 +61,8 @@ struct QRFullscreenContent: View {
 
             OfflineQRToggle(isOn: offlineBinding(mode: mode), isEnabled: card.url != nil,
                             footnote: card.url == nil
-                                ? "Your card isn’t published yet, so the QR shares your contact details."
-                                : "Works without internet. Contact only, no analytics or Connect.")
+                                ? String(localized: "Your card isn’t published yet, so the QR shares your contact details.")
+                                : String(localized: "Works without internet. Contact only, no analytics or Connect."))
                 .frame(maxWidth: 480)
         }
         .padding(.horizontal, 20)

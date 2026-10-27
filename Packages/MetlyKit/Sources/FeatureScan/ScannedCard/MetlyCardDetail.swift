@@ -122,6 +122,6 @@ struct MetlyCardDetail: View {
     }
 
     private func contactSaved(_ saved: Bool) {
-        if saved { router.showToast("Added to Contacts", systemImage: "person.crop.circle.badge.checkmark") }
+        if saved { router.showToast(String(localized: "Added to Contacts"), systemImage: "person.crop.circle.badge.checkmark") }
     }
 }

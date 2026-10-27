@@ -195,7 +195,7 @@ nonisolated final class AnalyzerDictationSession: DictationSession, @unchecked S
         } catch {
             let text: String? = lock.withLock { isTornDown ? nil : transcript.text }
             if let text {
-                send(text.isEmpty ? .failed("Dictation stopped. Try again.") : .final(text))
+                send(text.isEmpty ? .failed(String(localized: "Dictation stopped. Try again.")) : .final(text))
             }
             teardown()
         }

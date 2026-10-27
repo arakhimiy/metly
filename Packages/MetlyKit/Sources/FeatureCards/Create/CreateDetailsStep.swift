@@ -41,7 +41,7 @@ struct CreateDetailsStep: View {
             }
 
             CardFieldsSection(fields: fields, design: $design,
-                              footer: "Values come from your profile. Change privacy there.",
+                              footer: String(localized: "Values come from your profile. Change privacy there."),
                               onEditValue: onEditField)
         }
         .navigationTitle("Details")

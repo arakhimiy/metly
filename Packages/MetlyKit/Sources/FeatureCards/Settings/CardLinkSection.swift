@@ -54,11 +54,11 @@ struct CardLinkSection: View {
         guard let url else { return }
         UIPasteboard.general.url = url
         copyCount += 1
-        router.showToast("Link Copied", systemImage: "link")
+        router.showToast(String(localized: "Link Copied"), systemImage: "link")
     }
 }
 
 /// Copy shared by every place that shares a card link.
 enum ShareCopy {
-    static let message = "Here’s my card"
+    static let message = String(localized: "Here’s my card")
 }

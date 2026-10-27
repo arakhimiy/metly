@@ -5,14 +5,14 @@ import MetlyCore
 nonisolated enum PlanDescription {
     /// "Free", "Pro · Yearly", "Pro · Monthly" or "Pro".
     static func title(isPro: Bool, productID: String?) -> String {
-        guard isPro else { return "Free" }
-        guard let product = ProProduct(productID: productID) else { return "Pro" }
-        return "Pro · \(product.periodTitle)"
+        guard isPro else { return String(localized: "Free") }
+        guard let product = ProProduct(productID: productID) else { return String(localized: "Pro") }
+        return String(localized: "Pro · \(product.periodTitle)")
     }
 
     /// "1 of 2" on a limited plan, "3 · Unlimited" otherwise.
     static func usage(_ count: Int, limit: Int?) -> String {
-        guard let limit else { return "\(count) · Unlimited" }
-        return "\(count) of \(limit)"
+        guard let limit else { return String(localized: "\(count) · Unlimited") }
+        return String(localized: "\(count) of \(limit)")
     }
 }

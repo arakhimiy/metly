@@ -6,11 +6,11 @@ enum EditorTab: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .template: "Template"
-        case .color: "Color"
-        case .type: "Type"
-        case .fields: "Fields"
-        case .media: "Media"
+        case .template: String(localized: "Template")
+        case .color: String(localized: "Color")
+        case .type: String(localized: "Type")
+        case .fields: String(localized: "Fields")
+        case .media: String(localized: "Media")
         }
     }
 }

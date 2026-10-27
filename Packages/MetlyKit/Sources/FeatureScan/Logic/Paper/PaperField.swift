@@ -31,18 +31,18 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
 
     var title: String {
         switch self {
-        case .name: "Name"
-        case .title: "Title"
-        case .company: "Company"
+        case .name: String(localized: "Name")
+        case .title: String(localized: "Title")
+        case .company: String(localized: "Company")
         default: kind?.title ?? ""
         }
     }
 
     var placeholder: String {
         switch self {
-        case .name: "Full Name"
-        case .title: "Job Title"
-        case .company: "Company"
+        case .name: String(localized: "Full Name")
+        case .title: String(localized: "Job Title")
+        case .company: String(localized: "Company")
         case .phone: "+998 90 123 45 67"
         case .email: "name@company.com"
         case .telegram: "@username"

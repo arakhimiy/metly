@@ -226,7 +226,7 @@ public final class SyncEngine: SyncServicing {
         case .cancelled:
             status = .idle
         case .unauthorized:
-            status = .failed("Sign in again to sync your changes.")
+            status = .failed(String(localized: "Sign in again to sync your changes."))
         case .offline:
             status = .offline
             if network.isOnline { scheduleRetry() }   // server unreachable while the device is online

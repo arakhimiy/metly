@@ -119,7 +119,7 @@ struct CardExportForm: View {
             failedOutput = nil
         } catch {
             failedOutput = output
-            errorMessage = "The export couldn’t be created. Try again."
+            errorMessage = String(localized: "The export couldn’t be created. Try again.")
         }
     }
 
@@ -130,13 +130,13 @@ struct CardExportForm: View {
         Task {
             do {
                 try await PhotoLibrarySaver.save(imageData: export.data)
-                didSave(export.output, toast: export.output.isWallpaper ? "Wallpaper Saved" : "Saved to Photos")
+                didSave(export.output, toast: export.output.isWallpaper ? String(localized: "Wallpaper Saved") : String(localized: "Saved to Photos"))
             } catch PhotoLibrarySaver.Failure.accessDenied {
                 settingsAlert = SettingsAlert(
-                    title: "Allow Photos Access",
-                    message: "Open iOS Settings › \(Brand.appName) › Photos and choose Add Photos Only to save your card.")
+                    title: String(localized: "Allow Photos Access"),
+                    message: String(localized: "Open iOS Settings › \(Brand.appName) › Photos and choose Add Photos Only to save your card."))
             } catch {
-                errorMessage = "The image couldn’t be saved to Photos. Try again."
+                errorMessage = String(localized: "The image couldn’t be saved to Photos. Try again.")
             }
         }
     }
@@ -144,7 +144,7 @@ struct CardExportForm: View {
     private func didExportPDF(_ result: Result<URL, any Error>) {
         switch result {
         case .success:
-            if let output = currentRender?.output { didSave(output, toast: "Saved to Files") }
+            if let output = currentRender?.output { didSave(output, toast: String(localized: "Saved to Files")) }
         case .failure(let error):
             errorMessage = error.localizedDescription
         }

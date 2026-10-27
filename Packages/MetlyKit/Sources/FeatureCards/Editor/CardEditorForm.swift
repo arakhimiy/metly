@@ -69,7 +69,7 @@ struct CardEditorForm: View {
             EditorTypeSection(design: $draft.design)
         case .fields:
             CardFieldsSection(fields: profile?.contactFields ?? ContactField.defaults, design: $draft.design,
-                              footer: "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with.",
+                              footer: String(localized: "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with."),
                               onEditValue: { kind, value in profile?.setContactValue(value, for: kind) })
         case .media:
             EditorMediaSection(draft: $draft, profile: profile)
@@ -106,7 +106,7 @@ struct CardEditorForm: View {
     }
 
     private var lockedTemplateTitle: String {
-        "\(lockedTemplate?.title ?? CardTemplate.editorial.title) Is a Pro Template"
+        String(localized: "\(lockedTemplate?.title ?? CardTemplate.editorial.title) Is a Pro Template")
     }
 
     private var isShowingProTemplateAlert: Binding<Bool> {
@@ -150,7 +150,7 @@ struct CardEditorForm: View {
         guard commit.changedAnything else { return }
         services.sync.requestSync()
         let published = card.url != nil && services.network.isOnline
-        router.showToast(published ? "\(card.name) Card Published" : "\(card.name) Card Saved",
+        router.showToast(published ? String(localized: "\(card.name) Card Published") : String(localized: "\(card.name) Card Saved"),
                          systemImage: "checkmark.circle")
     }
 }

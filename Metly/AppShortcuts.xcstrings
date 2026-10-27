@@ -1,0 +1,51 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Show my ${applicationName} QR" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Show my ${applicationName} QR",
+              "Show my card in ${applicationName}",
+              "Show my QR code in ${applicationName}",
+              "Open my ${applicationName} QR code"
+            ]
+          }
+        }
+      }
+    },
+    "Show my follow-ups in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Show my follow-ups in ${applicationName}",
+              "Open ${applicationName} follow-ups",
+              "Who should I follow up with in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Start an event in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Start an event in ${applicationName}",
+              "Start event mode in ${applicationName}"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

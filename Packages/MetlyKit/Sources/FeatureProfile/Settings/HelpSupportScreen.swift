@@ -69,7 +69,7 @@ struct HelpSupportScreen: View {
         openURL(url) { accepted in
             guard !accepted else { return }
             UIPasteboard.general.string = Brand.supportEmail
-            router.showToast("Email Address Copied", systemImage: "doc.on.doc")
+            router.showToast(String(localized: "Email Address Copied"), systemImage: "doc.on.doc")
         }
     }
 

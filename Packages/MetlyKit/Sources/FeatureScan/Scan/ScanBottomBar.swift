@@ -12,7 +12,7 @@ struct ScanBottomBar: View {
 
     var body: some View {
         VStack(spacing: 18) {
-            ScanHintPill(text: isReadingCard ? "Reading the card…" : mode.hint, showsProgress: isReadingCard)
+            ScanHintPill(text: isReadingCard ? String(localized: "Reading the card…") : mode.hint, showsProgress: isReadingCard)
 
             HStack(alignment: .center, spacing: 16) {
                 PasteLinkButton(onPaste: onPaste)

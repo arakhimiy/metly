@@ -143,7 +143,7 @@ struct CardCreateScreen: View {
     private func done() {
         let isLive = createdCard?.url != nil
         router.dismiss()
-        router.showToast(isLive ? "Card Published" : "Card Saved", systemImage: "checkmark.circle")
+        router.showToast(isLive ? String(localized: "Card Published") : String(localized: "Card Saved"), systemImage: "checkmark.circle")
     }
 
     private func showPaywall(_ trigger: PaywallTrigger) {

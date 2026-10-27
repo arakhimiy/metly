@@ -40,9 +40,10 @@ struct EventCSVRow: Identifiable, Equatable, Sendable {
     }
 
     /// "Send the pitch deck · 2026-09-27 10:00 · Telegram"; "Done" when every reminder is done; "" when none.
+    /// Fixed words stay English like the headers (file format, not UI).
     static func followUpText(for person: Connection, calendar: Calendar = .current) -> String {
         if let open = person.openFollowUp {
-            return "\(open.title) · \(timestamp(open.dueAt, calendar: calendar)) · \(open.channel.title)"
+            return "\(open.title) · \(timestamp(open.dueAt, calendar: calendar)) · \(open.channel.rawValue.capitalized)"
         }
         return person.followUps.contains { $0.isDone && !$0.isDeleted } ? "Done" : ""
     }

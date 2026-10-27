@@ -25,7 +25,7 @@ struct ShareCardScreen: View {
                 ShareCardContent(card: card, profile: profiles.first, didShare: $didShare,
                                  onClose: close, onExport: openExport)
             } else {
-                MissingCardView(title: "Share")
+                MissingCardView(title: String(localized: "Share"))
             }
         }
         .presentationDetents([.medium, .large])

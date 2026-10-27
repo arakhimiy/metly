@@ -67,11 +67,11 @@ struct ConnectUnavailableView: View {
 
     private var title: String {
         switch reason {
-        case .hiddenFromNearby: "You’re Hidden from Nearby"
-        case .localNetworkDenied: "Local Network Access Needed"
-        case .offline: "You’re Offline"
-        case .failed: "Couldn’t Start Connect"
-        case .tapUnsupported: "Tap Phones Isn’t Available"
+        case .hiddenFromNearby: String(localized: "You’re Hidden from Nearby")
+        case .localNetworkDenied: String(localized: "Local Network Access Needed")
+        case .offline: String(localized: "You’re Offline")
+        case .failed: String(localized: "Couldn’t Start Connect")
+        case .tapUnsupported: String(localized: "Tap Phones Isn’t Available")
         case .noOneNearby: ConnectCopy.emptyTitle
         }
     }
@@ -90,15 +90,15 @@ struct ConnectUnavailableView: View {
     private var message: String {
         switch reason {
         case .hiddenFromNearby:
-            "“Show in Nearby” is off, so people around you can’t find you. Turn it on to swap cards, or show your QR code instead."
+            String(localized: "“Show in Nearby” is off, so people around you can’t find you. Turn it on to swap cards, or show your QR code instead.")
         case .localNetworkDenied:
-            "Allow Local Network access in Settings › \(Brand.appName) to find people nearby. You can still show your QR code."
+            String(localized: "Allow Local Network access in Settings › \(Brand.appName) to find people nearby. You can still show your QR code.")
         case .offline:
-            "Connect needs the internet to swap cards. Your QR code still works offline."
+            String(localized: "Connect needs the internet to swap cards. Your QR code still works offline.")
         case .failed(let message):
             message
         case .tapUnsupported:
-            "This iPhone can’t tell when another phone is held close. Use Nearby to find the person instead."
+            String(localized: "This iPhone can’t tell when another phone is held close. Use Nearby to find the person instead.")
         case .noOneNearby:
             ConnectCopy.emptyMessage
         }

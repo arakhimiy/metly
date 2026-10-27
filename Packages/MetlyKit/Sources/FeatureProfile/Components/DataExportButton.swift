@@ -3,7 +3,7 @@ import SwiftUI
 
 /// "Download My Data" — asks the server to email an export link (toast *Link sent to your email*).
 struct DataExportButton: View {
-    var title = "Download My Data"
+    var title = String(localized: "Download My Data")
     @Environment(AppRouter.self) private var router
     @Environment(AppServices.self) private var services
     @State private var isRequesting = false
@@ -30,7 +30,7 @@ struct DataExportButton: View {
 
     private func requestExport() {
         guard services.network.isOnline else {
-            show("You’re offline. Connect to the internet and try again.")
+            show(String(localized: "You’re offline. Connect to the internet and try again."))
             return
         }
         Task {
@@ -38,7 +38,7 @@ struct DataExportButton: View {
             defer { isRequesting = false }
             do {
                 try await services.auth.requestDataExport()
-                router.showToast("Link sent to your email", systemImage: "envelope")
+                router.showToast(String(localized: "Link sent to your email"), systemImage: "envelope")
             } catch {
                 show(error.localizedDescription)
             }

@@ -8,8 +8,8 @@ nonisolated enum ConnectMode: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .nearby: "Nearby"
-        case .tapPhones: "Tap Phones"
+        case .nearby: String(localized: "Nearby")
+        case .tapPhones: String(localized: "Tap Phones")
         }
     }
 }

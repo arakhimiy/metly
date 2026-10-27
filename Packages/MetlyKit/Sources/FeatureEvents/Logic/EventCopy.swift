@@ -29,28 +29,28 @@ enum EventCopy {
 
     /// EVENT_ENDED: "You met 6 people. 2 have notes. 4 follow-ups are scheduled."
     static func summary(_ stats: EventStats) -> String {
-        guard stats.people > 0 else { return "You didn’t add anyone at this event." }
-        let people = stats.people == 1 ? "You met 1 person." : "You met \(stats.people) people."
+        guard stats.people > 0 else { return String(localized: "You didn’t add anyone at this event.") }
+        let people = stats.people == 1 ? String(localized: "You met 1 person.") : String(localized: "You met \(stats.people) people.")
         let notes = switch stats.withNotes {
-        case 0: "None have notes yet."
-        case 1: "1 has a note."
-        default: "\(stats.withNotes) have notes."
+        case 0: String(localized: "None have notes yet.")
+        case 1: String(localized: "1 has a note.")
+        default: String(localized: "\(stats.withNotes) have notes.")
         }
         let followUps = switch stats.openFollowUps {
-        case 0: "No follow-ups are scheduled."
-        case 1: "1 follow-up is scheduled."
-        default: "\(stats.openFollowUps) follow-ups are scheduled."
+        case 0: String(localized: "No follow-ups are scheduled.")
+        case 1: String(localized: "1 follow-up is scheduled.")
+        default: String(localized: "\(stats.openFollowUps) follow-ups are scheduled.")
         }
         return "\(people) \(notes) \(followUps)"
     }
 
     /// Toast after "Follow Up with Everyone": "4 reminders set for tomorrow".
     static func remindersSet(_ count: Int) -> String {
-        count == 1 ? "1 reminder set for tomorrow" : "\(count) reminders set for tomorrow"
+        count == 1 ? String(localized: "1 reminder set for tomorrow") : String(localized: "\(count) reminders set for tomorrow")
     }
 
     /// "Follow Up with Everyone I Haven’t Yet (3)".
     static func followUpEveryone(_ count: Int) -> String {
-        "Follow Up with Everyone I Haven’t Yet (\(count))"
+        String(localized: "Follow Up with Everyone I Haven’t Yet (\(count))")
     }
 }

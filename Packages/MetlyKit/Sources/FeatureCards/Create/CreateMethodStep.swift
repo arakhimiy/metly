@@ -23,11 +23,11 @@ struct CreateMethodStep: View {
             }
 
             Section {
-                CreateMethodRow(title: "Start from a Template", subtitle: "Nine layouts, ready for your details",
+                CreateMethodRow(title: String(localized: "Start from a Template"), subtitle: String(localized: "Nine layouts, ready for your details"),
                                 systemImage: "square.grid.2x2.fill", color: .accentColor) {
                     onChoose(.template)
                 }
-                CreateMethodRow(title: "Blank Card", subtitle: "A minimal layout to build on",
+                CreateMethodRow(title: String(localized: "Blank Card"), subtitle: String(localized: "A minimal layout to build on"),
                                 systemImage: "rectangle.fill", color: .gray) {
                     onChoose(.blank)
                 }

@@ -23,7 +23,7 @@ struct EventExportScreen: View {
                                            description: Text("This event may have been removed."))
                 }
             }
-            .navigationTitle(matches.first?.name ?? "Export")
+            .navigationTitle(matches.first?.name ?? String(localized: "Export"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

@@ -150,7 +150,7 @@ final class ConnectModel {
             return
         }
         guard let cardID = selectedCardID else {
-            availability = .failed("Create a card first, then connect with people nearby.")
+            availability = .failed(String(localized: "Create a card first, then connect with people nearby."))
             return
         }
         availability = .starting
@@ -458,7 +458,7 @@ final class ConnectModel {
 
     private func sendRequest(to peer: ConnectMachine.Peer, method: ConnectMethod) {
         guard let client, let cardID = selectedCardID else {
-            send(.requestFailed(message: "Choose a card to share first."))
+            send(.requestFailed(message: String(localized: "Choose a card to share first.")))
             return
         }
         outgoingTask?.cancel()
@@ -494,11 +494,11 @@ final class ConnectModel {
 
     private func accept(requestID: UUID) {
         guard let client, let modelContext, let request = knownRequests[requestID] else {
-            send(.acceptFailed(message: "This request is no longer available."))
+            send(.acceptFailed(message: String(localized: "This request is no longer available.")))
             return
         }
         guard let cardID = selectedCardID ?? modelContext.cardToShare()?.id else {
-            send(.acceptFailed(message: "Create a card first, then accept."))
+            send(.acceptFailed(message: String(localized: "Create a card first, then accept.")))
             return
         }
         Task { [weak self] in
@@ -516,7 +516,7 @@ final class ConnectModel {
     private func decline(requestID: UUID) {
         guard let client, let request = knownRequests[requestID] else { return }
         Task { try? await client.decline(request) }
-        router?.showToast("Request Declined", systemImage: "xmark.circle")
+        router?.showToast(String(localized: "Request Declined"), systemImage: "xmark.circle")
     }
 
     private func flushDeferredDrops() {

@@ -45,11 +45,12 @@ nonisolated enum ExportScale: Int, CaseIterable, Identifiable, Sendable {
     }
 
     var subtitle: String {
-        let size = "\(Int(pixelSize.width)) × \(Int(pixelSize.height)) px"
+        // Plain digits (String, not Int) so pixel sizes never get a thousands separator.
+        let size = String(localized: "\(String(Int(pixelSize.width))) × \(String(Int(pixelSize.height))) px")
         return switch self {
         case .x1: size
-        case .x2: "\(size) · Retina"
-        case .x3: "\(size) · Print-ready"
+        case .x2: String(localized: "\(size) · Retina")
+        case .x3: String(localized: "\(size) · Print-ready")
         }
     }
 }
@@ -61,15 +62,15 @@ nonisolated enum ExportCorners: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .rounded: "Rounded"
-        case .square: "Square"
+        case .rounded: String(localized: "Rounded")
+        case .square: String(localized: "Square")
         }
     }
 
     var subtitle: String {
         switch self {
-        case .rounded: "Transparent corners, like the card in the app"
-        case .square: "Full rectangle, for print and slides"
+        case .rounded: String(localized: "Transparent corners, like the card in the app")
+        case .square: String(localized: "Full rectangle, for print and slides")
         }
     }
 }
@@ -81,19 +82,19 @@ nonisolated enum ExportPDFLayout: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .single: "Single Card"
-        case .sheetA4: "A4 Sheet"
+        case .single: String(localized: "Single Card")
+        case .sheetA4: String(localized: "A4 Sheet")
         }
     }
 
     var subtitle: String {
         switch self {
-        case .single: "85 × 55 mm, 3 mm bleed, crop marks"
-        case .sheetA4: "10 cards up, for a print shop"
+        case .single: String(localized: "85 × 55 mm, 3 mm bleed, crop marks")
+        case .sheetA4: String(localized: "10 cards up, for a print shop")
         }
     }
 }
 
 extension CardExporter.LockScreenDevice {
-    nonisolated var subtitle: String { "\(Int(pixelSize.width)) × \(Int(pixelSize.height)) px" }
+    nonisolated var subtitle: String { String(localized: "\(String(Int(pixelSize.width))) × \(String(Int(pixelSize.height))) px") }
 }

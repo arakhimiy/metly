@@ -9,9 +9,9 @@ struct TapStatusView: View {
         case .ready:
             TapReadyView(model: model)
         case .detected(let person):
-            TapProgressView(person: person, detail: "Sending your card…", onCancel: cancelAction)
+            TapProgressView(person: person, detail: String(localized: "Sending your card…"), onCancel: cancelAction)
         case .receiving(let person):
-            TapProgressView(person: person, detail: "Accept their request when it appears.")
+            TapProgressView(person: person, detail: String(localized: "Accept their request when it appears."))
         }
     }
 

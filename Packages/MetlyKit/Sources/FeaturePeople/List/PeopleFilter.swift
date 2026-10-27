@@ -6,10 +6,10 @@ enum PeopleFilter: String, CaseIterable, Identifiable, Hashable {
 
     var title: String {
         switch self {
-        case .all: "All"
-        case .events: "Events"
-        case .places: "Places"
-        case .tags: "Tags"
+        case .all: String(localized: "All")
+        case .events: String(localized: "Events")
+        case .places: String(localized: "Places")
+        case .tags: String(localized: "Tags")
         }
     }
 }

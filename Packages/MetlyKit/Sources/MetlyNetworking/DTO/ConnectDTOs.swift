@@ -170,7 +170,7 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
     /// SCANNED_CARD preview / `Connection.theirCard`. nil when unavailable.
     public var snapshot: CardSnapshot? {
         guard status == .available, let owner else { return nil }
-        return CardSnapshot(cardName: cardName ?? "Card", design: design ?? CardDesign(), fullName: owner.fullName,
+        return CardSnapshot(cardName: cardName ?? String(localized: "Card"), design: design ?? CardDesign(), fullName: owner.fullName,
                             jobTitle: owner.jobTitle, company: owner.company, fields: fields,
                             url: url ?? Brand.cardURL(slug: slug))
     }

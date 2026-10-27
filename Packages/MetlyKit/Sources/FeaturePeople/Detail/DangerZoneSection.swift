@@ -40,12 +40,12 @@ struct DangerZoneSection: View {
     private func block() {
         PeopleActions.block(person, in: modelContext)
         router.pop()
-        router.showToast("Blocked", systemImage: "hand.raised")
+        router.showToast(String(localized: "Blocked"), systemImage: "hand.raised")
     }
 
     private func remove() {
         let undo = PeopleActions.remove(person, in: modelContext)
         router.pop()
-        router.showToast("Connection Removed", systemImage: "trash", undo: undo)
+        router.showToast(String(localized: "Connection Removed"), systemImage: "trash", undo: undo)
     }
 }

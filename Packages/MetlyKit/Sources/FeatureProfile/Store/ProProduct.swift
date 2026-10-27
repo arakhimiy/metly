@@ -13,8 +13,8 @@ nonisolated public enum ProProduct: String, CaseIterable, Sendable {
     /// "Yearly" / "Monthly" — used in "Pro · Yearly".
     public var periodTitle: String {
         switch self {
-        case .yearly: "Yearly"
-        case .monthly: "Monthly"
+        case .yearly: String(localized: "Yearly")
+        case .monthly: String(localized: "Monthly")
         }
     }
 

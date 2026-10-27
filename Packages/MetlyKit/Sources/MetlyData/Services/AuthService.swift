@@ -10,7 +10,7 @@ public enum AuthError: LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .missingIdentityToken: "Sign in didn't return an identity token. Try again."
+        case .missingIdentityToken: String(localized: "Sign in didn't return an identity token. Try again.")
         }
     }
 }

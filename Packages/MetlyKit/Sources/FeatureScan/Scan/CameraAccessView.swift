@@ -39,10 +39,10 @@ struct CameraAccessView<Extra: View>: View {
 
     private var title: String {
         switch access {
-        case .undetermined: "Scan Business Cards"
-        case .denied, .authorized: "Camera Access Needed"
-        case .restricted: "Camera Is Restricted"
-        case .noCamera: "Camera Unavailable"
+        case .undetermined: String(localized: "Scan Business Cards")
+        case .denied, .authorized: String(localized: "Camera Access Needed")
+        case .restricted: String(localized: "Camera Is Restricted")
+        case .noCamera: String(localized: "Camera Unavailable")
         }
     }
 
@@ -56,10 +56,10 @@ struct CameraAccessView<Extra: View>: View {
 
     private var message: String {
         switch access {
-        case .undetermined: "Allow camera access to scan QR codes and paper business cards."
-        case .denied, .authorized: "Allow camera access in Settings to scan cards. You can still paste a link."
-        case .restricted: "Camera access is restricted on this iPhone. You can still paste a link."
-        case .noCamera: "This device can't scan with a camera. You can still paste a link."
+        case .undetermined: String(localized: "Allow camera access to scan QR codes and paper business cards.")
+        case .denied, .authorized: String(localized: "Allow camera access in Settings to scan cards. You can still paste a link.")
+        case .restricted: String(localized: "Camera access is restricted on this iPhone. You can still paste a link.")
+        case .noCamera: String(localized: "This device can't scan with a camera. You can still paste a link.")
         }
     }
 

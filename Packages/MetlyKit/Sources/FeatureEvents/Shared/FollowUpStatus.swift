@@ -23,14 +23,14 @@ enum FollowUpStatus: Equatable {
 
     func title(now: Date = .now, calendar: Calendar = .current) -> String {
         switch self {
-        case .none: "None"
-        case .done: "Done"
-        case .overdue: "Overdue"
+        case .none: String(localized: "None")
+        case .done: String(localized: "Done")
+        case .overdue: String(localized: "Overdue")
         case .due(let date):
             if calendar.isDate(date, inSameDayAs: now) {
-                "Today"
+                String(localized: "Today")
             } else if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(date, inSameDayAs: tomorrow) {
-                "Tomorrow"
+                String(localized: "Tomorrow")
             } else {
                 date.formatted(.dateTime.month(.abbreviated).day())
             }
@@ -57,10 +57,10 @@ enum FollowUpStatus: Equatable {
 
     func accessibilityLabel(now: Date = .now) -> String {
         switch self {
-        case .none: "No follow-up"
-        case .done: "Follow-up done"
-        case .overdue: "Follow-up overdue"
-        case .due: "Follow-up \(title(now: now))"
+        case .none: String(localized: "No follow-up")
+        case .done: String(localized: "Follow-up done")
+        case .overdue: String(localized: "Follow-up overdue")
+        case .due: String(localized: "Follow-up \(title(now: now))")
         }
     }
 }

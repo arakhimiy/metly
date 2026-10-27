@@ -85,7 +85,7 @@ struct MergePromptSection: View {
     /// "Your note: “Talked about…”" or where you met.
     private var detail: String {
         let note = candidate.note.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !note.isEmpty { return "Your note: “\(note)”" }
+        if !note.isEmpty { return String(localized: "Your note: “\(note)”") }
         let place = candidate.context.eventName ?? candidate.context.place
         return place.map { "\(candidate.fullName) · \($0)" } ?? candidate.fullName
     }

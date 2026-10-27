@@ -13,7 +13,7 @@ struct TagsSection: View {
                 ForEach(allTags, id: \.self) { tag in
                     CaptureChip(tag, isSelected: isSelected(tag)) { toggle(tag) }
                 }
-                CaptureChip("Add Tag", systemImage: "plus", isSelected: false, action: startAddingTag)
+                CaptureChip(String(localized: "Add Tag"), systemImage: "plus", isSelected: false, action: startAddingTag)
             }
             .padding(.vertical, 4)
             .sensoryFeedback(.selection, trigger: tags)

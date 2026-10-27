@@ -123,15 +123,15 @@ public enum APIError: Error, Sendable, Equatable {
 extension APIError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .offline: "You're offline. Check your connection and try again."
-        case .timedOut: "The server took too long to respond. Try again."
-        case .cancelled: "The request was cancelled."
-        case .unauthorized: "Your session has expired. Sign in again."
-        case .rateLimited: "Too many requests. Wait a moment and try again."
+        case .offline: String(localized: "You're offline. Check your connection and try again.")
+        case .timedOut: String(localized: "The server took too long to respond. Try again.")
+        case .cancelled: String(localized: "The request was cancelled.")
+        case .unauthorized: String(localized: "Your session has expired. Sign in again.")
+        case .rateLimited: String(localized: "Too many requests. Wait a moment and try again.")
         case .serverRequired(let message): message
         case .server(let status, let problem):
-            if let problem, status < 500 { problem.message } else { "Something went wrong on our side. Try again later." }
-        case .decoding, .invalidResponse: "The server sent an unexpected response."
+            if let problem, status < 500 { problem.message } else { String(localized: "Something went wrong on our side. Try again later.") }
+        case .decoding, .invalidResponse: String(localized: "The server sent an unexpected response.")
         case .transport(let message): message
         }
     }

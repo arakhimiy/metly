@@ -40,7 +40,7 @@ struct BlockedPeopleScreen: View {
 
     private func unblock(_ person: Connection) {
         PeopleActions.unblock(person, in: modelContext)
-        router.showToast("Unblocked \(PersonName.first(person.fullName))", systemImage: "hand.raised.slash")
+        router.showToast(String(localized: "Unblocked \(PersonName.first(person.fullName))"), systemImage: "hand.raised.slash")
     }
 }
 

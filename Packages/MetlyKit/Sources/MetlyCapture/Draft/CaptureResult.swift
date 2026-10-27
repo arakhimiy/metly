@@ -42,6 +42,6 @@ public struct CaptureResult: Equatable, Sendable {
     /// "Saved · Reminder Set" when a reminder was scheduled, otherwise `fallback`
     /// (e.g. "Connection Saved", "Context Saved", "Contact Saved").
     public func toastMessage(otherwise fallback: String) -> String {
-        reminderSet ? "Saved · Reminder Set" : fallback
+        reminderSet ? String(localized: "Saved · Reminder Set") : fallback
     }
 }

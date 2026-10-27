@@ -158,7 +158,7 @@ struct ScanScreen: View {
             ScanCameraPolicy.show(.scannedCard(ScannedCardPayload(url: url, slug: slug)), router: router)
         case .ownCard:
             successFeedback += 1
-            router.showToast("That’s Your Card", systemImage: "person.crop.rectangle")
+            router.showToast(String(localized: "That’s Your Card"), systemImage: "person.crop.rectangle")
         case .vCard(let text):
             successFeedback += 1
             ScanCameraPolicy.show(.scannedCard(ScannedCardPayload(vCard: text)), router: router)
@@ -176,7 +176,7 @@ struct ScanScreen: View {
     }
 
     private func openInSafari(_ url: URL) {
-        router.showToast("Opening Safari", systemImage: "safari")
+        router.showToast(String(localized: "Opening Safari"), systemImage: "safari")
         openURL(url)
     }
 

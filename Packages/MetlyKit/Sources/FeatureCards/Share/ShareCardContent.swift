@@ -90,7 +90,7 @@ struct ShareCardContent: View {
 
     /// "Aziza Karimova · Work"
     private var title: String {
-        guard let name = profile?.fullName, !name.isEmpty else { return "\(card.name) Card" }
+        guard let name = profile?.fullName, !name.isEmpty else { return String(localized: "\(card.name) Card") }
         return "\(name) · \(card.name)"
     }
 

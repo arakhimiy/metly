@@ -45,16 +45,16 @@ struct ConnectActionSection: View {
     private var footer: String? {
         switch phase {
         case .requestSent:
-            "\(firstName) will see your request. You’re connected as soon as they accept."
+            String(localized: "\(firstName) will see your request. You’re connected as soon as they accept.")
         case .noResponse:
-            "\(firstName) didn’t respond. Try again later, or add them to People now."
+            String(localized: "\(firstName) didn’t respond. Try again later, or add them to People now.")
         case .savedOffline:
-            "You’re offline, so \(firstName) was saved to People. Connect again when you’re back online."
+            String(localized: "You’re offline, so \(firstName) was saved to People. Connect again when you’re back online.")
         case .idle, .sending, .waiting, .accepted:
             if isInPeople {
-                "\(firstName) is already in your People."
+                String(localized: "\(firstName) is already in your People.")
             } else if showsConnectHint {
-                "Connect to see what \(firstName) shares with connections only."
+                String(localized: "Connect to see what \(firstName) shares with connections only.")
             } else {
                 nil
             }
@@ -89,12 +89,12 @@ private struct ConnectButton: View {
 
     private var title: String {
         switch phase {
-        case .idle, .savedOffline: "Connect"
-        case .sending: "Sending…"
-        case .waiting: "Waiting for \(firstName)…"
-        case .requestSent: "Request Sent"
-        case .noResponse: "Try Again"
-        case .accepted: "Connected"
+        case .idle, .savedOffline: String(localized: "Connect")
+        case .sending: String(localized: "Sending…")
+        case .waiting: String(localized: "Waiting for \(firstName)…")
+        case .requestSent: String(localized: "Request Sent")
+        case .noResponse: String(localized: "Try Again")
+        case .accepted: String(localized: "Connected")
         }
     }
 

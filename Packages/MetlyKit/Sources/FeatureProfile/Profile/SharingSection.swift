@@ -41,9 +41,9 @@ struct SharingSection: View {
     }
 
     private var footer: String {
-        var text = "Paused links show an inactive page. Printed QR codes work again when you resume."
+        var text = String(localized: "Paused links show an inactive page. Printed QR codes work again when you resume.")
         if defaultCardURL == nil {
-            text += " Your public page appears once your default card is published."
+            text += " " + String(localized: "Your public page appears once your default card is published.")
         }
         return text
     }
@@ -54,7 +54,7 @@ struct SharingSection: View {
         let services = services
         return { paused in
             services.sync.requestSync()
-            router.showToast(paused ? "Links Paused" : "Links Resumed", systemImage: paused ? "pause.circle" : "play.circle")
+            router.showToast(paused ? String(localized: "Links Paused") : String(localized: "Links Resumed"), systemImage: paused ? "pause.circle" : "play.circle")
         }
     }
 

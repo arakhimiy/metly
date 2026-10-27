@@ -27,8 +27,8 @@ struct ExportSummarySection: View {
     }
 
     private var subtitle: String {
-        let people = peopleCount == 1 ? "1 person" : "\(peopleCount) people"
-        return "\(people) · notes and follow-ups included"
+        let people = peopleCount == 1 ? String(localized: "1 person") : String(localized: "\(peopleCount) people")
+        return String(localized: "\(people) · notes and follow-ups included")
     }
 }
 
@@ -39,7 +39,7 @@ struct ExportFieldsSection: View {
     var body: some View {
         Section {
             ForEach($options) { $option in
-                Toggle(option.column.header, isOn: $option.isIncluded)
+                Toggle(option.column.title, isOn: $option.isIncluded)
                     .disabled(option.column.isRequired)
             }
         } header: {
@@ -102,7 +102,7 @@ private struct CSVPreviewCell: View {
             .foregroundStyle(isHeader || !text.isEmpty ? .primary : .tertiary)
             .lineLimit(1)
             .frame(maxWidth: maxWidth, alignment: .leading)
-            .accessibilityLabel(text.isEmpty ? "Empty" : text)
+            .accessibilityLabel(text.isEmpty ? String(localized: "Empty") : text)
     }
 }
 
@@ -155,6 +155,6 @@ struct ExportCallToAction: View {
     }
 
     private var exportTitle: String {
-        peopleCount == 1 ? "Export 1 Contact" : "Export \(peopleCount) Contacts"
+        peopleCount == 1 ? String(localized: "Export 1 Contact") : String(localized: "Export \(peopleCount) Contacts")
     }
 }

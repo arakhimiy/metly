@@ -21,7 +21,7 @@ struct EventFollowUpOutcome: Equatable, Sendable {
 /// The Free plan limit (`PlanLimits.maxOpenFollowUps`) is respected — PLAN Q13: enforced everywhere.
 enum EventFollowUpPlanner {
     static func reminderTitle(for eventName: String) -> String {
-        "Follow up from \(eventName.trimmed)"
+        String(localized: "Follow up from \(eventName.trimmed)")
     }
 
     /// People without an open reminder, in list order.
