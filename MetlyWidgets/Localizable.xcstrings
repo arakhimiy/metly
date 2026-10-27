@@ -1,237 +1,2211 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "%@" : {
-      "shouldTranslate" : false
+  "sourceLanguage": "en",
+  "strings": {
+    "%@": {
+      "shouldTranslate": false
     },
-    "%@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@"
+    "%@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ %2$@"
           }
         }
       },
-      "shouldTranslate" : false
+      "shouldTranslate": false
     },
-    "%@ %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@ %3$@"
+    "%@ %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ %2$@ %3$@"
           }
         }
       },
-      "shouldTranslate" : false
+      "shouldTranslate": false
     },
-    "%@ Card" : {},
-    "%@ QR code" : {},
-    "%@ template" : {},
-    "%@ · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$@"
+    "%@ Card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Визитка «%@»"
           }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "%@%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@%2$@"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "%@, %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@, %2$@"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "%lld new connections this week" : {},
-    "%lld reminders" : {},
-    "1 new connection this week" : {},
-    "1 reminder" : {},
-    "Add one right after you connect — it takes 2 seconds." : {},
-    "All Caught Up" : {},
-    "Anyone with your link" : {},
-    "Balanced" : {
-      "comment" : "Card density"
-    },
-    "Call" : {
-      "comment" : "Phone call: button and follow-up channel"
-    },
-    "Card" : {},
-    "Card to Share" : {},
-    "Choose %@ and tap a QR Code widget." : {},
-    "Choose Card" : {},
-    "Choose Lock Screen, then tap the area below the time." : {},
-    "Choose which card the widget shows." : {},
-    "Connections" : {
-      "comment" : "Field privacy level: visible to people you've connected with"
-    },
-    "Contact card" : {},
-    "Contact card for %@" : {},
-    "Control Center" : {},
-    "Control · Opens your QR full screen from anywhere." : {},
-    "Create Your Card" : {},
-    "Create a card to show its QR." : {},
-    "Dark" : {
-      "comment" : "Appearance: app or card"
-    },
-    "Default" : {
-      "comment" : "Badge of the default card; also the system card typeface"
-    },
-    "Default card" : {},
-    "Detailed" : {
-      "comment" : "Card density: most contact rows"
-    },
-    "Email" : {},
-    "Follow Up Today" : {},
-    "Follow up" : {},
-    "Follow-up ID" : {},
-    "Follow-ups" : {},
-    "Home Screen" : {},
-    "How to Add" : {},
-    "Light" : {
-      "comment" : "Appearance: app or card"
-    },
-    "Link Paused" : {},
-    "Link paused. Your QR shows an inactive page." : {},
-    "Link to %@" : {},
-    "LinkedIn" : {},
-    "Lock Screen" : {},
-    "Mark %@ done" : {},
-    "Mark Follow-up Done" : {},
-    "Medium widget. Tap a reminder to open it in %@, or tap the circle to mark it done." : {},
-    "Medium · Reminders due today, with a Done button." : {},
-    "Medium · Your card and this week's new connections." : {},
-    "Minimal" : {
-      "comment" : "Card density: fewest contact rows"
-    },
-    "Mono" : {},
-    "My QR" : {},
-    "Next: %@ · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Next: %1$@ · %2$@"
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ vizitkasi"
           }
         }
       }
     },
-    "No Follow-ups Yet" : {},
-    "No new connections this week" : {},
-    "Not published yet" : {},
-    "Nothing due today." : {},
-    "Only you" : {},
-    "Open %@ to make your first card." : {},
-    "Opens the reminder" : {},
-    "Opens your QR code full screen." : {},
-    "Opens your reminders." : {},
-    "Overdue" : {},
-    "PRO" : {},
-    "People you've connected with" : {},
-    "Phone" : {},
-    "Preview of the Card widget" : {},
-    "Preview of the Follow-ups widget" : {},
-    "Preview of the Lock Screen QR widgets" : {},
-    "Preview of the My QR widget" : {},
-    "Preview of the Show My QR control" : {},
-    "Previews show sample details until you create a card. Touch and hold a widget, then tap Edit Widget to choose which card it shows." : {},
-    "Private" : {
-      "comment" : "Field privacy level"
-    },
-    "Public" : {
-      "comment" : "Field privacy level"
-    },
-    "QR Code" : {},
-    "QR code" : {},
-    "QR code for %@" : {},
-    "Rectangular and circular · Scan to connect." : {},
-    "Reminders due today. Tap one to open it." : {},
-    "Requires %@" : {},
-    "Rounded" : {
-      "comment" : "Card typeface; also the rounded-corners image export style"
-    },
-    "Same, with the card you share right now." : {},
-    "Say a phrase to Siri, or find these actions in Shortcuts and Spotlight." : {},
-    "Scan to connect" : {},
-    "Search for %@ and choose Show My QR." : {},
-    "Search for %@, choose My QR, Card or Follow-ups, then tap Add Widget." : {},
-    "Serif" : {},
-    "Show ${card}" : {},
-    "Show My QR" : {},
-    "Show QR" : {},
-    "Show my %@ QR" : {},
-    "Show my card in %@" : {},
-    "Show my follow-ups in %@" : {},
-    "Shows your QR code full screen" : {},
-    "Sign in to %@ to see your follow-ups." : {},
-    "Sign in to show your QR code here." : {},
-    "Sign in to show your QR." : {},
-    "Sign in to show your card here." : {},
-    "Siri & Shortcuts" : {},
-    "Small · Your QR, one tap away." : {},
-    "Someone" : {},
-    "Start an event in %@" : {},
-    "Step %lld: %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Step %1$lld: %2$@"
+    "%@ QR code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-код: %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ QR kodi"
           }
         }
       }
     },
-    "Swipe down from the top-right corner of the screen." : {},
-    "System" : {
-      "comment" : "App appearance: follow the iOS setting"
+    "%@ template": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шаблон %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ shabloni"
+          }
+        }
+      }
     },
-    "Tags everyone you meet with the event." : {},
-    "Tap Edit, then tap Add Widget." : {},
-    "Telegram" : {},
-    "Today" : {},
-    "Tomorrow" : {},
-    "Touch and hold a widget, then tap Edit Widget to choose which card it shows." : {},
-    "Touch and hold an empty area of your Home Screen until the apps jiggle." : {},
-    "Touch and hold an empty area, then tap Add a Control." : {},
-    "Touch and hold your Lock Screen, then tap Customize." : {},
-    "Undo" : {},
-    "Website" : {},
-    "Widgets" : {},
-    "Yesterday" : {},
-    "You can also put it on the Lock Screen or the Action button." : {},
-    "Your Name" : {},
-    "Your QR on the Lock Screen. Anyone can scan it." : {},
-    "Your QR shows right on the Lock Screen, so people can scan it without you unlocking. Tap it to open it full screen." : {},
-    "Your QR, one tap away." : {},
-    "Your card and this week's new connections. Tap to show your QR." : {},
-    "Your default card, or your event's card" : {},
-    "via Nearby" : {},
-    "via QR" : {},
-    "via Tap" : {},
-    "via paper card" : {},
-    "via web" : {},
-    "“%@”" : {
-      "shouldTranslate" : false
+    "%@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      },
+      "shouldTranslate": false
+    },
+    "%@%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@%2$@"
+          }
+        }
+      },
+      "shouldTranslate": false
+    },
+    "%@, %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@, %2$@"
+          }
+        }
+      },
+      "shouldTranslate": false
+    },
+    "%lld new connections this week": {
+      "localizations": {
+        "ru": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld новых контакта на этой неделе"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld новых контактов на этой неделе"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld новый контакт на этой неделе"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld нового контакта на этой неделе"
+                }
+              }
+            }
+          }
+        },
+        "uz": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Bu hafta %lld ta yangi tanish"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Bu hafta %lld ta yangi tanish"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld reminders": {
+      "localizations": {
+        "ru": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld напоминания"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld напоминаний"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld напоминание"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld напоминания"
+                }
+              }
+            }
+          }
+        },
+        "uz": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ta eslatma"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld ta eslatma"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "1 new connection this week": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 новый контакт на этой неделе"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hafta 1 ta yangi tanish"
+          }
+        }
+      }
+    },
+    "1 reminder": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 напоминание"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 ta eslatma"
+          }
+        }
+      }
+    },
+    "Add one right after you connect — it takes 2 seconds.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавьте его сразу после обмена визитками — это займёт 2 секунды."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitka almashgandan so‘ng darhol qo‘shing — bor-yo‘g‘i 2 soniya."
+          }
+        }
+      }
+    },
+    "All Caught Up": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всё сделано"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hammasi bajarildi"
+          }
+        }
+      }
+    },
+    "Anyone with your link": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Все, у кого есть ваша ссылка"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Havolangiz bor har kim"
+          }
+        }
+      }
+    },
+    "Balanced": {
+      "comment": "Card density",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сбалансированная"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muvozanatli"
+          }
+        }
+      }
+    },
+    "Call": {
+      "comment": "Phone call: button and follow-up channel",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Позвонить"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qo‘ng‘iroq"
+          }
+        }
+      }
+    },
+    "Card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Визитка"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitka"
+          }
+        }
+      }
+    },
+    "Card to Share": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Визитка для обмена"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ulashiladigan vizitka"
+          }
+        }
+      }
+    },
+    "Choose %@ and tap a QR Code widget.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите %@ и коснитесь виджета QR-кода."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ilovasini tanlang va QR kod vidjetini bosing."
+          }
+        }
+      }
+    },
+    "Choose Card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите визитку"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitkani tanlang"
+          }
+        }
+      }
+    },
+    "Choose Lock Screen, then tap the area below the time.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите «Экран блокировки», затем коснитесь области под временем."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qulf ekranini tanlang, so‘ng vaqt ostidagi maydonni bosing."
+          }
+        }
+      }
+    },
+    "Choose which card the widget shows.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите, какую визитку показывает виджет."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vidjet qaysi vizitkani ko‘rsatishini tanlang."
+          }
+        }
+      }
+    },
+    "Connections": {
+      "comment": "Field privacy level: visible to people you've connected with",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контактам"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishlarga"
+          }
+        }
+      }
+    },
+    "Contact card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Карточка контакта"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontakt kartochkasi"
+          }
+        }
+      }
+    },
+    "Contact card for %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Карточка контакта: %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ kontakt kartochkasi"
+          }
+        }
+      }
+    },
+    "Control Center": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пункт управления"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqaruv markazi"
+          }
+        }
+      }
+    },
+    "Control · Opens your QR full screen from anywhere.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Элемент управления · Открывает ваш QR на весь экран откуда угодно."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqaruv elementi · QR kodingizni istalgan joydan butun ekranda ochadi."
+          }
+        }
+      }
+    },
+    "Create Your Card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создайте визитку"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitkangizni yarating"
+          }
+        }
+      }
+    },
+    "Create a card to show its QR.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создайте визитку, чтобы показать её QR."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kodini ko‘rsatish uchun vizitka yarating."
+          }
+        }
+      }
+    },
+    "Dark": {
+      "comment": "Appearance: app or card",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тёмная"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qorong‘i"
+          }
+        }
+      }
+    },
+    "Default": {
+      "comment": "Badge of the default card; also the system card typeface",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Основная"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asosiy"
+          }
+        }
+      }
+    },
+    "Default card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Основная визитка"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asosiy vizitka"
+          }
+        }
+      }
+    },
+    "Detailed": {
+      "comment": "Card density: most contact rows",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подробная"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batafsil"
+          }
+        }
+      }
+    },
+    "Email": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email"
+          }
+        }
+      }
+    },
+    "Follow Up Today": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напоминания на сегодня"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugungi eslatmalar"
+          }
+        }
+      }
+    },
+    "Follow up": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Связаться"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bog‘lanish"
+          }
+        }
+      }
+    },
+    "Follow-up ID": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID напоминания"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eslatma ID"
+          }
+        }
+      }
+    },
+    "Follow-ups": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напоминания"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eslatmalar"
+          }
+        }
+      }
+    },
+    "Home Screen": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Экран «Домой»"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bosh ekran"
+          }
+        }
+      }
+    },
+    "How to Add": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как добавить"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qanday qo‘shiladi"
+          }
+        }
+      }
+    },
+    "Light": {
+      "comment": "Appearance: app or card",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Светлое"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yorug‘"
+          }
+        }
+      }
+    },
+    "Link Paused": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ссылка приостановлена"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Havola to‘xtatildi"
+          }
+        }
+      }
+    },
+    "Link paused. Your QR shows an inactive page.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ссылка приостановлена. Ваш QR-код ведёт на неактивную страницу."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Havola to‘xtatildi. QR kodingiz nofaol sahifani ko‘rsatadi."
+          }
+        }
+      }
+    },
+    "Link to %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ссылка на %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ havolasi"
+          }
+        }
+      }
+    },
+    "LinkedIn": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LinkedIn"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LinkedIn"
+          }
+        }
+      }
+    },
+    "Lock Screen": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Экран блокировки"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qulf ekrani"
+          }
+        }
+      }
+    },
+    "Mark %@ done": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отметить «%@» как выполненное"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — bajarildi deb belgilash"
+          }
+        }
+      }
+    },
+    "Mark Follow-up Done": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отметить напоминание выполненным"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eslatmani bajarilgan deb belgilash"
+          }
+        }
+      }
+    },
+    "Medium widget. Tap a reminder to open it in %@, or tap the circle to mark it done.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Средний виджет. Нажмите на напоминание, чтобы открыть его в %@, или на кружок, чтобы отметить его выполненным."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O‘rtacha vidjet. Eslatmani %@ ilovasida ochish uchun unga bosing yoki bajarildi deb belgilash uchun doirachaga bosing."
+          }
+        }
+      }
+    },
+    "Medium · Reminders due today, with a Done button.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Средний · Напоминания на сегодня с кнопкой «Готово»."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O‘rtacha · Bugungi eslatmalar, «Tayyor» tugmasi bilan."
+          }
+        }
+      }
+    },
+    "Medium · Your card and this week's new connections.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Средний · Ваша визитка и новые контакты за неделю."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O‘rtacha · Vizitkangiz va shu haftadagi yangi tanishlar."
+          }
+        }
+      }
+    },
+    "Minimal": {
+      "comment": "Card density: fewest contact rows",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Минимум"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimal"
+          }
+        }
+      }
+    },
+    "Mono": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Моно"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mono"
+          }
+        }
+      }
+    },
+    "My QR": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мой QR-код"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mening QR kodim"
+          }
+        }
+      }
+    },
+    "Next: %@ · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Next: %1$@ · %2$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Далее: %1$@ · %2$@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keyingisi: %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "No Follow-ups Yet": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока нет напоминаний"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hali eslatmalar yo‘q"
+          }
+        }
+      }
+    },
+    "No new connections this week": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На этой неделе новых контактов нет"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hafta yangi tanishlar yo‘q"
+          }
+        }
+      }
+    },
+    "Not published yet": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ещё не опубликовано"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hali e’lon qilinmagan"
+          }
+        }
+      }
+    },
+    "Nothing due today.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На сегодня ничего нет."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugun hech narsa yo‘q."
+          }
+        }
+      }
+    },
+    "Only you": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только мне"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faqat men"
+          }
+        }
+      }
+    },
+    "Open %@ to make your first card.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Откройте %@, чтобы создать первую визитку."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birinchi vizitkangizni yaratish uchun %@ ni oching."
+          }
+        }
+      }
+    },
+    "Opens the reminder": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывает напоминание"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eslatmani ochadi"
+          }
+        }
+      }
+    },
+    "Opens your QR code full screen.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывает ваш QR-код на весь экран."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kodingizni to‘liq ekranda ochadi."
+          }
+        }
+      }
+    },
+    "Opens your reminders.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывает ваши напоминания."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eslatmalaringizni ochadi."
+          }
+        }
+      }
+    },
+    "Overdue": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Просрочено"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muddati o‘tgan"
+          }
+        }
+      }
+    },
+    "PRO": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PRO"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PRO"
+          }
+        }
+      }
+    },
+    "People you've connected with": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Люди, с которыми вы обменялись визитками"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitka almashgan odamlaringiz"
+          }
+        }
+      }
+    },
+    "Phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telefon"
+          }
+        }
+      }
+    },
+    "Preview of the Card widget": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предпросмотр виджета «Визитка»"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitka vidjetining ko‘rinishi"
+          }
+        }
+      }
+    },
+    "Preview of the Follow-ups widget": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предпросмотр виджета «Напоминания»"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eslatmalar vidjetining ko‘rinishi"
+          }
+        }
+      }
+    },
+    "Preview of the Lock Screen QR widgets": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предпросмотр QR-виджетов для экрана блокировки"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qulf ekranidagi QR vidjetlarining ko‘rinishi"
+          }
+        }
+      }
+    },
+    "Preview of the My QR widget": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предпросмотр виджета «Мой QR-код»"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Mening QR kodim» vidjetining ko‘rinishi"
+          }
+        }
+      }
+    },
+    "Preview of the Show My QR control": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Предпросмотр элемента управления «Показать мой QR-код»"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«QR kodimni ko‘rsatish» boshqaruv elementining ko‘rinishi"
+          }
+        }
+      }
+    },
+    "Previews show sample details until you create a card. Touch and hold a widget, then tap Edit Widget to choose which card it shows.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока вы не создадите визитку, в предпросмотре показаны примерные данные. Коснитесь виджета и удерживайте его, затем нажмите «Изменить виджет», чтобы выбрать визитку."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitka yaratmaguningizcha ko‘rinishlarda namunaviy ma’lumotlar chiqadi. Vidjetni bosib turing, so‘ng qaysi vizitkani ko‘rsatishini tanlash uchun «Vidjetni tahrirlash»ni bosing."
+          }
+        }
+      }
+    },
+    "Private": {
+      "comment": "Field privacy level",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только мне"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faqat men"
+          }
+        }
+      }
+    },
+    "Public": {
+      "comment": "Field privacy level",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всем"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hammaga"
+          }
+        }
+      }
+    },
+    "QR Code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-код"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kod"
+          }
+        }
+      }
+    },
+    "QR code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-код"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kod"
+          }
+        }
+      }
+    },
+    "QR code for %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-код для %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ uchun QR kod"
+          }
+        }
+      }
+    },
+    "Rectangular and circular · Scan to connect.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прямоугольный и круглый · Отсканируйте для обмена."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To‘rtburchak va doira · Skanerlab almashing."
+          }
+        }
+      }
+    },
+    "Reminders due today. Tap one to open it.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напоминания на сегодня. Коснитесь, чтобы открыть."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugungi eslatmalar. Ochish uchun birini bosing."
+          }
+        }
+      }
+    },
+    "Requires %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Требуется %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ talab etiladi"
+          }
+        }
+      }
+    },
+    "Rounded": {
+      "comment": "Card typeface; also the rounded-corners image export style",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скруглённый"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yumaloq"
+          }
+        }
+      }
+    },
+    "Same, with the card you share right now.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "То же, но с визиткой, которой вы делитесь сейчас."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xuddi shunday, hozir ulashayotgan vizitkangiz bilan."
+          }
+        }
+      }
+    },
+    "Say a phrase to Siri, or find these actions in Shortcuts and Spotlight.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скажите Siri фразу или найдите эти действия в Быстрых командах и Spotlight."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siri’ga iborani ayting yoki bu amallarni Shortcuts va Spotlight’dan toping."
+          }
+        }
+      }
+    },
+    "Scan to connect": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отсканируйте для обмена"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almashish uchun skanerlang"
+          }
+        }
+      }
+    },
+    "Search for %@ and choose Show My QR.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найдите %@ и выберите «Показать мой QR»."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ilovasini qidiring va «QR kodimni ko‘rsatish»ni tanlang."
+          }
+        }
+      }
+    },
+    "Search for %@, choose My QR, Card or Follow-ups, then tap Add Widget.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найдите %@, выберите «Мой QR», «Визитка» или «Напоминания», затем нажмите «Добавить виджет»."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ilovasini qidiring, «Mening QR kodim», «Vizitka» yoki «Eslatmalar»ni tanlang, so‘ng «Vidjet qo‘shish»ni bosing."
+          }
+        }
+      }
+    },
+    "Serif": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "С засечками"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serifli"
+          }
+        }
+      }
+    },
+    "Show ${card}": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать ${card}"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${card}ni ko‘rsatish"
+          }
+        }
+      }
+    },
+    "Show My QR": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать мой QR"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kodimni ko‘rsatish"
+          }
+        }
+      }
+    },
+    "Show QR": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-код"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kod"
+          }
+        }
+      }
+    },
+    "Show my %@ QR": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покажи мой QR в %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ilovasida QR kodimni ko‘rsat"
+          }
+        }
+      }
+    },
+    "Show my card in %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покажи мою визитку в %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ilovasida vizitkamni ko‘rsat"
+          }
+        }
+      }
+    },
+    "Show my follow-ups in %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Покажи мои напоминания в %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ilovasida eslatmalarimni ko‘rsat"
+          }
+        }
+      }
+    },
+    "Shows your QR code full screen": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывает ваш QR-код на весь экран"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kodingizni to‘liq ekranda ko‘rsatadi"
+          }
+        }
+      }
+    },
+    "Sign in to %@ to see your follow-ups.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите в %@, чтобы видеть напоминания."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eslatmalarni ko‘rish uchun %@ ilovasiga kiring."
+          }
+        }
+      }
+    },
+    "Sign in to show your QR code here.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите, чтобы показывать здесь свой QR-код."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kodingizni bu yerda ko‘rsatish uchun tizimga kiring."
+          }
+        }
+      }
+    },
+    "Sign in to show your QR.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите, чтобы показать свой QR."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kodingizni ko‘rsatish uchun tizimga kiring."
+          }
+        }
+      }
+    },
+    "Sign in to show your card here.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войдите, чтобы показывать здесь свою визитку."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitkangizni bu yerda ko‘rsatish uchun tizimga kiring."
+          }
+        }
+      }
+    },
+    "Siri & Shortcuts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siri и Быстрые команды"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siri va Shortcuts"
+          }
+        }
+      }
+    },
+    "Small · Your QR, one tap away.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Маленький · Ваш QR в одно касание."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kichik · QR kodingiz bir bosishda."
+          }
+        }
+      }
+    },
+    "Someone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кто-то"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kimdir"
+          }
+        }
+      }
+    },
+    "Start an event in %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начни мероприятие в %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ilovasida tadbir boshla"
+          }
+        }
+      }
+    },
+    "Step %lld: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Step %1$lld: %2$@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шаг %1$lld: %2$@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-qadam: %2$@"
+          }
+        }
+      }
+    },
+    "Swipe down from the top-right corner of the screen.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Смахните вниз от правого верхнего угла экрана."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekranning yuqori o‘ng burchagidan pastga suring."
+          }
+        }
+      }
+    },
+    "System": {
+      "comment": "App appearance: follow the iOS setting",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как в системе"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tizim bo‘yicha"
+          }
+        }
+      }
+    },
+    "Tags everyone you meet with the event.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмечает всех, с кем вы познакомились, тегом мероприятия."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishgan har bir kishingizga tadbir tegini qo‘yadi."
+          }
+        }
+      }
+    },
+    "Tap Edit, then tap Add Widget.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нажмите «Изменить», затем «Добавить виджет»."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Tahrirlash»ni, so‘ng «Vidjet qo‘shish»ni bosing."
+          }
+        }
+      }
+    },
+    "Telegram": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сегодня"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugun"
+          }
+        }
+      }
+    },
+    "Tomorrow": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Завтра"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ertaga"
+          }
+        }
+      }
+    },
+    "Touch and hold a widget, then tap Edit Widget to choose which card it shows.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Коснитесь виджета и удерживайте его, затем выберите «Изменить виджет», чтобы указать, какую визитку он показывает."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vidjetni bosib turing, so‘ng qaysi vizitkani ko‘rsatishini tanlash uchun “Vidjetni tahrirlash”ni bosing."
+          }
+        }
+      }
+    },
+    "Touch and hold an empty area of your Home Screen until the apps jiggle.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Коснитесь пустого места на экране «Домой» и удерживайте, пока приложения не начнут покачиваться."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bosh ekrandagi bo‘sh joyni ilovalar qimirlay boshlaguncha bosib turing."
+          }
+        }
+      }
+    },
+    "Touch and hold an empty area, then tap Add a Control.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Коснитесь пустого места и удерживайте, затем выберите «Добавить элемент управления»."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bo‘sh joyni bosib turing, so‘ng “Boshqaruv elementi qo‘shish”ni bosing."
+          }
+        }
+      }
+    },
+    "Touch and hold your Lock Screen, then tap Customize.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Коснитесь экрана блокировки и удерживайте, затем выберите «Настроить»."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qulf ekranini bosib turing, so‘ng “Moslash”ni bosing."
+          }
+        }
+      }
+    },
+    "Undo": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменить"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qaytarish"
+          }
+        }
+      }
+    },
+    "Website": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сайт"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veb-sayt"
+          }
+        }
+      }
+    },
+    "Widgets": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Виджеты"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vidjetlar"
+          }
+        }
+      }
+    },
+    "Yesterday": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вчера"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kecha"
+          }
+        }
+      }
+    },
+    "You can also put it on the Lock Screen or the Action button.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Его также можно добавить на экран блокировки или на кнопку действия."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uni Qulf ekraniga yoki Harakat tugmasiga ham qo‘yishingiz mumkin."
+          }
+        }
+      }
+    },
+    "Your Name": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваше имя"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ismingiz"
+          }
+        }
+      }
+    },
+    "Your QR on the Lock Screen. Anyone can scan it.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваш QR-код на экране блокировки. Его может отсканировать любой."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qulf ekranidagi QR kodingiz. Uni istalgan kishi skanerlay oladi."
+          }
+        }
+      }
+    },
+    "Your QR shows right on the Lock Screen, so people can scan it without you unlocking. Tap it to open it full screen.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-код отображается прямо на экране блокировки, поэтому его можно отсканировать, не разблокируя телефон. Коснитесь его, чтобы открыть на весь экран."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kodingiz to‘g‘ridan-to‘g‘ri Qulf ekranida ko‘rinadi, shuning uchun uni qurilmani ochmasdan skanerlash mumkin. To‘liq ekranda ochish uchun ustiga bosing."
+          }
+        }
+      }
+    },
+    "Your QR, one tap away.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваш QR-код — в одно касание."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR kodingiz bir bosishda."
+          }
+        }
+      }
+    },
+    "Your card and this week's new connections. Tap to show your QR.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваша визитка и новые контакты за неделю. Коснитесь, чтобы показать QR-код."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitkangiz va shu haftadagi yangi tanishlar. QR kodni ko‘rsatish uchun bosing."
+          }
+        }
+      }
+    },
+    "Your default card, or your event's card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Основная визитка или визитка мероприятия"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asosiy vizitkangiz yoki tadbir vizitkangiz"
+          }
+        }
+      }
+    },
+    "via Nearby": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "через «Рядом»"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yaqin atrofda orqali"
+          }
+        }
+      }
+    },
+    "via QR": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "через QR"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR orqali"
+          }
+        }
+      }
+    },
+    "via Tap": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "касанием"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tegizish orqali"
+          }
+        }
+      }
+    },
+    "via paper card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "по бумажной визитке"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "qog‘oz vizitka orqali"
+          }
+        }
+      }
+    },
+    "via web": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "через сайт"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "veb orqali"
+          }
+        }
+      }
+    },
+    "“%@”": {
+      "shouldTranslate": false
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

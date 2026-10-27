@@ -8,6 +8,18 @@
             "state": "translated",
             "value": "Tanishly"
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly"
+          }
         }
       }
     },
@@ -17,6 +29,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tanishly suggests events from your calendar so new contacts are tagged automatically."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly предлагает мероприятия из вашего календаря, чтобы новые контакты отмечались автоматически."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly yangi kontaktlarga avtomatik teg qo‘yish uchun taqvimingizdagi tadbirlarni taklif qiladi."
           }
         }
       }
@@ -28,6 +52,18 @@
             "state": "translated",
             "value": "Tanishly uses the camera to scan QR codes and paper business cards."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly использует камеру для сканирования QR-кодов и бумажных визиток."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly QR kodlar va qog‘oz vizitkalarni skanerlash uchun kameradan foydalanadi."
+          }
         }
       }
     },
@@ -37,6 +73,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tanishly saves the people you meet to your Contacts when you ask it to."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly сохраняет людей, с которыми вы познакомились, в Контакты, когда вы об этом просите."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly siz so‘raganingizda tanishgan odamlaringizni Kontaktlarga saqlaydi."
           }
         }
       }
@@ -48,6 +96,18 @@
             "state": "translated",
             "value": "Tanishly finds people nearby who also use Tanishly so you can swap cards."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly находит людей поблизости, которые тоже пользуются Tanishly, чтобы вы могли обменяться визитками."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly vizitka almashish uchun yaqin atrofdagi Tanishly foydalanuvchilarini topadi."
+          }
         }
       }
     },
@@ -57,6 +117,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tanishly fills in where you met someone. Your location is never shared."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly указывает, где вы с кем-то познакомились. Ваша геопозиция никому не передаётся."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly kim bilan qayerda tanishganingizni to‘ldiradi. Joylashuvingiz hech kimga ulashilmaydi."
           }
         }
       }
@@ -68,6 +140,18 @@
             "state": "translated",
             "value": "Tanishly uses the microphone to dictate private notes. Audio isn't stored."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly использует микрофон, чтобы надиктовывать личные заметки. Аудио не сохраняется."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly shaxsiy izohlarni aytib yozish uchun mikrofondan foydalanadi. Audio saqlanmaydi."
+          }
         }
       }
     },
@@ -77,6 +161,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tanishly detects when you hold your iPhone near someone else's to swap cards."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly определяет, когда вы подносите свой iPhone к телефону другого человека, чтобы обменяться визитками."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly vizitka almashish uchun iPhone’ingizni boshqa odamnikiga yaqin tutganingizni aniqlaydi."
           }
         }
       }
@@ -88,6 +184,18 @@
             "state": "translated",
             "value": "Tanishly saves card images and Lock Screen wallpapers to your Photos."
           }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly сохраняет изображения визиток и обои для экрана блокировки в «Фото»."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly vizitka rasmlari va Qulf ekrani fon rasmlarini Rasmlar ilovasiga saqlaydi."
+          }
         }
       }
     },
@@ -97,6 +205,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tanishly turns your voice into a private note on your iPhone."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly превращает ваш голос в личную заметку прямо на iPhone."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishly iPhone’ingizda ovozingizni shaxsiy izohga aylantiradi."
           }
         }
       }

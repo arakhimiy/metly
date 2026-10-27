@@ -52,13 +52,19 @@ struct ActiveCardPanel: View {
             let layout = dynamicTypeSize.isAccessibilitySize
                 ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
             layout {
+                // One line in every language: longer words (ru «Поделиться») shrink a little instead of
+                // wrapping or hyphenating inside the capsule.
                 Button(action: onShowQR) {
                     Label("Show QR", systemImage: "qrcode")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                         .frame(maxWidth: .infinity)
                 }
                 .prominentButtonStyle()
                 Button(action: onShare) {
                     Label("Share", systemImage: "square.and.arrow.up")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                         .frame(maxWidth: .infinity)
                 }
                 .secondaryButtonStyle()
@@ -83,6 +89,8 @@ struct CardStatsText: View {
         Text("Viewed \(stats.views) · Saved \(stats.saves) · Shared back \(stats.shareBacks)")
             .font(.footnote)
             .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
             .accessibilityLabel(Text("Viewed \(stats.views) times, saved \(stats.saves) times, shared back \(stats.shareBacks) times"))
     }
 }
