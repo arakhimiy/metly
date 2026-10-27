@@ -45,6 +45,8 @@
 	<string>$(GOOGLE_CLIENT_ID)</string>
 	<key>MetlyAppGroup</key>
 	<string>$(METLY_APP_GROUP)</string>
+	<key>MetlyWebHost</key>
+	<string>$(METLY_WEB_HOST)</string>
 	<key>MetlyAPIBaseURL</key>
 	<string>$(METLY_API_BASE_URL)</string>
 	<key>UIBackgroundModes</key>

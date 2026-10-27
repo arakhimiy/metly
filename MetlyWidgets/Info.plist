@@ -4,6 +4,8 @@
 <dict>
 	<key>MetlyAppGroup</key>
 	<string>$(METLY_APP_GROUP)</string>
+	<key>MetlyWebHost</key>
+	<string>$(METLY_WEB_HOST)</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>

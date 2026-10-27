@@ -4,7 +4,10 @@ import Foundation
 public enum Brand {
     public static let appName = "Tanishly"
     public static let proName = "Tanishly Pro"
-    public static let linkHost = "tanishly.app"
+    /// Host of card links and web pages, from `MetlyWebHost` (`METLY_WEB_HOST` build setting). Builds made
+    /// before the domain exists point it at the API host; tests and previews get the release domain.
+    public static let linkHost = (Bundle.main.object(forInfoDictionaryKey: "MetlyWebHost") as? String)
+        .flatMap { $0.isEmpty ? nil : $0 } ?? "tanishly.app"
     public static let supportEmail = "support@tanishly.app"
     public static let telegramBot = "TanishlyBot"
     /// From `MetlyAppGroup` in the app's and the widget's Info.plist (`METLY_APP_GROUP` build setting),
@@ -13,9 +16,9 @@ public enum Brand {
         ?? "group.app.tanishly.ios"
     public static let urlScheme = "tanishly"
 
-    public static let termsURL = URL(string: "https://tanishly.app/terms")!
-    public static let privacyURL = URL(string: "https://tanishly.app/privacy")!
-    public static let helpURL = URL(string: "https://tanishly.app/help")!
+    public static let termsURL = URL(string: "https://\(linkHost)/terms")!
+    public static let privacyURL = URL(string: "https://\(linkHost)/privacy")!
+    public static let helpURL = URL(string: "https://\(linkHost)/help")!
 
     public static func cardURL(slug: String) -> URL {
         URL(string: "https://\(linkHost)/c/\(slug)")!
