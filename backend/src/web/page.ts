@@ -1,3 +1,5 @@
+import type { Lang } from '../i18n/lang';
+import { CARD_PAGE_TEXT, type CardPageText, UNAVAILABLE_PAGE_TEXT } from '../i18n/web-page';
 import type { CardDesign } from '../records/wire';
 import { type ContactAction, contactAction } from './contact-links';
 import { html, type SafeHtml, safeHttpUrl, trusted } from './html';
@@ -8,11 +10,14 @@ import type { WebPlatform } from './visitor';
 // Server-rendered tanishly.app pages (SPEC WEB_CARD / WEB_SHAREBACK_SHEET / WEB_CONFIRMATION /
 // WEB_UNAVAILABLE). No framework: one HTML document, one nonce'd <style>, one nonce'd <script>.
 // Every user value goes through `html` (escape-by-default); URLs through `safeUrl`.
+// Texts come from src/i18n/web-page.ts in the page's language; the script's texts travel as JSON in
+// the body's `data-t` attribute (escaped like any attribute), so the script itself stays constant.
 
 export interface CardPageOptions {
   view: PublicView;
   nonce: string;
   platform: WebPlatform;
+  lang: Lang;
   /** App Store id: Smart App Banner + "Get the app" (both hidden without it). */
   appStoreId?: string;
 }
@@ -173,6 +178,8 @@ const CARD_JS = String.raw`(function () {
   'use strict';
   var d = document, b = d.body;
   var slug = b.getAttribute('data-slug');
+  var T = {};
+  try { T = JSON.parse(b.getAttribute('data-t') || '{}'); } catch (e) {}
   var api = '/api/public/cards/' + encodeURIComponent(slug);
   var KEY = 'metly:shareback:' + slug, SAVED = 'metly:saved:' + slug, SKIP = 'metly:skip:' + slug;
   function $(id) { return d.getElementById(id); }
@@ -227,7 +234,7 @@ const CARD_JS = String.raw`(function () {
   each('[data-track]', function (el) {
     el.addEventListener('click', function () { track(el.getAttribute('data-track')); });
   });
-  on('copy-link', 'click', function () { copy(location.href.split('#')[0], function () { toast('Link Copied'); }); });
+  on('copy-link', 'click', function () { copy(location.href.split('#')[0], function () { toast(T.linkCopied); }); });
 
   function refresh() {
     var shared = !!get('localStorage', KEY), saved = !!get('localStorage', SAVED);
@@ -238,7 +245,7 @@ const CARD_JS = String.raw`(function () {
   }
   function markSaved() { put('localStorage', SAVED, { at: Date.now() }); setTimeout(refresh, 500); }
   function onSave(e) {
-    if (platform === 'inapp') { e.preventDefault(); toast('Open in browser to save'); return; }
+    if (platform === 'inapp') { e.preventDefault(); toast(T.openInBrowser); return; }
     markSaved();
   }
   on('save', 'click', onSave);
@@ -273,7 +280,7 @@ const CARD_JS = String.raw`(function () {
   }
   function validate() {
     var v = values();
-    var msg = !v.name ? 'Add your name to send.' : (!v.phone && !v.telegram ? 'Add a phone or Telegram to send.' : '');
+    var msg = !v.name ? T.needName : (!v.phone && !v.telegram ? T.needContact : '');
     hint.textContent = msg; send.disabled = !!msg; return !msg;
   }
   form.addEventListener('input', validate);
@@ -287,7 +294,7 @@ const CARD_JS = String.raw`(function () {
     e.preventDefault();
     if (sending || !validate()) return;
     var v = values();
-    sending = true; send.disabled = true; hint.textContent = 'Sending…';
+    sending = true; send.disabled = true; hint.textContent = T.sending;
     var key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
     fetch(api + '/shareback', {
       method: 'POST', credentials: 'omit',
@@ -305,11 +312,16 @@ const CARD_JS = String.raw`(function () {
         }
         return;
       }
+      // The API's validation messages are English: show the page's own text for the field instead.
       var details = (res.body && res.body.details) || {};
-      hint.textContent = res.status === 429 ? 'Too many tries. Please try again later.'
-        : (details.name || details.phone || details.telegram || details.metAt || 'Something went wrong. Please try again.');
+      hint.textContent = res.status === 429 ? T.tooMany
+        : details.name ? (v.name ? T.invalidName : T.needName)
+        : details.phone ? (v.phone ? T.invalidPhone : T.needContact)
+        : details.telegram ? T.invalidTelegram
+        : details.metAt ? T.invalidMetAt
+        : T.failed;
       send.disabled = false;
-    }, function () { sending = false; send.disabled = false; hint.textContent = 'You seem to be offline. Try again.'; });
+    }, function () { sending = false; send.disabled = false; hint.textContent = T.offline; });
   });
 
   function removeContact() {
@@ -320,9 +332,9 @@ const CARD_JS = String.raw`(function () {
     }).then(function (r) {
       if (r.status === 204 || r.status === 403) {
         put('localStorage', KEY, null); refresh(); closeSheet();
-        toast(r.status === 204 ? 'Your contact was removed' : 'This contact can no longer be removed here');
-      } else toast('Could not remove your contact. Try again.');
-    }, function () { toast('You seem to be offline. Try again.'); });
+        toast(r.status === 204 ? T.removed : T.cannotRemove);
+      } else toast(T.removeFailed);
+    }, function () { toast(T.offline); });
   }
   on('done-remove', 'click', removeContact);
   on('remove-inline', 'click', removeContact);
@@ -337,6 +349,7 @@ function head(opts: {
   nonce: string;
   title: string;
   description: string;
+  ogLocale: string;
   colors: PageColors;
   extraCss: string;
   ogUrl?: string;
@@ -356,6 +369,7 @@ function head(opts: {
 <meta property="og:site_name" content="Tanishly">
 <meta property="og:title" content="${opts.title}">
 <meta property="og:description" content="${opts.description}">
+<meta property="og:locale" content="${opts.ogLocale}">
 ${opts.ogUrl ? html`<meta property="og:url" content="${opts.ogUrl}">` : ''}
 ${opts.ogImage ? html`<meta property="og:image" content="${opts.ogImage}">` : ''}
 <meta name="twitter:card" content="summary">
@@ -413,8 +427,9 @@ ${role ? html`<p class="role">${role}</p>` : ''}
 </section>`;
 }
 
-function fieldRow(action: ContactAction, terminal: boolean): SafeHtml {
-  const label = terminal ? action.key : action.label;
+function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText): SafeHtml {
+  const name = t.fieldLabel[action.kind];
+  const label = terminal ? action.key : name;
   const body = html`<span class="icon">${ICONS[action.kind] ?? ''}</span><span class="field-text"><span class="label">${label}</span><span class="value">${action.display}</span></span>`;
   const external = action.kind === 'website' || action.kind === 'linkedin' || action.kind === 'telegram';
   const track = action.kind === 'telegram' ? 'telegram_open' : null;
@@ -422,15 +437,16 @@ function fieldRow(action: ContactAction, terminal: boolean): SafeHtml {
     ? html`<a class="field-link" href="${action.href}"${external ? trusted(' target="_blank" rel="noopener noreferrer"') : ''}${track ? html` data-track="${track}"` : ''}>${body}</a>`
     : html`<div class="field-link">${body}</div>`;
   const copyable = action.kind === 'phone' || action.kind === 'email';
-  const copied = action.kind === 'phone' ? 'Phone Copied' : 'Email Copied';
+  const copied = action.kind === 'phone' ? t.phoneCopied : t.emailCopied;
   const copy = copyable
-    ? html`<button class="copy" type="button" data-copy="${action.display}" data-kind="${action.kind}" data-copied="${copied}" aria-label="Copy ${action.label}">${ICONS.copy}<span>Copy</span></button>`
+    ? html`<button class="copy" type="button" data-copy="${action.display}" data-kind="${action.kind}" data-copied="${copied}" aria-label="${t.copyAria(name)}">${ICONS.copy}<span>${t.copy}</span></button>`
     : '';
   return html`<li class="field">${link}${copy}</li>`;
 }
 
 export function renderCardPage(opts: CardPageOptions): string {
-  const { view, nonce, platform, appStoreId } = opts;
+  const { view, nonce, platform, lang, appStoreId } = opts;
+  const t = CARD_PAGE_TEXT[lang];
   const colors = pageColors(view.design);
   const first = view.firstName;
   const role = [view.profile.jobTitle.trim(), view.profile.company.trim()].filter(Boolean).join(' · ');
@@ -442,60 +458,61 @@ export function renderCardPage(opts: CardPageOptions): string {
     ? html`<meta name="apple-itunes-app" content="app-id=${appStoreId}, app-argument=${view.url}">`
     : undefined;
   const cta = appStoreId
-    ? html`<section class="cta"><div><strong>Want a card like this?</strong><span>Free, 30 seconds.</span></div><a class="btn primary" href="${getAppHref}" data-get-app>Get Tanishly</a></section>`
+    ? html`<section class="cta"><div><strong>${t.ctaTitle}</strong><span>${t.ctaSubtitle}</span></div><a class="btn primary" href="${getAppHref}" data-get-app>${t.ctaButton}</a></section>`
     : '';
 
   const doc = html`<!doctype html>
-<html lang="en">
+<html lang="${lang}">
 ${head({
   nonce,
   title: `${view.fullName} · Tanishly`,
-  description: role || 'Digital business card on Tanishly',
+  description: role || t.description,
+  ogLocale: t.ogLocale,
   colors,
   extraCss: CARD_CSS,
   ogUrl: view.url,
   ogImage: view.photoUrl ? safeHttpUrl(view.photoUrl) : null,
   appBanner: banner,
 })}
-<body class="p-${platform}" data-slug="${view.slug}" data-platform="${platform}">
+<body class="p-${platform}" data-slug="${view.slug}" data-platform="${platform}" data-t="${JSON.stringify(t.script)}">
 <main class="wrap">
 ${face(view)}
-<div class="notice inapp" role="note"><span>Open this page in your browser to save the contact.</span><button class="btn" type="button" id="copy-link">Copy link</button></div>
-${actions.length > 0 ? html`<ul class="fields" aria-label="Contact details">${actions.map((a) => fieldRow(a, view.design.template === 'terminal'))}</ul>` : ''}
+<div class="notice inapp" role="note"><span>${t.inAppNotice}</span><button class="btn" type="button" id="copy-link">${t.copyLink}</button></div>
+${actions.length > 0 ? html`<ul class="fields" aria-label="${t.contactDetails}">${actions.map((a) => fieldRow(a, view.design.template === 'terminal', t))}</ul>` : ''}
 <div class="actions">
-<a class="btn primary" id="save" href="${vcfHref}">Save to Contacts</a>
-${telegram ? html`<a class="btn" href="${telegram.href}" target="_blank" rel="noopener noreferrer" data-track="telegram_open">${ICONS.telegram}Message on Telegram</a>` : ''}
-<button class="btn" type="button" id="exchange">Exchange Contacts with ${first}</button>
-<p class="shared" id="shared" hidden>${ICONS.check}<span>Your contact was sent to ${first}.</span><button class="link" type="button" id="remove-inline">Remove my contact</button></p>
+<a class="btn primary" id="save" href="${vcfHref}">${t.saveToContacts}</a>
+${telegram ? html`<a class="btn" href="${telegram.href}" target="_blank" rel="noopener noreferrer" data-track="telegram_open">${ICONS.telegram}${t.messageOnTelegram}</a>` : ''}
+<button class="btn" type="button" id="exchange">${t.exchange(first)}</button>
+<p class="shared" id="shared" hidden>${ICONS.check}<span>${t.sent(first)}</span><button class="link" type="button" id="remove-inline">${t.removeMine}</button></p>
 </div>
 ${cta}
-<p class="foot">Made with Tanishly · Only public details are shown</p>
+<p class="foot">${t.foot}</p>
 </main>
 <dialog id="sheet" aria-labelledby="sheet-title">
 <form id="sb-form" novalidate autocomplete="on">
 <div class="grabber" aria-hidden="true"></div>
-<h2 id="sheet-title">Exchange contacts with ${first}</h2>
-<p class="sub">Send yours and save ${first}’s in one step.</p>
-<label class="input"><span>Name</span><input name="name" autocomplete="name" maxlength="80" placeholder="Your name" required></label>
-<label class="input"><span>Phone</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="+998"></label>
-<label class="input"><span>Telegram</span><input name="telegram" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="64" placeholder="@username"></label>
-<p class="help">Add a phone or Telegram — at least one.</p>
-<label class="input"><span>Met at</span><input name="metAt" maxlength="120" placeholder="Where did we meet? Optional"></label>
+<h2 id="sheet-title">${t.sheetTitle(first)}</h2>
+<p class="sub">${t.sheetSubtitle(first)}</p>
+<label class="input"><span>${t.name}</span><input name="name" autocomplete="name" maxlength="80" placeholder="${t.namePlaceholder}" required></label>
+<label class="input"><span>${t.phone}</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="+998"></label>
+<label class="input"><span>${t.telegram}</span><input name="telegram" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="64" placeholder="${t.telegramPlaceholder}"></label>
+<p class="help">${t.phoneOrTelegram}</p>
+<label class="input"><span>${t.metAt}</span><input name="metAt" maxlength="120" placeholder="${t.metAtPlaceholder}"></label>
 <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
 <p class="hint" id="sb-hint" role="status" aria-live="polite"></p>
-<p class="private">${ICONS.lock}<span>Only ${first} will see this.</span></p>
-<button class="btn primary" id="sb-send" type="submit" disabled>Send &amp; Save ${first}’s Contact</button>
-<button class="btn plain" id="sb-skip" type="button">Skip</button>
+<p class="private">${ICONS.lock}<span>${t.onlyOwnerSees(first)}</span></p>
+<button class="btn primary" id="sb-send" type="submit" disabled>${t.send(first)}</button>
+<button class="btn plain" id="sb-skip" type="button">${t.skip}</button>
 </form>
 <div class="done" id="sb-done" hidden>
 <div class="check">${ICONS.check}</div>
-<h2>Done! ${first} got your contact.</h2>
-<p class="sub">It arrives with where you met, so a follow-up is easy.</p>
-<a class="btn primary" id="done-save" href="${vcfHref}">Save ${first}’s Contact</a>
-<p class="saved-row" id="done-saved" hidden>${ICONS.check}<span>${first}’s contact is saved</span></p>
+<h2>${t.doneTitle(first)}</h2>
+<p class="sub">${t.doneSubtitle}</p>
+<a class="btn primary" id="done-save" href="${vcfHref}">${t.doneSave(first)}</a>
+<p class="saved-row" id="done-saved" hidden>${ICONS.check}<span>${t.doneSaved(first)}</span></p>
 ${cta}
-<button class="btn" type="button" id="done-back">Back to ${first}’s Card</button>
-<p class="mind">Changed your mind? <button class="link" type="button" id="done-remove">Remove my contact</button></p>
+<button class="btn" type="button" id="done-back">${t.doneBack(first)}</button>
+<p class="mind">${t.changedMind} <button class="link" type="button" id="done-remove">${t.removeMine}</button></p>
 </div>
 </dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -508,15 +525,13 @@ ${cta}
 export type UnavailableKind = 'unavailable' | 'notFound';
 
 /** WEB_UNAVAILABLE (paused or deleted) and unknown links — never any personal data. */
-export function renderUnavailablePage(opts: { nonce: string; kind: UnavailableKind }): string {
+export function renderUnavailablePage(opts: { nonce: string; kind: UnavailableKind; lang: Lang }): string {
   const colors = pageColors(null);
-  const copy =
-    opts.kind === 'unavailable'
-      ? { title: 'This card isn’t available right now.', body: 'The link may be paused or removed. Ask the person for a new one.' }
-      : { title: 'We couldn’t find this card.', body: 'Check the link, or ask the person to share their card again.' };
+  const t = UNAVAILABLE_PAGE_TEXT[opts.lang];
+  const copy = t[opts.kind];
   return html`<!doctype html>
-<html lang="en">
-${head({ nonce: opts.nonce, title: 'Tanishly', description: copy.title, colors, extraCss: UNAVAILABLE_CSS })}
+<html lang="${opts.lang}">
+${head({ nonce: opts.nonce, title: 'Tanishly', description: copy.title, ogLocale: CARD_PAGE_TEXT[opts.lang].ogLocale, colors, extraCss: UNAVAILABLE_CSS })}
 <body>
 <main class="wrap">
 <div class="empty">
@@ -524,7 +539,7 @@ ${head({ nonce: opts.nonce, title: 'Tanishly', description: copy.title, colors, 
 <h1>${copy.title}</h1>
 <p>${copy.body}</p>
 </div>
-<p class="foot">Made with Tanishly</p>
+<p class="foot">${t.foot}</p>
 </main>
 </body>
 </html>`.value;

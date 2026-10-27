@@ -6,6 +6,8 @@ import { randomToken, safeEqual, sha256 } from '../common/crypto';
 import { RateLimitStore } from '../common/rate-limit';
 import { parse } from '../common/validate';
 import type { Card, Connection, Prisma, Profile } from '../generated/prisma/client';
+import { SHAREBACK_CONNECTION_TEXT } from '../i18n/messages';
+import { userLang } from '../i18n/user-lang';
 import { PrismaService } from '../prisma/prisma.service';
 import { PushService } from '../push/push.service';
 import { RealtimeService } from '../realtime/realtime.service';
@@ -93,8 +95,9 @@ export class ShareBackService {
     const removalToken = randomToken(24);
     const shareBackId = randomUUID();
     const ownerId = card.userId;
+    const placeholder = SHAREBACK_CONNECTION_TEXT[await userLang(this.prisma, ownerId)];
     const { result } = await this.records.write(ownerId, (ctx) =>
-      this.apply(ctx, { card, shareBackId, removalToken, name: input.name, phone, telegram, metAt: input.metAt || null }),
+      this.apply(ctx, { card, shareBackId, removalToken, name: input.name, phone, telegram, metAt: input.metAt || null, placeholder }),
     );
     if (!result) return { shareBackId, removalToken };
     this.stats.noteBumped(card.id);
@@ -113,8 +116,7 @@ export class ShareBackService {
     await this.push
       .notify(ownerId, {
         type: 'shareback_received',
-        title: `${firstName(input.name)} shared their contact with you`,
-        body: result.eventName ?? 'From your web page',
+        text: { id: 'shareBackReceived', params: { name: firstName(input.name), context: result.eventName ?? null } },
         data: { connectionId: result.connection.id },
       })
       .catch((error: unknown) => this.logger.warn({ err: error }, 'shareback push failed'));
@@ -124,7 +126,17 @@ export class ShareBackService {
   /** README § Share-back merge rules, inside the owner's write transaction. Null = discarded. */
   private async apply(
     ctx: WriteContext,
-    input: { card: Card; shareBackId: string; removalToken: string; name: string; phone: string | null; telegram: string | null; metAt: string | null },
+    input: {
+      card: Card;
+      shareBackId: string;
+      removalToken: string;
+      name: string;
+      phone: string | null;
+      telegram: string | null;
+      metAt: string | null;
+      /** Job title and company of a created connection, in the owner's language. */
+      placeholder: { jobTitle: string; company: string };
+    },
   ) {
     const { tx, userId: ownerId } = ctx;
     const now = new Date();
@@ -200,8 +212,8 @@ export class ShareBackService {
           userId: ownerId,
           remoteUserId: null,
           fullName: input.name,
-          jobTitle: 'Contact',
-          company: 'Shared from your web page',
+          jobTitle: input.placeholder.jobTitle,
+          company: input.placeholder.company,
           phone: input.phone ?? '',
           email: '',
           telegram: input.telegram ?? '',

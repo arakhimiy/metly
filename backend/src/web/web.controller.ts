@@ -4,6 +4,7 @@ import type { Request, Response } from 'express';
 import { RateLimit } from '../common/rate-limit';
 import { clientIp, Public } from '../common/request';
 import { ENV, type Env } from '../config/env';
+import { pickLang } from '../i18n/lang';
 import { DeferredLinksService } from './deferred-links.service';
 import { renderCardPage, renderUnavailablePage, pageCsp } from './page';
 import { PublicCardService } from './public-card.service';
@@ -29,7 +30,10 @@ export class WebController {
     if (/\.vcf$/i.test(rawSlug)) return this.vcard(rawSlug.slice(0, -4), req, res);
     const resolved = await this.cards.resolve(rawSlug);
     const nonce = randomBytes(16).toString('base64');
+    // `?lang=` (uz | ru | en), then Accept-Language, then Uzbek.
+    const lang = pickLang(req.query.lang, req.get('accept-language'));
     res.setHeader('Content-Security-Policy', pageCsp(nonce));
+    res.vary('Accept-Language');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('X-Robots-Tag', 'noindex, nofollow');
     res.type('html');
@@ -40,13 +44,14 @@ export class WebController {
           view: this.cards.view(resolved),
           nonce,
           platform: platformFromUserAgent(userAgent),
+          lang,
           appStoreId: this.env.APP_STORE_ID,
         }),
       );
       return;
     }
     const status = resolved.status === 'paused' ? 200 : resolved.status === 'deleted' ? 410 : 404;
-    res.status(status).send(renderUnavailablePage({ nonce, kind: resolved.status === 'unknown' ? 'notFound' : 'unavailable' }));
+    res.status(status).send(renderUnavailablePage({ nonce, kind: resolved.status === 'unknown' ? 'notFound' : 'unavailable', lang }));
   }
 
   private async vcard(rawSlug: string, req: Request, res: Response) {

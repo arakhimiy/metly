@@ -145,7 +145,11 @@ describe('connect', () => {
     expectSchema('ConnectRequest', received[0]);
     expect(received[0]).toMatchObject({ id: sent.body.id, direction: 'incoming', status: 'pending' });
     expect(pushesTo(a.userId)).toEqual([
-      expect.objectContaining({ type: 'connect_request', title: 'Bobur wants to swap cards', data: { requestId: sent.body.id } }),
+      expect.objectContaining({
+        type: 'connect_request',
+        text: { id: 'connectRequest', params: { name: 'Bobur', eventName: 'ICT Week' } },
+        data: { requestId: sent.body.id },
+      }),
     ]);
     const incoming = await http().get('/v1/connect/requests').query({ direction: 'incoming', status: 'pending' }).set(a.s.auth).expect(200);
     expectSchema('ConnectRequestPage', incoming.body);

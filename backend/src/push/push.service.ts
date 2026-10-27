@@ -1,5 +1,7 @@
 import { Inject, Injectable, Logger, type OnApplicationShutdown } from '@nestjs/common';
 import { ENV, type Env } from '../config/env';
+import { type Lang, langFromLocale } from '../i18n/lang';
+import { type PushTextRef, renderPush } from '../i18n/messages';
 import { PrismaService } from '../prisma/prisma.service';
 import { DEFAULT_NOTIFICATION_PREFS, NotificationPrefs } from '../records/wire';
 import { type ApnsEnvironment, ApnsTransport, type PushTransport } from './apns.transport';
@@ -19,8 +21,12 @@ export type PushType =
 
 export interface PushMessage {
   type: PushType;
-  title: string;
-  body: string;
+  /**
+   * Catalog message and its parameters (src/i18n/messages.ts), e.g.
+   * `{ id: 'followUpDue', params: { personName, title } }`. Rendered per device in the language of
+   * its `devices.locale` (a user's phones may differ).
+   */
+  text: PushTextRef;
   /** Deep-link ids: connectionId, requestId, followUpId, eventId. Never note text (Lock Screen privacy). */
   data?: Record<string, string>;
   /**
@@ -40,7 +46,8 @@ export interface PushMessage {
 const DEAD_TOKEN = new Set(['Unregistered', 'BadDeviceToken', 'ExpiredToken']);
 
 /**
- * Sends a push to every registered device of a user, honouring their notificationPrefs.
+ * Sends a push to every registered device of a user, honouring their notificationPrefs, with the
+ * text rendered in each device's own language (`devices.locale`, see `langFromLocale`).
  * Frozen public API — callers across modules depend on `notify`.
  *
  * `notify` never throws: delivery is best-effort and must not fail the caller's request. Without APNs
@@ -100,10 +107,20 @@ export class PushService implements OnApplicationShutdown {
     if (devices.length === 0) return;
 
     const headers = apnsHeaders(this.env.APNS_TOPIC, message);
-    const payload = apnsPayload(message);
+    const { text, ...rest } = message;
+    const payloads = new Map<Lang, Record<string, unknown>>();
+    const payloadFor = (lang: Lang) => {
+      let payload = payloads.get(lang);
+      if (!payload) {
+        payload = apnsPayload({ ...rest, ...renderPush(text, lang) });
+        payloads.set(lang, payload);
+      }
+      return payload;
+    };
     await Promise.all(
       devices.map(async (device) => {
         const environment: ApnsEnvironment = device.apnsEnvironment === 'sandbox' ? 'sandbox' : 'production';
+        const payload = payloadFor(langFromLocale(device.locale));
         try {
           const result = await transport.send(
             { token: device.apnsToken, environment, headers, payload },

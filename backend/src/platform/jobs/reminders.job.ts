@@ -114,8 +114,7 @@ export class RemindersJob {
 
     await this.push.notify(row.user_id, {
       type: 'followup_due',
-      title: personName ? `Follow up with ${personName}` : 'Follow up',
-      body: row.title.trim() || 'Follow up',
+      text: { id: 'followUpDue', params: { personName, title: row.title } },
       data: { followUpId: row.id, ...(row.connection_id ? { connectionId: row.connection_id } : {}) },
       // The app's local fallback uses this request identifier; the push replaces it instead of doubling.
       collapseId: `followup.${row.id.toUpperCase()}`,

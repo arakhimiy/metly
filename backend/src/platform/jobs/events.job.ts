@@ -10,11 +10,6 @@ import { DEFAULT_TIME_ZONE, endOfLocalDay, isValidTimeZone } from './time-zone';
 
 const BATCH = 200;
 
-export function eventSummaryBody(people: number): string {
-  if (people === 0) return 'See how it went and plan your follow-ups.';
-  return `You met ${people} ${people === 1 ? 'person' : 'people'}. Add notes and follow-ups while they’re fresh.`;
-}
-
 /**
  * Auto-end events (every minute): an `active` event ends at the end of its endDate's calendar day in
  * the owner's time zone (their most recently registered device; Asia/Tashkent without one). The
@@ -115,8 +110,7 @@ export class EventsJob {
     const people = await this.prisma.connection.count({ where: { userId: event.userId, eventId: event.id, deletedAt: null } });
     await this.push.notify(event.userId, {
       type: 'event_summary',
-      title: `${event.name.trim() || 'Your event'} wrapped up`,
-      body: eventSummaryBody(people),
+      text: { id: 'eventSummary', params: { eventName: event.name, people } },
       data: { eventId: event.id },
       collapseId: `event-summary.${event.id}`,
     });

@@ -255,8 +255,7 @@ export class ConnectService {
       this.background(
         this.push.notify(target.userId, {
           type: 'connect_result',
-          title: `${this.first(me)} connected with you`,
-          body: 'They used the link to your card.',
+          text: { id: 'connectViaLink', params: { name: this.first(me) } },
           data: { requestId: request.id, connectionId: accepted.toConnection.id },
         }),
       );
@@ -267,8 +266,7 @@ export class ConnectService {
       this.background(
         this.push.notify(target.userId, {
           type: 'connect_request',
-          title: `${this.first(me)} wants to swap cards`,
-          body: request.eventName ? `At ${request.eventName}` : 'Tap to accept or decline.',
+          text: { id: 'connectRequest', params: { name: this.first(me), eventName: request.eventName || null } },
           data: { requestId: request.id },
         }),
       );
@@ -328,8 +326,7 @@ export class ConnectService {
     this.background(
       this.push.notify(requesterId, {
         type: 'connect_result',
-        title: `You and ${this.first(me)} swapped cards`,
-        body: 'Add a note while you remember the conversation.',
+        text: { id: 'connectAccepted', params: { name: this.first(me) } },
         data: { requestId: result.request.id, connectionId: result.fromConnection.id },
       }),
     );
@@ -628,8 +625,9 @@ export class ConnectService {
     return r.fromUserId === userId || (r.toUserId === userId && !r.isSuppressed);
   }
 
-  private first(profile: Profile | null) {
-    return profile && !profile.deletedAt ? firstName(profile.fullName) || 'Someone' : 'Someone';
+  /** The first name for a push; null when unknown (the catalog says "Someone" in each language). */
+  private first(profile: Profile | null): string | null {
+    return profile && !profile.deletedAt ? firstName(profile.fullName) || null : null;
   }
 
   /** Realtime and push are best-effort; they never fail the request. */

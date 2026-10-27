@@ -54,12 +54,12 @@ describe('push payload', () => {
   });
 
   it('sets the APNs headers', () => {
-    expect(apnsHeaders('app.tanishly.ios', { type: 'followup_due', title: '', body: '', collapseId: 'followup.X' })).toEqual({
+    expect(apnsHeaders('app.tanishly.ios', { collapseId: 'followup.X' })).toEqual({
       'apns-topic': 'app.tanishly.ios',
       'apns-push-type': 'alert',
       'apns-priority': '10',
       'apns-collapse-id': 'followup.X',
     });
-    expect(apnsHeaders('t', { type: 'card_saved', title: '', body: '' })).not.toHaveProperty('apns-collapse-id');
+    expect(apnsHeaders('t', {})).not.toHaveProperty('apns-collapse-id');
   });
 });

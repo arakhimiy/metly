@@ -1,5 +1,9 @@
+import type { PushText } from '../i18n/messages';
 import type { NotificationPrefs } from '../records/wire';
 import type { PushMessage, PushType } from './push.service';
+
+/** A push with its title and body in one language (PushService renders one per device language). */
+export type RenderedPush = Omit<PushMessage, 'text'> & PushText;
 
 /**
  * Which `notificationPrefs` toggle gates each push type (docs/api/README.md § Push notifications).
@@ -53,7 +57,7 @@ export function deepLinkData(data: Record<string, string> = {}): Record<string, 
 /** APNs caps alert payloads at 4 KB; titles and bodies are short, but never let one overflow. */
 const clip = (value: string, max: number) => (value.length > max ? `${value.slice(0, max - 1)}…` : value);
 
-export function apnsPayload(message: PushMessage): Record<string, unknown> {
+export function apnsPayload(message: RenderedPush): Record<string, unknown> {
   const aps: Record<string, unknown> = {
     alert: { title: clip(message.title, 200), body: clip(message.body, 1000) },
   };
@@ -70,7 +74,7 @@ export interface ApnsHeaders {
   'apns-collapse-id'?: string;
 }
 
-export function apnsHeaders(topic: string, message: PushMessage): ApnsHeaders {
+export function apnsHeaders(topic: string, message: Pick<PushMessage, 'collapseId'>): ApnsHeaders {
   return {
     'apns-topic': topic,
     'apns-push-type': 'alert',

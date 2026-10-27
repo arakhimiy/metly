@@ -45,7 +45,9 @@ src/
   realtime/      WebSocket /v1/realtime; fan-out through Postgres LISTEN/NOTIFY
   account/       /v1/me, account deletion, export request
   subscriptions/ EntitlementsService (plan + limits)
-  push/          PushService.notify(userId, message) — frozen API
+  push/          PushService.notify(userId, message) — frozen API; text rendered per device language
+  i18n/          uz / ru / en: Lang, langFromLocale, pickLang, plural; push + Telegram catalog
+                 (messages.ts), card page texts (web-page.ts)
   connect/       connect sessions, peers, requests, blocks, public profiles
   web/           tanishly.app pages, vCard, public JSON, share-back, web analytics, AASA, deferred links
   platform/      devices + APNs, jobs, Telegram, App Store subscriptions
@@ -73,6 +75,22 @@ Every job takes a Postgres advisory lock (one instance runs it), is off under `N
 a `runOnce()` the tests call directly: follow-up reminders and event auto-end (every minute), connect
 request expiry (10 s), lapsed entitlements (10 min), data export (5 min), abandoned uploads (hourly),
 purge of 90-day-old tombstones and housekeeping tables (daily; raises `tombstone_floor_seq`).
+
+### Languages (uz, ru, en)
+
+Server-made texts — push notifications, Telegram bot replies, tanishly.app pages — come from
+`src/i18n/`; API error messages stay English (developer-facing; the app shows its own texts).
+
+- **Push**: callers pass a catalog id + parameters (`text: { id: 'followUpDue', params: {...} }`);
+  `PushService` renders it once per language and sends each device the text in its own
+  `devices.locale`: `uz*` → uz, `ru*` → ru, any other language → en (iOS always sends a locale, so
+  that person reads neither Uzbek nor Russian), no locale → uz.
+- **Telegram**: the bound user's most recently registered device; for an unbound chat Telegram's
+  `language_code`; then uz.
+- **Web pages**: `?lang=` → `Accept-Language` → uz (`pickLang`), `<html lang>`, `Vary: Accept-Language`.
+  The page script's texts arrive as JSON in `<body data-t>`, so the nonce'd script stays constant.
+- Russian texts never decline a person's name or put it next to a gendered past-tense verb; counted
+  nouns use `plural(lang, n, forms)` (Russian one/few/many; Uzbek nouns stay singular).
 
 ### Test doubles
 

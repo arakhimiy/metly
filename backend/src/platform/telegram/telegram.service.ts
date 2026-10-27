@@ -4,6 +4,8 @@ import { randomToken, sha256 } from '../../common/crypto';
 import { iso, minutes } from '../../common/time';
 import { ENV, type Env } from '../../config/env';
 import type { Prisma } from '../../generated/prisma/client';
+import { DEFAULT_LANG, type Lang, langFromLocale } from '../../i18n/lang';
+import { renderPush, TELEGRAM_TEXT } from '../../i18n/messages';
 import { PrismaService, type Tx } from '../../prisma/prisma.service';
 import { RecordsService, type WriteContext } from '../../records/records.service';
 
@@ -15,6 +17,8 @@ export interface TelegramUpdate {
   message?: {
     text?: string;
     chat?: { id?: number | string; type?: string };
+    /** The Telegram user's app language (IETF tag), a hint for chats not bound to an account yet. */
+    from?: { language_code?: string };
   };
 }
 
@@ -32,9 +36,13 @@ export interface ReminderText {
   telegramHandle?: string | null;
 }
 
-/** "Follow up with Sardor Rashidov\nSend the deck\nhttps://t.me/sardor" (never note text). */
-export function reminderMessage(r: ReminderText): string {
-  const lines = [r.personName ? `Follow up with ${r.personName}` : 'Follow up', r.title.trim() || 'Follow up'];
+/**
+ * "Follow up with Sardor Rashidov\nSend the deck\nhttps://t.me/sardor" (never note text) — the same
+ * title and body as the reminder push, in `lang`.
+ */
+export function reminderMessage(r: ReminderText, lang: Lang): string {
+  const text = renderPush({ id: 'followUpDue', params: { personName: r.personName, title: r.title } }, lang);
+  const lines = [text.title, text.body];
   const handle = r.telegramHandle?.trim().replace(/^@/, '').replace(/^https?:\/\/t\.me\//i, '');
   if (r.channel === 'telegram' && handle && /^[A-Za-z0-9_]{4,32}$/.test(handle)) lines.push(`https://t.me/${handle}`);
   return lines.join('\n');
@@ -89,28 +97,41 @@ export class TelegramService {
     const text = message?.text?.trim() ?? '';
     if (chatId === undefined || chatId === null || message?.chat?.type !== 'private') return;
     const chat = String(chatId);
+    const hint = message.from?.language_code;
 
     const start = /^\/start(?:@\w+)?(?:\s+(\S+))?$/.exec(text);
     if (start) {
       const token = start[1];
       if (!token) {
-        await this.sendMessage(chat, 'Open Tanishly → Profile → Settings → Notifications and tap “Connect Telegram” to get reminders here.');
+        await this.sendMessage(chat, TELEGRAM_TEXT[await this.chatLang(chat, hint)].startHelp);
         return;
       }
       const linked = await this.bind(chat, token);
-      await this.sendMessage(
-        chat,
-        linked
-          ? 'You’re connected. Tanishly will send your follow-up reminders here.'
-          : 'This link has expired. Open Tanishly → Settings → Notifications and connect Telegram again.',
-      );
+      const copy = TELEGRAM_TEXT[await this.chatLang(chat, hint)];
+      await this.sendMessage(chat, linked ? copy.linked : copy.linkExpired);
       return;
     }
     if (/^\/stop(?:@\w+)?$/.test(text)) {
+      // The language is read while the chat still belongs to the account.
+      const copy = TELEGRAM_TEXT[await this.chatLang(chat, hint)];
       const user = await this.prisma.user.findUnique({ where: { telegramChatId: chat }, select: { id: true } });
       if (user) await this.unlinkByChat(chat);
-      await this.sendMessage(chat, 'Disconnected. Reminders will arrive as notifications from the Tanishly app.');
+      await this.sendMessage(chat, copy.stopped);
     }
+  }
+
+  /**
+   * The language for a chat: the bound user's most recent device locale; for a chat not bound to an
+   * account (or an account without devices) Telegram's `language_code`, then Uzbek.
+   */
+  async chatLang(chatId: string, hint?: string): Promise<Lang> {
+    const device = await this.prisma.device.findFirst({
+      where: { user: { telegramChatId: chatId } },
+      orderBy: { updatedAt: 'desc' },
+      select: { locale: true },
+    });
+    if (device) return langFromLocale(device.locale);
+    return hint?.trim() ? langFromLocale(hint) : DEFAULT_LANG;
   }
 
   /** Binds the chat to the token's user. A chat belongs to one account: it moves off any other. */
@@ -199,9 +220,12 @@ export class TelegramService {
     }
   }
 
-  /** Sends a follow-up reminder to the user's chat; a dead chat is unlinked (prefs fall back to push). */
+  /**
+   * Sends a follow-up reminder to the user's chat, in the language of their most recent device; a dead
+   * chat is unlinked (prefs fall back to push).
+   */
   async sendReminder(chatId: string, reminder: ReminderText): Promise<boolean> {
-    const result = await this.sendMessage(chatId, reminderMessage(reminder));
+    const result = await this.sendMessage(chatId, reminderMessage(reminder, await this.chatLang(chatId)));
     if (result.blocked) await this.unlinkByChat(chatId);
     return result.ok;
   }

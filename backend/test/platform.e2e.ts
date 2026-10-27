@@ -39,7 +39,7 @@ describe('platform: devices, push and jobs', () => {
   });
 
   const http = () => request(app.getHttpServer());
-  const register = (s: Session, deviceId: string, token: string, timeZone = 'Asia/Tashkent') =>
+  const register = (s: Session, deviceId: string, token: string, timeZone = 'Asia/Tashkent', locale = 'en_UZ') =>
     http()
       .put(`/v1/me/devices/${deviceId}`)
       .set(s.auth)
@@ -50,7 +50,7 @@ describe('platform: devices, push and jobs', () => {
         platform: 'ios',
         appVersion: '1.0 (42)',
         osVersion: '26.1',
-        locale: 'en_UZ',
+        locale,
         timeZone,
       });
   const push = (s: Session, changes: Record<string, unknown>) =>
@@ -172,6 +172,41 @@ describe('platform: devices, push and jobs', () => {
       await push(s, { followUps: [{ ...due, dueAt: now(-30_000), updatedAt: now(1000) }] });
       await jobs.runOnce();
       expect(pushTestSink.forUser(s.userId)).toHaveLength(2);
+    });
+
+    it('renders the text in each device’s own language; other languages get English, no locale Uzbek', async () => {
+      const s = await signIn(app);
+      const locales: Record<string, string> = { uz: 'uz_UZ', ru: 'ru_RU', en: 'en_US', de: 'de_DE', none: '' };
+      const tokens: Record<string, string> = {};
+      for (const [name, locale] of Object.entries(locales)) {
+        tokens[name] = apnsToken();
+        await register(s, `${name}-phone`, tokens[name]!, 'Asia/Tashkent', locale).expect(204);
+      }
+      const person = connection({ fullName: 'Sardor Rashidov', telegram: '@sardor' });
+      const due = followUp({ connectionId: person.id, title: 'Send the deck', channel: 'telegram', dueAt: now(-1000) });
+      const anonymous = followUp({ title: '', dueAt: now(-2000) });
+      await push(s, { connections: [person], followUps: [due, anonymous] });
+      await app.get(RemindersJob).runOnce();
+
+      const sent = pushTestSink.forUser(s.userId);
+      expect(sent).toHaveLength(10);
+      const alert = (name: string, followUpId: string) =>
+        (sent.find((p) => p.token === tokens[name] && p.payload.followUpId === followUpId)!.payload.aps as { alert: unknown }).alert;
+      expect(alert('uz', due.id)).toEqual({ title: 'Sardor Rashidov bilan bog‘laning', body: 'Send the deck' });
+      expect(alert('ru', due.id)).toEqual({ title: 'Напоминание: Sardor Rashidov', body: 'Send the deck' });
+      expect(alert('en', due.id)).toEqual({ title: 'Follow up with Sardor Rashidov', body: 'Send the deck' });
+      expect(alert('de', due.id)).toEqual({ title: 'Follow up with Sardor Rashidov', body: 'Send the deck' });
+      expect(alert('none', due.id)).toEqual({ title: 'Sardor Rashidov bilan bog‘laning', body: 'Send the deck' });
+      expect(alert('uz', anonymous.id)).toEqual({ title: 'Eslatma', body: 'Bog‘lanish vaqti keldi' });
+      expect(alert('ru', anonymous.id)).toEqual({ title: 'Напоминание', body: 'Пора напомнить о себе' });
+      // Everything else is the same for every language.
+      const uzPush = sent.find((p) => p.token === tokens.uz && p.payload.followUpId === due.id)!;
+      const ruPush = sent.find((p) => p.token === tokens.ru && p.payload.followUpId === due.id)!;
+      expect(ruPush.headers).toEqual(uzPush.headers);
+      expect({ ...ruPush.payload, aps: { ...(ruPush.payload.aps as object), alert: null } }).toEqual({
+        ...uzPush.payload,
+        aps: { ...(uzPush.payload.aps as object), alert: null },
+      });
     });
 
     it('uses the plain category without a channel value, skips done, old and opted-out reminders', async () => {

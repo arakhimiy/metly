@@ -127,8 +127,9 @@ describe('public web', () => {
   describe('GET /c/{slug}', () => {
     it('renders the card with public fields, CSP nonce, noindex and no app banner without APP_STORE_ID', async () => {
       const o = await owner();
-      const res = await http().get(`/c/${o.slug}?src=qr`).set('User-Agent', IPHONE).expect(200);
+      const res = await http().get(`/c/${o.slug}?src=qr`).set('User-Agent', IPHONE).set('Accept-Language', 'en-US,en;q=0.9').expect(200);
       expect(res.headers['content-type']).toMatch(/^text\/html/);
+      expect(res.text).toContain('<html lang="en">');
       const csp = res.headers['content-security-policy'] as string;
       const nonce = /script-src 'nonce-([^']+)'/.exec(csp)?.[1];
       expect(nonce).toBeTruthy();
@@ -160,22 +161,63 @@ describe('public web', () => {
       expect(res.text.match(/<script/g)).toHaveLength(1);
     });
 
+    it('speaks Uzbek by default, Russian or English from Accept-Language; ?lang= wins', async () => {
+      const o = await owner();
+      const uz = await http().get(`/c/${o.slug}`).set('User-Agent', IPHONE).expect(200);
+      expect(uz.headers.vary).toMatch(/Accept-Language/);
+      expect(uz.text).toContain('<html lang="uz">');
+      expect(uz.text).toContain('<meta property="og:locale" content="uz_UZ">');
+      expect(uz.text).toContain('Kontaktlarga saqlash');
+      expect(uz.text).toContain('Kamola bilan kontakt almashish');
+      expect(uz.text).toContain('Buni faqat Kamola ko‘radi.');
+      expect(uz.text).not.toContain('Save to Contacts');
+
+      const ru = await http().get(`/c/${o.slug}`).set('User-Agent', IPHONE).set('Accept-Language', 'ru-RU,ru;q=0.9,en;q=0.8').expect(200);
+      expect(ru.text).toContain('<html lang="ru">');
+      expect(ru.text).toContain('Сохранить в контакты');
+      expect(ru.text).toContain('Обменяться контактами');
+      expect(ru.text).toContain('Это увидит только Kamola.');
+      expect(ru.text).toContain('<span class="label">телефон</span>');
+      expect(ru.text).not.toContain('Save to Contacts');
+
+      const en = await http().get(`/c/${o.slug}`).set('User-Agent', IPHONE).set('Accept-Language', 'en-GB,en;q=0.9').expect(200);
+      expect(en.text).toContain('<html lang="en">');
+      expect(en.text).toContain('Save to Contacts');
+
+      const forced = await http().get(`/c/${o.slug}?src=qr&lang=ru`).set('User-Agent', IPHONE).set('Accept-Language', 'en-US').expect(200);
+      expect(forced.text).toContain('<html lang="ru">');
+      const unknown = await http().get(`/c/${o.slug}?lang=de`).set('User-Agent', IPHONE).set('Accept-Language', 'de-DE').expect(200);
+      expect(unknown.text).toContain('<html lang="uz">');
+
+      // The script's texts come from the server as escaped JSON; the one nonce'd script stays constant.
+      const attr = /data-t="([^"]*)"/.exec(ru.text)?.[1] ?? '';
+      const unescaped = attr.replace(/&(quot|#39|#96|lt|gt|amp);/g, (_m, e: string) => ({ quot: '"', '#39': "'", '#96': '`', lt: '<', gt: '>', amp: '&' })[e]!);
+      expect(JSON.parse(unescaped)).toMatchObject({ sending: 'Отправка…', offline: 'Похоже, нет подключения к интернету. Попробуйте ещё раз.' });
+      expect(ru.text.match(/<script/g)).toHaveLength(1);
+      const script = ru.text.slice(ru.text.indexOf('<script'));
+      expect(script).not.toMatch(/Sending|Try again|Link Copied/);
+    });
+
     it('paused → 200 unavailable page without personal data; deleted → 410; unknown → 404', async () => {
       const paused = await owner();
       await http().patch('/v1/me/settings').set(paused.session.auth).send({ linksPaused: true, updatedAt: now(1000) }).expect(200);
-      const p = await http().get(`/c/${paused.slug}`).expect(200);
+      const p = await http().get(`/c/${paused.slug}?lang=en`).expect(200);
       expect(p.text).toContain('This card isn’t available right now.');
       expect(p.text).not.toContain('Kamola');
       expect(p.text).not.toContain('+998');
 
       const deleted = await owner();
       await http().delete(`/v1/cards/${deleted.cardId}`).set(deleted.session.auth).expect(204);
-      const d = await http().get(`/c/${deleted.slug}`).expect(410);
-      expect(d.text).toContain('This card isn’t available right now.');
+      const d = await http().get(`/c/${deleted.slug}`).set('Accept-Language', 'ru-RU,ru;q=0.9').expect(410);
+      expect(d.text).toContain('<html lang="ru">');
+      expect(d.text).toContain('Эта визитка сейчас недоступна.');
       expect(d.text).not.toContain('Kamola');
 
       const u = await http().get('/c/nobody-zzzz').expect(404);
       expect(u.headers['content-type']).toMatch(/^text\/html/);
+      expect(u.headers.vary).toMatch(/Accept-Language/);
+      expect(u.text).toContain('<html lang="uz">');
+      expect(u.text).toContain('Bu vizitka topilmadi.');
       await http().get('/c/Not%20A%20Slug').expect(404);
     });
   });
@@ -280,8 +322,9 @@ describe('public web', () => {
       expectSchema('Connection', created[0]);
       expect(created[0]).toMatchObject({
         fullName: 'Sardor Rashidov',
-        jobTitle: 'Contact',
-        company: 'Shared from your web page',
+        // The owner has no device yet: the placeholder text is Uzbek.
+        jobTitle: 'Kontakt',
+        company: 'Veb-sahifangiz orqali yuborilgan',
         phone: '+998907654321',
         telegram: '',
         source: 'webShareBack',
@@ -303,8 +346,7 @@ describe('public web', () => {
       });
       expect(notify).toHaveBeenCalledWith(o.session.userId, {
         type: 'shareback_received',
-        title: 'Sardor shared their contact with you',
-        body: 'ICT Week',
+        text: { id: 'shareBackReceived', params: { name: 'Sardor', context: 'ICT Week' } },
         data: { connectionId: created[0].id },
       });
     });
@@ -316,7 +358,7 @@ describe('public web', () => {
       const connections = (await pull(o.session)).body.changes.connections;
       expect(connections[0]).toMatchObject({ telegram: '@Lola_Design', phone: '', context: { eventName: 'Tech meetup' } });
       expect(connections[0].eventId).toBeUndefined();
-      expect(notify.mock.calls[0]?.[1]).toMatchObject({ body: 'From your web page' });
+      expect(notify.mock.calls[0]?.[1]).toMatchObject({ text: { id: 'shareBackReceived', params: { name: 'Lola', context: null } } });
     });
 
     it('dedupes by phone digits and fills only the missing Telegram; removal clears just that', async () => {

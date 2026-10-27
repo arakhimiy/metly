@@ -62,8 +62,31 @@ describe('platform: telegram reminders', () => {
     if (secret !== null) r.set('X-Telegram-Bot-Api-Secret-Token', secret);
     return r.send(body);
   };
-  const start = (chatId: number, token?: string) =>
-    webhook({ update_id: Date.now(), message: { message_id: 1, chat: { id: chatId, type: 'private' }, text: token ? `/start ${token}` : '/start' } });
+  const start = (chatId: number, token?: string, languageCode?: string) =>
+    webhook({
+      update_id: Date.now(),
+      message: {
+        message_id: 1,
+        chat: { id: chatId, type: 'private' },
+        ...(languageCode ? { from: { id: chatId, language_code: languageCode } } : {}),
+        text: token ? `/start ${token}` : '/start',
+      },
+    });
+  const registerDevice = (s: Session, locale: string, deviceId = 'phone') =>
+    http()
+      .put(`/v1/me/devices/${deviceId}`)
+      .set(s.auth)
+      .send({
+        deviceId,
+        apnsToken: randomBytes(32).toString('hex'),
+        apnsEnvironment: 'production',
+        platform: 'ios',
+        appVersion: '1',
+        osVersion: '26',
+        locale,
+        timeZone: 'Asia/Tashkent',
+      })
+      .expect(204);
   const pull = (s: Session, since?: string) =>
     http()
       .get('/v1/sync')
@@ -100,14 +123,15 @@ describe('platform: telegram reminders', () => {
     await start(chatId, token).expect(200);
     expect((await prisma.user.findUniqueOrThrow({ where: { id: s.userId } })).telegramChatId).toBe(String(chatId));
     expect(calls).toHaveLength(1);
-    expect(calls[0]).toMatchObject({ method: 'sendMessage', body: { chat_id: String(chatId), text: expect.stringContaining('connected') } });
+    // No device registered: the bot speaks Uzbek.
+    expect(calls[0]).toMatchObject({ method: 'sendMessage', body: { chat_id: String(chatId), text: 'Ulandi. Tanishly eslatmalaringizni shu yerga yuboradi.' } });
 
     const delta = await pull(s, cursor);
     expect(delta.body.changes.profile.notificationPrefs.telegramLinked).toBe(true);
     // Single use.
     calls.length = 0;
     await start(chatId, token).expect(200);
-    expect(calls[0]!.body.text).toContain('expired');
+    expect(calls[0]!.body.text).toContain('muddati tugagan');
 
     // A later profile write from a device cannot clear the server-owned flag.
     const me = await http().get('/v1/me/profile').set(s.auth).expect(200);
@@ -124,7 +148,46 @@ describe('platform: telegram reminders', () => {
     await webhook({ update_id: 1 }, 'wrong').expect(401);
     await webhook({ update_id: 1 }).expect(200);
     await start(42).expect(200);
-    expect(calls[0]!.body.text).toContain('Connect Telegram');
+    expect(calls[0]!.body.text).toContain('«Telegram’ni ulash»');
+  });
+
+  it('replies in the language of the user’s latest device, else Telegram’s language, else Uzbek', async () => {
+    // Not bound to an account: Telegram's language_code, then Uzbek.
+    await start(43, undefined, 'ru').expect(200);
+    await start(44, undefined, 'en-GB').expect(200);
+    await start(45).expect(200);
+    expect(calls.map((c) => c.body.text)).toEqual([
+      'Чтобы получать напоминания здесь, откройте Tanishly → Профиль → Настройки → Уведомления и нажмите «Подключить Telegram».',
+      'Open Tanishly → Profile → Settings → Notifications and tap “Connect Telegram” to get reminders here.',
+      'Eslatmalarni shu yerda olish uchun Tanishly → Profil → Sozlamalar → Bildirishnomalar bo‘limini oching va «Telegram’ni ulash» tugmasini bosing.',
+    ]);
+
+    // Bound: the latest device wins over Telegram's language.
+    const s = await withProfile();
+    await registerDevice(s, 'en_US', 'old-phone');
+    await registerDevice(s, 'ru_RU', 'new-phone');
+    const chatId = 750_000_000 + Math.floor(Math.random() * 1000);
+    calls.length = 0;
+    await start(chatId, await linkToken(s), 'uz').expect(200);
+    expect(calls[0]!.body.text).toBe('Готово! Tanishly будет присылать напоминания сюда.');
+
+    calls.length = 0;
+    await webhook({ update_id: Date.now(), message: { message_id: 2, chat: { id: chatId, type: 'private' }, text: '/stop' } }).expect(200);
+    expect(calls[0]!.body.text).toBe('Telegram отключён. Напоминания будут приходить уведомлениями из приложения Tanishly.');
+  });
+
+  it('sends reminders in the language of the user’s latest device', async () => {
+    const s = await withProfile({ delivery: 'telegramBot' });
+    await registerDevice(s, 'uz_UZ');
+    const chatId = 760_000_000 + Math.floor(Math.random() * 1000);
+    await start(chatId, await linkToken(s)).expect(200);
+    calls.length = 0;
+    const person = connection({ fullName: 'Sardor Rashidov', telegram: '@sardor_r' });
+    const due = followUp({ connectionId: person.id, title: 'Taqdimotni yuborish', channel: 'telegram', dueAt: now(-1000) });
+    await http().post('/v1/sync/push').set(s.auth).send({ changes: { connections: [person], followUps: [due] } }).expect(200);
+    await app.get(RemindersJob).runOnce();
+    expect(calls).toHaveLength(1);
+    expect(calls[0]!.body.text).toBe('Sardor Rashidov bilan bog‘laning\nTaqdimotni yuborish\nhttps://t.me/sardor_r');
   });
 
   it('moves a chat to the account that linked it last', async () => {
