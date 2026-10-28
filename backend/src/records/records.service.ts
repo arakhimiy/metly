@@ -15,6 +15,7 @@ import {
   followUpToWire,
   profileToWire,
 } from './mappers';
+import { mergePhones, storedPhoneLabel, storedPhones } from './phones';
 import { slugCandidate, slugStem } from './slug';
 import {
   type CardDesign,
@@ -166,6 +167,9 @@ export class RecordsService {
       jobTitle: incoming.jobTitle,
       company: incoming.company,
       contactFields: incoming.contactFields as unknown as Prisma.InputJsonValue,
+      // Absent (a client from before labelled phones): an update keeps them, a create takes the defaults.
+      phoneLabel: incoming.phoneLabel,
+      additionalPhones: incoming.additionalPhones as Prisma.InputJsonValue | undefined,
       defaultCardId: incoming.defaultCardId,
       linksPaused: incoming.linksPaused,
       notificationPrefs: notificationPrefs as unknown as Prisma.InputJsonValue,
@@ -185,7 +189,9 @@ export class RecordsService {
       existing.fullName !== row.fullName ||
       existing.jobTitle !== row.jobTitle ||
       existing.company !== row.company ||
-      !sameJson(existing.contactFields, row.contactFields);
+      !sameJson(existing.contactFields, row.contactFields) ||
+      existing.phoneLabel !== row.phoneLabel ||
+      !sameJson(existing.additionalPhones, row.additionalPhones);
     ctx.setLinksPaused(row.linksPaused);
     if (pauseChanged || publicChanged) await this.touchAllCards(ctx, { republish: true, bumpSeq: pauseChanged });
     this.emitProfile(ctx, row);
@@ -362,6 +368,9 @@ export class RecordsService {
       jobTitle: incoming.jobTitle,
       company: incoming.company,
       phone: incoming.phone,
+      // Absent (a client from before labelled phones): an update keeps them, a create takes the defaults.
+      phoneLabel: incoming.phoneLabel,
+      additionalPhones: incoming.additionalPhones as Prisma.InputJsonValue | undefined,
       email: incoming.email,
       telegram: incoming.telegram,
       website: incoming.website,
@@ -433,11 +442,24 @@ export class RecordsService {
     }
     const base = incomingWins ? this.connectionData(incoming) : null;
     const theirCard = (incomingWins ? (incoming.theirCard ?? twin.theirCard) : (twin.theirCard ?? incoming.theirCard)) ?? null;
+    // Phones: the newer record's numbers and labels, gaps filled from the other (a record that didn't
+    // send them — an older client — counts as having none).
+    const twinPhones = { phone: twin.phone, phoneLabel: storedPhoneLabel(twin.phoneLabel), additionalPhones: storedPhones(twin.additionalPhones) };
+    const incomingPhones = {
+      phone: incoming.phone,
+      phoneLabel: incoming.phoneLabel ?? (incoming.phone === twin.phone ? twinPhones.phoneLabel : 'mobile'),
+      additionalPhones: incoming.additionalPhones ?? [],
+    };
+    const [winner, loser] = incomingWins ? [incomingPhones, twinPhones] : [twinPhones, incomingPhones];
+    const phones = mergePhones(winner, loser, { adoptLabel: false });
     const survivor = await tx.connection.update({
       where: { id: twin.id },
       data: {
         ...(base ?? {}),
         ...merged,
+        phone: phones.phone,
+        phoneLabel: phones.phoneLabel,
+        additionalPhones: phones.additionalPhones as Prisma.InputJsonValue,
         remoteUserId: twin.remoteUserId,
         theirCard: theirCard as Prisma.InputJsonValue,
         createdAt: twin.createdAt < incoming.createdAt ? twin.createdAt : incoming.createdAt,

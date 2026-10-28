@@ -1,7 +1,8 @@
 import type { Card, Profile } from '../../generated/prisma/client';
 import { cardUrl } from '../../records/mappers';
+import { visiblePhones } from '../../records/phones';
 import { visibleFields } from '../../records/snapshot';
-import type { CardDesign, ContactField, ContactFieldKind } from '../../records/wire';
+import type { CardDesign, ContactField, ContactFieldKind, PhoneLabel } from '../../records/wire';
 
 /**
  * Card palettes, `[background, foreground, accent]` per appearance — the same table as the app
@@ -38,9 +39,11 @@ const LABELS: Record<ContactFieldKind, string> = {
   linkedin: 'LinkedIn',
 };
 
+const PHONE_LABELS: Record<PhoneLabel, string> = { mobile: 'Mobile', work: 'Work', home: 'Home', other: 'Phone' };
+
 export interface PassInput {
   card: Pick<Card, 'id' | 'name' | 'slug' | 'design' | 'passAuthToken' | 'deletedAt'>;
-  profile: Pick<Profile, 'fullName' | 'jobTitle' | 'company' | 'contactFields'>;
+  profile: Pick<Profile, 'fullName' | 'jobTitle' | 'company' | 'contactFields'> & Partial<Pick<Profile, 'additionalPhones'>>;
   passTypeIdentifier: string;
   teamIdentifier: string;
   /** `${API_BASE_URL}/passkit` */
@@ -80,6 +83,14 @@ export function buildPassJson(input: PassInput): Record<string, unknown> {
     value: fieldValue(f),
     dataDetectorTypes: f.kind === 'phone' ? ['PKDataDetectorTypePhoneNumber'] : f.kind === 'telegram' ? [] : ['PKDataDetectorTypeLink'],
   }));
+  // Extra Public phones follow the primary one (or lead when it is hidden).
+  const extraPhones: PassField[] = visiblePhones({ additionalPhones: profile.additionalPhones ?? [] }, design, 'public').map((p, i) => ({
+    key: `back-phone-${i + 1}`,
+    label: PHONE_LABELS[p.label],
+    value: p.value.trim(),
+    dataDetectorTypes: ['PKDataDetectorTypePhoneNumber'],
+  }));
+  backFields.splice(fields.some((f) => f.kind === 'phone') ? 1 : 0, 0, ...extraPhones);
   if (url) backFields.push({ key: 'card-url', label: 'Card', value: url, dataDetectorTypes: ['PKDataDetectorTypeLink'] });
   backFields.push({ key: 'about', label: 'Tanishly', value: 'This pass updates automatically when the card changes.' });
 

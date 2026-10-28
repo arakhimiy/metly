@@ -1,4 +1,4 @@
-import type { ContactFieldKind } from '../records/wire';
+import type { ContactFieldKind, PhoneLabel } from '../records/wire';
 import type { Lang } from './lang';
 
 // Texts of the public card page (WEB_CARD, WEB_SHAREBACK_SHEET, WEB_CONFIRMATION) and WEB_UNAVAILABLE.
@@ -35,6 +35,8 @@ export interface CardPageText {
   contactDetails: string;
   /** Lowercase field labels, like the app's card. */
   fieldLabel: Record<ContactFieldKind, string>;
+  /** Lowercase phone labels, used once a card shows more than one phone or a non-mobile one. */
+  phoneLabel: Record<PhoneLabel, string>;
   copy: string;
   copyAria: (label: string) => string;
   phoneCopied: string;
@@ -78,6 +80,7 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     copyLink: 'Havolani nusxalash',
     contactDetails: 'Kontakt ma’lumotlari',
     fieldLabel: { phone: 'telefon', email: 'email', telegram: 'telegram', website: 'veb-sayt', linkedin: 'linkedin' },
+    phoneLabel: { mobile: 'mobil', work: 'ish telefoni', home: 'uy telefoni', other: 'boshqa telefon' },
     copy: 'Nusxalash',
     copyAria: (label) => `Nusxalash: ${label}`,
     phoneCopied: 'Telefon nusxalandi',
@@ -135,6 +138,7 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     copyLink: 'Скопировать ссылку',
     contactDetails: 'Контактные данные',
     fieldLabel: { phone: 'телефон', email: 'email', telegram: 'telegram', website: 'сайт', linkedin: 'linkedin' },
+    phoneLabel: { mobile: 'мобильный', work: 'рабочий телефон', home: 'домашний телефон', other: 'другой телефон' },
     copy: 'Копировать',
     copyAria: (label) => `Скопировать: ${label}`,
     phoneCopied: 'Телефон скопирован',
@@ -192,6 +196,7 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     copyLink: 'Copy link',
     contactDetails: 'Contact details',
     fieldLabel: { phone: 'phone', email: 'email', telegram: 'telegram', website: 'website', linkedin: 'linkedin' },
+    phoneLabel: { mobile: 'mobile', work: 'work phone', home: 'home phone', other: 'other phone' },
     copy: 'Copy',
     copyAria: (label) => `Copy ${label}`,
     phoneCopied: 'Phone Copied',

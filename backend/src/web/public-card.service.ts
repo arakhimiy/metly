@@ -4,8 +4,9 @@ import type { Card, Profile } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { cardUrl } from '../records/mappers';
 import { SLUG_PATTERN } from '../records/slug';
+import { storedPhoneLabel, visiblePhones } from '../records/phones';
 import { firstName, visibleFields } from '../records/snapshot';
-import type { CardDesign, ContactField } from '../records/wire';
+import type { CardDesign, ContactField, LabeledPhone, PhoneLabel } from '../records/wire';
 import { safeHttpUrl } from './html';
 
 export type ResolvedCard =
@@ -23,6 +24,10 @@ export interface PublicView {
   design: CardDesign;
   /** Public ∩ visibleFields — never Connections or Private. */
   fields: ContactField[];
+  /** Label of the phone in `fields`. */
+  phoneLabel: PhoneLabel;
+  /** Public extra phones, only when the card shows phones. */
+  additionalPhones: LabeledPhone[];
   fullName: string;
   firstName: string;
   /** Only when the card shows the photo and it is an absolute http(s) URL. */
@@ -77,6 +82,8 @@ export class PublicCardService {
       profile,
       design,
       fields: visibleFields(profile, design, 'public'),
+      phoneLabel: storedPhoneLabel(profile.phoneLabel),
+      additionalPhones: visiblePhones(profile, design, 'public'),
       fullName: profile.fullName,
       firstName: firstName(profile.fullName),
       photoUrl: design.showPhoto ? safeHttpUrl(profile.photoUrl) : null,
@@ -102,6 +109,8 @@ export class PublicCardService {
       },
       design: v.design,
       fields: v.fields,
+      phoneLabel: v.phoneLabel,
+      additionalPhones: v.additionalPhones,
     };
   }
 }

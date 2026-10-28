@@ -12,9 +12,9 @@ import SwiftData
 public extension Profile {
     var dto: ProfileDTO {
         ProfileDTO(id: id, fullName: fullName, jobTitle: jobTitle, company: company, contactFields: contactFields,
-                   defaultCardID: defaultCardID, linksPaused: linksPaused, notificationPrefs: notificationPrefs,
-                   privacySettings: privacySettings, isSetupComplete: isSetupComplete, createdAt: createdAt,
-                   updatedAt: updatedAt, deletedAt: deletedAt)
+                   phoneLabel: phoneLabel, additionalPhones: additionalPhones, defaultCardID: defaultCardID,
+                   linksPaused: linksPaused, notificationPrefs: notificationPrefs, privacySettings: privacySettings,
+                   isSetupComplete: isSetupComplete, createdAt: createdAt, updatedAt: updatedAt, deletedAt: deletedAt)
     }
 
     /// Photo/logo bytes are synced separately (presigned uploads), never through this.
@@ -24,6 +24,8 @@ public extension Profile {
         jobTitle = dto.jobTitle
         company = dto.company
         contactFields = dto.contactFields
+        phoneLabel = dto.phoneLabel
+        additionalPhones = dto.additionalPhones
         defaultCardID = dto.defaultCardID
         linksPaused = dto.linksPaused
         notificationPrefs = dto.notificationPrefs
@@ -108,8 +110,9 @@ public extension Event {
 public extension Connection {
     var dto: ConnectionDTO {
         ConnectionDTO(id: id, remoteUserID: remoteUserID, fullName: fullName, jobTitle: jobTitle, company: company,
-                      phone: phone, email: email, telegram: telegram, website: website, linkedin: linkedin,
-                      theirCard: theirCard, mySharedCardID: mySharedCardID, source: source, context: context,
+                      phone: phone, phoneLabel: phoneLabel, additionalPhones: additionalPhones, email: email,
+                      telegram: telegram, website: website, linkedin: linkedin, theirCard: theirCard,
+                      mySharedCardID: mySharedCardID, source: source, context: context,
                       previousMeetings: previousMeetings, eventID: event?.id ?? context.eventID, note: note, tags: tags,
                       isMerged: isMerged, isPendingMerge: isPendingMerge, isBlocked: isBlocked, createdAt: createdAt,
                       updatedAt: updatedAt, deletedAt: deletedAt)
@@ -128,6 +131,8 @@ public extension Connection {
         jobTitle = dto.jobTitle
         company = dto.company
         phone = dto.phone
+        phoneLabel = dto.phoneLabel
+        additionalPhones = dto.additionalPhones
         email = dto.email
         telegram = dto.telegram
         website = dto.website

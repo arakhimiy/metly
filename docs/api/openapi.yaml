@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Tanishly API
-  version: 1.0.0
+  version: 1.1.0
   summary: Backend contract for the Tanishly iOS app (digital business card + personal CRM).
   description: |
     Contract authored by the iOS team; the app ships against `MockMetlyServer` (an in-memory
@@ -583,7 +583,7 @@ paths:
       description: |
         Like `/api/public/cards/{slug}` plus `owner.userId` and `viewer`. If the viewer is a live
         connection of the owner (owner has a connection with `remoteUserId = viewer`), also include the
-        owner's **Connections** fields. Blocked viewers get `404`.
+        owner's **Connections** fields and Connections-level `additionalPhones`. Blocked viewers get `404`.
       parameters: [{ $ref: '#/components/parameters/Slug' }]
       responses:
         '200': { description: Card, content: { application/json: { schema: { $ref: '#/components/schemas/PublicCard' } } } }
@@ -1117,6 +1117,7 @@ components:
     # ── Domain enums (wire values; see MetlyCore DomainEnums.swift) ──
     ContactFieldKind: { type: string, enum: [phone, email, telegram, website, linkedin] }
     FieldPrivacy: { type: string, enum: [public, connections, private] }
+    PhoneLabel: { type: string, enum: [mobile, work, home, other], description: 'vCard TEL;TYPE CELL / WORK / HOME / VOICE.' }
     CardTemplate: { type: string, enum: [minimal, professional, modern, bold, gradient, split, terminal, stack, editorial] }
     CardPalette: { type: string, enum: [graphite, snow, ink, sand, ocean, ember] }
     CardAppearance: { type: string, enum: [light, dark] }
@@ -1153,6 +1154,26 @@ components:
         kind: { $ref: '#/components/schemas/ContactFieldKind' }
         value: { type: string, maxLength: 200 }
         privacy: { $ref: '#/components/schemas/FieldPrivacy' }
+    LabeledPhone:
+      type: object
+      description: |
+        An extra phone number (the primary one stays in `contactFields` / `phone`). Ids are client-generated
+        UUIDs, stable across edits. On a Connection `privacy` carries no meaning (servers default it to
+        `connections` when omitted).
+      required: [id, label, value, privacy]
+      properties:
+        id: { type: string, format: uuid }
+        label: { $ref: '#/components/schemas/PhoneLabel' }
+        value: { type: string, maxLength: 40 }
+        privacy: { $ref: '#/components/schemas/FieldPrivacy' }
+    AdditionalPhones:
+      type: array
+      maxItems: 5
+      description: |
+        Extra phones, display order. Optional on write: a client from before labelled phones omits it (and
+        `phoneLabel`); the server then keeps the stored value (new records: `[]` / `mobile`). Always
+        returned by the server.
+      items: { $ref: '#/components/schemas/LabeledPhone' }
     CardDesign:
       type: object
       required: [template, palette, appearance, font, alignment, density, background, showQR, showPhoto, showLogo, visibleFields]
@@ -1318,6 +1339,13 @@ components:
               type: array
               description: One entry per ContactFieldKind (display order). Private values never leave the owner's own devices/exports.
               items: { $ref: '#/components/schemas/ContactField' }
+            phoneLabel:
+              allOf: [{ $ref: '#/components/schemas/PhoneLabel' }]
+              default: mobile
+              description: Label of the `phone` contact field. Optional on write (kept when omitted); always returned.
+            additionalPhones:
+              allOf: [{ $ref: '#/components/schemas/AdditionalPhones' }]
+              description: Each with its own privacy; public surfaces filter them exactly like contact fields.
             defaultCardId: { type: [string, 'null'], format: uuid }
             linksPaused: { type: boolean, description: '"Pause All Links".' }
             notificationPrefs: { $ref: '#/components/schemas/NotificationPrefs' }
@@ -1384,6 +1412,11 @@ components:
             jobTitle: { type: string }
             company: { type: string }
             phone: { type: string }
+            phoneLabel:
+              allOf: [{ $ref: '#/components/schemas/PhoneLabel' }]
+              default: mobile
+              description: Label of `phone`. Optional on write (kept when omitted); always returned.
+            additionalPhones: { $ref: '#/components/schemas/AdditionalPhones' }
             email: { type: string }
             telegram: { type: string }
             website: { type: string }
@@ -1749,6 +1782,18 @@ components:
           type: array
           description: Public ∩ visibleFields (+ Connections fields for connected viewers on the app route). Never Private.
           items: { $ref: '#/components/schemas/ContactField' }
+        phoneLabel:
+          allOf: [{ $ref: '#/components/schemas/PhoneLabel' }]
+          default: mobile
+          description: Label of the `phone` field (sent whenever the card is available, even if the phone itself is hidden).
+        additionalPhones:
+          type: array
+          maxItems: 5
+          description: |
+            The owner's extra phones filtered exactly like `fields`: only when the card shows `phone`, non-empty,
+            Public (+ Connections for connected viewers on the app route), never Private. Not part of
+            `CardSnapshot` (the app copies them onto a Connection itself).
+          items: { $ref: '#/components/schemas/LabeledPhone' }
         viewer: { oneOf: [{ $ref: '#/components/schemas/ViewerRelation' }, { type: 'null' }] }
     ShareBackRequest:
       type: object

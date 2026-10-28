@@ -34,11 +34,14 @@ extension MockBackend {
             let fields = profile.contactFields.filter {
                 !$0.isEmpty && $0.privacy != .private && card.design.visibleFields.contains($0.kind)
             }
+            // Like `fields`: only on a card that shows phones; the owner sees Public + Connections.
+            let phones = card.design.visibleFields.contains(.phone)
+                ? profile.additionalPhones.filter { !$0.isEmpty && $0.privacy != .private } : []
             let first = profile.fullName.split(separator: " ").first.map(String.init) ?? profile.fullName
             return PublicCardDTO(slug: slug, status: .available, url: Brand.cardURL(slug: slug), cardName: card.name,
                                  owner: PublicOwnerDTO(userID: user?.id, fullName: profile.fullName, firstName: first,
                                                        jobTitle: profile.jobTitle, company: profile.company, photoURL: profile.photoURL),
-                                 design: card.design, fields: fields,
+                                 design: card.design, fields: fields, phoneLabel: profile.phoneLabel, additionalPhones: phones,
                                  viewer: ViewerRelationDTO(isSelf: true, isConnected: false, connectionID: nil))
         }
         if retiredSlugs.contains(slug) { return PublicCardDTO(slug: slug, status: .deleted) }
@@ -50,11 +53,14 @@ extension MockBackend {
         let connection = connections.values.first {
             $0.remoteUserID == peer.userID && !$0.isBlocked && mutualSources.contains($0.source)
         }
-        let fields = peer.fields.filter { $0.privacy == .public || ($0.privacy == .connections && connection != nil) }
+        let audience: CardAudience = connection != nil ? .connections : .public
+        let fields = peer.fields.filter { audience.allows($0.privacy) }
+        let phones = peer.design.visibleFields.contains(.phone)
+            ? peer.additionalPhones.filter { !$0.isEmpty && audience.allows($0.privacy) } : []
         return PublicCardDTO(slug: slug, status: .available, url: Brand.cardURL(slug: slug), cardName: "Work",
                              owner: PublicOwnerDTO(userID: peer.userID, fullName: peer.fullName, firstName: peer.firstName,
                                                    jobTitle: peer.jobTitle, company: peer.company),
-                             design: peer.design, fields: fields,
+                             design: peer.design, fields: fields, phoneLabel: peer.phoneLabel, additionalPhones: phones,
                              viewer: ViewerRelationDTO(isSelf: false, isConnected: connection != nil, connectionID: connection?.id))
     }
 
@@ -136,6 +142,11 @@ extension MockBackend {
             for field in peer.fields where field.privacy != .private && connection.value(for: field.kind).isEmpty {
                 connection.setValue(field.value, for: field.kind)
             }
+            // Accepted and mutual: their Connections-level phones too, labels included (the snapshot has none).
+            let primary = peer.fields.first { $0.kind == .phone && $0.privacy != .private }?.value ?? ""
+            let extras = peer.design.visibleFields.contains(.phone) ? peer.additionalPhones.filter { $0.privacy != .private } : []
+            PhoneMerge.merge(phone: &connection.phone, label: &connection.phoneLabel, additional: &connection.additionalPhones,
+                             incomingPhone: primary, incomingLabel: peer.phoneLabel, incomingAdditional: extras)
         }
         // The owner's side of the meeting: their own active event as a whole (name, venue, city) —
         // never the requester's venue next to the owner's city. Without one: what the request carried.

@@ -14,6 +14,7 @@ export const CONNECTIONS_CSV_HEADER = [
   'title',
   'company',
   'phone',
+  'other phones',
   'email',
   'telegram',
   'website',
@@ -26,6 +27,15 @@ export const CONNECTIONS_CSV_HEADER = [
   'note',
 ] as const;
 
+/** "work: +998 71 200 00 00; home: …" — the extra phones of a connection in one cell. */
+function otherPhones(value: unknown): string {
+  const phones = Array.isArray(value) ? (value as { label?: string; value?: string }[]) : [];
+  return phones
+    .filter((p) => typeof p.value === 'string' && p.value.trim())
+    .map((p) => `${p.label ?? 'other'}: ${p.value!.trim()}`)
+    .join('; ');
+}
+
 /** connections.csv from wire connections. */
 export function connectionsCsv(connections: WireRecord[]): string {
   const rows = connections.map((c) => {
@@ -35,6 +45,7 @@ export function connectionsCsv(connections: WireRecord[]): string {
       c.jobTitle,
       c.company,
       c.phone,
+      otherPhones(c.additionalPhones),
       c.email,
       c.telegram,
       c.website,
