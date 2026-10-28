@@ -17,6 +17,13 @@ import SwiftUI
         .metlyPreview(.empty)
 }
 
+#Preview("Connected · several phones") {
+    // They shared a work and a home number too: listed under Phone Numbers, all saved to Contacts.
+    ConnectedPreviewHost(additionalPhones: [LabeledPhone(label: .work, value: "+998 71 200 00 00"),
+                                            LabeledPhone(label: .home, value: "+998 66 233 00 00")])
+        .metlyPreview(.empty)
+}
+
 #Preview("Connected · Pro, dark") {
     ConnectedView(connectionID: PreviewSeed.firstConnectionID)
         .metlyPreview(plan: .pro)

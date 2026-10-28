@@ -32,6 +32,7 @@ struct ConnectedScreen: View {
                         ConnectedHeaderSection(connection: connection, myCard: myCard(for: connection),
                                                profile: modelContext.currentProfile())
                         ContextCaptureForm(draft: $draft)
+                        ConnectedPhonesSection(connection: connection)
                         Section {
                             Button(addedToContacts ? "Added to Contacts" : "Add to Contacts",
                                    systemImage: addedToContacts ? "checkmark.circle.fill" : "person.crop.circle.badge.plus",
