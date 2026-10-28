@@ -6,7 +6,14 @@ import SwiftUI
 // PAPER_REVIEW states (SPEC Appendix A: 32 Paper card review, 33 → "Enter Manually").
 
 #Preview("Paper · full") {
-    NavigationStack { PaperReviewView(draft: ScanSamples.paperDraft) }
+    let scan = ScanSamples.paperScan
+    NavigationStack { PaperReviewScreen(draft: scan.draft, scan: scan) }
+        .metlyPreview(.full)
+}
+
+#Preview("Paper · brand above the name") {
+    let scan = ScanSamples.brandFirstScan
+    NavigationStack { PaperReviewScreen(draft: scan.draft, scan: scan) }
         .metlyPreview(.full)
 }
 
@@ -18,8 +25,11 @@ import SwiftUI
 }
 
 #Preview("Paper · entered manually") {
-    NavigationStack { PaperReviewView(draft: PaperCardDraft(imageData: ScanSamples.sampleCardImage)) }
-        .metlyPreview(.full)
+    let draft = PaperCardDraft(imageData: ScanSamples.sampleCardImage)
+    NavigationStack {
+        PaperReviewScreen(draft: draft, scan: PaperScan(draft: draft, recognizedText: ["TEZKOR", "D1lsh0d R@khimov"]))
+    }
+    .metlyPreview(.full)
 }
 
 #Preview("Paper · manual, no photo") {
@@ -36,7 +46,8 @@ import SwiftUI
 }
 
 #Preview("Paper · dark, large type") {
-    NavigationStack { PaperReviewView(draft: ScanSamples.paperDraft) }
+    let scan = ScanSamples.paperScan
+    NavigationStack { PaperReviewScreen(draft: scan.draft, scan: scan) }
         .metlyPreview(.full, plan: .pro)
         .preferredColorScheme(.dark)
         .dynamicTypeSize(.accessibility1)

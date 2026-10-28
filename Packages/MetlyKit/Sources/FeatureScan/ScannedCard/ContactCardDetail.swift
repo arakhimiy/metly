@@ -47,7 +47,7 @@ struct ContactCardDetail: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
 
-            ContactFieldsSection(fields: contact.fields)
+            ContactFieldsSection(fields: contact.fields, phoneLabel: contact.phoneLabel, additionalPhones: contact.additionalPhones)
 
             Section {
                 Button("Save to Contacts", systemImage: "square.and.arrow.down", action: saveToContacts)
@@ -59,7 +59,7 @@ struct ContactCardDetail: View {
 
     /// Same phone, email or Telegram as someone already in People.
     private var existing: Connection? {
-        ScanConnectionFactory.existing(matching: contact.fields, among: people)
+        ScanConnectionFactory.existing(matching: contact.fields, phones: contact.additionalPhones.map(\.value), among: people)
     }
 
     private func addToPeople() {

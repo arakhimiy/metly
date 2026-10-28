@@ -1,11 +1,14 @@
 import Foundation
 import MetlyCardKit
+import MetlyCore
 
 /// Contact values found on a card, in the order they were read.
 nonisolated struct PaperContacts: Equatable, Sendable {
     struct Phone: Equatable, Sendable {
         var value: String
-        var isMobile: Bool
+        var label: PhoneLabel
+        /// The card printed the kind ("Mob:", "(ish)", "Office") rather than it being guessed from the prefix.
+        var isLabelled: Bool
     }
 
     var phones: [Phone] = []
@@ -17,15 +20,38 @@ nonisolated struct PaperContacts: Equatable, Sendable {
     /// Display form ("in/azizakarimova").
     var linkedins: [String] = []
 
-    /// Mobile first (it's the one people answer), else the first number read.
-    var preferredPhone: String? {
-        (phones.first(where: \.isMobile) ?? phones.first)?.value
+    /// Every number once, the primary first: the first mobile (it's the one people answer),
+    /// else the first number read; the others keep the card's order.
+    var orderedPhones: [Phone] {
+        guard let primary = phones.firstIndex(where: { $0.label == .mobile }) ?? phones.indices.first else { return [] }
+        var ordered = phones
+        let first = ordered.remove(at: primary)
+        return [first] + ordered
+    }
+
+    var preferredPhone: String? { orderedPhones.first?.value }
+
+    /// Adds a number unless it is already there (same last 9 digits); a printed label wins over a guess.
+    mutating func add(_ phone: Phone) {
+        let key = PhoneFormat.key(phone.value)
+        if let index = phones.firstIndex(where: { PhoneFormat.key($0.value) == key }) {
+            if phone.isLabelled, !phones[index].isLabelled {
+                phones[index].label = phone.label
+                phones[index].isLabelled = true
+            }
+            return
+        }
+        phones.append(phone)
     }
 
     /// Hosts of the email addresses and websites ("tezkor.uz") — used to recognise the company line.
     var domains: [String] {
         emails.compactMap { $0.split(separator: "@").last.map(String.init) }
             + websites.compactMap { ContactValueFormat.websiteURL(from: $0)?.host()?.lowercased() }
+    }
+
+    var isEmpty: Bool {
+        phones.isEmpty && emails.isEmpty && telegrams.isEmpty && websites.isEmpty && linkedins.isEmpty
     }
 }
 
@@ -124,8 +150,10 @@ nonisolated struct PaperContactExtractor {
 
     // MARK: Phones
 
-    private func extractPhones(from text: String, label: PaperLabel?, into contacts: inout PaperContacts) -> String {
-        var result = text
+    /// Every plausible number in the segment with its label: the one printed right before it
+    /// ("…, Mob: 90 123 45 67"), right after it ("90 123 45 67 (mob.)"), the segment's own label
+    /// ("Tel.: …"), else a guess from the prefix. Fax numbers and extensions ("доб. 210") are dropped.
+    private func extractPhones(from text: String, label segmentLabel: PaperLabel?, into contacts: inout PaperContacts) -> String {
         var found: [(Range<String.Index>, String)] = []
         if let detector {
             for match in detector.matches(in: text, range: NSRange(text.startIndex..., in: text))
@@ -133,22 +161,62 @@ nonisolated struct PaperContactExtractor {
                 if let range = Range(match.range, in: text) { found.append((range, String(text[range]))) }
             }
         }
-        for match in text.matches(of: Self.phone) where !found.contains(where: { $0.0.overlaps(match.range) }) {
-            found.append((match.range, String(match.output)))
+        // The pattern also catches what the detector cuts short ("(+998 71) 200-11-22" → "200-11-22"):
+        // on overlap the plausible match with more digits wins.
+        for match in text.matches(of: Self.phone) {
+            let value = String(match.output)
+            let overlapping = found.indices.filter { found[$0].0.overlaps(match.range) }
+            let longest = overlapping.map { PhoneFormat.digits(found[$0].1).count }.max() ?? 0
+            guard overlapping.isEmpty || (PhoneFormat.isPlausible(value) && PhoneFormat.digits(value).count > longest) else { continue }
+            for index in overlapping.reversed() { found.remove(at: index) }
+            found.append((match.range, value))
         }
         let valid = found
+            .map { ($0.0, Self.removingExtension(from: $0.1)) }
             .filter { PhoneFormat.isPlausible($0.1) }
             .sorted { $0.0.lowerBound < $1.0.lowerBound }
-        if label != .fax {
-            for (_, value) in valid {
-                let isMobile = label == .phone(mobile: true) || PhoneFormat.isUzbekMobile(value)
-                contacts.phones.append(PaperContacts.Phone(value: PhoneFormat.display(value), isMobile: isMobile))
+
+        var removals: [Range<String.Index>] = []
+        for (offset, (range, number)) in valid.enumerated() {
+            let previousEnd = offset == 0 ? text.startIndex : valid[offset - 1].0.upperBound
+            let nextStart = offset + 1 < valid.count ? valid[offset + 1].0.lowerBound : text.endIndex
+            var removal = range
+            var after = text[range.upperBound..<max(range.upperBound, nextStart)]
+            if let ext = after.prefixMatch(of: Self.extensionSuffix) {
+                removal = range.lowerBound..<ext.range.upperBound
+                after = text[ext.range.upperBound..<max(ext.range.upperBound, nextStart)]
             }
+            removals.append(removal)
+
+            let before = text[min(previousEnd, range.lowerBound)..<range.lowerBound]
+            let printed = PaperLabel.trailingLabel(in: before)
+                ?? PaperLabel.followingLabel(in: after, allowsBareWord: offset + 1 == valid.count)
+                ?? segmentLabel
+            guard printed != .fax else { continue }
+            let (label, isLabelled) = Self.phoneLabel(printed: printed, number: number)
+            contacts.add(PaperContacts.Phone(value: PhoneFormat.display(number), label: label, isLabelled: isLabelled))
         }
-        for (range, _) in valid.reversed() {
+        var result = text
+        for range in removals.reversed() {
             result.replaceSubrange(range, with: " ")
         }
         return result
+    }
+
+    /// A printed kind wins; a generic "Tel" is a work number unless the prefix says mobile; an
+    /// unlabelled number follows its prefix and is otherwise taken as the mobile.
+    static func phoneLabel(printed: PaperLabel?, number: String) -> (PhoneLabel, isLabelled: Bool) {
+        switch printed {
+        case .phone(let kind?): (kind, true)
+        case .phone(nil): (PhoneFormat.inferredLabel(number) ?? .work, false)
+        default: (PhoneFormat.inferredLabel(number) ?? .mobile, false)
+        }
+    }
+
+    /// "+1 212 555 0100 ext. 12" → "+1 212 555 0100" (an extension can't be dialled from a plain number).
+    static func removingExtension(from number: String) -> String {
+        guard let match = number.firstMatch(of: extensionSuffix) else { return number }
+        return String(number[..<match.range.lowerBound])
     }
 
     // MARK: Patterns
@@ -164,9 +232,13 @@ nonisolated struct PaperContactExtractor {
     private static var wwwLink: Regex<Substring> { /www\.[^\s,;]+/.ignoresCase() }
     private static var domainLink: Regex<Substring> {
         // Bare domains need a known TLD so "J.Smith" or "Ltd.Co" never become websites.
-        /\b[A-Za-z0-9][A-Za-z0-9\-]*(?:\.[A-Za-z0-9\-]+)*\.(?:com|net|org|uz|ru|io|co|me|ai|app|dev|info|biz|kz|kg|tj|tm|az|ge|am|by|ua|de|uk|us|eu|tech|design|studio|agency|pro|online|site|store|shop|xyz|edu|gov|academy|group|link|page|cloud|digital|global|team|works|space|world|live|fm|tv|gg|so|to)\b(?:\/[^\s,;]*)?/
+        /\b[A-Za-z0-9][A-Za-z0-9\-]*(?:\.[A-Za-z0-9\-]+)*\.(?:com|net|org|uz|ru|io|co|me|ai|app|dev|info|biz|kz|kg|tj|tm|az|ge|am|by|ua|de|uk|us|eu|tech|design|studio|agency|pro|online|site|store|shop|xyz|edu|gov|academy|group|link|page|cloud|digital|global|team|works|space|world|live|fm|tv|gg|so|to|vc)\b(?:\/[^\s,;]*)?/
             .ignoresCase()
     }
     private static var handle: Regex<Substring> { /@[A-Za-z0-9_.]{3,32}/ }
     private static var phone: Regex<Substring> { /\+?\(?\d[\d\s().\-]{5,}\d/ }
+    /// ", доб. 210", " ext. 12", " x12", " вн. 3".
+    private static var extensionSuffix: Regex<Substring> {
+        /\s*[,;]?\s*(?:доб|ext|вн|x|ichki|qo'sh|добавочный)\.?\s*\d{1,6}/.ignoresCase()
+    }
 }

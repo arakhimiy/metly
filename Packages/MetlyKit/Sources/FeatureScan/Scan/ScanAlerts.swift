@@ -34,6 +34,8 @@ struct InvalidCodeAlert: Equatable {
 struct PaperNotReadAlert: Equatable {
     /// The photo, kept for PAPER_REVIEW when the user types the details in.
     var imageData: Data?
+    /// Whatever text was read (offered under Recognized Text after "Enter Manually").
+    var recognizedText: [String] = []
 
     static let title = String(localized: "Couldn’t Read the Card")
     static let message = String(localized: "Hold the card flat in good light, or type the details yourself.")

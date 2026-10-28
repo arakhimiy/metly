@@ -1,24 +1,35 @@
 import MetlyDesign
 import SwiftUI
 
-/// "Detected Details": every field editable, with a hint on values read from the card.
+/// Which PAPER_REVIEW text field has focus.
+enum PaperFocus: Hashable {
+    case field(PaperField)
+    case phone(PaperPhoneRow.ID)
+}
+
+/// "Detected Details": name, title and company, with a hint on values read from the card and
+/// a one-tap **Swap Name and Company** for cards that put the brand where the name usually is.
 struct PaperDetailsSection: View {
     @Binding var details: PaperCardDetails
     let hints: [PaperField: PaperFieldHint]
-    var focusedField: FocusState<PaperField?>.Binding
+    var focus: FocusState<PaperFocus?>.Binding
+    let onSwap: () -> Void
 
     var body: some View {
         Section {
-            ForEach(PaperField.allCases) { field in
-                PaperFieldRow(field: field, text: $details[field], hint: hints[field],
-                              focusedField: focusedField, onSubmit: { focusNext(after: field) })
+            ForEach(PaperRoles.fields) { field in
+                PaperFieldRow(field: field, text: $details[field], hint: hints[field], focus: focus) {
+                    focus.wrappedValue = next(after: field)
+                }
+            }
+            if details.canSwapNameAndCompany {
+                Button("Swap Name and Company", systemImage: "arrow.up.arrow.down", action: onSwap)
             }
         } header: {
             Text("Detected Details")
         } footer: {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Read on your iPhone. Check the details before saving.")
-                if hints.values.contains(.guessed) {
+                if PaperRoles.fields.contains(where: { hints[$0] == .guessed }) {
                     Text("\(Image(systemName: "questionmark.circle.fill")) Guessed from the card’s layout.")
                 }
                 if !details.canSave {
@@ -28,21 +39,46 @@ struct PaperDetailsSection: View {
         }
     }
 
-    private func focusNext(after field: PaperField) {
-        let all = PaperField.allCases
-        guard let index = all.firstIndex(of: field), index + 1 < all.count else {
-            focusedField.wrappedValue = nil
-            return
+    private func next(after field: PaperField) -> PaperFocus? {
+        switch field {
+        case .name: .field(.title)
+        case .title: .field(.company)
+        default: details.phones.first.map { .phone($0.id) } ?? .field(.email)
         }
-        focusedField.wrappedValue = all[index + 1]
     }
 }
 
-private struct PaperFieldRow: View {
+/// Email, Telegram, website and LinkedIn.
+struct PaperContactsSection: View {
+    @Binding var details: PaperCardDetails
+    let hints: [PaperField: PaperFieldHint]
+    var focus: FocusState<PaperFocus?>.Binding
+
+    private static let fields: [PaperField] = [.email, .telegram, .website, .linkedin]
+
+    var body: some View {
+        Section {
+            ForEach(Self.fields) { field in
+                PaperFieldRow(field: field, text: $details[field], hint: hints[field], focus: focus) {
+                    focus.wrappedValue = next(after: field)
+                }
+            }
+        } footer: {
+            Text("Read on your iPhone. Check the details before saving.")
+        }
+    }
+
+    private func next(after field: PaperField) -> PaperFocus? {
+        guard let index = Self.fields.firstIndex(of: field), index + 1 < Self.fields.count else { return nil }
+        return .field(Self.fields[index + 1])
+    }
+}
+
+struct PaperFieldRow: View {
     let field: PaperField
     @Binding var text: String
     let hint: PaperFieldHint?
-    var focusedField: FocusState<PaperField?>.Binding
+    var focus: FocusState<PaperFocus?>.Binding
     let onSubmit: () -> Void
 
     var body: some View {
@@ -54,10 +90,10 @@ private struct PaperFieldRow: View {
                     .keyboardType(field.keyboard)
                     .textInputAutocapitalization(field.capitalizesWords ? .words : .never)
                     .autocorrectionDisabled(!field.capitalizesWords)
-                    .submitLabel(field == PaperField.allCases.last ? .done : .next)
-                    .focused(focusedField, equals: field)
+                    .submitLabel(field == .linkedin ? .done : .next)
+                    .focused(focus, equals: .field(field))
                     .onSubmit(onSubmit)
-                    .accessibilityHint(hint == .guessed ? "Guessed from the card’s layout. Check it." : "")
+                    .accessibilityHint(hint == .guessed ? String(localized: "Guessed from the card’s layout. Check it.") : "")
                 if let hint {
                     HintBadge(hint: hint)
                 }
@@ -66,23 +102,25 @@ private struct PaperFieldRow: View {
             Label {
                 Text(field.title)
             } icon: {
-                SettingsIcon(field.symbolName, color: tint)
+                SettingsIcon(field.symbolName, color: field.tint)
             }
-        }
-    }
-
-    private var tint: Color {
-        switch field {
-        case .name: .teal
-        case .title: .orange
-        case .company: .purple
-        default: field.kind?.tint ?? .gray
         }
     }
 }
 
-/// ✓ detected format · ? guessed from layout. Decorative for VoiceOver (the field's hint says it).
-private struct HintBadge: View {
+extension PaperField {
+    var tint: Color {
+        switch self {
+        case .name: .teal
+        case .title: .orange
+        case .company: .purple
+        default: kind?.tint ?? .gray
+        }
+    }
+}
+
+/// ✓ detected format or strong evidence · ? guessed from layout. Decorative for VoiceOver (the field's hint says it).
+struct HintBadge: View {
     let hint: PaperFieldHint
 
     var body: some View {

@@ -6,11 +6,13 @@ import SwiftUI
 /// Their card face (their design, fields visible to you) with name and "{title} · {company}".
 struct ScannedCardHeader: View {
     let snapshot: CardSnapshot
+    /// The face with their phone labels and extra phones (`PublicCardDTO.faceContent`); nil = the snapshot's.
+    var content: CardFaceContent?
 
     var body: some View {
         Section {
             VStack(spacing: 16) {
-                CardFaceView(design: snapshot.design, content: snapshot.faceContent)
+                CardFaceView(design: snapshot.design, content: content ?? snapshot.faceContent)
                     .cardFaceElevation()
                     .frame(maxWidth: 420)
                 PersonTitle(name: snapshot.fullName, role: snapshot.faceContent.role)

@@ -15,20 +15,31 @@ struct PaperReviewScreen: View {
 
     private let imageData: Data?
     private let detectedCount: Int
+    private let recognizedText: [String]
 
     @State private var details: PaperCardDetails
     @State private var hints: [PaperField: PaperFieldHint]
+    @State private var phoneHints: [PaperPhoneRow.ID: PaperFieldHint]
     @State private var capture = CaptureDraft()
     @State private var isCaptureReady = false
     @State private var showsLimitAlert = false
     @State private var limitCount = 0
-    @FocusState private var focusedField: PaperField?
+    @State private var reassignCount = 0
+    @FocusState private var focus: PaperFocus?
 
-    init(draft: PaperCardDraft) {
+    /// - Parameter scan: the reader's full result (recognized text, sure fields); nil = the draft alone.
+    init(draft: PaperCardDraft, scan: PaperScan? = nil) {
         imageData = draft.imageData
         detectedCount = draft.detectedFieldCount
-        _details = State(initialValue: PaperCardDetails(draft: draft))
-        _hints = State(initialValue: PaperFieldHint.assess(draft))
+        recognizedText = scan?.recognizedText ?? []
+        let details = PaperCardDetails(draft: draft)
+        _details = State(initialValue: details)
+        var hints = PaperFieldHint.assess(draft, confident: scan?.confidentFields ?? [])
+        hints[.phone] = nil
+        _hints = State(initialValue: hints)
+        _phoneHints = State(initialValue: Dictionary(uniqueKeysWithValues: details.phones.map { row in
+            (row.id, PhoneFormat.isPlausible(row.value) ? PaperFieldHint.detected : .guessed)
+        }))
     }
 
     var body: some View {
@@ -36,7 +47,12 @@ struct PaperReviewScreen: View {
             if let imageData {
                 PaperImageSection(imageData: imageData, detectedCount: detectedCount, onRetake: retake)
             }
-            PaperDetailsSection(details: $details, hints: hints, focusedField: $focusedField)
+            PaperDetailsSection(details: $details, hints: hints, focus: $focus, onSwap: swapNameAndCompany)
+            PaperPhonesSection(details: $details, hints: phoneHints, focus: $focus)
+            PaperContactsSection(details: $details, hints: hints, focus: $focus)
+            if !recognizedText.isEmpty {
+                PaperRecognizedTextSection(lines: recognizedText, details: details, onUse: use)
+            }
             if let existing {
                 Section {
                     Button("Open \(existing.fullName)", systemImage: "person.crop.circle.badge.checkmark") { open(existing) }
@@ -58,15 +74,16 @@ struct PaperReviewScreen: View {
             }
         }
         .followUpLimitAlert(isPresented: $showsLimitAlert, openCount: limitCount)
+        .sensoryFeedback(.selection, trigger: reassignCount)
         .task { prepareCapture() }
         .onChange(of: details) { old, new in
             detailsChanged(from: old, to: new)
         }
     }
 
-    /// Someone already in People with the same phone, email or Telegram.
+    /// Someone already in People with the same phone (any of them), email or Telegram.
     private var existing: Connection? {
-        ScanConnectionFactory.existing(matching: details.contactFields, among: people)
+        ScanConnectionFactory.existing(matching: details.contactFields, phones: details.phones.map(\.value), among: people)
     }
 
     // MARK: Actions
@@ -74,17 +91,37 @@ struct PaperReviewScreen: View {
     private func prepareCapture() {
         guard !isCaptureReady else { return }
         capture = .capture(for: nil, in: modelContext)
-        capture.preferredChannel = FollowUpPolicy.preferredChannel(phone: details.phone, email: details.email,
-                                                                   telegram: details.telegram)
+        capture.preferredChannel = preferredChannel(for: details)
         isCaptureReady = true
     }
 
     /// Edited values lose their hint; the reminder channel follows the available fields.
     private func detailsChanged(from old: PaperCardDetails, to new: PaperCardDetails) {
-        for field in PaperField.allCases where old[field] != new[field] {
+        for field in PaperField.allCases where field != .phone && old[field] != new[field] {
             hints[field] = nil
         }
-        capture.preferredChannel = FollowUpPolicy.preferredChannel(phone: new.phone, email: new.email, telegram: new.telegram)
+        let oldValues = Dictionary(uniqueKeysWithValues: old.phones.map { ($0.id, $0.value) })
+        for row in new.phones where oldValues[row.id] != row.value {
+            phoneHints[row.id] = nil
+        }
+        capture.preferredChannel = preferredChannel(for: new)
+    }
+
+    private func preferredChannel(for details: PaperCardDetails) -> FollowUpChannel {
+        FollowUpPolicy.preferredChannel(phone: details.savedPhones.primary?.value ?? "", email: details.email,
+                                        telegram: details.telegram)
+    }
+
+    private func use(_ line: String, as use: PaperLineUse) {
+        details.use(line, as: use)
+        reassignCount += 1
+    }
+
+    private func swapNameAndCompany() {
+        withAnimation {
+            details.swapNameAndCompany()
+        }
+        reassignCount += 1
     }
 
     private func retake() {

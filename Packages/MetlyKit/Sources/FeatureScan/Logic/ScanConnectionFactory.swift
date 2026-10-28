@@ -22,13 +22,20 @@ enum ScanConnectionFactory {
         return connection
     }
 
-    /// A foreign vCard or a paper card → a plain connection (no card snapshot).
+    /// A foreign vCard or a paper card → a plain connection (no card snapshot), with every phone:
+    /// the draft's phone + `phoneLabel` as `phone`, the rest as `additionalPhones`.
     @discardableResult
     static func insertConnection(from draft: PaperCardDraft, source: ConnectionSource, in context: ModelContext,
                                  now: Date = .now) -> Connection {
         let connection = makeConnection(fullName: displayName(for: draft), jobTitle: draft.jobTitle,
                                         company: draft.company, fields: draft.fields,
                                         source: source, in: context, now: now)
+        connection.mergePhones(primary: connection.phone, label: draft.phoneLabel,
+                               additional: draft.additionalPhones.map { phone in
+                                   var trimmed = phone
+                                   trimmed.value = phone.value.trimmingCharacters(in: .whitespacesAndNewlines)
+                                   return trimmed
+                               })
         try? context.save()
         return connection
     }
@@ -64,15 +71,16 @@ enum ScanConnectionFactory {
         return try? context.fetch(descriptor).first
     }
 
-    /// A live connection sharing a phone number (last 9 digits), email or Telegram handle.
-    static func existing(matching fields: [ContactField], among people: [Connection]) -> Connection? {
-        let phone = fields.first { $0.kind == .phone }.map { phoneKey($0.value) } ?? ""
+    /// A live connection sharing a phone number (last 9 digits — any of theirs, any of these), email
+    /// or Telegram handle.
+    static func existing(matching fields: [ContactField], phones: [String] = [], among people: [Connection]) -> Connection? {
+        let keys = Set((fields.filter { $0.kind == .phone }.map(\.value) + phones).map(phoneKey).filter { $0.count >= 7 })
         let email = fields.first { $0.kind == .email }?.value.trimmingCharacters(in: .whitespaces).lowercased() ?? ""
         let telegram = fields.first { $0.kind == .telegram }.flatMap { ContactLinks.telegramHandle($0.value)?.lowercased() } ?? ""
-        guard !(phone.isEmpty && email.isEmpty && telegram.isEmpty) else { return nil }
+        guard !(keys.isEmpty && email.isEmpty && telegram.isEmpty) else { return nil }
         return people.first { person in
             guard !person.isDeleted else { return false }
-            if phone.count >= 7, phoneKey(person.phone) == phone { return true }
+            if !keys.isEmpty, person.allPhones.contains(where: { keys.contains(phoneKey($0.value)) }) { return true }
             if !email.isEmpty, person.email.trimmingCharacters(in: .whitespaces).lowercased() == email { return true }
             if !telegram.isEmpty, ContactLinks.telegramHandle(person.telegram)?.lowercased() == telegram { return true }
             return false
@@ -98,6 +106,6 @@ enum ScanConnectionFactory {
 
     /// Last 9 digits — "+998 90 123 45 67" and "90 123-45-67" are the same number.
     private static func phoneKey(_ value: String) -> String {
-        String(PhoneFormat.digits(value).suffix(9))
+        PhoneFormat.key(value)
     }
 }
