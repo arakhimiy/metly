@@ -40,10 +40,32 @@ struct CardContactRow: View {
                 .font(.system(size: max(style.u(iconSize) * 0.9, 0.5)))
                 .foregroundStyle(iconColor)
                 .frame(width: style.u(iconSize) * 1.15, height: style.u(iconSize))
+            CardContactValue(contact: contact, style: style, fontSize: fontSize)
+        }
+    }
+}
+
+/// A contact value on one line. When the card shows several phone numbers, each one is followed by a
+/// small muted label ("Work") that never truncates — the number ellipsizes first.
+struct CardContactValue: View {
+    let contact: CardFaceModel.Contact
+    let style: CardFaceStyle
+    /// Text size, % of card width.
+    let fontSize: CGFloat
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: style.u(1)) {
             Text(verbatim: contact.value)
                 .font(style.font(fontSize))
                 .lineLimit(1)
                 .truncationMode(.tail)
+            if let label = contact.phoneLabel {
+                Text(verbatim: label.title)
+                    .font(style.font(fontSize * 0.82))
+                    .foregroundStyle(style.muted)
+                    .lineLimit(1)
+                    .fixedSize()
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ struct BoldTemplate: View {
                         CardText(text: model.jobTitle, style: style, size: 3, color: style.muted)
                     }
                     ForEach(model.boldContacts) { contact in
-                        CardText(text: contact.value, style: style, size: 3)
+                        CardContactValue(contact: contact, style: style, fontSize: 3)
                     }
                 }
             }

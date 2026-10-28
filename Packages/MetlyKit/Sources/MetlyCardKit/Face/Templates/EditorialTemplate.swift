@@ -38,7 +38,7 @@ struct EditorialTemplate: View {
             CardCapWidth(maxWidth: style.u(58)) {
                 VStack(alignment: .leading, spacing: style.u(0.8)) {
                     ForEach(model.contacts) { contact in
-                        CardText(text: contact.value, style: style, size: 3.1)
+                        CardContactValue(contact: contact, style: style, fontSize: 3.1)
                     }
                 }
             }

@@ -18,7 +18,7 @@ struct TerminalTemplate: View {
             CardCapWidth(maxWidth: style.u(58)) {
                 VStack(alignment: .leading, spacing: style.u(1)) {
                     ForEach(model.contacts) { contact in
-                        let key = Text(verbatim: contact.kind.terminalKey).foregroundStyle(style.accent)
+                        let key = Text(verbatim: contact.terminalKey).foregroundStyle(style.accent)
                         Text("\(key) \(Text(verbatim: contact.value))")
                             .font(style.font(3))
                             .lineLimit(1)
