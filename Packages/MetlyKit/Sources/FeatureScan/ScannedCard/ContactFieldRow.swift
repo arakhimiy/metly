@@ -3,17 +3,20 @@ import MetlyCore
 import MetlyDesign
 import SwiftUI
 
-/// "Contact Info" rows: tap to call / mail / open, touch and hold to copy.
+/// "Contact Info" rows: tap to call / mail / open, touch and hold to copy. When a contact has more
+/// than one number (a vCard's TEL;TYPE=CELL / WORK…), each phone row shows its label.
 struct ContactFieldsSection: View {
     let fields: [ContactField]
+    var phoneLabel: PhoneLabel = .mobile
+    var additionalPhones: [LabeledPhone] = []
     var footer: String?
 
     var body: some View {
-        let visible = fields.filter { !$0.isEmpty }
-        if !visible.isEmpty {
+        let rows = self.rows
+        if !rows.isEmpty {
             Section {
-                ForEach(visible) { field in
-                    ContactFieldRow(field: field)
+                ForEach(rows, id: \.id) { row in
+                    ContactFieldRow(field: row.field, title: row.title)
                 }
             } header: {
                 Text("Contact Info")
@@ -22,10 +25,30 @@ struct ContactFieldsSection: View {
             }
         }
     }
+
+    /// Non-empty fields in order, the extra phones right after the main one (or first without one).
+    private var rows: [(id: String, field: ContactField, title: String?)] {
+        let extra = additionalPhones.filter { !$0.isEmpty }
+        let extraRows = extra.map { (id: $0.id.uuidString, field: ContactField(kind: .phone, value: $0.value), title: Optional($0.label.title)) }
+        var rows: [(id: String, field: ContactField, title: String?)] = []
+        var placedExtra = false
+        for field in fields where !field.isEmpty {
+            if field.kind == .phone {
+                rows.append((field.kind.rawValue, field, extra.isEmpty ? nil : phoneLabel.title))
+                rows += extraRows
+                placedExtra = true
+            } else {
+                rows.append((field.kind.rawValue, field, nil))
+            }
+        }
+        return placedExtra ? rows : extraRows + rows
+    }
 }
 
 struct ContactFieldRow: View {
     let field: ContactField
+    /// Replaces the kind's name ("Mobile", "Work" for labelled phones).
+    var title: String?
 
     @Environment(AppRouter.self) private var router
     @Environment(\.openURL) private var openURL
@@ -38,7 +61,7 @@ struct ContactFieldRow: View {
                     .multilineTextAlignment(.trailing)
             } label: {
                 Label {
-                    Text(field.kind.title)
+                    Text(title ?? field.kind.title)
                         .foregroundStyle(.primary)
                 } icon: {
                     SettingsIcon(field: field.kind)

@@ -36,6 +36,6 @@ public struct PaperReviewView: View {
     }
 
     public var body: some View {
-        PaperReviewScreen(draft: draft)
+        PaperReviewScreen(draft: draft, scan: PaperScanStore.scan(for: draft))
     }
 }

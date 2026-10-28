@@ -21,21 +21,33 @@ enum ScanSamples {
     END:VCARD
     """
 
-    /// OCR lines of a typical card, as Vision returns them.
+    /// OCR lines of a typical card, as Vision returns them (logo on top, office and mobile numbers).
     static let paperLines = [
-        "TEZKOR",
-        "Dilshod Rakhimov",
-        "Head of Sales",
-        "+998 90 987 65 43",
-        "dilshod@tezkor.uz",
-        "t.me/dilshod_r",
-        "tezkor.uz",
+        OCRLine("TEZKOR", height: 0.11),
+        OCRLine("Dilshod Rakhimov", height: 0.06),
+        OCRLine("Head of Sales", height: 0.035),
+        OCRLine("Ish: +998 71 200 10 20", height: 0.03),
+        OCRLine("Mob: +998 90 987 65 43", height: 0.03),
+        OCRLine("dilshod@tezkor.uz", height: 0.03),
+        OCRLine("t.me/dilshod_r", height: 0.03),
+        OCRLine("tezkor.uz", height: 0.03),
     ]
 
-    static var paperDraft: PaperCardDraft {
-        var draft = PaperCardParser.parse(text: paperLines)
-        draft.imageData = sampleCardImage
-        return draft
+    /// The reader's full result, with the photo stand-in.
+    static var paperScan: PaperScan {
+        var scan = PaperCardParser.analyze(paperLines).scan
+        scan.draft.imageData = sampleCardImage
+        return scan
+    }
+
+    static var paperDraft: PaperCardDraft { paperScan.draft }
+
+    /// The user's failure mode: a two-word brand above a name no dictionary knows.
+    static var brandFirstScan: PaperScan {
+        PaperCardParser.analyze([
+            OCRLine("GRAND LUX", height: 0.11), OCRLine("Bobur Tosh", height: 0.06), OCRLine("Bosh menejer", height: 0.035),
+            OCRLine("+998 95 145 67 89"), OCRLine("+998 71 233 00 11"), OCRLine("grandlux.hotel@gmail.com"),
+        ]).scan
     }
 
     /// A rendered card face standing in for the captured photo.

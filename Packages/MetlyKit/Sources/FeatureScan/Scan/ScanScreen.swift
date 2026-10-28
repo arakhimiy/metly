@@ -18,6 +18,9 @@ struct ScanScreen: View {
     @State private var debouncer = ScanDebouncer()
     @State private var isVisible = false
     @State private var isReadingCard = false
+    /// The on-device model that helps read paper cards (iOS 26+ with Apple Intelligence), looked up in Paper mode.
+    @State private var cardModel: (any PaperCardLanguageModel)?
+    @State private var didLookUpCardModel = false
 
     @State private var invalidCode: InvalidCodeAlert?
     @State private var showsInvalidCode: Bool
@@ -46,7 +49,7 @@ struct ScanScreen: View {
             } else {
                 CameraAccessView(access: camera.access, onRequestAccess: requestAccess, onPaste: handlePasted) {
                     #if DEBUG
-                    DemoScanMenu(onPayload: handlePasted, onPaperDraft: handlePaperDraft)
+                    DemoScanMenu(onPayload: handlePasted, onPaperScan: handlePaperScan)
                     #endif
                 }
             }
@@ -66,7 +69,7 @@ struct ScanScreen: View {
             Text(alert.message)
         }
         .alert(PaperNotReadAlert.title, isPresented: $showsPaperNotRead, presenting: paperNotRead) { alert in
-            Button("Enter Manually") { enterManually(imageData: alert.imageData) }
+            Button("Enter Manually") { enterManually(alert) }
             Button("Retake", role: .cancel) {}
         } message: { _ in
             Text(PaperNotReadAlert.message)
@@ -90,7 +93,10 @@ struct ScanScreen: View {
             }
         }
         .onChange(of: camera.isTorchOn) { camera.applyTorch() }
-        .onChange(of: mode) { camera.isTorchOn = false }
+        .onChange(of: mode) {
+            camera.isTorchOn = false
+            prepareCardModel()
+        }
     }
 
     private var cameraLayer: some View {
@@ -124,6 +130,7 @@ struct ScanScreen: View {
 
     private func appear() {
         isVisible = true
+        prepareCardModel()
         camera.refreshAccess()
         // Coming back from a scanned card: don't re-open it while its code is still in frame
         // (any other code — including one already in view — is handled right away).
@@ -182,6 +189,17 @@ struct ScanScreen: View {
 
     // MARK: Paper cards
 
+    /// In Paper mode: finds the on-device model once and loads it ahead of the shutter.
+    private func prepareCardModel() {
+        guard mode == .paper else { return }
+        if !didLookUpCardModel {
+            didLookUpCardModel = true
+            cardModel = PaperCardModels.available()
+        }
+        guard let cardModel else { return }
+        Task { await cardModel.prepare() }
+    }
+
     private func readPaperCard() {
         guard !isReadingCard else { return }
         isReadingCard = true
@@ -189,25 +207,33 @@ struct ScanScreen: View {
             defer { isReadingCard = false }
             do {
                 let photo = try await camera.capturePhoto()
-                handlePaperDraft(await PaperCardReader.read(photo))
+                handlePaperScan(await PaperCardReader.read(photo, model: cardModel))
             } catch {
-                handlePaperDraft(PaperCardDraft())
+                handlePaperScan(PaperScan(draft: PaperCardDraft()))
             }
+            // Each card gets a fresh session; warm up the next one.
+            prepareCardModel()
         }
     }
 
-    private func handlePaperDraft(_ draft: PaperCardDraft) {
-        if draft.isReadable {
+    private func handlePaperScan(_ scan: PaperScan) {
+        if scan.draft.isReadable {
             successFeedback += 1
-            ScanCameraPolicy.show(.paperReview(draft), router: router)
+            PaperScanStore.remember(scan)
+            ScanCameraPolicy.show(.paperReview(scan.draft), router: router)
         } else {
             warningFeedback += 1
-            paperNotRead = PaperNotReadAlert(imageData: draft.imageData)
+            paperNotRead = PaperNotReadAlert(imageData: scan.draft.imageData, recognizedText: scan.recognizedText)
             showsPaperNotRead = true
         }
     }
 
-    private func enterManually(imageData: Data?) {
-        ScanCameraPolicy.show(.paperReview(PaperCardDraft(imageData: imageData)), router: router)
+    /// PAPER_REVIEW with empty fields; whatever text was read is still offered under Recognized Text.
+    private func enterManually(_ alert: PaperNotReadAlert) {
+        let draft = PaperCardDraft(imageData: alert.imageData)
+        if !alert.recognizedText.isEmpty {
+            PaperScanStore.remember(PaperScan(draft: draft, recognizedText: alert.recognizedText))
+        }
+        ScanCameraPolicy.show(.paperReview(draft), router: router)
     }
 }

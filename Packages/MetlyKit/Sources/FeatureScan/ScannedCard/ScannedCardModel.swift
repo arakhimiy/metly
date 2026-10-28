@@ -128,12 +128,15 @@ final class ScannedCardModel {
             if let known = ScanConnectionFactory.existing(remoteUserID: card.owner?.userID, in: modelContext) {
                 // Already in People (e.g. added earlier): don't create a second record.
                 known.mySharedCardID = cardID
+                known.mergePhones(from: card)
                 known.markChanged()
                 try? modelContext.save()
                 connection = known
             } else {
                 connection = ScanConnectionFactory.insertConnection(from: snapshot, remoteUserID: card.owner?.userID,
                                                                     sharedCardID: cardID, in: modelContext)
+                connection.mergePhones(from: card)
+                try? modelContext.save()
             }
             connectPhase = .savedOffline
             router.present(.addContext(connectionID: connection.id))
@@ -193,7 +196,10 @@ final class ScannedCardModel {
     /// "Add to People" without a request: a `.scanQR` connection from their public card.
     func addToPeople(_ card: PublicCardDTO, modelContext: ModelContext) -> Connection? {
         guard let snapshot = card.snapshot else { return nil }
-        return ScanConnectionFactory.insertConnection(from: snapshot, remoteUserID: card.owner?.userID, in: modelContext)
+        let connection = ScanConnectionFactory.insertConnection(from: snapshot, remoteUserID: card.owner?.userID, in: modelContext)
+        connection.mergePhones(from: card)
+        try? modelContext.save()
+        return connection
     }
 
     /// vCard "Add to People".

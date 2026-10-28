@@ -7,7 +7,7 @@ import SwiftUI
 /// for the other mock-server people, foreign codes and paper cards.
 struct DemoScanMenu: View {
     let onPayload: (String) -> Void
-    let onPaperDraft: (PaperCardDraft) -> Void
+    let onPaperScan: (PaperScan) -> Void
 
     var body: some View {
         Menu {
@@ -24,8 +24,8 @@ struct DemoScanMenu: View {
                 Button("Plain Text") { onPayload("Table 12 · Wi-Fi: cafe2026") }
             }
             Section("Paper Cards") {
-                Button("Sample Card") { onPaperDraft(ScanSamples.paperDraft) }
-                Button("Unreadable Card") { onPaperDraft(PaperCardDraft()) }
+                Button("Sample Card") { onPaperScan(ScanSamples.paperScan) }
+                Button("Unreadable Card") { onPaperScan(PaperScan(draft: PaperCardDraft())) }
             }
         } label: {
             Label("Scan Demo Card", systemImage: "ladybug")

@@ -24,7 +24,7 @@ struct MetlyCardDetail: View {
     var body: some View {
         @Bindable var model = model
         List {
-            ScannedCardHeader(snapshot: snapshot)
+            ScannedCardHeader(snapshot: snapshot, content: card.faceContent)
             if isSelf {
                 Section {
                     Label("This is your card.", systemImage: "person.crop.rectangle")
@@ -42,7 +42,7 @@ struct MetlyCardDetail: View {
                                      showsConnectHint: !isConnected, onConnect: connect, onCancel: cancelConnect,
                                      onOpenInPeople: openInPeople)
             }
-            ContactFieldsSection(fields: snapshot.fields)
+            ContactFieldsSection(fields: snapshot.fields, phoneLabel: card.phoneLabel, additionalPhones: card.additionalPhones)
             if !isSelf {
                 Section {
                     if isBlocked {
