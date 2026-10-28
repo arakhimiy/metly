@@ -102,7 +102,7 @@ struct DictationTests {
 
     @Test func transcriptFollowsTheSessionAndStopFinishesIt() async throws {
         let session = FakeDictationSession()
-        let recognizer = VoiceNoteRecognizer(locale: Locale(identifier: "en-US"), permissions: granted) { _ in session }
+        let recognizer = VoiceNoteRecognizer(store: freshStore(), permissions: granted) { _, _ in .ready(session) }
         await recognizer.startAndWait()
         #expect(recognizer.state == .listening)
         #expect(session.started)
@@ -120,8 +120,8 @@ struct DictationTests {
     /// Dismissing the form drops the recognizer: the microphone must stop with it.
     @Test func droppingTheRecognizerStopsTheMicrophone() async throws {
         let session = FakeDictationSession()
-        var recognizer: VoiceNoteRecognizer? = VoiceNoteRecognizer(locale: Locale(identifier: "en-US"),
-                                                                    permissions: granted) { _ in session }
+        var recognizer: VoiceNoteRecognizer? = VoiceNoteRecognizer(store: freshStore(),
+                                                                    permissions: granted) { _, _ in .ready(session) }
         await recognizer?.startAndWait()
         #expect(recognizer?.state == .listening)
         weak var released = recognizer
@@ -137,10 +137,10 @@ struct DictationTests {
         let session = FakeDictationSession()
         var madeSession = false
         let permissions = VoiceNoteRecognizer.Permissions(microphone: { await prompt.ask() }, speech: { true })
-        var recognizer: VoiceNoteRecognizer? = VoiceNoteRecognizer(locale: Locale(identifier: "en-US"),
-                                                                    permissions: permissions) { _ in
+        var recognizer: VoiceNoteRecognizer? = VoiceNoteRecognizer(store: freshStore(),
+                                                                    permissions: permissions) { _, _ in
             madeSession = true
-            return session
+            return .ready(session)
         }
         recognizer?.start()
         try await waitFor { prompt.isShowing }
@@ -158,7 +158,7 @@ struct DictationTests {
         let prompt = PendingPrompt()
         let session = FakeDictationSession()
         let permissions = VoiceNoteRecognizer.Permissions(microphone: { await prompt.ask() }, speech: { true })
-        let recognizer = VoiceNoteRecognizer(locale: Locale(identifier: "en-US"), permissions: permissions) { _ in session }
+        let recognizer = VoiceNoteRecognizer(store: freshStore(), permissions: permissions) { _, _ in .ready(session) }
         recognizer.start()
         try await waitFor { prompt.isShowing }
         recognizer.stop()
@@ -171,7 +171,7 @@ struct DictationTests {
 
     @Test func deniedMicrophoneIsReported() async {
         let permissions = VoiceNoteRecognizer.Permissions(microphone: { false }, speech: { true })
-        let recognizer = VoiceNoteRecognizer(locale: Locale(identifier: "en-US"), permissions: permissions) { _ in nil }
+        let recognizer = VoiceNoteRecognizer(store: freshStore(), permissions: permissions) { _, _ in .unavailable(.notSupported(.english)) }
         await recognizer.startAndWait()
         #expect(recognizer.state == .denied(.microphone))
         recognizer.acknowledge()
@@ -179,9 +179,13 @@ struct DictationTests {
     }
 
     @Test func noOnDeviceModelIsUnavailable() async {
-        let recognizer = VoiceNoteRecognizer(locale: Locale(identifier: "en-US"), permissions: granted) { _ in nil }
+        let recognizer = VoiceNoteRecognizer(store: freshStore(), permissions: granted) { language, _ in
+            .unavailable(.notSupported(language))
+        }
+        recognizer.language = .english
         await recognizer.startAndWait()
-        #expect(recognizer.state == .unavailable)
+        #expect(recognizer.state == .unavailable(.notSupported(.english)))
+        #expect(!recognizer.isBusy)
     }
 
     private func waitFor(timeout: Duration = .seconds(2), _ condition: @MainActor () -> Bool) async throws {

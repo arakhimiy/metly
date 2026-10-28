@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Multiline private note + voice dictation (live transcript appended to what was typed).
+/// Multiline private note + voice dictation (live transcript appended to what was typed) in the language
+/// chosen next to the mic.
 struct PrivateNoteSection: View {
     @Binding var note: String
     let voice: VoiceNoteRecognizer
@@ -8,13 +9,13 @@ struct PrivateNoteSection: View {
     /// The note as it was when dictation started; the live transcript is appended to it.
     @State private var noteBeforeDictation = ""
     @State private var settingsAlert: SettingsAlert?
-    @State private var showsUnavailable = false
+    @State private var problem: DictationProblem?
 
     var body: some View {
         Section {
             TextField("What did you talk about?", text: $note, axis: .vertical)
                 .lineLimit(3...8)
-            DictationRow(state: voice.state, action: toggleDictation)
+            DictationRow(voice: voice, action: toggleDictation)
         } header: {
             Text("Private Note")
         } footer: {
@@ -28,20 +29,34 @@ struct PrivateNoteSection: View {
             handle(state)
         }
         .settingsAlert($settingsAlert)
-        .alert("Voice Notes Unavailable", isPresented: $showsUnavailable) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("Dictation on this iPhone isn't available for your language right now. You can still type your note.")
+        .alert(problem?.title ?? "", isPresented: isShowingProblem, presenting: problem) { problem in
+            if problem.canRetry {
+                Button("Cancel", role: .cancel) {}
+                Button("Try Again", action: startDictation)
+                    .keyboardShortcut(.defaultAction)
+            } else {
+                Button("OK", role: .cancel) {}
+            }
+        } message: { problem in
+            Text(problem.message)
         }
+    }
+
+    private var isShowingProblem: Binding<Bool> {
+        Binding(get: { problem != nil }, set: { if !$0 { problem = nil } })
     }
 
     private func toggleDictation() {
         if voice.isBusy {
             voice.stop()
         } else {
-            noteBeforeDictation = note
-            voice.start()
+            startDictation()
         }
+    }
+
+    private func startDictation() {
+        noteBeforeDictation = note
+        voice.start()
     }
 
     private func handle(_ state: VoiceNoteRecognizer.State) {
@@ -52,10 +67,13 @@ struct PrivateNoteSection: View {
         case .denied(.speech):
             settingsAlert = .speechOff
             voice.acknowledge()
-        case .unavailable, .failed:
-            showsUnavailable = true
+        case .unavailable(let reason):
+            problem = DictationProblem(reason)
             voice.acknowledge()
-        case .idle, .preparing, .listening:
+        case .failed(let message):
+            problem = DictationProblem(failure: message)
+            voice.acknowledge()
+        case .idle, .preparing, .downloadingModel, .listening:
             break
         }
     }
@@ -67,32 +85,21 @@ struct PrivateNoteSection: View {
     }
 }
 
-private struct DictationRow: View {
-    let state: VoiceNoteRecognizer.State
-    let action: () -> Void
+/// What the dictation alert says (and whether it offers Try Again).
+struct DictationProblem: Equatable {
+    var title: String
+    var message: String
+    var canRetry: Bool
 
-    private var isListening: Bool { state == .listening }
+    init(_ reason: DictationUnavailability) {
+        title = DictationCopy.title(for: reason)
+        message = DictationCopy.message(for: reason)
+        canRetry = reason.isRetryable
+    }
 
-    var body: some View {
-        HStack(spacing: 12) {
-            Button(action: action) {
-                Label(isListening ? "Stop" : "Dictate", systemImage: isListening ? "waveform" : "mic.fill")
-                    .contentTransition(.symbolEffect(.replace))
-                    .symbolEffect(.variableColor.iterative, isActive: isListening)
-                    .frame(minHeight: 30)
-            }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.capsule)
-            .tint(isListening ? .red : .accentColor)
-            .accessibilityLabel(isListening ? "Stop Dictation" : "Dictate Note")
-
-            if state == .preparing {
-                ProgressView()
-            } else if isListening {
-                Text("Listening… tap the mic to stop")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-        }
+    init(failure message: String) {
+        title = String(localized: "Voice Notes Unavailable")
+        self.message = message
+        canRetry = true
     }
 }

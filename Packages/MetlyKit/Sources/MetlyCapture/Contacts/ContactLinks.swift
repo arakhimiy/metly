@@ -1,7 +1,7 @@
 import Foundation
 
 /// URLs for contacting someone from their stored values (Message / Call / Mail actions, follow-up channels).
-public enum ContactLinks {
+nonisolated public enum ContactLinks {
     /// "@aziza.k", "t.me/aziza_k", "https://t.me/aziza_k" → "aziza.k". Nil when empty.
     public static func telegramHandle(_ value: String) -> String? {
         var handle = value.trimmed
@@ -26,6 +26,22 @@ public enum ContactLinks {
     /// `https://t.me/{handle}` — works without the Telegram app.
     public static func telegramWeb(_ value: String) -> URL? {
         telegramHandle(value).flatMap { URL(string: "https://t.me/\($0)") }
+    }
+
+    /// Telegram by phone number (`tg://resolve?phone=998901234567`) — nil when Telegram can't use the number
+    /// (no country code and not Uzbek, or a landline). See `TelegramPhone`.
+    public static func telegramApp(phone: String) -> URL? {
+        TelegramPhone.digits(from: phone).flatMap { TelegramTarget.phone($0).appURL }
+    }
+
+    /// `https://t.me/+998901234567` — the by-phone fallback without the Telegram app.
+    public static func telegramWeb(phone: String) -> URL? {
+        TelegramPhone.digits(from: phone).flatMap { TelegramTarget.phone($0).webURL }
+    }
+
+    /// Username first, else the first usable phone (pass mobile numbers first).
+    public static func telegram(username: String, phones: [String]) -> TelegramTarget? {
+        TelegramTarget(username: username, phones: phones)
     }
 
     /// Digits with an optional leading "+".

@@ -3,7 +3,9 @@ import Foundation
 import Speech
 
 /// iOS 18–25 dictation (and the fallback where SpeechAnalyzer has no model for the language):
-/// AVAudioEngine microphone tap → `SFSpeechAudioBufferRecognitionRequest`, on-device only.
+/// AVAudioEngine microphone tap → `SFSpeechAudioBufferRecognitionRequest`, on-device only, in exactly the
+/// chosen locale. Without the language's on-device model (Settings › General › Keyboard › Dictation
+/// Languages) there is no session — the form says how to add it instead of using another language.
 ///
 /// A recognition task stops by itself after about a minute (or a long pause). While the user hasn't
 /// tapped Stop, the session commits that task's text and starts the next task on the same running
@@ -28,18 +30,19 @@ nonisolated final class SpeechSession: DictationSession, @unchecked Sendable {
     private var finishRequested = false
     private var isTornDown = false
 
-    /// Nil when on-device recognition isn't available (PLAN Q17: on-device only).
-    /// Tries the locale, then its language (e.g. "en_UZ" → "en"), then US English.
-    init?(locale: Locale) {
-        var candidates = [locale]
-        if let language = locale.language.languageCode?.identifier {
-            candidates.append(Locale(identifier: language))
-        }
-        candidates.append(Locale(identifier: "en-US"))
-        let recognizer = candidates.lazy
-            .compactMap { SFSpeechRecognizer(locale: $0) }
-            .first { $0.isAvailable && $0.supportsOnDeviceRecognition }
-        guard let recognizer else { return nil }
+    /// A session for exactly `locale` when this iPhone recognizes it on-device (PLAN Q17: on-device only),
+    /// otherwise why not. Never falls back to another language: a Russian note must not be heard as English.
+    static func make(locale: Locale) -> (session: SpeechSession?, support: OnDeviceRecognizerSupport) {
+        let recognizer = SFSpeechRecognizer(locale: locale)
+            .flatMap { DictationLocale.isSameLanguage($0.locale, as: locale) ? $0 : nil }
+        let support = OnDeviceRecognizerSupport.classify(recognizerExists: recognizer != nil,
+                                                         isAvailable: recognizer?.isAvailable ?? false,
+                                                         supportsOnDevice: recognizer?.supportsOnDeviceRecognition ?? false)
+        guard support == .ready, let recognizer else { return (nil, support) }
+        return (SpeechSession(recognizer: recognizer), support)
+    }
+
+    private init(recognizer: SFSpeechRecognizer) {
         self.recognizer = recognizer
     }
 

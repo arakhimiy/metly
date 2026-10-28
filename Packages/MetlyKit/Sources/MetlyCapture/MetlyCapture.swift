@@ -37,9 +37,18 @@ import MetlyCore
 //  • .followUpLimitAlert(isPresented:openCount:) — ALERT_FU_LIMIT with Upgrade → paywall(.followUpLimit).
 //  • .settingsAlert($alert) + SettingsAlert.microphoneOff / .speechOff / .locationOff — "Open Settings" alerts.
 //  • ContactDraft + .contactSaver(item:onCompletion:) — CNContactViewController(forNewContact:), no permission needed.
-//  • ContactLinks — Telegram (tg:// + https fallback), tel:, sms:, mailto:, website and LinkedIn URLs.
+//    Carries every phone (`phones`) and saves each as Mobile / Work / Home / Other.
+//  • ContactLinks — Telegram (tg:// + https fallback), tel:, sms:, mailto:, website and LinkedIn URLs;
+//    Telegram by phone: telegramApp(phone:) / telegramWeb(phone:) (tg://resolve?phone=…, t.me/+…).
+//  • TelegramTarget / connection.telegramTarget — username, else the first mobile number Telegram can open
+//    (TelegramPhone: E.164 digits; +998 added to 9-digit Uzbek mobiles; landlines skipped). Show
+//    `TelegramTarget.byPhoneNote` wherever a by-phone action appears.
+//  • connection.phonesForMessaging (Mobile first), LabeledPhone.labeledValue ("Mobile · +998…").
+//  • ContactInfoDraft + ContactInfoEditor(draft:) — editable phones (label menu, add / delete) + email,
+//    Telegram, website, LinkedIn as Form sections; commit with `draft.apply(to: connection)`.
 //  • LocationContextProvider, VoiceNoteRecognizer — @Observable helpers if you need them directly
-//    (dictation: SpeechAnalyzer on iOS 26+, SFSpeechRecognizer restarted per task on iOS 18–25).
+//    (dictation: SpeechAnalyzer on iOS 26+, SFSpeechRecognizer restarted per task on iOS 18–25; language
+//    Русский / English picked next to the mic and remembered — `DictationLanguage`; no Uzbek model).
 //  • PlaceText — "Place, City" without repeating the city; use it for every place display.
 //  • CaptureChip, FollowUpQuickPicker, TagFlowLayout — small reusable controls.
 

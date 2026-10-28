@@ -209,7 +209,8 @@ struct CaptureApplyTests {
         #expect(draft.eventName == "Tashkent Tech Week")
         #expect(draft.place == "Hyatt Regency")
         #expect(draft.isAutoFilled)
-        #expect(draft.preferredChannel == .call)
+        // An Uzbek mobile number makes Telegram (by phone) available, so it's preferred over Call.
+        #expect(draft.preferredChannel == .telegram)
         #expect(draft.existingReminder != nil)
     }
 
