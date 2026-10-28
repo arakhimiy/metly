@@ -45,7 +45,30 @@
       },
       "shouldTranslate": false
     },
+    "%@ %@ density shows up to %lld contact lines, so ^[%lld contact](inflect: true) won’t fit.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ %2$@ density shows up to %3$lld contact lines, so ^[%4$lld contact](inflect: true) won’t fit."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ При плотности «%2$@» видно до %3$lld строк контактов, поэтому часть контактов (%4$lld) не поместится."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ «%2$@» zichligida ko‘pi bilan %3$lld ta kontakt qatori ko‘rinadi, shuning uchun %4$lld ta kontakt sig‘maydi."
+          }
+        }
+      }
+    },
     "%@ %@ density shows up to %lld contact lines, so ^[%lld field](inflect: true) won’t fit.": {
+      "extractionState": "stale",
       "localizations": {
         "en": {
           "stringUnit": {
@@ -114,6 +137,9 @@
           }
         }
       }
+    },
+    "%@ Cards": {
+      "shouldTranslate": false
     },
     "%@ Copied": {
       "localizations": {
@@ -346,6 +372,7 @@
       }
     },
     "%@ has no Telegram username saved.": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -951,6 +978,7 @@
       "shouldTranslate": false
     },
     "%@, %@, private, hidden from all cards": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -983,6 +1011,7 @@
       }
     },
     "%@, not added in Profile yet": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -2280,6 +2309,22 @@
         }
       }
     },
+    "Add Contact": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить контакт"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontakt qo‘shish"
+          }
+        }
+      }
+    },
     "Add Context": {
       "localizations": {
         "ru": {
@@ -2585,6 +2630,7 @@
       }
     },
     "Adds another phone number": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -3132,6 +3178,9 @@
           }
         }
       }
+    },
+    "Bekzod · Accepts Requests": {
+      "shouldTranslate": false
     },
     "Blank Card": {
       "localizations": {
@@ -4095,6 +4144,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avval odamni tanlang"
+          }
+        }
+      }
+    },
+    "Choose a phone, messenger or link to add": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите телефон, мессенджер или ссылку"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qo‘shish uchun telefon, messenjer yoki havolani tanlang"
           }
         }
       }
@@ -5583,7 +5648,24 @@
         }
       }
     },
+    "Delete %@": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить: %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O‘chirish: %@"
+          }
+        }
+      }
+    },
     "Delete %@ Number": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -5873,6 +5955,7 @@
       }
     },
     "Dictation on this iPhone isn't available for your language right now. You can still type your note.": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -6961,6 +7044,7 @@
       }
     },
     "Extra phone numbers use only the lines left free, so ^[%lld number](inflect: true) won’t fit.": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -8168,6 +8252,22 @@
         }
       }
     },
+    "Instagram": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram"
+          }
+        }
+      }
+    },
     "Investor": {
       "localizations": {
         "ru": {
@@ -8279,6 +8379,9 @@
           }
         }
       }
+    },
+    "Kamila · Already Connected": {
+      "shouldTranslate": false
     },
     "Keep Editing": {
       "localizations": {
@@ -8648,6 +8751,9 @@
           }
         }
       }
+    },
+    "Lola · Paused Card": {
+      "shouldTranslate": false
     },
     "Looking for People Nearby": {
       "localizations": {
@@ -9195,6 +9301,9 @@
         }
       }
     },
+    "My Work Card": {
+      "shouldTranslate": false
+    },
     "Name": {
       "localizations": {
         "ru": {
@@ -9713,6 +9822,22 @@
         }
       }
     },
+    "No contact details yet. Add them in Profile.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контактов пока нет. Добавьте их в профиле."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hali kontakt ma’lumotlari yo‘q. Ularni Profilda qo‘shing."
+          }
+        }
+      }
+    },
     "No follow-up": {
       "localizations": {
         "ru": {
@@ -9825,6 +9950,9 @@
         }
       }
     },
+    "Nodira · Never Answers": {
+      "shouldTranslate": false
+    },
     "None": {
       "localizations": {
         "ru": {
@@ -9906,6 +10034,7 @@
       }
     },
     "Not added in Profile": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -10635,6 +10764,22 @@
         }
       }
     },
+    "Opens Instagram. Touch and hold to copy.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывает Instagram. Коснитесь и удерживайте, чтобы скопировать."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagramni ochadi. Nusxalash uchun bosib turing."
+          }
+        }
+      }
+    },
     "Opens Telegram by phone number": {
       "localizations": {
         "ru": {
@@ -10679,6 +10824,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Telegramni ochadi. Nusxalash uchun bosib turing."
+          }
+        }
+      }
+    },
+    "Opens WhatsApp. Touch and hold to copy.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывает WhatsApp. Коснитесь и удерживайте, чтобы скопировать."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsAppni ochadi. Nusxalash uchun bosib turing."
           }
         }
       }
@@ -10891,6 +11052,9 @@
         }
       }
     },
+    "Other QR Codes": {
+      "shouldTranslate": false
+    },
     "Other phone": {
       "localizations": {
         "ru": {
@@ -11002,6 +11166,9 @@
           }
         }
       }
+    },
+    "Paper Cards": {
+      "shouldTranslate": false
     },
     "Partner": {
       "localizations": {
@@ -11500,6 +11667,9 @@
         }
       }
     },
+    "Plain Text": {
+      "shouldTranslate": false
+    },
     "Plan": {
       "localizations": {
         "ru": {
@@ -11790,6 +11960,7 @@
       }
     },
     "Private numbers never appear on a card.": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -12853,6 +13024,9 @@
         }
       }
     },
+    "Sample Card": {
+      "shouldTranslate": false
+    },
     "Save": {
       "localizations": {
         "ru": {
@@ -13131,6 +13305,9 @@
         }
       }
     },
+    "Scan Demo Card": {
+      "shouldTranslate": false
+    },
     "Scan Mode": {
       "localizations": {
         "ru": {
@@ -13287,6 +13464,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ ilovasini qidiring, «Mening QR kodim», «Vizitka» yoki «Eslatmalar»ni tanlang, so‘ng «Vidjet qo‘shish»ni bosing."
+          }
+        }
+      }
+    },
+    "Section": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Раздел"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bo‘lim"
           }
         }
       }
@@ -16795,6 +16988,9 @@
         }
       }
     },
+    "Unreadable Card": {
+      "shouldTranslate": false
+    },
     "Upgrade": {
       "localizations": {
         "ru": {
@@ -17351,6 +17547,22 @@
         }
       }
     },
+    "WhatsApp": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsApp"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsApp"
+          }
+        }
+      }
+    },
     "When": {
       "localizations": {
         "ru": {
@@ -17704,6 +17916,38 @@
         }
       }
     },
+    "You can add up to %lld contacts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Можно добавить не больше %lld контактов"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko‘pi bilan %lld ta kontakt qo‘shish mumkin"
+          }
+        }
+      }
+    },
+    "You can add up to %lld contacts.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Можно добавить не больше %lld контактов."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko‘pi bilan %lld ta kontakt qo‘shish mumkin."
+          }
+        }
+      }
+    },
     "You can also put it on the Lock Screen or the Action button.": {
       "localizations": {
         "ru": {
@@ -17736,7 +17980,24 @@
         }
       }
     },
+    "You can save up to %lld contacts.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Можно сохранить не больше %lld контактов."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko‘pi bilan %lld ta kontaktni saqlash mumkin."
+          }
+        }
+      }
+    },
     "You can save up to %lld phone numbers.": {
+      "extractionState": "stale",
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -18786,64 +19047,92 @@
       }
     },
     "phoneLabel.home": {
+      "extractionState": "extracted_with_value",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Home"
+          }
+        },
         "ru": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Домашний"
           }
         },
         "uz": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Uy"
           }
         }
       }
     },
     "phoneLabel.mobile": {
+      "extractionState": "extracted_with_value",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Mobile"
+          }
+        },
         "ru": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Мобильный"
           }
         },
         "uz": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Mobil"
           }
         }
       }
     },
     "phoneLabel.other": {
+      "extractionState": "extracted_with_value",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Other"
+          }
+        },
         "ru": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Другой"
           }
         },
         "uz": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Boshqa"
           }
         }
       }
     },
     "phoneLabel.work": {
+      "extractionState": "extracted_with_value",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Work"
+          }
+        },
         "ru": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Рабочий"
           }
         },
         "uz": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Ish"
           }
         }
@@ -18882,6 +19171,9 @@
           }
         }
       }
+    },
+    "vCard Contact": {
+      "shouldTranslate": false
     },
     "via %@": {
       "localizations": {

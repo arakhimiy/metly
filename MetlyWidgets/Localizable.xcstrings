@@ -2,6 +2,7 @@
   "sourceLanguage": "en",
   "strings": {
     "%@": {
+      "localizations": {},
       "shouldTranslate": false
     },
     "%@ %@": {
@@ -243,6 +244,22 @@
         }
       }
     },
+    "Add Contact": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить контакт"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontakt qo‘shish"
+          }
+        }
+      }
+    },
     "Add one right after you connect — it takes 2 seconds.": {
       "localizations": {
         "ru": {
@@ -341,6 +358,22 @@
         }
       }
     },
+    "Card Appearance": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оформление визитки"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitka ko‘rinishi"
+          }
+        }
+      }
+    },
     "Card to Share": {
       "localizations": {
         "ru": {
@@ -401,6 +434,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Qulf ekranini tanlang, so‘ng vaqt ostidagi maydonni bosing."
+          }
+        }
+      }
+    },
+    "Choose a phone, messenger or link to add": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите телефон, мессенджер или ссылку"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qo‘shish uchun telefon, messenjer yoki havolani tanlang"
           }
         }
       }
@@ -697,6 +746,22 @@
         }
       }
     },
+    "Home phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Домашний телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uy telefoni"
+          }
+        }
+      }
+    },
     "How to Add": {
       "localizations": {
         "ru": {
@@ -709,6 +774,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Qanday qo‘shiladi"
+          }
+        }
+      }
+    },
+    "Instagram": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram"
           }
         }
       }
@@ -907,6 +988,22 @@
         }
       }
     },
+    "Mobile phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мобильный телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mobil telefon"
+          }
+        }
+      }
+    },
     "Mono": {
       "localizations": {
         "ru": {
@@ -1101,6 +1198,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eslatmalaringizni ochadi."
+          }
+        }
+      }
+    },
+    "Other phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Другой телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqa telefon"
           }
         }
       }
@@ -1979,6 +2092,22 @@
         }
       }
     },
+    "WhatsApp": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsApp"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WhatsApp"
+          }
+        }
+      }
+    },
     "Widgets": {
       "localizations": {
         "ru": {
@@ -1995,6 +2124,22 @@
         }
       }
     },
+    "Work phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рабочий телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ish telefoni"
+          }
+        }
+      }
+    },
     "Yesterday": {
       "localizations": {
         "ru": {
@@ -2007,6 +2152,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kecha"
+          }
+        }
+      }
+    },
+    "You can add up to %lld contacts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Можно добавить не больше %lld контактов"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko‘pi bilan %lld ta kontakt qo‘shish mumkin"
           }
         }
       }
@@ -2123,6 +2284,98 @@
         }
       }
     },
+    "phoneLabel.home": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Home"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Домашний"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Uy"
+          }
+        }
+      }
+    },
+    "phoneLabel.mobile": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Mobile"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Мобильный"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mobil"
+          }
+        }
+      }
+    },
+    "phoneLabel.other": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Other"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Другой"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Boshqa"
+          }
+        }
+      }
+    },
+    "phoneLabel.work": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Work"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Рабочий"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Ish"
+          }
+        }
+      }
+    },
     "via Nearby": {
       "localizations": {
         "ru": {
@@ -2204,6 +2457,7 @@
       }
     },
     "“%@”": {
+      "localizations": {},
       "shouldTranslate": false
     }
   },
