@@ -1,5 +1,5 @@
 import { VCARD_TEL_TYPE } from '../records/phones';
-import type { ContactField, LabeledPhone, PhoneLabel } from '../records/wire';
+import type { ContactEntry } from '../records/wire';
 import { safeHttpUrl } from './html';
 import { contactAction } from './contact-links';
 
@@ -46,12 +46,8 @@ export interface VCardInput {
   fullName: string;
   jobTitle: string;
   company: string;
-  /** Already filtered to Public ∩ visibleFields. */
-  fields: ContactField[];
-  /** Label of the phone in `fields` (default mobile → CELL). */
-  phoneLabel?: PhoneLabel;
-  /** Extra phones, already filtered like `fields`; written right after the primary phone. */
-  additionalPhones?: LabeledPhone[];
+  /** The card's visible entries (already filtered by selection and audience), owner's order. */
+  contacts: ContactEntry[];
   /** The card page (labelled "Tanishly"). */
   url?: string | null;
   photoUrl?: string | null;
@@ -77,31 +73,39 @@ export function buildVCard(input: VCardInput): string {
   const title = input.jobTitle.trim();
   if (title) lines.push(`TITLE:${escapeVCardText(title)}`);
 
-  // Phones first: the primary (its label decides the TEL type), then the extra ones.
-  const phones = [
-    ...input.fields.filter((f) => f.kind === 'phone').map((f) => ({ value: f.value, label: input.phoneLabel ?? 'mobile' })),
-    ...(input.additionalPhones ?? []),
-  ];
-  for (const phone of phones) {
-    const value = phone.value.trim();
-    if (value) lines.push(`TEL;TYPE=${VCARD_TEL_TYPE[phone.label]}:${escapeVCardText(value)}`);
+  // Phones first, in the owner's order (each label decides its TEL type), then everything else.
+  for (const entry of input.contacts) {
+    const value = entry.value.trim();
+    if (entry.kind === 'phone' && value) lines.push(`TEL;TYPE=${VCARD_TEL_TYPE[entry.label ?? 'mobile']}:${escapeVCardText(value)}`);
   }
-  for (const field of input.fields) {
-    const action = contactAction(field);
+  for (const entry of input.contacts) {
+    const action = contactAction(entry);
     if (!action) continue;
-    switch (field.kind) {
+    switch (entry.kind) {
       case 'phone':
         break;
       case 'email':
-        lines.push(`EMAIL;TYPE=INTERNET:${escapeVCardText(field.value.trim())}`);
+        lines.push(`EMAIL;TYPE=INTERNET:${escapeVCardText(entry.value.trim())}`);
         break;
       case 'website':
         if (action.href) lines.push(`URL:${uri(action.href)}`);
+        break;
+      case 'whatsapp':
+        if (action.href) {
+          lines.push(`X-SOCIALPROFILE;TYPE=whatsapp:${uri(action.href)}`);
+          labelled(action.href, 'WhatsApp');
+        }
         break;
       case 'telegram':
         if (action.href) {
           lines.push(`X-SOCIALPROFILE;TYPE=telegram:${uri(action.href)}`);
           labelled(action.href, 'Telegram');
+        }
+        break;
+      case 'instagram':
+        if (action.href) {
+          lines.push(`X-SOCIALPROFILE;TYPE=instagram:${uri(action.href)}`);
+          labelled(action.href, 'Instagram');
         }
         break;
       case 'linkedin':

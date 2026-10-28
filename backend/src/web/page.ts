@@ -38,6 +38,12 @@ const ICONS: Record<string, SafeHtml> = {
   website: trusted(
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 6h-2.95a15.7 15.7 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.9 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82A13.6 13.6 0 0 1 12 4.04zM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.08 16zM8.03 8H5.08a7.99 7.99 0 0 1 4.33-3.56A15.7 15.7 0 0 0 8.03 8zM12 19.96A14.1 14.1 0 0 1 10.09 16h3.82A14.1 14.1 0 0 1 12 19.96zM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4h-3.38z"/></svg>',
   ),
+  whatsapp: trusted(
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.1 14.9l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 0 1 12 4z"/><path d="M9.2 7.5c-.2-.5-.4-.5-.6-.5h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.5 1 2.7.1.2 1.8 2.9 4.5 3.9 2.2.9 2.7.7 3.2.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.4l-1.8-.9c-.3-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.6.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.9-2z"/></svg>',
+  ),
+  instagram: trusted(
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM17.25 5.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/></svg>',
+  ),
   linkedin: trusted(
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 10H5.67v8.33h2.67V10zM7 5.67a1.55 1.55 0 1 0 0 3.1 1.55 1.55 0 0 0 0-3.1zM18.33 13.2c0-2.5-1.33-3.4-3.08-3.4-1.4 0-2.14.77-2.48 1.32V10h-2.6v8.33h2.67v-4.4c0-1.16.22-2.28 1.66-2.28 1.42 0 1.44 1.33 1.44 2.35v4.33h2.67l-.28-5.13z"/></svg>',
   ),
@@ -432,25 +438,20 @@ ${role ? html`<p class="role">${role}</p>` : ''}
 }
 
 /**
- * Contact rows in kind order: phones first (the primary, then the extra ones, each tap-to-call), then
- * the other fields.
+ * Contact rows in the owner's order (the card's visible entries): phones tap-to-call with their label,
+ * WhatsApp → wa.me, Instagram → instagram.com, the rest as before.
  */
 function contactRows(view: PublicView): { actions: ContactAction[]; labelPhones: boolean } {
-  const phone = (value: string, label: PublicView['phoneLabel']): ContactAction | null => {
-    const action = contactAction({ kind: 'phone', value, privacy: 'public' });
-    return action ? { ...action, phoneLabel: label } : null;
-  };
-  const phones = [
-    ...view.fields.filter((f) => f.kind === 'phone').map((f) => phone(f.value, view.phoneLabel)),
-    ...view.additionalPhones.map((p) => phone(p.value, p.label)),
-  ].filter((a): a is ContactAction => a !== null);
-  const others = view.fields
-    .filter((f) => f.kind !== 'phone')
-    .map(contactAction)
+  const actions = view.contacts
+    .map((entry) => {
+      const action = contactAction(entry);
+      return action && entry.kind === 'phone' ? { ...action, phoneLabel: entry.label ?? 'mobile' } : action;
+    })
     .filter((a): a is ContactAction => a !== null);
+  const phones = actions.filter((a) => a.kind === 'phone');
   // One mobile number keeps the plain "phone" label; several (or a Work/Home one) say which is which.
   const labelPhones = phones.length > 1 || phones.some((a) => a.phoneLabel !== 'mobile');
-  return { actions: [...phones, ...others], labelPhones };
+  return { actions, labelPhones };
 }
 
 function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText, labelPhones: boolean): SafeHtml {
@@ -458,7 +459,7 @@ function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText, lab
   const name = phoneLabel ? t.phoneLabel[phoneLabel] : t.fieldLabel[action.kind];
   const label = terminal ? (phoneLabel ? PHONE_KEYS[phoneLabel] : action.key) : name;
   const body = html`<span class="icon">${ICONS[action.kind] ?? ''}</span><span class="field-text"><span class="label">${label}</span><span class="value">${action.display}</span></span>`;
-  const external = action.kind === 'website' || action.kind === 'linkedin' || action.kind === 'telegram';
+  const external = action.kind !== 'phone' && action.kind !== 'email';
   const track = action.kind === 'telegram' ? 'telegram_open' : null;
   const link = action.href
     ? html`<a class="field-link" href="${action.href}"${external ? trusted(' target="_blank" rel="noopener noreferrer"') : ''}${track ? html` data-track="${track}"` : ''}>${body}</a>`

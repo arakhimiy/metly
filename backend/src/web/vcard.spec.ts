@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import type { ContactEntry } from '../records/wire';
 import { buildVCard, escapeVCardText, foldLine, vcardFilename } from './vcard';
+
+let n = 0;
+const entry = (kind: ContactEntry['kind'], value: string, label: ContactEntry['label'] = kind === 'phone' ? 'mobile' : null): ContactEntry => ({
+  id: `6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8b${String(++n).padStart(2, '0')}`,
+  kind,
+  label,
+  value,
+  privacy: 'public',
+});
 
 describe('escapeVCardText', () => {
   it('escapes backslash, semicolon, comma and newlines', () => {
@@ -38,12 +48,12 @@ describe('buildVCard', () => {
       fullName: 'Kamola  Yusupova',
       jobTitle: 'PM; Growth',
       company: 'Tanishly, Inc.',
-      fields: [
-        { kind: 'phone', value: '+998 90 123 45 67', privacy: 'public' },
-        { kind: 'email', value: 'kamola@metly.uz', privacy: 'public' },
-        { kind: 'telegram', value: '@kamola_y', privacy: 'public' },
-        { kind: 'website', value: 'tanishly.app', privacy: 'public' },
-        { kind: 'linkedin', value: 'in/kamola', privacy: 'public' },
+      contacts: [
+        entry('phone', '+998 90 123 45 67'),
+        entry('email', 'kamola@metly.uz'),
+        entry('telegram', '@kamola_y'),
+        entry('website', 'tanishly.app'),
+        entry('linkedin', 'in/kamola'),
       ],
       url: 'https://tanishly.app/c/kamola-ab12',
       photoUrl: 'https://cdn.tanishly.app/p.jpg',
@@ -65,32 +75,48 @@ describe('buildVCard', () => {
     expect(card).not.toMatch(/[^\r]\n/);
   });
 
-  it('labels phones: TEL;TYPE=CELL/WORK/HOME/VOICE, extras right after the primary (or alone when it is hidden)', () => {
-    const extras = [
-      { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a11', label: 'mobile' as const, value: '+998 93 111 11 11', privacy: 'public' as const },
-      { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a12', label: 'home' as const, value: '+998 71 300 00 00', privacy: 'public' as const },
-      { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a13', label: 'other' as const, value: ' ', privacy: 'public' as const },
-    ];
+  it('labels phones: TEL;TYPE=CELL/WORK/HOME/VOICE, every phone first in the owner order', () => {
     const card = buildVCard({
       fullName: 'Kamola Yusupova',
       jobTitle: '',
       company: '',
-      fields: [
-        { kind: 'phone', value: '+998 71 200 00 00', privacy: 'public' },
-        { kind: 'email', value: 'kamola@metly.uz', privacy: 'public' },
+      contacts: [
+        entry('phone', '+998 71 200 00 00', 'work'),
+        entry('email', 'kamola@metly.uz'),
+        entry('phone', '+998 93 111 11 11', 'mobile'),
+        entry('phone', '+998 71 300 00 00', 'home'),
+        entry('phone', '+998 71 400 00 00', 'other'),
       ],
-      phoneLabel: 'work',
-      additionalPhones: extras,
     });
-    expect(card).toContain('TEL;TYPE=WORK:+998 71 200 00 00\r\nTEL;TYPE=CELL:+998 93 111 11 11\r\nTEL;TYPE=HOME:+998 71 300 00 00\r\nEMAIL');
-    expect(card.match(/^TEL/gm)).toHaveLength(3);
+    expect(card).toContain(
+      'TEL;TYPE=WORK:+998 71 200 00 00\r\nTEL;TYPE=CELL:+998 93 111 11 11\r\nTEL;TYPE=HOME:+998 71 300 00 00\r\nTEL;TYPE=VOICE:+998 71 400 00 00\r\nEMAIL',
+    );
+    expect(card.match(/^TEL/gm)).toHaveLength(4);
+  });
 
-    const hidden = buildVCard({ fullName: 'K', jobTitle: '', company: '', fields: [], additionalPhones: [{ ...extras[0]!, label: 'other' }] });
-    expect(hidden).toContain('TEL;TYPE=VOICE:+998 93 111 11 11\r\n');
+  it('writes WhatsApp and Instagram as social profiles, several emails as several EMAIL lines', () => {
+    const card = buildVCard({
+      fullName: 'Kamola Yusupova',
+      jobTitle: '',
+      company: '',
+      contacts: [
+        entry('whatsapp', '+998 (90) 123-45-67'),
+        entry('instagram', 'https://www.instagram.com/kamola.y/'),
+        entry('email', 'kamola@metly.uz'),
+        entry('email', 'k@work.uz'),
+        entry('instagram', '@second_one'),
+      ],
+    });
+    expect(card).toContain('X-SOCIALPROFILE;TYPE=whatsapp:https://wa.me/998901234567\r\n');
+    expect(card).toContain('item1.URL:https://wa.me/998901234567\r\nitem1.X-ABLabel:WhatsApp\r\n');
+    expect(card).toContain('X-SOCIALPROFILE;TYPE=instagram:https://instagram.com/kamola.y\r\n');
+    expect(card).toContain('X-SOCIALPROFILE;TYPE=instagram:https://instagram.com/second_one\r\n');
+    expect(card).toContain('EMAIL;TYPE=INTERNET:kamola@metly.uz\r\nEMAIL;TYPE=INTERNET:k@work.uz\r\n');
+    expect(card).not.toContain('TEL');
   });
 
   it('omits empty organisation/title and unsafe photo URLs', () => {
-    const card = buildVCard({ fullName: 'Solo', jobTitle: '', company: ' ', fields: [], photoUrl: 'javascript:alert(1)' });
+    const card = buildVCard({ fullName: 'Solo', jobTitle: '', company: ' ', contacts: [], photoUrl: 'javascript:alert(1)' });
     expect(card).not.toContain('ORG:');
     expect(card).not.toContain('TITLE:');
     expect(card).not.toContain('PHOTO');
@@ -98,7 +124,7 @@ describe('buildVCard', () => {
   });
 
   it('cannot be broken out of with newlines in values', () => {
-    const card = buildVCard({ fullName: 'A\r\nEND:VCARD\r\nBEGIN:VCARD', jobTitle: '', company: '', fields: [] });
+    const card = buildVCard({ fullName: 'A\r\nEND:VCARD\r\nBEGIN:VCARD', jobTitle: '', company: '', contacts: [] });
     expect(card.match(/^END:VCARD$/gm)?.length).toBe(1);
   });
 });

@@ -68,9 +68,7 @@ export class WebController {
       fullName: view.fullName,
       jobTitle: view.profile.jobTitle,
       company: view.profile.company,
-      fields: view.fields,
-      phoneLabel: view.phoneLabel,
-      additionalPhones: view.additionalPhones,
+      contacts: view.contacts,
       url: view.url,
       photoUrl: view.photoUrl,
     });

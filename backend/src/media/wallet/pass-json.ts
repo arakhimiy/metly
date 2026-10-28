@@ -1,8 +1,7 @@
 import type { Card, Profile } from '../../generated/prisma/client';
 import { cardUrl } from '../../records/mappers';
-import { visiblePhones } from '../../records/phones';
-import { visibleFields } from '../../records/snapshot';
-import type { CardDesign, ContactField, ContactFieldKind, PhoneLabel } from '../../records/wire';
+import { cardContactsView } from '../../records/contacts';
+import type { CardDesign, ContactEntry, ContactKind, PhoneLabel } from '../../records/wire';
 
 /**
  * Card palettes, `[background, foreground, accent]` per appearance — the same table as the app
@@ -31,8 +30,10 @@ export function paletteColors(design: Pick<CardDesign, 'palette' | 'appearance'>
 export const rgb = (hex: number) => `rgb(${(hex >> 16) & 0xff}, ${(hex >> 8) & 0xff}, ${hex & 0xff})`;
 export const hexString = (hex: number) => `#${hex.toString(16).padStart(6, '0')}`;
 
-const LABELS: Record<ContactFieldKind, string> = {
+const LABELS: Record<ContactKind, string> = {
   phone: 'Phone',
+  whatsapp: 'WhatsApp',
+  instagram: 'Instagram',
   email: 'Email',
   telegram: 'Telegram',
   website: 'Website',
@@ -43,7 +44,7 @@ const PHONE_LABELS: Record<PhoneLabel, string> = { mobile: 'Mobile', work: 'Work
 
 export interface PassInput {
   card: Pick<Card, 'id' | 'name' | 'slug' | 'design' | 'passAuthToken' | 'deletedAt'>;
-  profile: Pick<Profile, 'fullName' | 'jobTitle' | 'company' | 'contactFields'> & Partial<Pick<Profile, 'additionalPhones'>>;
+  profile: Pick<Profile, 'fullName' | 'jobTitle' | 'company' | 'contactFields'> & Partial<Pick<Profile, 'phoneLabel' | 'additionalPhones' | 'contacts'>>;
   passTypeIdentifier: string;
   teamIdentifier: string;
   /** `${API_BASE_URL}/passkit` */
@@ -58,39 +59,55 @@ interface PassField {
   dataDetectorTypes?: string[];
 }
 
-function fieldValue(field: ContactField): string {
-  return field.value.trim();
+/** `back-phone`, `back-phone-1`, … — unique keys per kind, in the owner's order. */
+function keyed(entries: ContactEntry[], prefix: string): { entry: ContactEntry; key: string }[] {
+  const seen = new Map<ContactKind, number>();
+  return entries.map((entry) => {
+    const n = seen.get(entry.kind) ?? 0;
+    seen.set(entry.kind, n + 1);
+    return { entry, key: n === 0 ? `${prefix}-${entry.kind}` : `${prefix}-${entry.kind}-${n}` };
+  });
+}
+
+/** "Phone" for a first Mobile number, else its label (Work, Home…); other kinds by name. */
+function entryLabel(entry: ContactEntry, isFirstPhone: boolean): string {
+  if (entry.kind !== 'phone') return LABELS[entry.kind];
+  const label = entry.label ?? 'mobile';
+  return isFirstPhone && label === 'mobile' ? LABELS.phone : PHONE_LABELS[label];
+}
+
+function detectors(kind: ContactKind): string[] {
+  if (kind === 'phone') return ['PKDataDetectorTypePhoneNumber'];
+  if (kind === 'email' || kind === 'website' || kind === 'linkedin') return ['PKDataDetectorTypeLink'];
+  return [];
 }
 
 /**
- * pass.json of a Generic pass for a card. Shows **Public** fields only — a pass can leave the device
- * (AirDrop, Mail), so Connections/Private fields never appear (`visibleFields(…, 'public')`).
- * A deleted card yields a voided pass without a barcode.
+ * pass.json of a Generic pass for a card. Shows **Public** entries only — a pass can leave the device
+ * (AirDrop, Mail), so Connections/Private entries never appear. A deleted card yields a voided pass
+ * without a barcode.
  */
 export function buildPassJson(input: PassInput): Record<string, unknown> {
   const { card, profile } = input;
   const design = card.design as CardDesign;
   const colors = paletteColors(design);
-  const fields = visibleFields(profile, design, 'public');
+  const entries = cardContactsView(profile, design, 'public').contacts;
+  const firstPhone = entries.find((e) => e.kind === 'phone');
   const role = [profile.jobTitle.trim(), profile.company.trim()].filter(Boolean).join(' · ');
   const url = card.slug ? cardUrl(input.webBaseUrl, card.slug) : null;
   const voided = card.deletedAt !== null;
 
-  const auxiliaryFields: PassField[] = fields.slice(0, 3).map((f) => ({ key: `aux-${f.kind}`, label: LABELS[f.kind], value: fieldValue(f) }));
-  const backFields: PassField[] = fields.map((f) => ({
-    key: `back-${f.kind}`,
-    label: LABELS[f.kind],
-    value: fieldValue(f),
-    dataDetectorTypes: f.kind === 'phone' ? ['PKDataDetectorTypePhoneNumber'] : f.kind === 'telegram' ? [] : ['PKDataDetectorTypeLink'],
+  const auxiliaryFields: PassField[] = keyed(entries.slice(0, 3), 'aux').map(({ entry, key }) => ({
+    key,
+    label: entryLabel(entry, entry === firstPhone),
+    value: entry.value.trim(),
   }));
-  // Extra Public phones follow the primary one (or lead when it is hidden).
-  const extraPhones: PassField[] = visiblePhones({ additionalPhones: profile.additionalPhones ?? [] }, design, 'public').map((p, i) => ({
-    key: `back-phone-${i + 1}`,
-    label: PHONE_LABELS[p.label],
-    value: p.value.trim(),
-    dataDetectorTypes: ['PKDataDetectorTypePhoneNumber'],
+  const backFields: PassField[] = keyed(entries, 'back').map(({ entry, key }) => ({
+    key,
+    label: entryLabel(entry, entry === firstPhone),
+    value: entry.value.trim(),
+    dataDetectorTypes: detectors(entry.kind),
   }));
-  backFields.splice(fields.some((f) => f.kind === 'phone') ? 1 : 0, 0, ...extraPhones);
   if (url) backFields.push({ key: 'card-url', label: 'Card', value: url, dataDetectorTypes: ['PKDataDetectorTypeLink'] });
   backFields.push({ key: 'about', label: 'Tanishly', value: 'This pass updates automatically when the card changes.' });
 
