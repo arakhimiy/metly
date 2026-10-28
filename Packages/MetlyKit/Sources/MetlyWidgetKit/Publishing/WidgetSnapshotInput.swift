@@ -15,16 +15,23 @@ nonisolated public struct WidgetSnapshotInput: Sendable {
         public var logoData: Data?
         /// Every contact field with its privacy (filtered to Public by the builder).
         public var contactFields: [ContactField]
+        /// Label of the primary phone in `contactFields` (`Profile.phoneLabel`).
+        public var phoneLabel: PhoneLabel
+        /// Extra numbers with their privacy (`Profile.additionalPhones`, filtered to Public by the builder).
+        public var additionalPhones: [LabeledPhone]
         public var linksPaused: Bool
 
         public init(fullName: String, jobTitle: String = "", company: String = "", photoData: Data? = nil,
-                    logoData: Data? = nil, contactFields: [ContactField] = [], linksPaused: Bool = false) {
+                    logoData: Data? = nil, contactFields: [ContactField] = [], phoneLabel: PhoneLabel = .mobile,
+                    additionalPhones: [LabeledPhone] = [], linksPaused: Bool = false) {
             self.fullName = fullName
             self.jobTitle = jobTitle
             self.company = company
             self.photoData = photoData
             self.logoData = logoData
             self.contactFields = contactFields
+            self.phoneLabel = phoneLabel
+            self.additionalPhones = additionalPhones
             self.linksPaused = linksPaused
         }
     }
