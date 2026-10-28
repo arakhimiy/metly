@@ -41,7 +41,7 @@ import MetlyNetworking
 | Need | Call | Notes |
 |---|---|---|
 | Publish now (CARD_CREATE "Publish", Editor "Done") | `try await client.publish(card)` | Writes the server slug back to `card`. On error show ALERT_PUBLISH_FAILED — the card stays a draft and sync publishes it later. |
-| Scanned Tanishly QR (SCANNED_CARD) | `try await client.publicProfile(slug:)` | `status != .available` → unavailable state. `.snapshot` feeds `CardFaceView`. `Brand.slug(from: url)` extracts the slug. |
+| Scanned Tanishly QR (SCANNED_CARD) | `try await client.publicProfile(slug:)` | `status != .available` → unavailable state. `.snapshot` feeds `CardFaceView` (or `.faceContent`, which adds `phoneLabel` + `additionalPhones`). `Brand.slug(from: url)` extracts the slug. "Add to People": after building the connection from the snapshot call `connection.mergePhones(from: card)` — `CardSnapshot` carries no extra phones. |
 | Wallet pass | `try await client.walletPass(for: card)` | `.pkpass` `Data` for `PKAddPassesViewController`. The mock throws `APIError.serverRequired("Wallet passes need the server.")` — show its `localizedDescription`. |
 | Card stats | `try await client.refreshStats(for: card)` | Also stored on `card.stats`. |
 | Connect: session & peers | `client.startConnectSession(cardID:eventID:method:)` → advertise `discoveryToken`; `client.resolvePeers(tokens:)` | In the simulator use `client.demoNearbyTokens` (mock people) since there are no MPC peers. |
@@ -50,6 +50,18 @@ import MetlyNetworking
 | DEFERRED_WELCOME "Connect" | `try await client.connect(with: invite, sharing: cardID)` | Pre-approved; the connection arrives via realtime/sync. |
 | People "Requests" refresh | `try await client.refreshIncomingRequests()` | Also happens on every sync. |
 | Anything else | `client.api.<group>.<call>` | e.g. `client.api.events.eventSummary(id:)`, `client.api.profile.requestTelegramLink()`. |
+
+### Labelled phones (schema 2.0.0)
+`Profile.phoneLabel` / `Connection.phoneLabel` label the primary phone (Mobile by default);
+`additionalPhones: [LabeledPhone]` holds up to `LabeledPhone.maxAdditional` (5) more, each value ≤
+`LabeledPhone.maxValueLength` (40) characters — the server rejects more (`validation_failed`), so check
+both in the editor. They sync like every other field (edit, `markChanged()`). Use `allPhones` to list
+them, `Connection.mobilePhone` for Telegram/WhatsApp-style actions. `card.faceContent(profile:audience:)`
+already filters a profile's extra phones by privacy. Copying someone's numbers onto a Connection:
+`connection.mergePhones(from: publicCard)` or `connection.mergePhones(primary:label:additional:)` (paper
+card, vCard) — fills gaps only, compares digits, returns whether it changed something. Accepting a
+connect does this on the server. Mock world: Kamila (`kamila-x1y2`) has a Public Work line, Aziza's demo
+profile has a Public Work phone (her mobile is Private).
 
 ### Realtime connect stream
 Incoming requests, request results and web share-backs arrive on a WebSocket while signed in. The
@@ -190,6 +202,25 @@ connections (their `updatedAt` = max(own, event's)).
 - Public surfaces (web page, `.vcf`, Wallet pass, `/api/public/*`) show **Public ∩ visibleFields** only.
   The authenticated `/v1/public-profiles/{slug}` adds **Connections** fields for connected viewers.
   **Private** fields never leave the owner's devices except in their own data export.
+
+### Labelled phones
+- `phoneLabel` (`mobile | work | home | other`, default `mobile`) labels the primary phone: the `phone`
+  contact field of a profile, `phone` of a connection. `additionalPhones: [{id, label, value, privacy}]`
+  holds at most 5 more (value ≤ 40 chars; validated, `validation_failed` like any other field).
+- **Older clients** send neither key: an update keeps the stored values, a create takes the defaults.
+  Responses always carry both. (The app decodes payloads without them as `mobile` / `[]`.)
+- On a connection `privacy` means nothing (omitted → `connections`).
+- Public surfaces filter extra phones exactly like contact fields: only when the card's `visibleFields`
+  has `phone`, non-empty, Public (+ Connections for an accepted, mutual connect on
+  `/v1/public-profiles/{slug}`), never Private. `/api/public/cards/{slug}` and `/v1/public-profiles/{slug}`
+  return `phoneLabel` + the filtered `additionalPhones`; the page lists every phone with its label
+  (tap-to-call; a single Mobile number keeps the plain "phone" label), the `.vcf` writes
+  `TEL;TYPE=CELL|WORK|HOME|VOICE`, the Wallet pass adds Public extras to its back.
+- `CardSnapshot` is unchanged (no extra phones). Accepting a connect copies the other side's
+  Connections-level numbers onto the new or existing connection: an empty `phone` takes their first number
+  and its label, the same number (digits only) takes their label, other new numbers are appended (cap 5).
+  Merging a duplicate connection keeps the newer record's phones and fills gaps from the other.
+- Share-back is unchanged (one phone; dedupe compares `phone` only).
 
 ### Free limits (enforced server-side too)
 | | Free | Pro |

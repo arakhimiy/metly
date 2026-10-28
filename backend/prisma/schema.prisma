@@ -101,6 +101,10 @@ model Profile {
   logoUrl          String?   @map("logo_url")
   /// ContactField[]
   contactFields    Json      @map("contact_fields")
+  /// Label of the phone in contactFields: mobile | work | home | other.
+  phoneLabel       String    @default("mobile") @map("phone_label")
+  /// LabeledPhone[] ({id, label, value, privacy}), at most 5.
+  additionalPhones Json      @default("[]") @map("additional_phones")
   defaultCardId    String?   @map("default_card_id") @db.Uuid
   linksPaused      Boolean   @map("links_paused")
   notificationPrefs Json     @map("notification_prefs")
@@ -188,6 +192,10 @@ model Connection {
   jobTitle         String    @map("job_title")
   company          String
   phone            String
+  /// Label of `phone`: mobile | work | home | other.
+  phoneLabel       String    @default("mobile") @map("phone_label")
+  /// LabeledPhone[] after `phone` (privacy carries no meaning here), at most 5.
+  additionalPhones Json      @default("[]") @map("additional_phones")
   email            String
   telegram         String
   website          String

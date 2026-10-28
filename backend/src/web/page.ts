@@ -1,7 +1,7 @@
 import type { Lang } from '../i18n/lang';
 import { CARD_PAGE_TEXT, type CardPageText, UNAVAILABLE_PAGE_TEXT } from '../i18n/web-page';
 import type { CardDesign } from '../records/wire';
-import { type ContactAction, contactAction } from './contact-links';
+import { type ContactAction, contactAction, PHONE_KEYS } from './contact-links';
 import { html, type SafeHtml, safeHttpUrl, trusted } from './html';
 import { type PageColors, pageColors } from './palette';
 import type { PublicView } from './public-card.service';
@@ -431,9 +431,32 @@ ${role ? html`<p class="role">${role}</p>` : ''}
 </section>`;
 }
 
-function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText): SafeHtml {
-  const name = t.fieldLabel[action.kind];
-  const label = terminal ? action.key : name;
+/**
+ * Contact rows in kind order: phones first (the primary, then the extra ones, each tap-to-call), then
+ * the other fields.
+ */
+function contactRows(view: PublicView): { actions: ContactAction[]; labelPhones: boolean } {
+  const phone = (value: string, label: PublicView['phoneLabel']): ContactAction | null => {
+    const action = contactAction({ kind: 'phone', value, privacy: 'public' });
+    return action ? { ...action, phoneLabel: label } : null;
+  };
+  const phones = [
+    ...view.fields.filter((f) => f.kind === 'phone').map((f) => phone(f.value, view.phoneLabel)),
+    ...view.additionalPhones.map((p) => phone(p.value, p.label)),
+  ].filter((a): a is ContactAction => a !== null);
+  const others = view.fields
+    .filter((f) => f.kind !== 'phone')
+    .map(contactAction)
+    .filter((a): a is ContactAction => a !== null);
+  // One mobile number keeps the plain "phone" label; several (or a Work/Home one) say which is which.
+  const labelPhones = phones.length > 1 || phones.some((a) => a.phoneLabel !== 'mobile');
+  return { actions: [...phones, ...others], labelPhones };
+}
+
+function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText, labelPhones: boolean): SafeHtml {
+  const phoneLabel = labelPhones && action.kind === 'phone' ? action.phoneLabel : undefined;
+  const name = phoneLabel ? t.phoneLabel[phoneLabel] : t.fieldLabel[action.kind];
+  const label = terminal ? (phoneLabel ? PHONE_KEYS[phoneLabel] : action.key) : name;
   const body = html`<span class="icon">${ICONS[action.kind] ?? ''}</span><span class="field-text"><span class="label">${label}</span><span class="value">${action.display}</span></span>`;
   const external = action.kind === 'website' || action.kind === 'linkedin' || action.kind === 'telegram';
   const track = action.kind === 'telegram' ? 'telegram_open' : null;
@@ -454,7 +477,7 @@ export function renderCardPage(opts: CardPageOptions): string {
   const colors = pageColors(view.design);
   const first = view.firstName;
   const role = [view.profile.jobTitle.trim(), view.profile.company.trim()].filter(Boolean).join(' · ');
-  const actions = view.fields.map(contactAction).filter((a): a is ContactAction => a !== null);
+  const { actions, labelPhones } = contactRows(view);
   const telegram = actions.find((a) => a.kind === 'telegram' && a.href);
   const vcfHref = `/c/${view.slug}.vcf`;
   const getAppHref = `/c/${view.slug}/get-app`;
@@ -482,7 +505,7 @@ ${head({
 <main class="wrap">
 ${face(view)}
 <div class="notice inapp" role="note"><span>${t.inAppNotice}</span><button class="btn" type="button" id="copy-link">${t.copyLink}</button></div>
-${actions.length > 0 ? html`<ul class="fields" aria-label="${t.contactDetails}">${actions.map((a) => fieldRow(a, view.design.template === 'terminal', t))}</ul>` : ''}
+${actions.length > 0 ? html`<ul class="fields" aria-label="${t.contactDetails}">${actions.map((a) => fieldRow(a, view.design.template === 'terminal', t, labelPhones))}</ul>` : ''}
 <div class="actions">
 <a class="btn primary" id="save" href="${vcfHref}">${t.saveToContacts}</a>
 ${telegram ? html`<a class="btn" href="${telegram.href}" target="_blank" rel="noopener noreferrer" data-track="telegram_open">${ICONS.telegram}${t.messageOnTelegram}</a>` : ''}

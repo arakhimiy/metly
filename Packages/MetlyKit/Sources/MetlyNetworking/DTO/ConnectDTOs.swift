@@ -141,10 +141,16 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
     public var design: CardDesign?
     /// Public fields ∩ the card's visible fields; Connections fields too when `viewer.isConnected`.
     public var fields: [ContactField]
+    /// Label of the phone in `fields` (`.mobile` when the server doesn't send one).
+    public var phoneLabel: PhoneLabel
+    /// The owner's extra phones, filtered like `fields` (Public, + Connections for connected viewers; only
+    /// when the card shows phones). Not part of `snapshot` — copy them with `Connection.mergePhones(from:)`.
+    public var additionalPhones: [LabeledPhone]
     public var viewer: ViewerRelationDTO?
 
     public init(slug: String, status: PublicCardStatus, url: URL? = nil, cardName: String? = nil, owner: PublicOwnerDTO? = nil,
-                design: CardDesign? = nil, fields: [ContactField] = [], viewer: ViewerRelationDTO? = nil) {
+                design: CardDesign? = nil, fields: [ContactField] = [], phoneLabel: PhoneLabel = .mobile,
+                additionalPhones: [LabeledPhone] = [], viewer: ViewerRelationDTO? = nil) {
         self.slug = slug
         self.status = status
         self.url = url
@@ -152,6 +158,8 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
         self.owner = owner
         self.design = design
         self.fields = fields
+        self.phoneLabel = phoneLabel
+        self.additionalPhones = additionalPhones
         self.viewer = viewer
     }
 
@@ -164,6 +172,8 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
         owner = try container.decodeIfPresent(PublicOwnerDTO.self, forKey: .owner)
         design = try container.decodeIfPresent(CardDesign.self, forKey: .design)
         fields = try container.decodeIfPresent([ContactField].self, forKey: .fields) ?? []
+        phoneLabel = try container.decodePhoneLabel(forKey: .phoneLabel)
+        additionalPhones = try container.decodeLabeledPhones(forKey: .additionalPhones)
         viewer = try container.decodeIfPresent(ViewerRelationDTO.self, forKey: .viewer)
     }
 
@@ -173,6 +183,15 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
         return CardSnapshot(cardName: cardName ?? String(localized: "Card"), design: design ?? CardDesign(), fullName: owner.fullName,
                             jobTitle: owner.jobTitle, company: owner.company, fields: fields,
                             url: url ?? Brand.cardURL(slug: slug))
+    }
+
+    /// SCANNED_CARD card face: `snapshot.faceContent` plus the phone label and extra phones. nil when unavailable.
+    public var faceContent: CardFaceContent? {
+        guard let snapshot else { return nil }
+        var content = snapshot.faceContent
+        content.phoneLabel = phoneLabel
+        content.additionalPhones = additionalPhones.filter { !$0.isEmpty }
+        return content
     }
 }
 

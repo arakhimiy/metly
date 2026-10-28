@@ -65,6 +65,30 @@ describe('buildVCard', () => {
     expect(card).not.toMatch(/[^\r]\n/);
   });
 
+  it('labels phones: TEL;TYPE=CELL/WORK/HOME/VOICE, extras right after the primary (or alone when it is hidden)', () => {
+    const extras = [
+      { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a11', label: 'mobile' as const, value: '+998 93 111 11 11', privacy: 'public' as const },
+      { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a12', label: 'home' as const, value: '+998 71 300 00 00', privacy: 'public' as const },
+      { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a13', label: 'other' as const, value: ' ', privacy: 'public' as const },
+    ];
+    const card = buildVCard({
+      fullName: 'Kamola Yusupova',
+      jobTitle: '',
+      company: '',
+      fields: [
+        { kind: 'phone', value: '+998 71 200 00 00', privacy: 'public' },
+        { kind: 'email', value: 'kamola@metly.uz', privacy: 'public' },
+      ],
+      phoneLabel: 'work',
+      additionalPhones: extras,
+    });
+    expect(card).toContain('TEL;TYPE=WORK:+998 71 200 00 00\r\nTEL;TYPE=CELL:+998 93 111 11 11\r\nTEL;TYPE=HOME:+998 71 300 00 00\r\nEMAIL');
+    expect(card.match(/^TEL/gm)).toHaveLength(3);
+
+    const hidden = buildVCard({ fullName: 'K', jobTitle: '', company: '', fields: [], additionalPhones: [{ ...extras[0]!, label: 'other' }] });
+    expect(hidden).toContain('TEL;TYPE=VOICE:+998 93 111 11 11\r\n');
+  });
+
   it('omits empty organisation/title and unsafe photo URLs', () => {
     const card = buildVCard({ fullName: 'Solo', jobTitle: '', company: ' ', fields: [], photoUrl: 'javascript:alert(1)' });
     expect(card).not.toContain('ORG:');

@@ -1,4 +1,4 @@
-import type { ContactField, ContactFieldKind } from '../records/wire';
+import type { ContactField, ContactFieldKind, PhoneLabel } from '../records/wire';
 import { safeUrl } from './html';
 
 // Contact values as typed in the app ("@handle", "in/handle", "site.com") → tap actions and display
@@ -13,7 +13,12 @@ export interface ContactAction {
   display: string;
   /** Safe href (tel:, mailto:, https:) or null when the value cannot be linked. */
   href: string | null;
+  /** Phones only: Mobile / Work / Home / Other. */
+  phoneLabel?: PhoneLabel;
 }
+
+/** Terminal-template keys per phone label. */
+export const PHONE_KEYS: Record<PhoneLabel, string> = { mobile: 'mob', work: 'work', home: 'home', other: 'tel' };
 
 const LABELS: Record<ContactFieldKind, { label: string; key: string }> = {
   phone: { label: 'phone', key: 'tel' },

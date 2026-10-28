@@ -45,10 +45,11 @@ public enum PhoneLabel: String, Codable, CaseIterable, Sendable, Identifiable {
 
     public var title: String {
         switch self {
-        case .mobile: String(localized: "Mobile")
-        case .work: String(localized: "Work")
-        case .home: String(localized: "Home")
-        case .other: String(localized: "Other")
+        // Own keys: "Home"/"Work" already mean the tab and the card name in the catalog.
+        case .mobile: String(localized: "phoneLabel.mobile", defaultValue: "Mobile")
+        case .work: String(localized: "phoneLabel.work", defaultValue: "Work")
+        case .home: String(localized: "phoneLabel.home", defaultValue: "Home")
+        case .other: String(localized: "phoneLabel.other", defaultValue: "Other")
         }
     }
 

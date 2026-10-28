@@ -59,6 +59,36 @@ export const ContactField = z.object({
 });
 export type ContactField = z.infer<typeof ContactField>;
 
+// Labelled phones (app schema 2.0.0): the primary phone stays in `contactFields` (kind phone) with its
+// label in `phoneLabel`; extra numbers live in `additionalPhones`.
+export const phoneLabels = ['mobile', 'work', 'home', 'other'] as const;
+export const PhoneLabel = z.enum(phoneLabels);
+export type PhoneLabel = z.infer<typeof PhoneLabel>;
+export const MAX_ADDITIONAL_PHONES = 5;
+export const MAX_PHONE_LENGTH = 40;
+
+export const LabeledPhone = z.object({
+  id: uuid,
+  label: PhoneLabel,
+  value: z.string().max(MAX_PHONE_LENGTH),
+  privacy: FieldPrivacy,
+});
+export type LabeledPhone = z.infer<typeof LabeledPhone>;
+
+/**
+ * Absent or null (a client from before labelled phones) → undefined: an update keeps the stored value,
+ * a create takes the column default (`mobile`, `[]`).
+ */
+const phoneLabelIn = PhoneLabel.nullish().transform((v) => v ?? undefined);
+const additionalPhonesIn = (phone: z.ZodType<LabeledPhone, unknown>) =>
+  z
+    .array(phone)
+    .max(MAX_ADDITIONAL_PHONES)
+    .nullish()
+    .transform((v) => v ?? undefined);
+/** On a connection the privacy means nothing; older or sparse payloads may omit it. */
+const ConnectionPhone = LabeledPhone.extend({ privacy: FieldPrivacy.nullish().transform((v) => v ?? 'connections') });
+
 export const CardDesign = z.object({
   template: CardTemplate,
   palette: CardPalette,
@@ -139,6 +169,8 @@ export const ProfileIn = z.object({
   jobTitle: z.string().max(80),
   company: z.string().max(80),
   contactFields: z.array(ContactField),
+  phoneLabel: phoneLabelIn,
+  additionalPhones: additionalPhonesIn(LabeledPhone),
   defaultCardId: nullableUuid,
   linksPaused: z.boolean(),
   notificationPrefs: NotificationPrefs,
@@ -176,6 +208,8 @@ export const ConnectionIn = z.object({
   jobTitle: z.string().max(200),
   company: z.string().max(200),
   phone: z.string().max(200),
+  phoneLabel: phoneLabelIn,
+  additionalPhones: additionalPhonesIn(ConnectionPhone),
   email: z.string().max(200),
   telegram: z.string().max(200),
   website: z.string().max(500),
