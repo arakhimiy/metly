@@ -2,7 +2,7 @@ import MetlyCore
 
 /// What a recognized line of text can be used as ("Use As" on PAPER_REVIEW's Recognized Text).
 nonisolated enum PaperLineUse: String, CaseIterable, Identifiable, Hashable, Sendable {
-    case name, title, company, phone, email, website, telegram, linkedin, ignore
+    case name, title, company, phone, email, website, telegram, linkedin, whatsapp, instagram, address, ignore
 
     var id: String { rawValue }
 
@@ -16,6 +16,9 @@ nonisolated enum PaperLineUse: String, CaseIterable, Identifiable, Hashable, Sen
         case .website: .website
         case .telegram: .telegram
         case .linkedin: .linkedin
+        case .whatsapp: .whatsapp
+        case .instagram: .instagram
+        case .address: .address
         case .ignore: nil
         }
     }
@@ -30,6 +33,9 @@ nonisolated enum PaperLineUse: String, CaseIterable, Identifiable, Hashable, Sen
         case .website: self = .website
         case .telegram: self = .telegram
         case .linkedin: self = .linkedin
+        case .whatsapp: self = .whatsapp
+        case .instagram: self = .instagram
+        case .address: self = .address
         }
     }
 

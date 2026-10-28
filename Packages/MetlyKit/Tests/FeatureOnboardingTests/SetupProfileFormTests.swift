@@ -68,9 +68,13 @@ struct SetupProfileFormTests {
     }
 
     /// Phone numbers are capped at 40 characters, like every number in Profile.
-    @Test func phoneIsCappedAtFortyCharacters() {
+    @Test func phoneKeepsAtMostFifteenDigitsSpacedForItsCountry() {
         let form = SetupProfileForm(fullName: "A", phone: "+998 " + String(repeating: "9", count: 60))
-        #expect(form.contactValues.first { $0.kind == .phone }?.value.count == 40)
+        let phone = form.contactValues.first { $0.kind == .phone }?.value ?? ""
+        #expect(phone.filter(\.isNumber).count == 15)
+        #expect(phone.hasPrefix("+998 99 999 99 99"))
+        #expect(phone.count <= 40)
+        #expect(SetupProfileForm(fullName: "A", phone: "901234567").contactValues.first?.value == "+998 90 123 45 67")
     }
 
     @Test func nameTitleAndCompanyAreTrimmedAndCapped() {

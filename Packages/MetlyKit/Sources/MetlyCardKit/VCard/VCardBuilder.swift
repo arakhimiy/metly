@@ -63,6 +63,9 @@ public enum VCardBuilder {
                 labelledURL(url.absoluteString, label: "Instagram")
             case .linkedin:
                 if let url = ContactValueFormat.linkedInURL(from: value) { labelledURL(url.absoluteString, label: "LinkedIn") }
+            case .address:
+                // Street component only: a typed address isn't split into city / postcode reliably.
+                lines.append("ADR;TYPE=WORK:;;\(VCardText.escape(value));;;;")
             }
         }
 

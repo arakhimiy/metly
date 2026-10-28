@@ -48,6 +48,7 @@ export const DEFAULT_CONTACT_PRIVACY: Record<ContactKind, Privacy> = {
   telegram: 'public',
   instagram: 'public',
   website: 'public',
+  address: 'public',
 };
 
 const legacyKinds = new Set<ContactKind>(contactFieldKinds);
@@ -345,6 +346,9 @@ export function contactKey(entry: Pick<ContactEntry, 'kind' | 'value'>): string 
     case 'website':
     case 'linkedin':
       key = urlKey(value);
+      break;
+    case 'address':
+      key = value.toLowerCase().replace(/[\s,.]+/g, ' ').trim();
       break;
   }
   return key ? `${entry.kind}:${key}` : '';

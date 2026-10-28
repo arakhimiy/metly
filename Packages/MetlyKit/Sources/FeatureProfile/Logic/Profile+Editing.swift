@@ -1,5 +1,6 @@
 import MetlyCore
 import MetlyData
+import MetlyDesign
 import SwiftUI
 
 /// Bindings into the synced `Profile` that call `markChanged()` only for real user edits
@@ -49,7 +50,7 @@ final class ProfileEditor {
         Binding {
             self.profile.contacts.first { $0.id == id }?.value ?? ""
         } set: { newValue in
-            self.profile.updateContact(id: id) { $0.value = newValue }
+            self.profile.updateContact(id: id) { $0.value = ContactFieldInput.typing(newValue, for: $0.kind) }
         }
     }
 

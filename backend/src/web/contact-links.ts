@@ -28,6 +28,7 @@ const LABELS: Record<ContactKind, { label: string; key: string }> = {
   telegram: { label: 'telegram', key: 'tg' },
   website: { label: 'website', key: 'web' },
   linkedin: { label: 'linkedin', key: 'in' },
+  address: { label: 'address', key: 'addr' },
 };
 
 /** Bare username from "@user", "user", "t.me/user", "https://t.me/user?start=x". */
@@ -113,6 +114,14 @@ export function contactAction(field: { kind: ContactKind; value: string; privacy
         href: username ? `https://instagram.com/${username}` : null,
       };
     }
+    case 'address':
+      return {
+        kind: field.kind,
+        label,
+        key,
+        display: value,
+        href: `https://maps.apple.com/?q=${encodeURIComponent(value)}`,
+      };
     case 'email': {
       const ok = /^[^\s@<>"'(),;:\\]+@[^\s@<>"'(),;:\\]+\.[^\s@<>"'(),;:\\]+$/.test(value);
       return { kind: field.kind, label, key, display: value, href: ok ? safeUrl(`mailto:${value}`, ['mailto:']) : null };

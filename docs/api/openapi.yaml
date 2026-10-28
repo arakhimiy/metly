@@ -1121,7 +1121,7 @@ components:
     PhoneLabel: { type: string, enum: [mobile, work, home, other], description: 'vCard TEL;TYPE CELL / WORK / HOME / VOICE.' }
     ContactKind:
       type: string
-      enum: [phone, whatsapp, telegram, instagram, email, website, linkedin]
+      enum: [phone, whatsapp, telegram, instagram, email, website, linkedin, address]
       description: Kind of a contact-list entry (docs/api/CONTACTS.md). A superset of ContactFieldKind.
     CardTemplate: { type: string, enum: [minimal, professional, modern, bold, gradient, split, terminal, stack, editorial] }
     CardPalette: { type: string, enum: [graphite, snow, ink, sand, ocean, ember] }
@@ -1192,6 +1192,8 @@ components:
           then: { properties: { value: { maxLength: 40 } } }
         - if: { properties: { kind: { enum: [telegram, instagram, email] } }, required: [kind] }
           then: { properties: { value: { maxLength: 200 } } }
+        - if: { properties: { kind: { const: address } }, required: [kind] }
+          then: { properties: { value: { maxLength: 300 } } }
     Contacts:
       type: array
       maxItems: 10

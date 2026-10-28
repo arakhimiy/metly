@@ -100,4 +100,19 @@ struct PhonesTests {
         #expect(restored.phoneLabel == .work)
         #expect(restored.allPhones.map(\.labeledValue) == ["Work · +998 71 200 00 00", "Mobile · +998 90 123 45 67"])
     }
+
+    @Test func whatsAppJoinsTheMessageChoices() throws {
+        let context = try makeContext()
+        let person = insertPerson("Kamila", in: context, phone: "+998 90 123 45 67")
+        person.contacts.append(ContactEntry(kind: .whatsapp, value: "+998 90 123 45 67"))
+        let reach = PersonReach(person)
+        let whatsApp = URL(string: "https://wa.me/998901234567")!
+        #expect(reach.message == .whatsApp(whatsApp))   // ahead of Telegram by phone
+        #expect(reach.choices == [.whatsApp(whatsApp), .telegram(.phone("998901234567")),
+                                  .sms(URL(string: "sms:+998901234567")!)])
+
+        person.telegram = "@kamila.y"
+        #expect(PersonReach(person).choices == [.telegram(.username("kamila.y")), .whatsApp(whatsApp)])
+    }
+
 }

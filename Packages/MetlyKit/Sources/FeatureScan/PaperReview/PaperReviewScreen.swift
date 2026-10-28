@@ -26,6 +26,8 @@ struct PaperReviewScreen: View {
     @State private var limitCount = 0
     @State private var reassignCount = 0
     @FocusState private var focus: PaperFocus?
+    /// Contact rows added with + Add Contact that are still empty.
+    @State private var addedFields: Set<PaperField> = []
 
     /// - Parameter scan: the reader's full result (recognized text, sure fields); nil = the draft alone.
     init(draft: PaperCardDraft, scan: PaperScan? = nil) {
@@ -48,8 +50,7 @@ struct PaperReviewScreen: View {
                 PaperImageSection(imageData: imageData, detectedCount: detectedCount, onRetake: retake)
             }
             PaperDetailsSection(details: $details, hints: hints, focus: $focus, onSwap: swapNameAndCompany)
-            PaperPhonesSection(details: $details, hints: phoneHints, focus: $focus)
-            PaperContactsSection(details: $details, hints: hints, focus: $focus)
+            PaperContactInfoSection(details: $details, added: $addedFields, hints: hints, phoneHints: phoneHints, focus: $focus)
             if !recognizedText.isEmpty {
                 PaperRecognizedTextSection(lines: recognizedText, details: details, onUse: use)
             }

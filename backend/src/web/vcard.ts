@@ -111,6 +111,10 @@ export function buildVCard(input: VCardInput): string {
       case 'linkedin':
         if (action.href) labelled(action.href, 'LinkedIn');
         break;
+      case 'address':
+        // Street component only: a typed address isn't split into city / postcode reliably.
+        lines.push(`ADR;TYPE=WORK:;;${escapeVCardText(action.display)};;;;`);
+        break;
     }
   }
   if (input.url) labelled(input.url, 'Tanishly');

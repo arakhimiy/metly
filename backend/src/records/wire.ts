@@ -92,7 +92,7 @@ const ConnectionPhone = LabeledPhone.extend({ privacy: FieldPrivacy.nullish().tr
 
 // Contact list (app schema 3.0.0, docs/api/CONTACTS.md): an ordered list of entries, any kind, several
 // of the same kind. The legacy fields above are derived from it (src/records/contacts.ts).
-export const contactKinds = ['phone', 'whatsapp', 'telegram', 'instagram', 'email', 'website', 'linkedin'] as const;
+export const contactKinds = ['phone', 'whatsapp', 'telegram', 'instagram', 'email', 'website', 'linkedin', 'address'] as const;
 export const ContactKind = z.enum(contactKinds);
 export type ContactKind = z.infer<typeof ContactKind>;
 export const MAX_CONTACTS = 10;
@@ -107,6 +107,7 @@ export const CONTACT_VALUE_MAX: Record<ContactKind, number> = {
   email: 200,
   website: 500,
   linkedin: 500,
+  address: 300,
 };
 
 export interface ContactEntry {

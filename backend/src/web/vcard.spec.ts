@@ -136,3 +136,18 @@ describe('vcardFilename', () => {
     expect(vcardFilename('Камола', 'kamola-ab12')).toBe('kamola-ab12.vcf');
   });
 });
+
+describe('address entries', () => {
+  it('writes the address as a work ADR, escaped', () => {
+    const card = buildVCard({
+      fullName: 'Kamola Yusupova',
+      jobTitle: '',
+      company: 'Tezkor',
+      contacts: [entry('address', 'Amir Temur ko‘chasi 108, Toshkent')],
+      url: null,
+      photoUrl: null,
+    });
+    expect(card).toContain('ADR;TYPE=WORK:;;Amir Temur ko‘chasi 108\\, Toshkent;;;;');
+  });
+});
+

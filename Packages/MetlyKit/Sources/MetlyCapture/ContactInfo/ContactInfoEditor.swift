@@ -24,7 +24,7 @@ public struct ContactInfoEditor: View {
     public var body: some View {
         Section {
             ForEach($draft.entries) { $entry in
-                EntryEditRow(entry: $entry) { delete(entry.id) }
+                EntryEditRow(entry: $entry, isFocused: focusedEntry == entry.id) { delete(entry.id) }
                     .focused($focusedEntry, equals: entry.id)
             }
             .onDelete { draft.remove(atOffsets: $0) }
@@ -54,11 +54,23 @@ public struct ContactInfoEditor: View {
 /// − · (Mobile ⌃⌄ or the kind's icon) · value — like Contacts' edit mode.
 private struct EntryEditRow: View {
     @Binding var entry: ContactEntry
+    /// The note waits until the user leaves the field.
+    let isFocused: Bool
     let onDelete: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            row
+            if let problem = ContactFieldInput.problem(entry.value, for: entry.kind), !isFocused {
+                ContactProblemNote(problem).padding(.leading, 56).padding(.bottom, 8)
+            }
+        }
+        .listRowInsets(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 16))
+    }
+
+    private var row: some View {
         HStack(spacing: 12) {
             Button(action: onDelete) {
                 Image(systemName: "minus.circle.fill")
@@ -88,20 +100,22 @@ private struct EntryEditRow: View {
                     SettingsIcon(field: entry.kind)
                 }
 
-                TextField(entry.kind.title, text: $entry.value,
+                TextField(entry.kind.title, text: typedValue,
                           prompt: Text(verbatim: ContactFieldInput.placeholder(for: entry.kind)))
                     .keyboardType(ContactFieldInput.keyboardType(for: entry.kind))
                     .textContentType(ContactFieldInput.contentType(for: entry.kind))
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .accessibilityLabel(Text(title))
-                    .onChange(of: entry.value) { _, value in
-                        let limit = ContactEntry.maxLength(for: entry.kind)
-                        if value.count > limit { entry.value = String(value.prefix(limit)) }
-                    }
             }
         }
-        .listRowInsets(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 16))
+    }
+
+    /// Spaced phone numbers, username characters only, capped at the server limit.
+    private var typedValue: Binding<String> {
+        Binding { entry.value } set: { text in
+            entry.value = String(ContactFieldInput.typing(text, for: entry.kind).prefix(ContactEntry.maxLength(for: entry.kind)))
+        }
     }
 
     private var title: String {

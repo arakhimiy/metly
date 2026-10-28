@@ -43,34 +43,8 @@ struct PaperDetailsSection: View {
         switch field {
         case .name: .field(.title)
         case .title: .field(.company)
-        default: details.phones.first.map { .phone($0.id) } ?? .field(.email)
+        default: details.phones.first.map { .phone($0.id) }
         }
-    }
-}
-
-/// Email, Telegram, website and LinkedIn.
-struct PaperContactsSection: View {
-    @Binding var details: PaperCardDetails
-    let hints: [PaperField: PaperFieldHint]
-    var focus: FocusState<PaperFocus?>.Binding
-
-    private static let fields: [PaperField] = [.email, .telegram, .website, .linkedin]
-
-    var body: some View {
-        Section {
-            ForEach(Self.fields) { field in
-                PaperFieldRow(field: field, text: $details[field], hint: hints[field], focus: focus) {
-                    focus.wrappedValue = next(after: field)
-                }
-            }
-        } footer: {
-            Text("Read on your iPhone. Check the details before saving.")
-        }
-    }
-
-    private func next(after field: PaperField) -> PaperFocus? {
-        guard let index = Self.fields.firstIndex(of: field), index + 1 < Self.fields.count else { return nil }
-        return .field(Self.fields[index + 1])
     }
 }
 

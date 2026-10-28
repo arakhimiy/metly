@@ -3,7 +3,7 @@ import UIKit
 
 /// The editable rows of PAPER_REVIEW "Detected Details".
 nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Sendable {
-    case name, title, company, phone, email, telegram, website, linkedin
+    case name, title, company, phone, email, telegram, website, linkedin, whatsapp, instagram, address
 
     var id: String { rawValue }
 
@@ -14,9 +14,9 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
         case .telegram: self = .telegram
         case .website: self = .website
         case .linkedin: self = .linkedin
-        // The paper reader never produces these; they read as the closest row.
-        case .whatsapp: self = .phone
-        case .instagram: self = .website
+        case .whatsapp: self = .whatsapp
+        case .instagram: self = .instagram
+        case .address: self = .address
         }
     }
 
@@ -29,6 +29,9 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
         case .telegram: .telegram
         case .website: .website
         case .linkedin: .linkedin
+        case .whatsapp: .whatsapp
+        case .instagram: .instagram
+        case .address: .address
         }
     }
 
@@ -51,6 +54,9 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
         case .telegram: "@username"
         case .website: "company.com"
         case .linkedin: "in/username"
+        case .whatsapp: "+998 90 123 45 67"
+        case .instagram: "@username"
+        case .address: String(localized: "Street, building, city")
         }
     }
 
@@ -68,19 +74,20 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
         case .name: .name
         case .title: .jobTitle
         case .company: .organizationName
-        case .phone: .telephoneNumber
+        case .phone, .whatsapp: .telephoneNumber
         case .email: .emailAddress
-        case .telegram: .username
+        case .telegram, .instagram: .username
         case .website, .linkedin: .URL
+        case .address: .fullStreetAddress
         }
     }
 
     var keyboard: UIKeyboardType {
         switch self {
-        case .name, .title, .company: .default
-        case .phone: .phonePad
+        case .name, .title, .company, .address: .default
+        case .phone, .whatsapp: .phonePad
         case .email: .emailAddress
-        case .telegram: .asciiCapable
+        case .telegram, .instagram: .asciiCapable
         case .website, .linkedin: .URL
         }
     }
@@ -88,7 +95,7 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
     /// Names, titles and companies are capitalised; contact values are typed as-is.
     var capitalizesWords: Bool {
         switch self {
-        case .name, .title, .company: true
+        case .name, .title, .company, .address: true
         default: false
         }
     }

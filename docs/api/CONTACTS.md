@@ -13,15 +13,15 @@ with **+ Add Contact**: any kind, several of the same kind, at most 10 entries. 
 | Field | Rules |
 |---|---|
 | `id` | UUID, unique within the list, stable (cards reference it) |
-| `kind` | `phone` · `whatsapp` · `telegram` · `instagram` · `email` · `website` · `linkedin` |
+| `kind` | `phone` · `whatsapp` · `telegram` · `instagram` · `email` · `website` · `linkedin` · `address` |
 | `label` | `mobile` · `work` · `home` · `other` for `phone`; `null` for every other kind (ignored if sent) |
-| `value` | trimmed, non-empty; ≤ 40 chars for `phone`/`whatsapp`, ≤ 200 otherwise (`website`/`linkedin` ≤ 500) |
+| `value` | trimmed, non-empty; ≤ 40 chars for `phone`/`whatsapp`, ≤ 200 otherwise (`website`/`linkedin` ≤ 500, `address` ≤ 300) |
 | `privacy` | `public` · `connections` · `private` (on a connection it means nothing; default `connections`) |
 
 - At most **10** entries (`MAX_CONTACTS`). Empty entries are never sent or stored.
 - Order is the user's order; it is kept as sent.
 - Default privacy of a new entry: `phone`, `whatsapp`, `linkedin` → `connections`; `email`, `telegram`,
-  `instagram`, `website` → `public`.
+  `instagram`, `website`, `address` → `public`.
 
 Display / links:
 
@@ -33,6 +33,7 @@ Display / links:
 | instagram | `https://instagram.com/<user>` — accepts `@user`, `user`, or an instagram.com URL | `X-SOCIALPROFILE;TYPE=instagram:…` |
 | email | `mailto:` | `EMAIL;TYPE=INTERNET` |
 | website / linkedin | as today | `URL` / a labelled `itemN.URL` + `X-ABLabel:LinkedIn` (as today) |
+| address | `https://maps.apple.com/?q=<address>` | `ADR;TYPE=WORK:;;<address>;;;;` (street component only) |
 
 ## Where it appears
 

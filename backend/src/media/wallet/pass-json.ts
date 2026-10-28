@@ -38,6 +38,7 @@ const LABELS: Record<ContactKind, string> = {
   telegram: 'Telegram',
   website: 'Website',
   linkedin: 'LinkedIn',
+  address: 'Address',
 };
 
 const PHONE_LABELS: Record<PhoneLabel, string> = { mobile: 'Mobile', work: 'Work', home: 'Home', other: 'Phone' };

@@ -68,7 +68,7 @@ struct CardFieldsSection: View {
         Binding {
             profile?.contacts.first { $0.id == entry.id }?.value ?? ""
         } set: { text in
-            profile?.updateContact(id: entry.id) { $0.value = text }
+            profile?.updateContact(id: entry.id) { $0.value = ContactFieldInput.typing(text, for: $0.kind) }
             if !text.trimmingCharacters(in: .whitespaces).isEmpty, !effectiveSelection.contains(entry.id), entry.privacy != .private {
                 select(effectiveSelection + [entry.id])
             }
@@ -166,6 +166,9 @@ struct CardContactToggleRow: View {
                     .padding(.leading, 41)
                     .accessibilityLabel(Text(title))
                     .onSubmit { focus.wrappedValue = nil }
+                if focus.wrappedValue != entry.id, let problem = ContactFieldInput.problem(value.wrappedValue, for: entry.kind) {
+                    ContactProblemNote(problem).padding(.leading, 41)
+                }
             }
         }
         .onAppear {

@@ -116,7 +116,17 @@ nonisolated public enum ContactLinks {
         case .email: mail(value)
         case .website: website(value)
         case .linkedin: linkedIn(value)
+        case .address: map(value)
         }
+    }
+
+    /// Apple Maps search for an address (opens Maps, or the web page without it).
+    public static func map(_ address: String) -> URL? {
+        let query = address.trimmed
+        guard !query.isEmpty else { return nil }
+        var components = URLComponents(string: "https://maps.apple.com/")
+        components?.queryItems = [URLQueryItem(name: "q", value: query)]
+        return components?.url
     }
 
     /// "in/azizakarimova", "linkedin.com/in/…" or a full URL → https://www.linkedin.com/in/…

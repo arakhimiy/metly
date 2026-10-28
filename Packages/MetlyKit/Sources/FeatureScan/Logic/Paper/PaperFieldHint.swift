@@ -30,6 +30,8 @@ nonisolated enum PaperFieldHint: Equatable, Sendable {
             return PhoneFormat.isPlausible(value)
         case .instagram:
             return value.wholeMatch(of: /@?[A-Za-z0-9_.]{1,30}/) != nil
+        case .address:
+            return value.count >= 8 && value.contains(where: \.isNumber)
         case .email:
             return value.wholeMatch(of: /[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/) != nil
         case .telegram:

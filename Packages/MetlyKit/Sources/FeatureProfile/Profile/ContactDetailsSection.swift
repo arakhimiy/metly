@@ -19,19 +19,11 @@ struct ContactDetailsSection: View {
         Section {
             ForEach(profile.contacts) { entry in
                 let focus = ProfileFocusField.contact(entry.id)
-                if entry.kind == .phone {
-                    PhoneNumberRow(label: editor.labelBinding(id: entry.id), value: editor.valueBinding(id: entry.id),
-                                   privacy: editor.privacyBinding(id: entry.id),
-                                   privacyTitle: String(localized: "Who Can See This Number"),
-                                   focus: focus, nextFocus: focus.next(contactIDs: ids), focusedField: focusedField)
-                } else {
-                    LabeledFieldRow(title: entry.kind.title) {
-                        SettingsIcon(field: entry.kind)
-                    } field: {
-                        ContactValueField(kind: entry.kind, value: editor.valueBinding(id: entry.id), focus: focus,
-                                          nextFocus: focus.next(contactIDs: ids), focusedField: focusedField)
-                    } accessory: {
-                        FieldPrivacyMenu(kind: entry.kind, privacy: editor.privacyBinding(id: entry.id))
+                VStack(alignment: .leading, spacing: 6) {
+                    row(entry, focus: focus, ids: ids, editor: editor)
+                    // Shown once the user leaves the field, so typing isn't nagged.
+                    if focusedField.wrappedValue != focus, let problem = ContactFieldInput.problem(entry.value, for: entry.kind) {
+                        ContactProblemNote(problem).padding(.leading, 41)
                     }
                 }
             }
@@ -48,6 +40,25 @@ struct ContactDetailsSection: View {
                 if !profile.canAddContact {
                     Text("You can add up to \(ContactEntry.maxCount) contacts.")
                 }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func row(_ entry: ContactEntry, focus: ProfileFocusField, ids: [UUID], editor: ProfileEditor) -> some View {
+        if entry.kind == .phone {
+            PhoneNumberRow(label: editor.labelBinding(id: entry.id), value: editor.valueBinding(id: entry.id),
+                           privacy: editor.privacyBinding(id: entry.id),
+                           privacyTitle: String(localized: "Who Can See This Number"),
+                           focus: focus, nextFocus: focus.next(contactIDs: ids), focusedField: focusedField)
+        } else {
+            LabeledFieldRow(title: entry.kind.title) {
+                SettingsIcon(field: entry.kind)
+            } field: {
+                ContactValueField(kind: entry.kind, value: editor.valueBinding(id: entry.id), focus: focus,
+                                  nextFocus: focus.next(contactIDs: ids), focusedField: focusedField)
+            } accessory: {
+                FieldPrivacyMenu(kind: entry.kind, privacy: editor.privacyBinding(id: entry.id))
             }
         }
     }

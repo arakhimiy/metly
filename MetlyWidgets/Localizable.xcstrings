@@ -2,7 +2,6 @@
   "sourceLanguage": "en",
   "strings": {
     "%@": {
-      "localizations": {},
       "shouldTranslate": false
     },
     "%@ %@": {
@@ -272,6 +271,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vizitka almashgandan so‘ng darhol qo‘shing — bor-yo‘g‘i 2 soniya."
+          }
+        }
+      }
+    },
+    "Address": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Адрес"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manzil"
           }
         }
       }
@@ -662,6 +677,118 @@
           "stringUnit": {
             "state": "translated",
             "value": "Email"
+          }
+        }
+      }
+    },
+    "Enter a Telegram username, like @username.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите имя пользователя Telegram, например @username."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram username kiriting, masalan @username."
+          }
+        }
+      }
+    },
+    "Enter a full phone number, like +998 90 123 45 67.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите полный номер телефона, например +998 90 123 45 67."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To‘liq telefon raqamini kiriting, masalan +998 90 123 45 67."
+          }
+        }
+      }
+    },
+    "Enter a website, like example.com.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите адрес сайта, например example.com."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sayt manzilini kiriting, masalan example.com."
+          }
+        }
+      }
+    },
+    "Enter an Instagram username, like @username.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите имя пользователя Instagram, например @username."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram username kiriting, masalan @username."
+          }
+        }
+      }
+    },
+    "Enter an email address, like name@example.com.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите адрес эл. почты, например name@example.com."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email manzilini kiriting, masalan name@example.com."
+          }
+        }
+      }
+    },
+    "Enter the full address, like street, building and city.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите полный адрес: улица, дом и город."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To‘liq manzilni kiriting: ko‘cha, uy va shahar."
+          }
+        }
+      }
+    },
+    "Enter your LinkedIn profile, like in/username.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введите профиль LinkedIn, например in/username."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LinkedIn profilingizni kiriting, masalan in/username."
           }
         }
       }
@@ -1883,6 +2010,22 @@
         }
       }
     },
+    "Street, building, city": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Улица, дом, город"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko‘cha, uy, shahar"
+          }
+        }
+      }
+    },
     "Swipe down from the top-right corner of the screen.": {
       "localizations": {
         "ru": {
@@ -2457,7 +2600,6 @@
       }
     },
     "“%@”": {
-      "localizations": {},
       "shouldTranslate": false
     }
   },

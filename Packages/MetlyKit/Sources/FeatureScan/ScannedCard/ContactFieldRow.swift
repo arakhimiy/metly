@@ -96,6 +96,7 @@ struct ContactFieldRow: View {
         case .telegram: String(localized: "Opens Telegram. Touch and hold to copy.")
         case .whatsapp: String(localized: "Opens WhatsApp. Touch and hold to copy.")
         case .instagram: String(localized: "Opens Instagram. Touch and hold to copy.")
+        case .address: String(localized: "Opens Maps. Touch and hold to copy.")
         case .website, .linkedin: String(localized: "Opens the page. Touch and hold to copy.")
         }
     }

@@ -85,6 +85,7 @@ public extension ContactFieldKind {
         case .linkedin: Color(red: 0.04, green: 0.4, blue: 0.76)
         case .whatsapp: Color(red: 0.15, green: 0.68, blue: 0.38)
         case .instagram: Color(red: 0.86, green: 0.18, blue: 0.47)
+        case .address: .red
         }
     }
 }

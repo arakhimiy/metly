@@ -92,7 +92,7 @@ nonisolated struct SetupProfileForm: Equatable, Sendable {
     /// Contact values written to the profile, in display order.
     var contactValues: [(kind: ContactFieldKind, value: String)] {
         let values: [(kind: ContactFieldKind, value: String)] = [
-            (.phone, phone.trimmed), (.email, email.trimmed), (.telegram, normalizedTelegram),
+            (.phone, PhoneNumberFormat.normalized(phone.trimmed)), (.email, email.trimmed), (.telegram, normalizedTelegram),
         ]
         return values.map { ($0.kind, $0.value.capped(at: $0.kind == .phone ? Self.maxPhoneLength : Self.maxContactLength)) }
     }

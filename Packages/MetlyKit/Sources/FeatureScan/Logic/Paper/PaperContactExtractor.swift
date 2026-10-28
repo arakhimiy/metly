@@ -19,6 +19,18 @@ nonisolated struct PaperContacts: Equatable, Sendable {
     var websites: [String] = []
     /// Display form ("in/azizakarimova").
     var linkedins: [String] = []
+    /// Address lines in reading order ("Amir Temur ko‘chasi 108", "Toshkent").
+    var addresses: [String] = []
+
+    /// The address lines joined, when they name a place with a house number or a street; nil otherwise
+    /// (a lone "Uzbekistan" isn't an address worth saving).
+    var address: String? {
+        let joined = addresses.joined(separator: ", ")
+        let words = PaperText.words(joined)
+        let hasStreet = words.contains { PaperKeywords.streetWords.contains($0) || PaperKeywords.streetNames.contains($0) }
+        guard !joined.isEmpty, PaperText.hasDigits(joined) || hasStreet else { return nil }
+        return String(joined.prefix(ContactEntry.maxLength(for: .address)))
+    }
 
     /// Every number once, the primary first: the first mobile (it's the one people answer),
     /// else the first number read; the others keep the card's order.

@@ -4,7 +4,8 @@ import MetlyData
 import SwiftUI
 
 /// Message · Call · Mail · Save (PLAN Q40: capitalised labels).
-/// Message opens Telegram (username, else by phone number — then a menu also offers Messages);
+/// Message opens Telegram, WhatsApp or Messages directly when only one fits, else a menu of them
+/// (Telegram by username, WhatsApp, Telegram by phone number, Messages);
 /// Call dials the only number directly, or lists every number ("Mobile · +998…") when there are several.
 struct QuickActionsSection: View {
     let person: Connection
@@ -39,29 +40,56 @@ struct QuickActionsSection: View {
     @ViewBuilder
     private func messageAction(_ actions: PersonReach) -> some View {
         let title = String(localized: "Message")
-        switch actions.message {
-        case .telegram(let target) where target.isByPhone && actions.smsURL != nil:
+        if actions.choices.count > 1 {
             QuickActionMenu(title: title, systemImage: "message.fill",
                             accessibilityLabel: String(localized: "Message \(firstName)")) {
-                Button {
-                    openTelegram(target)
-                } label: {
-                    Label {
-                        Text("Telegram")
-                        Text("Opens the chat by phone number")
-                    } icon: {
-                        Image(systemName: "paperplane")
-                    }
-                }
-                if let sms = actions.smsURL {
-                    Button("Messages", systemImage: "message") { openURL(sms) }
+                ForEach(Array(actions.choices.enumerated()), id: \.offset) { _, choice in
+                    messageChoice(choice)
                 }
             }
+        } else {
+            singleMessageAction(actions.message, title: title)
+        }
+    }
+
+    @ViewBuilder
+    private func messageChoice(_ choice: PersonReach.Message) -> some View {
+        switch choice {
+        case .telegram(let target) where target.isByPhone:
+            Button {
+                openTelegram(target)
+            } label: {
+                Label {
+                    Text("Telegram")
+                    Text("Opens the chat by phone number")
+                } icon: {
+                    Image(systemName: "paperplane")
+                }
+            }
+        case .telegram(let target):
+            Button("Telegram", systemImage: "paperplane") { openTelegram(target) }
+        case .whatsApp(let url):
+            Button("WhatsApp", systemImage: "message.circle") { openURL(url) }
+        case .sms(let url):
+            Button("Messages", systemImage: "message") { openURL(url) }
+        case .none:
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private func singleMessageAction(_ message: PersonReach.Message, title: String) -> some View {
+        switch message {
         case .telegram(let target):
             QuickActionButton(title: title, systemImage: "message.fill", isEnabled: true,
                               accessibilityLabel: String(localized: "Message \(firstName) on Telegram"),
                               accessibilityHint: target.isByPhone ? String(localized: "Opens Telegram by phone number") : nil) {
                 openTelegram(target)
+            }
+        case .whatsApp(let url):
+            QuickActionButton(title: title, systemImage: "message.fill", isEnabled: true,
+                              accessibilityLabel: String(localized: "Message \(firstName) on WhatsApp")) {
+                openURL(url)
             }
         case .sms(let url):
             QuickActionButton(title: title, systemImage: "message.fill", isEnabled: true,

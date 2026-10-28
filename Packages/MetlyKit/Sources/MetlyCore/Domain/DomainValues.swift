@@ -75,6 +75,7 @@ public struct ContactEntry: Codable, Hashable, Sendable, Identifiable {
         switch kind {
         case .phone, .whatsapp: LabeledPhone.maxValueLength
         case .website, .linkedin: 500
+        case .address: 300
         case .email, .telegram, .instagram: 200
         }
     }
@@ -91,6 +92,7 @@ public struct ContactEntry: Codable, Hashable, Sendable, Identifiable {
         case .linkedin: suffix = "F005"
         case .whatsapp: suffix = "F006"
         case .instagram: suffix = "F007"
+        case .address: suffix = "F008"
         }
         return UUID(uuidString: "00000000-0000-0000-0000-00000000\(suffix)")!
     }

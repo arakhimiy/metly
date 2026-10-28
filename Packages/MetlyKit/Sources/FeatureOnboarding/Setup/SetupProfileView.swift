@@ -48,9 +48,9 @@ struct SetupProfileView: View {
             }
 
             Section {
-                SetupTextField(field: .phone, text: $form.phone, focus: $focusedField)
-                SetupTextField(field: .email, text: $form.email, focus: $focusedField)
-                SetupTextField(field: .telegram, text: $form.telegram, focus: $focusedField)
+                SetupTextField(field: .phone, text: typed($form.phone, as: .phone), focus: $focusedField)
+                SetupTextField(field: .email, text: typed($form.email, as: .email), focus: $focusedField)
+                SetupTextField(field: .telegram, text: typed($form.telegram, as: .telegram), focus: $focusedField)
             } footer: {
                 SetupContactFooter(emailError: focusedField == .email ? nil : form.emailError, prefill: prefill)
             }
@@ -185,4 +185,10 @@ private struct SetupContactFooter: View {
     .metlyPreview(.signedOut)
     .preferredColorScheme(.dark)
     .dynamicTypeSize(.accessibility1)
+}
+
+/// Phone numbers spaced for their country, no spaces in an email, only username characters in a handle.
+@MainActor
+private func typed(_ value: Binding<String>, as kind: ContactFieldKind) -> Binding<String> {
+    Binding { value.wrappedValue } set: { value.wrappedValue = ContactFieldInput.typing($0, for: kind) }
 }

@@ -49,6 +49,7 @@ nonisolated enum PaperCardParser {
             for segment in Self.segments(of: line.text) {
                 pieces.append(segment)
                 let leftover = PaperText.cleanLeftover(extractor.extract(from: segment, into: &contacts))
+                if PaperText.letterCount(leftover) >= 2, isAddress(leftover) { contacts.addresses.append(leftover) }
                 if isRoleCandidate(leftover) {
                     candidates += PaperRoleClassifier.split(RoleCandidate(text: leftover, index: index, height: line.height))
                 }
@@ -96,6 +97,7 @@ nonisolated enum PaperCardParser {
         }
         if let website = contacts.websites.first { fields.append(ContactField(kind: .website, value: website)) }
         if let linkedin = contacts.linkedins.first { fields.append(ContactField(kind: .linkedin, value: linkedin)) }
+        if let address = contacts.address { fields.append(ContactField(kind: .address, value: address)) }
         return PaperCardDraft(fullName: roles.name, jobTitle: roles.title, company: roles.company, fields: fields,
                               phoneLabel: phones.first?.label ?? .mobile,
                               additionalPhones: phones.dropFirst().map { LabeledPhone(label: $0.label, value: $0.value) })

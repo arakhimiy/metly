@@ -80,7 +80,8 @@ struct ProfileEditorTests {
         #expect(profile.company.count == 80)
         #expect(profile.field(.website).value.count == 500)
         #expect(profile.field(.website).value.hasPrefix("example.com/"))
-        #expect(profile.field(.phone).value.count == LabeledPhone.maxValueLength)
+        #expect(profile.field(.phone).value.filter(\.isNumber).count == 15)   // E.164, spaced as typed
+        #expect(profile.field(.phone).value.count <= LabeledPhone.maxValueLength)
         withExtendedLifetime(container) {}
     }
 

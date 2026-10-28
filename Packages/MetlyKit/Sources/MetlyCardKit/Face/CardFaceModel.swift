@@ -158,6 +158,7 @@ extension ContactFieldKind {
         case .linkedin: "in"
         case .whatsapp: "wa"
         case .instagram: "ig"
+        case .address: "addr"
         }
     }
 }

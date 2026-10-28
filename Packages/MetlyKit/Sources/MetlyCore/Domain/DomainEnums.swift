@@ -5,7 +5,7 @@ import Foundation
 
 public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifiable {
     case phone, email, telegram, website, linkedin   // the original five (wire `contactFields` / `visibleFields`)
-    case whatsapp, instagram                          // contact list only (schema 3.0.0, docs/api/CONTACTS.md)
+    case whatsapp, instagram, address                 // contact list only (schema 3.0.0, docs/api/CONTACTS.md)
 
     public var id: String { rawValue }
 
@@ -15,7 +15,7 @@ public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifia
     public var isLegacy: Bool { Self.legacy.contains(self) }
 
     /// Order of the kinds in "+ Add Contact".
-    public static let addOrder: [ContactFieldKind] = [.phone, .telegram, .whatsapp, .instagram, .email, .website, .linkedin]
+    public static let addOrder: [ContactFieldKind] = [.phone, .telegram, .whatsapp, .instagram, .email, .website, .linkedin, .address]
 
     public var title: String {
         switch self {
@@ -26,6 +26,7 @@ public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifia
         case .linkedin: String(localized: "LinkedIn")
         case .whatsapp: String(localized: "WhatsApp")
         case .instagram: String(localized: "Instagram")
+        case .address: String(localized: "Address")
         }
     }
 
@@ -39,13 +40,14 @@ public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifia
         case .linkedin: "person.crop.square.filled.and.at.rectangle"
         case .whatsapp: "message.fill"
         case .instagram: "camera.fill"
+        case .address: "mappin.and.ellipse"
         }
     }
 
     public var defaultPrivacy: FieldPrivacy {
         switch self {
         case .phone, .linkedin, .whatsapp: .connections
-        case .email, .telegram, .website, .instagram: .public
+        case .email, .telegram, .website, .instagram, .address: .public
         }
     }
 

@@ -125,7 +125,8 @@ struct ContactInfoTests {
         #expect(!draft.canAdd)
         #expect(draft.add(.email) == nil)
         draft.entries[1].value = String(repeating: "1", count: 60)
-        #expect(draft.savedEntries[1].value.count == LabeledPhone.maxValueLength)
+        #expect(draft.savedEntries[1].value.filter(\.isNumber).count == 15)   // E.164
+        #expect(draft.savedEntries[1].value.count <= LabeledPhone.maxValueLength)
         #expect(draft.savedEntries.count == ContactEntry.maxCount)
     }
 

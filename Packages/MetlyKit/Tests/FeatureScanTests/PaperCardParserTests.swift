@@ -201,4 +201,19 @@ struct PaperCardParserTests {
         #expect(!PhoneFormat.isUzbekMobile("+998 71 200 00 00"))
         #expect(!PhoneFormat.isUzbekMobile("+1 415 555 0123"))
     }
+
+    @Test func readsTheCompanyAddress() {
+        let draft = PaperCardParser.parse(text: [
+            "Aziza Karimova", "Product Designer", "Tezkor", "+998 90 123 45 67",
+            "Amir Temur ko‘chasi 108", "Toshkent",
+        ])
+        #expect(draft.fullName == "Aziza Karimova")
+        #expect(draft.fields.first { $0.kind == .address }?.value == "Amir Temur ko‘chasi 108, Toshkent")
+    }
+
+    @Test func aLoneCityIsNotAnAddress() {
+        let draft = PaperCardParser.parse(text: ["Aziza Karimova", "Tezkor", "+998 90 123 45 67", "Toshkent"])
+        #expect(!draft.fields.contains { $0.kind == .address })
+    }
+
 }

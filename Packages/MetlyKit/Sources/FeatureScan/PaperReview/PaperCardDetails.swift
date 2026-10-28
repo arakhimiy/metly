@@ -1,6 +1,7 @@
 import Foundation
 import MetlyCardKit
 import MetlyCore
+import MetlyDesign
 
 /// One phone number row on PAPER_REVIEW.
 struct PaperPhoneRow: Identifiable, Equatable {
@@ -22,6 +23,10 @@ struct PaperCardDetails: Equatable {
     var telegram: String
     var website: String
     var linkedin: String
+    var whatsapp: String
+    var instagram: String
+    /// The company's address, when the card prints one.
+    var address: String
 
     init(draft: PaperCardDraft) {
         fullName = draft.fullName
@@ -34,6 +39,9 @@ struct PaperCardDetails: Equatable {
         telegram = draft.value(for: .telegram)
         website = draft.value(for: .website)
         linkedin = draft.value(for: .linkedin)
+        whatsapp = draft.value(for: .whatsapp)
+        instagram = draft.value(for: .instagram)
+        address = draft.value(for: .address)
     }
 
     /// Text fields by row; `.phone` is the first phone row.
@@ -48,6 +56,9 @@ struct PaperCardDetails: Equatable {
             case .telegram: telegram
             case .website: website
             case .linkedin: linkedin
+            case .whatsapp: whatsapp
+            case .instagram: instagram
+            case .address: address
             }
         }
         set {
@@ -61,6 +72,9 @@ struct PaperCardDetails: Equatable {
             case .telegram: telegram = newValue
             case .website: website = newValue
             case .linkedin: linkedin = newValue
+            case .whatsapp: whatsapp = newValue
+            case .instagram: instagram = newValue
+            case .address: address = newValue
             }
         }
     }
@@ -147,6 +161,9 @@ struct PaperCardDetails: Equatable {
         let username = ContactValueFormat.telegramUsername(from: telegram) ?? telegram
         if reading.matches(username, parsed: reading.contacts.telegrams) { uses.append(.telegram) }
         if reading.matches(linkedin, parsed: reading.contacts.linkedins) { uses.append(.linkedin) }
+        if reading.matches(whatsapp, parsed: []) { uses.append(.whatsapp) }
+        if reading.matches(instagram, parsed: []) { uses.append(.instagram) }
+        if reading.matches(address, parsed: []) { uses.append(.address) }
         return uses
     }
 
@@ -196,6 +213,12 @@ struct PaperCardDetails: Equatable {
             telegram = reading.contacts.telegrams.first.map { ContactValueFormat.telegramDisplay(username: $0) } ?? reading.cleaned
         case .linkedin:
             linkedin = reading.contacts.linkedins.first ?? reading.cleaned
+        case .whatsapp:
+            whatsapp = reading.contacts.phones.first?.value ?? reading.cleaned
+        case .instagram:
+            instagram = ContactFieldInput.normalized(reading.cleaned, for: .instagram)
+        case .address:
+            address = reading.cleaned
         }
     }
 
