@@ -193,13 +193,58 @@ struct ChannelLinkTests {
         #expect(ChannelLink.availableChannels(for: none) == Set(FollowUpChannel.allCases))
     }
 
-    @Test func urlsPerChannel() {
-        #expect(ChannelLink.primaryURL(.telegram, value: "@kamila.y")?.absoluteString == "tg://resolve?domain=kamila.y")
-        #expect(ChannelLink.fallbackURL(.telegram, value: "@kamila.y")?.absoluteString == "https://t.me/kamila.y")
-        #expect(ChannelLink.primaryURL(.email, value: "kamila@uzum.uz")?.absoluteString == "mailto:kamila@uzum.uz")
-        #expect(ChannelLink.primaryURL(.call, value: "+998 90 123 45 67")?.absoluteString == "tel:+998901234567")
-        #expect(ChannelLink.primaryURL(.call, value: "") == nil)
-        #expect(ChannelLink.fallbackURL(.email, value: "kamila@uzum.uz") == nil)
+    @Test func urlsPerChannel() throws {
+        let context = try makeContext()
+        let person = insertPerson("Kamila", in: context, telegram: "@kamila.y", email: "kamila@uzum.uz",
+                                  phone: "+998 90 123 45 67")
+        let telegram = try #require(ChannelLink.target(.telegram, for: person))
+        #expect(telegram.primary.absoluteString == "tg://resolve?domain=kamila.y")
+        #expect(telegram.fallback?.absoluteString == "https://t.me/kamila.y")
+        #expect(!telegram.isTelegramByPhone)
+        #expect(ChannelLink.target(.email, for: person) == ChannelLink.Target(primary: URL(string: "mailto:kamila@uzum.uz")!))
+        #expect(ChannelLink.target(.call, for: person)?.primary.absoluteString == "tel:+998901234567")
+        #expect(ChannelLink.target(.call, for: insertPerson("Nobody", in: context)) == nil)
+        #expect(ChannelLink.target(.telegram, for: nil) == nil)
+    }
+
+    @Test func telegramOpensByTheMobileNumberWithoutAUsername() throws {
+        let context = try makeContext()
+        let person = insertPerson("Madina", in: context, phone: "90 123-45-67")
+        let target = try #require(ChannelLink.target(.telegram, for: person))
+        #expect(target.primary.absoluteString == "tg://resolve?phone=998901234567")
+        #expect(target.fallback?.absoluteString == "https://t.me/+998901234567")
+        #expect(target.isTelegramByPhone)
+        #expect(ChannelLink.availableChannels(for: person) == [.telegram, .call])
+
+        let russian = insertPerson("Ivan", in: context, phone: "+7 912 345-67-89")
+        #expect(ChannelLink.target(.telegram, for: russian)?.primary.absoluteString == "tg://resolve?phone=79123456789")
+    }
+
+    @Test func aLandlineDoesNotOfferTelegram() throws {
+        let context = try makeContext()
+        let office = insertPerson("Office", in: context, phone: "+998 71 200 00 00")
+        #expect(ChannelLink.target(.telegram, for: office) == nil)
+        #expect(ChannelLink.availableChannels(for: office) == [.call])
+        #expect(ChannelLink.missingValueNote(.telegram, firstName: "Office") == "Office has no Telegram username or mobile number saved.")
+    }
+
+    /// With several numbers a reminder's Call (and notification action) dials the mobile one.
+    @Test func callUsesTheMobileNumber() throws {
+        let context = try makeContext()
+        let person = insertPerson("Madina", in: context, phone: "+998 71 200 00 00")
+        person.phoneLabel = .work
+        person.additionalPhones = [LabeledPhone(label: .home, value: "+998 66 233 00 00"),
+                                   LabeledPhone(label: .mobile, value: "+998 93 555 12 34")]
+        #expect(ChannelLink.callNumber(for: person) == "+998 93 555 12 34")
+        #expect(ChannelLink.target(.call, for: person)?.primary.absoluteString == "tel:+998935551234")
+
+        // No mobile number: the primary one.
+        person.additionalPhones = [LabeledPhone(label: .home, value: "+998 66 233 00 00")]
+        #expect(ChannelLink.callNumber(for: person) == "+998 71 200 00 00")
+
+        // Only extra numbers saved (the primary was cleared).
+        person.phone = ""
+        #expect(ChannelLink.callNumber(for: person) == "+998 66 233 00 00")
     }
 
     @Test func actionTitles() {

@@ -57,15 +57,13 @@ struct FollowUpActionHandler {
         router.showToast(String(localized: "Reminder Deleted"), systemImage: "trash", undo: syncing(undo))
     }
 
-    /// Opens Telegram (app, then t.me) / Mail / Phone for the reminder's channel.
+    /// Opens Telegram (app, then t.me; by phone number when no username) / Mail / Phone for the reminder's channel.
     func openChannel(_ followUp: FollowUp, with openURL: OpenURLAction) {
         let channel = followUp.channel
-        let value = ChannelLink.value(for: channel, of: followUp.connection)
-        guard let url = ChannelLink.primaryURL(channel, value: value) else { return }
-        let fallback = ChannelLink.fallbackURL(channel, value: value)
+        guard let target = ChannelLink.target(channel, for: followUp.connection) else { return }
         router.showToast(String(localized: "Opening \(ChannelLink.actionTitle(channel))"), systemImage: channel.symbolName)
-        openURL(url) { accepted in
-            if !accepted, let fallback { openURL(fallback) }
+        openURL(target.primary) { accepted in
+            if !accepted, let fallback = target.fallback { openURL(fallback) }
         }
     }
 

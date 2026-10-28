@@ -5,6 +5,14 @@ import MetlyData
 
 /// How a reminder's "Reply Via" channel opens the other app (Telegram / Mail / Phone).
 enum ChannelLink {
+    /// What a channel action opens: the app URL first, then the fallback when it can't be opened.
+    struct Target: Equatable {
+        var primary: URL
+        var fallback: URL?
+        /// Telegram opens the chat by phone number (no username saved).
+        var isTelegramByPhone = false
+    }
+
     /// Button label on Home rows (PLAN Q40: "Telegram", "Mail", "Call").
     static func actionTitle(_ channel: FollowUpChannel) -> String {
         switch channel {
@@ -14,32 +22,29 @@ enum ChannelLink {
         }
     }
 
-    /// The contact value a channel uses.
-    static func value(for channel: FollowUpChannel, of person: Connection?) -> String {
-        guard let person else { return "" }
-        return switch channel {
-        case .telegram: person.telegram
-        case .email: person.email
-        case .call: person.phone
-        }
-    }
-
-    /// App URL to open first (`tg://`, `mailto:`, `tel:`), nil when the value can't be used.
-    static func primaryURL(_ channel: FollowUpChannel, value: String) -> URL? {
+    /// The URLs for `channel` with `person`'s saved values, nil when the channel can't reach them.
+    /// • Telegram: the username, else the mobile number (`tg://resolve?phone=`, then `t.me/+…`).
+    /// • Call: the mobile number, else the primary one.
+    static func target(_ channel: FollowUpChannel, for person: Connection?) -> Target? {
+        guard let person else { return nil }
         switch channel {
-        case .telegram: ContactLinks.telegramApp(value)
-        case .email: ContactLinks.mail(value)
-        case .call: ContactLinks.call(value)
+        case .telegram:
+            guard let telegram = person.telegramTarget, let app = telegram.appURL else { return nil }
+            return Target(primary: app, fallback: telegram.webURL, isTelegramByPhone: telegram.isByPhone)
+        case .email:
+            return ContactLinks.mail(person.email).map { Target(primary: $0) }
+        case .call:
+            return callNumber(for: person).flatMap(ContactLinks.call).map { Target(primary: $0) }
         }
     }
 
-    /// Used when the primary URL can't be opened (no Telegram app → t.me in Safari).
-    static func fallbackURL(_ channel: FollowUpChannel, value: String) -> URL? {
-        channel == .telegram ? ContactLinks.telegramWeb(value) : nil
+    /// The number a reminder's Call uses: the first dialable mobile number, else the first dialable one.
+    static func callNumber(for person: Connection) -> String? {
+        person.phonesForMessaging.first { ContactLinks.call($0.value) != nil }?.value
     }
 
     static func canOpen(_ channel: FollowUpChannel, for person: Connection?) -> Bool {
-        primaryURL(channel, value: value(for: channel, of: person)) != nil
+        target(channel, for: person) != nil
     }
 
     /// Channels that have a usable value for `person` (all of them when nothing is known,
@@ -52,7 +57,7 @@ enum ChannelLink {
     /// "Kamila has no phone number saved." for a channel without a value.
     static func missingValueNote(_ channel: FollowUpChannel, firstName: String) -> String {
         switch channel {
-        case .telegram: String(localized: "\(firstName) has no Telegram username saved.")
+        case .telegram: String(localized: "\(firstName) has no Telegram username or mobile number saved.")
         case .email: String(localized: "\(firstName) has no email address saved.")
         case .call: String(localized: "\(firstName) has no phone number saved.")
         }

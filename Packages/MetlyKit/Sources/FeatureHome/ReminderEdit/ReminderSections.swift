@@ -105,8 +105,14 @@ struct ReminderChannelSection: View {
             Text("Reply Via")
         } footer: {
             VStack(alignment: .leading, spacing: 4) {
-                if let person, !ChannelLink.canOpen(channel, for: person) {
-                    Text(ChannelLink.missingValueNote(channel, firstName: PersonText.firstName(person.fullName)))
+                if let person {
+                    if let target = ChannelLink.target(channel, for: person) {
+                        if target.isTelegramByPhone {
+                            Text(TelegramTarget.byPhoneNote)
+                        }
+                    } else {
+                        Text(ChannelLink.missingValueNote(channel, firstName: PersonText.firstName(person.fullName)))
+                    }
                 }
                 Text("Only you see your reminders. The other person is never notified.")
             }
