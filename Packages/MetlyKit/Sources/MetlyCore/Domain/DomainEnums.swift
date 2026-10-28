@@ -37,6 +37,31 @@ public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifia
     }
 }
 
+/// Label of a phone number (vCard TEL;TYPE). Added in schema 2.0.0.
+public enum PhoneLabel: String, Codable, CaseIterable, Sendable, Identifiable {
+    case mobile, work, home, other
+
+    public var id: String { rawValue }
+
+    public var title: String {
+        switch self {
+        case .mobile: String(localized: "Mobile")
+        case .work: String(localized: "Work")
+        case .home: String(localized: "Home")
+        case .other: String(localized: "Other")
+        }
+    }
+
+    public var symbolName: String {
+        switch self {
+        case .mobile: "iphone"
+        case .work: "building.2"
+        case .home: "house"
+        case .other: "phone"
+        }
+    }
+}
+
 public enum FieldPrivacy: String, Codable, CaseIterable, Sendable, Identifiable {
     case `public`, connections, `private`
 

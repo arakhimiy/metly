@@ -7,19 +7,20 @@ import SwiftData
 // and `markDeleted()` instead of `modelContext.delete(_:)` so the sync engine sees it.
 // Enum-typed properties are stored as raw strings so they work in #Predicate.
 
-public enum MetlySchemaV1: VersionedSchema {
-    public static let versionIdentifier = Schema.Version(1, 0, 0)
+/// 2.0.0 — labelled phones: `phoneLabelRaw` + `additionalPhones` on Profile and Connection.
+public enum MetlySchemaV2: VersionedSchema {
+    public static let versionIdentifier = Schema.Version(2, 0, 0)
     public static var models: [any PersistentModel.Type] {
         [Profile.self, Card.self, Connection.self, FollowUp.self, Event.self, ConnectRequest.self]
     }
 }
 
-public typealias Profile = MetlySchemaV1.Profile
-public typealias Card = MetlySchemaV1.Card
-public typealias Connection = MetlySchemaV1.Connection
-public typealias FollowUp = MetlySchemaV1.FollowUp
-public typealias Event = MetlySchemaV1.Event
-public typealias ConnectRequest = MetlySchemaV1.ConnectRequest
+public typealias Profile = MetlySchemaV2.Profile
+public typealias Card = MetlySchemaV2.Card
+public typealias Connection = MetlySchemaV2.Connection
+public typealias FollowUp = MetlySchemaV2.FollowUp
+public typealias Event = MetlySchemaV2.Event
+public typealias ConnectRequest = MetlySchemaV2.ConnectRequest
 
 /// Shared sync bookkeeping. Every model conforms.
 public protocol SyncedRecord: PersistentModel {
@@ -62,7 +63,7 @@ public extension SyncedRecord {
     var isDeleted: Bool { deletedAt != nil }
 }
 
-extension MetlySchemaV1 {
+extension MetlySchemaV2 {
 
     // MARK: Profile (singleton per signed-in user)
 
@@ -76,6 +77,10 @@ extension MetlySchemaV1 {
         @Attribute(.externalStorage) public var logoData: Data?
         /// One entry per ContactFieldKind, display order.
         public var contactFields: [ContactField]
+        /// Label of the primary phone in `contactFields` (Mobile by default). Added in 2.0.0.
+        public var phoneLabelRaw: String = PhoneLabel.mobile.rawValue
+        /// Extra phones after the primary one, each with its own label and privacy. Added in 2.0.0.
+        public var additionalPhones: [LabeledPhone] = []
         public var defaultCardID: UUID?
         public var linksPaused: Bool
         public var notificationPrefs: NotificationPrefs
@@ -93,6 +98,8 @@ extension MetlySchemaV1 {
             self.jobTitle = jobTitle
             self.company = company
             self.contactFields = contactFields
+            self.phoneLabelRaw = PhoneLabel.mobile.rawValue
+            self.additionalPhones = []
             self.linksPaused = false
             self.notificationPrefs = NotificationPrefs()
             self.privacySettings = PrivacySettings()
@@ -113,6 +120,19 @@ extension MetlySchemaV1 {
                 contactFields.append(field)
                 contactFields.sort { ContactFieldKind.allCases.firstIndex(of: $0.kind)! < ContactFieldKind.allCases.firstIndex(of: $1.kind)! }
             }
+        }
+
+        public var phoneLabel: PhoneLabel {
+            get { PhoneLabel(rawValue: phoneLabelRaw) ?? .mobile }
+            set { phoneLabelRaw = newValue.rawValue }
+        }
+
+        /// Every phone, primary first (empty values skipped). Privacy comes from each entry.
+        public var allPhones: [LabeledPhone] {
+            let primary = field(.phone)
+            let first = primary.isEmpty ? [] : [LabeledPhone(id: LabeledPhone.primaryID, label: phoneLabel,
+                                                             value: primary.value, privacy: primary.privacy)]
+            return first + additionalPhones.filter { !$0.isEmpty }
         }
 
         /// A user edit of one field's value (its privacy stays); queues the profile for sync.
@@ -178,6 +198,10 @@ extension MetlySchemaV1 {
         public var jobTitle: String
         public var company: String
         public var phone: String
+        /// Label of `phone` (Mobile by default). Added in 2.0.0.
+        public var phoneLabelRaw: String = PhoneLabel.mobile.rawValue
+        /// Extra phones after `phone` (work, home…). Added in 2.0.0.
+        public var additionalPhones: [LabeledPhone] = []
         public var email: String
         public var telegram: String
         public var website: String
@@ -210,6 +234,8 @@ extension MetlySchemaV1 {
             self.jobTitle = jobTitle
             self.company = company
             self.phone = ""
+            self.phoneLabelRaw = PhoneLabel.mobile.rawValue
+            self.additionalPhones = []
             self.email = ""
             self.telegram = ""
             self.website = ""
@@ -259,6 +285,23 @@ extension MetlySchemaV1 {
                 let value = value(for: kind)
                 return value.isEmpty ? nil : ContactField(kind: kind, value: value, privacy: .connections)
             }
+        }
+
+        public var phoneLabel: PhoneLabel {
+            get { PhoneLabel(rawValue: phoneLabelRaw) ?? .mobile }
+            set { phoneLabelRaw = newValue.rawValue }
+        }
+
+        /// Every phone, primary (`phone`) first, empty values skipped.
+        public var allPhones: [LabeledPhone] {
+            let first = phone.isEmpty ? [] : [LabeledPhone(id: LabeledPhone.primaryID, label: phoneLabel,
+                                                           value: phone, privacy: .connections)]
+            return first + additionalPhones.filter { !$0.isEmpty }
+        }
+
+        /// The number most likely to reach the person on a messenger (mobile first, then the primary).
+        public var mobilePhone: String? {
+            allPhones.first { $0.label == .mobile }?.value ?? allPhones.first?.value
         }
 
         public var openFollowUp: FollowUp? {
@@ -403,6 +446,7 @@ extension MetlySchemaV1 {
 }
 
 public enum MetlyMigrationPlan: SchemaMigrationPlan {
-    public static var schemas: [any VersionedSchema.Type] { [MetlySchemaV1.self] }
-    public static var stages: [MigrationStage] { [] }
+    public static var schemas: [any VersionedSchema.Type] { [MetlySchemaV1.self, MetlySchemaV2.self] }
+    /// 1 → 2 only adds attributes with defaults, so SwiftData migrates it in place.
+    public static var stages: [MigrationStage] { [.lightweight(fromVersion: MetlySchemaV1.self, toVersion: MetlySchemaV2.self)] }
 }

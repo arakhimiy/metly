@@ -19,6 +19,28 @@ public struct ContactField: Codable, Hashable, Sendable, Identifiable {
     public static var defaults: [ContactField] { ContactFieldKind.allCases.map { ContactField(kind: $0) } }
 }
 
+/// One phone number with its label (Mobile / Work / Home / Other) and privacy.
+/// The primary phone stays in `ContactField(.phone)`; these are the extra ones (schema 2.0.0).
+public struct LabeledPhone: Codable, Hashable, Sendable, Identifiable {
+    public var id: UUID
+    public var label: PhoneLabel
+    public var value: String
+    public var privacy: FieldPrivacy
+
+    /// Stable id used when the primary phone is presented as a `LabeledPhone` (`allPhones`).
+    public static let primaryID = UUID(uuidString: "00000000-0000-0000-0000-00000000F001")!
+
+    public init(id: UUID = UUID(), label: PhoneLabel = .work, value: String = "", privacy: FieldPrivacy = .connections) {
+        self.id = id
+        self.label = label
+        self.value = value
+        self.privacy = privacy
+    }
+
+    public var isEmpty: Bool { value.trimmingCharacters(in: .whitespaces).isEmpty }
+    public var isPrimary: Bool { id == Self.primaryID }
+}
+
 /// Everything about how a card looks. Stored on `Card` and sent to the server as-is.
 public struct CardDesign: Codable, Hashable, Sendable {
     public var template: CardTemplate
@@ -72,11 +94,18 @@ public struct CardFaceContent: Hashable, Sendable {
     public var logoData: Data?
     /// Non-empty, audience-allowed, design-visible fields in display order (density is applied by the renderer).
     public var fields: [ContactField]
+    /// Extra phones (after the primary one in `fields`), already filtered for the audience.
+    public var additionalPhones: [LabeledPhone]
+    /// Label of the primary phone in `fields`.
+    public var phoneLabel: PhoneLabel
     /// What the QR encodes (card URL, or a vCard string for offline QR).
     public var qrPayload: String
 
     public init(fullName: String, jobTitle: String = "", company: String = "", photoData: Data? = nil,
-                logoData: Data? = nil, fields: [ContactField] = [], qrPayload: String = "") {
+                logoData: Data? = nil, fields: [ContactField] = [], qrPayload: String = "",
+                additionalPhones: [LabeledPhone] = [], phoneLabel: PhoneLabel = .mobile) {
+        self.additionalPhones = additionalPhones
+        self.phoneLabel = phoneLabel
         self.fullName = fullName
         self.jobTitle = jobTitle
         self.company = company

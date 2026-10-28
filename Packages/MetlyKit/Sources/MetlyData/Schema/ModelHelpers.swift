@@ -23,7 +23,10 @@ public extension Card {
             logoData: profile.logoData,
             fields: fields,
             // Unpublished cards have no link yet: never encode a fake card URL (CardKit falls back to the site).
-            qrPayload: qrPayload ?? url?.absoluteString ?? ""
+            qrPayload: qrPayload ?? url?.absoluteString ?? "",
+            additionalPhones: design.visibleFields.contains(.phone)
+                ? profile.additionalPhones.filter { !$0.isEmpty && audience.allows($0.privacy) } : [],
+            phoneLabel: profile.phoneLabel
         )
     }
 }

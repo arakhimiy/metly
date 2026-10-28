@@ -98,9 +98,16 @@ public struct PaperCardDraft: Hashable, Sendable {
     public var company: String
     public var fields: [ContactField]
     public var imageData: Data?
+    /// Label of the phone in `fields` (OCR reads "моб.", "Tel (office)", "ish"…).
+    public var phoneLabel: PhoneLabel
+    /// More numbers printed on the card (office, home, second mobile…).
+    public var additionalPhones: [LabeledPhone]
 
     public init(fullName: String = "", jobTitle: String = "", company: String = "",
-                fields: [ContactField] = [], imageData: Data? = nil) {
+                fields: [ContactField] = [], imageData: Data? = nil,
+                phoneLabel: PhoneLabel = .mobile, additionalPhones: [LabeledPhone] = []) {
+        self.phoneLabel = phoneLabel
+        self.additionalPhones = additionalPhones
         self.fullName = fullName
         self.jobTitle = jobTitle
         self.company = company
