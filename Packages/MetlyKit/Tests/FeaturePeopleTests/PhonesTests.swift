@@ -62,7 +62,7 @@ struct PhonesTests {
         web.phoneLabel = .mobile
         web.additionalPhones = [LabeledPhone(label: .work, value: "+998 71 200 00 00")]
 
-        ShareBackMerger.mergePhones(from: web, into: justMet)
+        ShareBackMerger.merge(web, into: justMet, in: context)
 
         #expect(justMet.allPhones.map(\.labeledValue) == ["Mobile · +998 90 111 22 33", "Work · +998 71 200 00 00"])
         #expect(justMet.additionalPhones.allSatisfy { !$0.isPrimary })
@@ -75,14 +75,14 @@ struct PhonesTests {
         web.phoneLabel = .work
         web.additionalPhones = [LabeledPhone(label: .mobile, value: "+998 90 111 22 33")]
 
-        ShareBackMerger.mergePhones(from: web, into: justMet)
+        ShareBackMerger.merge(web, into: justMet, in: context)
 
         #expect(justMet.phone == "+998 71 200 00 00")
         #expect(justMet.phoneLabel == .work)
         #expect(justMet.additionalPhones.map(\.value) == ["+998 90 111 22 33"])
     }
 
-    /// The DTO used by Undo doesn't carry phone labels / extra numbers yet: the snapshot must.
+    /// Undo re-creates a hard-deleted person from its DTO: labels and extra numbers must come back too.
     @Test func undoAfterAHardDeleteKeepsEveryNumber() throws {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, phone: "+998 71 200 00 00")

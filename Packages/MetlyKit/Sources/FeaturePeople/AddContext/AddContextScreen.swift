@@ -1,6 +1,7 @@
 import MetlyCapture
 import MetlyCore
 import MetlyData
+import MetlyNetworking
 import SwiftData
 import SwiftUI
 
@@ -87,7 +88,8 @@ struct AddContextScreen: View {
         guard loadedID != person.id else { return }
         let isFirstCapture = person.note.isEmpty && person.tags.isEmpty
         draft = isFirstCapture ? .capture(for: person, in: modelContext) : CaptureDraft(editing: person)
-        contactInfo = ContactInfoDraft(connection: person)
+        contactInfo = ContactInfoDraft(connection: person, maxAdditionalPhones: LabeledPhone.maxAdditional,
+                                       maxPhoneLength: LabeledPhone.maxValueLength)
         loadedID = person.id
     }
 

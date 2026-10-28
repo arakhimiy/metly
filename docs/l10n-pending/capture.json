@@ -95,13 +95,13 @@
     "uz": "%@ uchun Telegram foydalanuvchi nomi ham, mobil raqam ham saqlanmagan.",
     "ru": "%@: не сохранены ни имя пользователя Telegram, ни мобильный номер."
   },
-  "Mobile": {
-    "uz": "Mobil",
-    "ru": "Мобильный"
-  },
   "Phone Numbers": {
     "uz": "Telefon raqamlari",
     "ru": "Номера телефонов"
+  },
+  "You can save up to %lld phone numbers.": {
+    "uz": "Ko‘pi bilan %lld ta telefon raqamini saqlash mumkin.",
+    "ru": "Можно сохранить не больше %lld номеров телефона."
   },
   "Add Phone": {
     "uz": "Telefon qo‘shish",

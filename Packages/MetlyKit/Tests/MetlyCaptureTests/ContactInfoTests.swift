@@ -45,7 +45,7 @@ struct ContactInfoTests {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, email: "k@uzum.uz", phone: "+998 90 123 45 67")
         person.additionalPhones = [LabeledPhone(label: .work, value: "+998 71 200 00 00")]
-        let draft = ContactInfoDraft(connection: person)
+        let draft = ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40)
         #expect(draft.phones.map(\.label) == [.mobile, .work])
         #expect(draft.phones.first?.isPrimary == true)
         #expect(draft.email == "k@uzum.uz")
@@ -72,7 +72,7 @@ struct ContactInfoTests {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, phone: "+998 90 123 45 67")
         person.syncState = .synced
-        var draft = ContactInfoDraft(connection: person)
+        var draft = ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40)
         draft.phones[0].label = .work
         let added = draft.addPhone()
         draft.phones[draft.phones.firstIndex { $0.id == added }!].value = "  +998   99 000 00 00 "
@@ -92,7 +92,7 @@ struct ContactInfoTests {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, phone: "+998 90 123 45 67")
         person.additionalPhones = [LabeledPhone(label: .work, value: "+998 71 200 00 00")]
-        var draft = ContactInfoDraft(connection: person)
+        var draft = ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40)
         draft.removePhone(id: LabeledPhone.primaryID)
         draft.apply(to: person)
         #expect(person.phone == "+998 71 200 00 00")
@@ -100,7 +100,7 @@ struct ContactInfoTests {
         #expect(person.additionalPhones.isEmpty)
         #expect(person.allPhones.map(\.labeledValue) == ["Work · +998 71 200 00 00"])
 
-        var cleared = ContactInfoDraft(connection: person)
+        var cleared = ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40)
         cleared.phones.removeAll()
         cleared.apply(to: person)
         #expect(person.phone.isEmpty)
@@ -122,8 +122,26 @@ struct ContactInfoTests {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, email: "k@uzum.uz", phone: "+998 90 123 45 67")
         person.syncState = .synced
-        #expect(!ContactInfoDraft(connection: person).apply(to: person))
+        #expect(!ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40).apply(to: person))
         #expect(person.syncState == .synced)
+    }
+
+    @Test func phonesStayWithinTheServerLimits() {
+        var draft = ContactInfoDraft(phones: [LabeledPhone(id: LabeledPhone.primaryID, label: .mobile, value: "90 123 45 67")],
+                                     maxAdditionalPhones: 2, maxPhoneLength: 12)
+        #expect(draft.maxPhones == 3)
+        #expect(draft.addPhone() != nil)
+        #expect(draft.addPhone() != nil)
+        #expect(!draft.canAddPhone)
+        #expect(draft.addPhone() == nil)
+        #expect(draft.phones.count == 3)
+        draft.phones[1].value = "+998 71 200 00 00 доб. 123"
+        draft.phones[2].value = "66 233 00 00"
+        #expect(draft.savedPhones.map(\.value) == ["90 123 45 67", "+998 71 200", "66 233 00 00"])
+
+        let unlimited = ContactInfoDraft()
+        #expect(unlimited.maxPhones == .max)
+        #expect(unlimited.canAddPhone)
     }
 
     @Test func theDraftSuggestsAChannelFromItsValues() {

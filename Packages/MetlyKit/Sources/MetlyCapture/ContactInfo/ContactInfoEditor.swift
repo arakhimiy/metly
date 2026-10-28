@@ -23,13 +23,19 @@ public struct ContactInfoEditor: View {
     public var body: some View {
         Section {
             ForEach($draft.phones) { $phone in
-                PhoneEditRow(phone: $phone) { delete(phone.id) }
+                PhoneEditRow(phone: $phone, maxLength: draft.maxPhoneLength) { delete(phone.id) }
                     .focused($focusedPhone, equals: phone.id)
             }
             .onDelete { draft.removePhones(atOffsets: $0) }
-            Button("Add Phone", systemImage: "plus.circle.fill", action: addPhone)
+            if draft.canAddPhone {
+                Button("Add Phone", systemImage: "plus.circle.fill", action: addPhone)
+            }
         } header: {
             Text("Phone Numbers")
+        } footer: {
+            if !draft.canAddPhone {
+                Text("You can save up to \(draft.maxPhones) phone numbers.")
+            }
         }
         .sensoryFeedback(.selection, trigger: draft.phones.map(\.label))
 
@@ -55,6 +61,7 @@ public struct ContactInfoEditor: View {
 /// − · Mobile ⌃⌄ · number — like Contacts' edit mode.
 private struct PhoneEditRow: View {
     @Binding var phone: LabeledPhone
+    let maxLength: Int
     let onDelete: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -90,6 +97,9 @@ private struct PhoneEditRow: View {
                     .keyboardType(.phonePad)
                     .textContentType(.telephoneNumber)
                     .accessibilityLabel(Text("\(phone.label.title) Number"))
+                    .onChange(of: phone.value) { _, value in
+                        if value.count > maxLength { phone.value = String(value.prefix(maxLength)) }
+                    }
             }
         }
         .listRowInsets(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 16))
@@ -118,7 +128,7 @@ private struct ContactValueRow: View {
     @Previewable @State var draft = ContactInfoDraft(
         phones: [LabeledPhone(id: LabeledPhone.primaryID, label: .mobile, value: "+998 90 123 45 67"),
                  LabeledPhone(label: .work, value: "+998 71 200 00 00")],
-        email: "kamila@uzum.uz", telegram: "@kamila.y")
+        email: "kamila@uzum.uz", telegram: "@kamila.y", maxAdditionalPhones: 5, maxPhoneLength: 40)
     NavigationStack {
         Form { ContactInfoEditor(draft: $draft) }
             .navigationTitle("Edit Context")
@@ -127,7 +137,7 @@ private struct ContactValueRow: View {
 }
 
 #Preview("Contact Info · empty") {
-    @Previewable @State var draft = ContactInfoDraft()
+    @Previewable @State var draft = ContactInfoDraft(maxAdditionalPhones: 5, maxPhoneLength: 40)
     NavigationStack {
         Form { ContactInfoEditor(draft: $draft) }
     }

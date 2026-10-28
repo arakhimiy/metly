@@ -1,5 +1,4 @@
 import Foundation
-import MetlyCore
 import MetlyData
 import MetlyNetworking
 import SwiftData
@@ -9,17 +8,12 @@ import SwiftData
 struct RemovedPerson {
     private let person: ConnectionDTO
     private let avatarData: Data?
-    /// Kept here too: phone labels and extra numbers (schema 2.0.0) aren't part of the DTO yet.
-    private let phoneLabel: PhoneLabel
-    private let additionalPhones: [LabeledPhone]
     /// Every follow-up the person had (open ones are tombstoned by Remove; done ones go with the cascade).
     private let followUps: [FollowUpDTO]
 
     init(_ person: Connection) {
         self.person = person.dto
         avatarData = person.avatarData
-        phoneLabel = person.phoneLabel
-        additionalPhones = person.additionalPhones
         followUps = person.followUps.filter { !$0.isDeleted }.map(\.dto)
     }
 
@@ -35,8 +29,6 @@ struct RemovedPerson {
             dto.deletedAt = nil
             restored = Connection(dto: dto, in: context)
             restored.avatarData = avatarData
-            restored.phoneLabel = phoneLabel
-            restored.additionalPhones = additionalPhones
             restored.markChanged()
         }
 

@@ -12,20 +12,33 @@ public struct ContactInfoDraft: Equatable, Sendable {
     public var telegram: String
     public var website: String
     public var linkedin: String
+    /// Server limits — pass MetlyNetworking's `LabeledPhone.maxAdditional` / `.maxValueLength`
+    /// (MetlyCapture doesn't depend on MetlyNetworking).
+    public let maxAdditionalPhones: Int
+    public let maxPhoneLength: Int
 
     public init(phones: [LabeledPhone] = [], email: String = "", telegram: String = "", website: String = "",
-                linkedin: String = "") {
+                linkedin: String = "", maxAdditionalPhones: Int = .max, maxPhoneLength: Int = .max) {
         self.phones = phones
         self.email = email
         self.telegram = telegram
         self.website = website
         self.linkedin = linkedin
+        self.maxAdditionalPhones = max(maxAdditionalPhones, 0)
+        self.maxPhoneLength = max(maxPhoneLength, 1)
     }
 
-    public init(connection: Connection) {
+    public init(connection: Connection, maxAdditionalPhones: Int, maxPhoneLength: Int) {
         self.init(phones: connection.allPhones, email: connection.email, telegram: connection.telegram,
-                  website: connection.website, linkedin: connection.linkedin)
+                  website: connection.website, linkedin: connection.linkedin,
+                  maxAdditionalPhones: maxAdditionalPhones, maxPhoneLength: maxPhoneLength)
     }
+
+    /// Most numbers a person can have: the primary one plus `maxAdditionalPhones`.
+    public var maxPhones: Int { maxAdditionalPhones < .max ? maxAdditionalPhones + 1 : .max }
+
+    /// Whether "Add Phone" is offered.
+    public var canAddPhone: Bool { phones.count < maxPhones }
 
     /// Label for the next added number: the first of Mobile, Work, Home not used yet, else Other.
     public var nextPhoneLabel: PhoneLabel {
@@ -33,9 +46,10 @@ public struct ContactInfoDraft: Equatable, Sendable {
         return PhoneLabel.allCases.first { !used.contains($0) } ?? .other
     }
 
-    /// Adds an empty number row and returns its id (to focus it).
+    /// Adds an empty number row and returns its id (to focus it); nil at the limit.
     @discardableResult
-    public mutating func addPhone() -> UUID {
+    public mutating func addPhone() -> UUID? {
+        guard canAddPhone else { return nil }
         let phone = LabeledPhone(label: nextPhoneLabel)
         phones.append(phone)
         return phone.id
@@ -49,15 +63,17 @@ public struct ContactInfoDraft: Equatable, Sendable {
         phones = phones.enumerated().filter { !offsets.contains($0.offset) }.map(\.element)
     }
 
-    /// Cleaned phones as they'll be saved: trimmed, single spaces, empty rows dropped.
+    /// Cleaned phones as they'll be saved: trimmed, single spaces, empty rows dropped, within the limits.
     public var savedPhones: [LabeledPhone] {
-        phones.compactMap { phone in
-            let value = ContactFieldInput.normalized(phone.value, for: .phone)
+        let cleaned = phones.compactMap { phone -> LabeledPhone? in
+            let value = String(ContactFieldInput.normalized(phone.value, for: .phone).prefix(maxPhoneLength))
+                .trimmingCharacters(in: .whitespaces)
             guard !value.isEmpty else { return nil }
-            var cleaned = phone
-            cleaned.value = value
-            return cleaned
+            var saved = phone
+            saved.value = value
+            return saved
         }
+        return Array(cleaned.prefix(maxPhones))
     }
 
     /// Follow-up channel these values suggest (Telegram by username or mobile number › Email › Call).
