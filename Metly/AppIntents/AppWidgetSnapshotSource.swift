@@ -54,6 +54,8 @@ final class AppWidgetSnapshotSource: WidgetSnapshotSource {
                 photoData: profile.photoData,
                 logoData: profile.logoData,
                 contactFields: profile.contactFields,
+                phoneLabel: profile.phoneLabel,
+                additionalPhones: profile.additionalPhones,
                 linksPaused: profile.linksPaused
             ),
             cards: cards.map {
