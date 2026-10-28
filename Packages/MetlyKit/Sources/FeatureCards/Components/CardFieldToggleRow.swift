@@ -1,5 +1,6 @@
 import MetlyCore
 import MetlyDesign
+import MetlyNetworking
 import SwiftUI
 
 /// "Show on This Card" row: field icon, name + privacy badge, "{value} · {privacy}" and a switch.
@@ -84,9 +85,9 @@ struct CardFieldToggleRow: View {
         if !text.trimmingCharacters(in: .whitespaces).isEmpty, !isOn { isOn = true }
     }
 
-    /// Server limits: every phone number 40 characters, other values 200.
+    /// Server limits: every phone number 40 characters (like the extra numbers), other values 200.
     static func maxLength(for kind: ContactFieldKind) -> Int {
-        kind == .phone ? 40 : ContactFieldInput.maxLength
+        kind == .phone ? LabeledPhone.maxValueLength : ContactFieldInput.maxLength
     }
 
     private var subtitle: String {

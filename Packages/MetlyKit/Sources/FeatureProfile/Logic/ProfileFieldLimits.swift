@@ -1,5 +1,6 @@
 import Foundation
 import MetlyCore
+import MetlyNetworking
 
 /// Server limits for the synced profile (`docs/api/openapi.yaml` → Profile, ContactField, LabeledPhone).
 /// A longer value gets the whole profile rejected by sync push, and a rejected profile isn't sent
@@ -10,10 +11,10 @@ nonisolated enum ProfileFieldLimits {
     static let text = 80
     /// Email, Telegram, website, LinkedIn.
     static let contactValue = 200
-    /// Every phone number, the primary one and the extras.
-    static let phone = 40
+    /// Every phone number: the extras' server limit, applied to the primary one too.
+    static let phone = LabeledPhone.maxValueLength
     /// Extra numbers after the primary phone.
-    static let maxAdditionalPhones = 5
+    static let maxAdditionalPhones = LabeledPhone.maxAdditional
 
     static func limit(for kind: ContactFieldKind) -> Int {
         kind == .phone ? phone : contactValue

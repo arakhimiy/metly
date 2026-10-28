@@ -1,5 +1,6 @@
 import Foundation
 import MetlyCore
+import MetlyNetworking
 
 /// Editable values of SETUP_PROFILE ("About You") plus validation. Pure value type, unit-tested.
 nonisolated struct SetupProfileForm: Equatable, Sendable {
@@ -74,7 +75,7 @@ nonisolated struct SetupProfileForm: Equatable, Sendable {
     static let maxTextLength = 80
     static let maxContactLength = 200
     /// Phone numbers (schema 2.0.0: every number, primary and extra, is capped at 40).
-    static let maxPhoneLength = 40
+    static let maxPhoneLength = LabeledPhone.maxValueLength
 
     /// Values written to the profile: trimmed and capped at the server limits.
     var profileFullName: String { fullName.trimmed.capped(at: Self.maxTextLength) }
