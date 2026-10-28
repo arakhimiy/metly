@@ -43,6 +43,27 @@ const input = (overrides: { deletedAt?: Date | null; slug?: string | null; jobTi
 });
 
 describe('buildPassJson', () => {
+  it('lists Public extra phones after the primary phone on the back', () => {
+    const base = input();
+    const pass = buildPassJson({
+      ...base,
+      profile: {
+        ...base.profile,
+        additionalPhones: [
+          { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a11', label: 'work', value: '+998 71 200 00 00', privacy: 'public' },
+          { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a12', label: 'home', value: '+998 71 300 00 00', privacy: 'connections' },
+        ],
+      },
+    });
+    const back = (pass.generic as Record<string, { key: string; label?: string; value: string }[]>).backFields!;
+    expect(back.slice(0, 3).map((f) => [f.key, f.label, f.value])).toEqual([
+      ['back-phone', 'Phone', '+998901234567'],
+      ['back-phone-1', 'Work', '+998 71 200 00 00'],
+      ['back-website', 'Website', 'https://kamola.uz'],
+    ]);
+    expect(JSON.stringify(pass)).not.toContain('+998 71 300 00 00');
+  });
+
   it('builds a generic pass with identity, web service and token', () => {
     const pass = buildPassJson(input());
     expect(pass).toMatchObject({

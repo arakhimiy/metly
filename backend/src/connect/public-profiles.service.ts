@@ -3,6 +3,7 @@ import { ApiError } from '../common/api-error';
 import { ENV, type Env } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
 import { cardUrl } from '../records/mappers';
+import { storedPhoneLabel, visiblePhones } from '../records/phones';
 import { firstName, visibleFields } from '../records/snapshot';
 import type { CardDesign } from '../records/wire';
 import { hasBlocked } from './blocks';
@@ -55,6 +56,7 @@ export class PublicProfilesService {
         ]);
     const connected = ownerSide !== null;
     const design = card.design as CardDesign;
+    const audience = isSelf || connected ? 'connections' : 'public';
     return {
       slug,
       status: 'available',
@@ -69,7 +71,9 @@ export class PublicProfilesService {
         ...(profile.photoUrl ? { photoUrl: profile.photoUrl } : {}),
       },
       design,
-      fields: visibleFields(profile, design, isSelf || connected ? 'connections' : 'public'),
+      fields: visibleFields(profile, design, audience),
+      phoneLabel: storedPhoneLabel(profile.phoneLabel),
+      additionalPhones: visiblePhones(profile, design, audience),
       // isConnected: the server-side accepted connect (their Connections fields are visible).
       // connectionId: the viewer's own live connection to the owner, so the app finds it in People.
       viewer: { isSelf, isConnected: connected, ...(viewerSide ? { connectionId: viewerSide.id } : {}) },

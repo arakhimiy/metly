@@ -13,9 +13,11 @@ import { PushService } from '../push/push.service';
 import { RealtimeService } from '../realtime/realtime.service';
 import { connectionToWire } from '../records/mappers';
 import { Effects, RecordsService } from '../records/records.service';
+import { mergePhones, type PhoneSet, storedPhoneLabel, storedPhones, visiblePhones } from '../records/phones';
 import { pathUuid } from '../records/rest';
 import { cardSnapshot, firstName } from '../records/snapshot';
 import {
+  type CardDesign,
   ConnectMethod,
   type ConnectionSource,
   type ContactField,
@@ -470,6 +472,16 @@ export class ConnectService {
     // Accepted and mutual: the other side's Connections-level fields.
     const snapshot = remoteCard && remoteProfile ? cardSnapshot(remoteCard, remoteProfile, 'connections', this.env.WEB_BASE_URL) : null;
     const contact = contactValues(snapshot?.fields ?? []);
+    // Their phone labels and extra phones too (the snapshot carries neither): Connections-level, like the fields.
+    const theirPhones =
+      remoteCard && remoteProfile
+        ? {
+            phone: contact.phone ?? '',
+            phoneLabel: storedPhoneLabel(remoteProfile.phoneLabel),
+            additionalPhones: visiblePhones(remoteProfile, remoteCard.design as CardDesign, 'connections'),
+          }
+        : null;
+    const withTheirPhones = (mine: PhoneSet) => (theirPhones ? mergePhones(mine, theirPhones) : { ...mine, changed: false });
     const context = await this.meetingContext(tx, ownerId, request, now, side.isRequester);
     const seq = await this.bump(tx, effects, ownerId);
 
@@ -484,11 +496,19 @@ export class ConnectService {
       const previousContext = (existing.context ?? {}) as { eventName?: string | null };
       const previousMeetings = (existing.previousMeetings as unknown[] | null) ?? [];
       const moved = (previousContext.eventName ?? null) !== context.eventName ? [existing.context, ...previousMeetings] : previousMeetings;
+      const phones = withTheirPhones({
+        phone: existing.phone,
+        phoneLabel: storedPhoneLabel(existing.phoneLabel),
+        additionalPhones: storedPhones(existing.additionalPhones),
+      });
       return tx.connection.update({
         where: { id: existing.id },
         data: {
           ...(remoteProfile ? { fullName: remoteProfile.fullName, jobTitle: remoteProfile.jobTitle, company: remoteProfile.company } : {}),
           ...fill,
+          ...(phones.changed
+            ? { phone: phones.phone, phoneLabel: phones.phoneLabel, additionalPhones: phones.additionalPhones as unknown as Prisma.InputJsonValue }
+            : {}),
           ...(remoteProfile?.photoUrl ? { avatarUrl: remoteProfile.photoUrl } : {}),
           ...(snapshot ? { theirCard: snapshot as unknown as Prisma.InputJsonValue } : {}),
           mySharedCardId: side.mySharedCardId,
@@ -501,6 +521,7 @@ export class ConnectService {
         },
       });
     }
+    const phones = withTheirPhones({ phone: '', phoneLabel: 'mobile', additionalPhones: [] });
     return tx.connection.create({
       data: {
         id: randomUUID(),
@@ -509,7 +530,9 @@ export class ConnectService {
         fullName: remoteProfile?.fullName ?? 'Tanishly user',
         jobTitle: remoteProfile?.jobTitle ?? '',
         company: remoteProfile?.company ?? '',
-        phone: contact.phone ?? '',
+        phone: phones.phone,
+        phoneLabel: phones.phoneLabel,
+        additionalPhones: phones.additionalPhones as unknown as Prisma.InputJsonValue,
         email: contact.email ?? '',
         telegram: contact.telegram ?? '',
         website: contact.website ?? '',

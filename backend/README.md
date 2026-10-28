@@ -68,6 +68,9 @@ src/
 - Privacy: public surfaces show `Public ∩ visibleFields`; Connections fields only for an accepted,
   mutual connect (`connections.is_mutual`); Private never leaves the owner (`records/snapshot.ts`).
 - Responses never contain empty-string URLs (Swift `URL` decoding rejects them) — omit instead.
+- Fields added after v1 (labelled phones: `phoneLabel`, `additionalPhones`) are optional on write: an
+  absent key parses to `undefined`, so Prisma keeps the stored value on update and the column default on
+  create — older app builds never wipe them. Phone visibility/merging lives in `records/phones.ts`.
 
 ### Background jobs
 

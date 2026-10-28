@@ -10,6 +10,7 @@ import {
   type NotificationPrefs,
   type PrivacySettings,
 } from './wire';
+import { storedPhoneLabel, storedPhones } from './phones';
 
 // Database rows → wire JSON (docs/api/openapi.yaml). Optional members are omitted when null, except
 // where the schema requires the key. URLs are never empty strings: Swift's URL decoding rejects them.
@@ -61,6 +62,8 @@ export function profileToWire(p: Profile): WireRecord {
     photoUrl: p.photoUrl,
     logoUrl: p.logoUrl,
     contactFields: p.contactFields as ContactField[],
+    phoneLabel: storedPhoneLabel(p.phoneLabel),
+    additionalPhones: storedPhones(p.additionalPhones),
     defaultCardId: p.defaultCardId,
     linksPaused: p.linksPaused,
     notificationPrefs: { ...DEFAULT_NOTIFICATION_PREFS, ...(p.notificationPrefs as NotificationPrefs) },
@@ -125,6 +128,8 @@ export function connectionToWire(c: Connection): WireRecord {
     jobTitle: c.jobTitle,
     company: c.company,
     phone: c.phone,
+    phoneLabel: storedPhoneLabel(c.phoneLabel),
+    additionalPhones: storedPhones(c.additionalPhones),
     email: c.email,
     telegram: c.telegram,
     website: c.website,

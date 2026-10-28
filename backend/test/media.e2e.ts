@@ -282,7 +282,7 @@ describe('media with storage', () => {
     expect(JSON.parse(files.get('followups.json')!.toString('utf8'))[0].id).toBe(f.id);
     expect(JSON.parse(files.get('events.json')!.toString('utf8'))[0].id).toBe(e.id);
     const csv = files.get('connections.csv')!.toString('utf8').replace(/^﻿/, '').split('\r\n');
-    expect(csv[0]).toBe('name,title,company,phone,email,telegram,website,linkedin,met at,event,place,city,tags,note');
+    expect(csv[0]).toBe('name,title,company,phone,other phones,email,telegram,website,linkedin,met at,event,place,city,tags,note');
     expect(csv[1]).toContain('Sardor Rashidov,CTO,Acme,+998907654321');
     expect(csv[1]).toContain('ICT Week');
     expect(csv[1]).toContain('"Wants a demo, ""Q4"""');

@@ -1,4 +1,5 @@
-import type { ContactField } from '../records/wire';
+import { VCARD_TEL_TYPE } from '../records/phones';
+import type { ContactField, LabeledPhone, PhoneLabel } from '../records/wire';
 import { safeHttpUrl } from './html';
 import { contactAction } from './contact-links';
 
@@ -47,6 +48,10 @@ export interface VCardInput {
   company: string;
   /** Already filtered to Public ∩ visibleFields. */
   fields: ContactField[];
+  /** Label of the phone in `fields` (default mobile → CELL). */
+  phoneLabel?: PhoneLabel;
+  /** Extra phones, already filtered like `fields`; written right after the primary phone. */
+  additionalPhones?: LabeledPhone[];
   /** The card page (labelled "Tanishly"). */
   url?: string | null;
   photoUrl?: string | null;
@@ -72,12 +77,20 @@ export function buildVCard(input: VCardInput): string {
   const title = input.jobTitle.trim();
   if (title) lines.push(`TITLE:${escapeVCardText(title)}`);
 
+  // Phones first: the primary (its label decides the TEL type), then the extra ones.
+  const phones = [
+    ...input.fields.filter((f) => f.kind === 'phone').map((f) => ({ value: f.value, label: input.phoneLabel ?? 'mobile' })),
+    ...(input.additionalPhones ?? []),
+  ];
+  for (const phone of phones) {
+    const value = phone.value.trim();
+    if (value) lines.push(`TEL;TYPE=${VCARD_TEL_TYPE[phone.label]}:${escapeVCardText(value)}`);
+  }
   for (const field of input.fields) {
     const action = contactAction(field);
     if (!action) continue;
     switch (field.kind) {
       case 'phone':
-        lines.push(`TEL;TYPE=CELL:${escapeVCardText(field.value.trim())}`);
         break;
       case 'email':
         lines.push(`EMAIL;TYPE=INTERNET:${escapeVCardText(field.value.trim())}`);

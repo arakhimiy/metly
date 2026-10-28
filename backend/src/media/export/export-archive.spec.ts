@@ -26,6 +26,10 @@ describe('connectionsCsv', () => {
         jobTitle: 'CTO',
         company: 'Acme',
         phone: '+998907654321',
+        additionalPhones: [
+          { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a11', label: 'work', value: '+998 71 200 00 00', privacy: 'connections' },
+          { id: '6f1c2c33-0f4b-4b44-9d3c-1a6a2e0e8a12', label: 'home', value: '+998 71 300 00 00', privacy: 'connections' },
+        ],
         email: 's@acme.uz',
         telegram: '@sardor',
         website: '',
@@ -38,7 +42,7 @@ describe('connectionsCsv', () => {
     const lines = csv.replace(/^﻿/, '').trimEnd().split('\r\n');
     expect(lines[0]).toBe(CONNECTIONS_CSV_HEADER.join(','));
     expect(lines[1]).toBe(
-      `Sardor,CTO,Acme,+998907654321,s@acme.uz,'@sardor,,,2026-09-26T10:00:00.000Z,ICT Week,Expo,Tashkent,investor; ai,"Met at the booth, ""great"" chat"`,
+      `Sardor,CTO,Acme,+998907654321,work: +998 71 200 00 00; home: +998 71 300 00 00,s@acme.uz,'@sardor,,,2026-09-26T10:00:00.000Z,ICT Week,Expo,Tashkent,investor; ai,"Met at the booth, ""great"" chat"`,
     );
   });
 });
