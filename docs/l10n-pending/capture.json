@@ -1,0 +1,134 @@
+{
+  "Voice Note Language": {
+    "uz": "Ovozli izoh tili",
+    "ru": "Язык голосовых заметок"
+  },
+  "Uzbek voice notes aren’t available yet.": {
+    "uz": "O‘zbek tilida ovozli izohlar hozircha mavjud emas.",
+    "ru": "Голосовые заметки на узбекском пока недоступны."
+  },
+  "Preparing Dictation": {
+    "uz": "Diktovka tayyorlanmoqda",
+    "ru": "Подготовка диктовки"
+  },
+  "Cancel Dictation": {
+    "uz": "Diktovkani bekor qilish",
+    "ru": "Отменить диктовку"
+  },
+  "Downloading the Russian speech model…": {
+    "uz": "Rus tilidagi nutq modeli yuklab olinmoqda…",
+    "ru": "Загружается модель русской речи…"
+  },
+  "Downloading the English speech model…": {
+    "uz": "Ingliz tilidagi nutq modeli yuklab olinmoqda…",
+    "ru": "Загружается модель английской речи…"
+  },
+  "The microphone couldn’t start. Try again.": {
+    "uz": "Mikrofonni ishga tushirib bo‘lmadi. Qayta urinib ko‘ring.",
+    "ru": "Не удалось включить микрофон. Попробуйте ещё раз."
+  },
+  "Russian Dictation Isn’t Set Up": {
+    "uz": "Rus tilida diktovka sozlanmagan",
+    "ru": "Русская диктовка не настроена"
+  },
+  "English Dictation Isn’t Set Up": {
+    "uz": "Ingliz tilida diktovka sozlanmagan",
+    "ru": "Английская диктовка не настроена"
+  },
+  "Voice notes are recognized on this iPhone, so iOS needs its Russian dictation model. Go to Settings › General › Keyboard › Dictation Languages and turn on Russian (add the Russian keyboard first if it isn’t listed), then try again.": {
+    "uz": "Ovozli izohlar shu iPhone’ning o‘zida aniqlanadi, shuning uchun iOS’ga rus tilidagi diktovka modeli kerak. Sozlamalar › Umumiy › Klaviatura › Diktovka tillari bo‘limida rus tilini yoqing (ro‘yxatda bo‘lmasa, avval rus klaviaturasini qo‘shing), so‘ng qayta urinib ko‘ring.",
+    "ru": "Голосовые заметки распознаются на самом iPhone, поэтому iOS нужна модель русской диктовки. Откройте Настройки › Основные › Клавиатура › Языки диктовки и включите русский (если его нет в списке, сначала добавьте русскую клавиатуру), затем попробуйте ещё раз."
+  },
+  "Voice notes are recognized on this iPhone, so iOS needs its English dictation model. Go to Settings › General › Keyboard › Dictation Languages and turn on English (add an English keyboard first if it isn’t listed), then try again.": {
+    "uz": "Ovozli izohlar shu iPhone’ning o‘zida aniqlanadi, shuning uchun iOS’ga ingliz tilidagi diktovka modeli kerak. Sozlamalar › Umumiy › Klaviatura › Diktovka tillari bo‘limida ingliz tilini yoqing (ro‘yxatda bo‘lmasa, avval inglizcha klaviaturani qo‘shing), so‘ng qayta urinib ko‘ring.",
+    "ru": "Голосовые заметки распознаются на самом iPhone, поэтому iOS нужна модель английской диктовки. Откройте Настройки › Основные › Клавиатура › Языки диктовки и включите английский (если его нет в списке, сначала добавьте английскую клавиатуру), затем попробуйте ещё раз."
+  },
+  "Download Didn’t Finish": {
+    "uz": "Yuklab olish tugallanmadi",
+    "ru": "Загрузка не завершилась"
+  },
+  "iOS couldn’t download the Russian speech model for voice notes. Check your internet connection and free storage, then try again.": {
+    "uz": "iOS ovozli izohlar uchun rus tilidagi nutq modelini yuklab ololmadi. Internet aloqasi va bo‘sh xotirani tekshirib, qayta urinib ko‘ring.",
+    "ru": "iOS не удалось загрузить модель русской речи для голосовых заметок. Проверьте подключение к интернету и свободное место, затем попробуйте ещё раз."
+  },
+  "iOS couldn’t download the English speech model for voice notes. Check your internet connection and free storage, then try again.": {
+    "uz": "iOS ovozli izohlar uchun ingliz tilidagi nutq modelini yuklab ololmadi. Internet aloqasi va bo‘sh xotirani tekshirib, qayta urinib ko‘ring.",
+    "ru": "iOS не удалось загрузить модель английской речи для голосовых заметок. Проверьте подключение к интернету и свободное место, затем попробуйте ещё раз."
+  },
+  "Russian dictation isn’t available right now. Try again in a moment.": {
+    "uz": "Rus tilida diktovka hozir ishlamayapti. Birozdan so‘ng qayta urinib ko‘ring.",
+    "ru": "Русская диктовка сейчас недоступна. Попробуйте чуть позже."
+  },
+  "English dictation isn’t available right now. Try again in a moment.": {
+    "uz": "Ingliz tilida diktovka hozir ishlamayapti. Birozdan so‘ng qayta urinib ko‘ring.",
+    "ru": "Английская диктовка сейчас недоступна. Попробуйте чуть позже."
+  },
+  "This iPhone can’t recognize Russian speech on-device. You can still type your note.": {
+    "uz": "Bu iPhone rus tilidagi nutqni qurilmaning o‘zida aniqlay olmaydi. Izohni qo‘lda yozishingiz mumkin.",
+    "ru": "Этот iPhone не может распознавать русскую речь на устройстве. Заметку можно ввести вручную."
+  },
+  "This iPhone can’t recognize English speech on-device. You can still type your note.": {
+    "uz": "Bu iPhone ingliz tilidagi nutqni qurilmaning o‘zida aniqlay olmaydi. Izohni qo‘lda yozishingiz mumkin.",
+    "ru": "Этот iPhone не может распознавать английскую речь на устройстве. Заметку можно ввести вручную."
+  },
+  "Opens Telegram by phone number. Telegram finds them only if their privacy settings allow it.": {
+    "uz": "Telegram telefon raqami orqali ochiladi. Telegram bu odamni faqat uning maxfiylik sozlamalari ruxsat bersa topadi.",
+    "ru": "Telegram откроется по номеру телефона. Telegram найдёт человека, только если это позволяют его настройки конфиденциальности."
+  },
+  "Message opens Telegram by phone number. Telegram finds them only if their privacy settings allow it.": {
+    "uz": "«Xabar» Telegramni telefon raqami orqali ochadi. Telegram bu odamni faqat uning maxfiylik sozlamalari ruxsat bersa topadi.",
+    "ru": "«Сообщение» откроет Telegram по номеру телефона. Telegram найдёт человека, только если это позволяют его настройки конфиденциальности."
+  },
+  "Opens the chat by phone number": {
+    "uz": "Chat telefon raqami orqali ochiladi",
+    "ru": "Откроет чат по номеру телефона"
+  },
+  "Opens Telegram by phone number": {
+    "uz": "Telegramni telefon raqami orqali ochadi",
+    "ru": "Открывает Telegram по номеру телефона"
+  },
+  "Messages": {
+    "uz": "Xabarlar",
+    "ru": "Сообщения"
+  },
+  "%@ has no Telegram username or mobile number saved.": {
+    "uz": "%@ uchun Telegram foydalanuvchi nomi ham, mobil raqam ham saqlanmagan.",
+    "ru": "%@: не сохранены ни имя пользователя Telegram, ни мобильный номер."
+  },
+  "Phone Numbers": {
+    "uz": "Telefon raqamlari",
+    "ru": "Номера телефонов"
+  },
+  "You can save up to %lld phone numbers.": {
+    "uz": "Ko‘pi bilan %lld ta telefon raqamini saqlash mumkin.",
+    "ru": "Можно сохранить не больше %lld номеров телефона."
+  },
+  "Add Phone": {
+    "uz": "Telefon qo‘shish",
+    "ru": "Добавить телефон"
+  },
+  "Delete %@ Number": {
+    "uz": "%@ raqamini o‘chirish",
+    "ru": "Удалить номер: %@"
+  },
+  "%@ Number": {
+    "uz": "%@ raqami",
+    "ru": "Номер: %@"
+  },
+  "Label": {
+    "uz": "Turi",
+    "ru": "Метка"
+  },
+  "Phone Label": {
+    "uz": "Raqam turi",
+    "ru": "Метка номера"
+  },
+  "Calls this number. Touch and hold to copy": {
+    "uz": "Shu raqamga qo‘ng‘iroq qiladi. Nusxalash uchun bosib turing",
+    "ru": "Звонит на этот номер. Коснитесь и удерживайте, чтобы скопировать"
+  },
+  "Add to Contacts saves every number with its label.": {
+    "uz": "«Kontaktlarga qo‘shish» har bir raqamni o‘z turi bilan saqlaydi.",
+    "ru": "«Добавить в Контакты» сохранит каждый номер с его меткой."
+  }
+}

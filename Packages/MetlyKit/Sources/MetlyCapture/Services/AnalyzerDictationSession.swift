@@ -5,7 +5,7 @@ import Speech
 /// iOS 26+ dictation with `SpeechAnalyzer`: long-form, fully on-device, no one-minute task limit.
 ///
 /// Uses `SpeechTranscriber` where the device and language support it, otherwise `DictationTranscriber`;
-/// the on-device model is downloaded through `AssetInventory` the first time (the form shows "preparing").
+/// the on-device model is downloaded through `AssetInventory` the first time (the form shows the progress).
 /// Microphone buffers are converted to the analyzer's format and streamed in; volatile results are
 /// replaced until a final result commits them (`TranscriptAccumulator`). Audio is never written anywhere.
 @available(iOS 26, *)
@@ -41,41 +41,75 @@ nonisolated final class AnalyzerDictationSession: DictationSession, @unchecked S
         self.transcriber = transcriber
     }
 
-    /// A session for `locale` (then its language, then US English), or nil when SpeechAnalyzer has no
-    /// model for it on this device — use `SpeechSession` then. Downloads the model if needed.
-    static func make(locale: Locale) async -> AnalyzerDictationSession? {
-        var candidates = [locale]
-        if let language = locale.language.languageCode?.identifier {
-            candidates.append(Locale(identifier: language))
-        }
-        candidates.append(Locale(identifier: "en-US"))
-
-        // "en_UZ", "en" and "en-US" often resolve to the same model: try each one once (offline, every
-        // failed attempt waits on the asset service).
-        var tried = Set<String>()
-        for candidate in candidates {
-            if SpeechTranscriber.isAvailable, let supported = await SpeechTranscriber.supportedLocale(equivalentTo: candidate),
-               tried.insert("speech:" + supported.identifier).inserted {
-                let transcriber = SpeechTranscriber(locale: supported, preset: .progressiveTranscription)
-                if await installModel(for: transcriber) { return AnalyzerDictationSession(.speech(transcriber)) }
-            }
-            if let supported = await DictationTranscriber.supportedLocale(equivalentTo: candidate),
-               tried.insert("dictation:" + supported.identifier).inserted {
-                let transcriber = DictationTranscriber(locale: supported, preset: .progressiveLongDictation)
-                if await installModel(for: transcriber) { return AnalyzerDictationSession(.dictation(transcriber)) }
-            }
-        }
-        return nil
+    enum Preparation: Sendable {
+        case ready(AnalyzerDictationSession)
+        /// SpeechAnalyzer has no model for the language on this device — try `SpeechSession`.
+        case unsupported
+        /// A model exists but the system couldn't download it (offline, no space).
+        case downloadFailed
     }
 
-    private static func installModel(for module: any SpeechModule) async -> Bool {
+    /// A session for exactly `locale` (never another language). The on-device model is downloaded by the
+    /// system through `AssetInventory` when it isn't installed yet; `progress` reports 0…1 while it does.
+    static func prepare(locale: Locale, progress: @escaping @Sendable (Double?) async -> Void) async -> Preparation {
+        var candidates: [Transcriber] = []
+        if SpeechTranscriber.isAvailable, let supported = await SpeechTranscriber.supportedLocale(equivalentTo: locale),
+           DictationLocale.isSameLanguage(supported, as: locale) {
+            candidates.append(.speech(SpeechTranscriber(locale: supported, preset: .progressiveTranscription)))
+        }
+        if let supported = await DictationTranscriber.supportedLocale(equivalentTo: locale),
+           DictationLocale.isSameLanguage(supported, as: locale) {
+            candidates.append(.dictation(DictationTranscriber(locale: supported, preset: .progressiveLongDictation)))
+        }
+
+        var downloadFailed = false
+        for candidate in candidates {
+            switch await installModel(for: candidate.module, locale: locale, progress: progress) {
+            case .installed: return .ready(AnalyzerDictationSession(candidate))
+            case .failed: downloadFailed = true
+            case .unsupported: continue
+            }
+        }
+        return downloadFailed ? .downloadFailed : .unsupported
+    }
+
+    private enum Installation { case installed, failed, unsupported }
+
+    private static func installModel(for module: any SpeechModule, locale: Locale,
+                                     progress: @escaping @Sendable (Double?) async -> Void) async -> Installation {
+        switch await AssetInventory.status(forModules: [module]) {
+        case .installed: return .installed
+        case .unsupported: return .unsupported
+        case .supported, .downloading: break
+        @unknown default: break
+        }
         do {
+            await makeRoomForReservation(of: locale)
             if let request = try await AssetInventory.assetInstallationRequest(supporting: [module]) {
+                await progress(request.progress.totalUnitCount > 0 ? request.progress.fractionCompleted : nil)
+                let reporter = Task {
+                    while !Task.isCancelled {
+                        try? await Task.sleep(for: .milliseconds(250))
+                        await progress(request.progress.totalUnitCount > 0 ? request.progress.fractionCompleted : nil)
+                    }
+                }
+                defer { reporter.cancel() }
                 try await request.downloadAndInstall()
             }
-            return await AssetInventory.status(forModules: [module]) == .installed
+            return await AssetInventory.status(forModules: [module]) == .installed ? .installed : .failed
         } catch {
-            return false
+            return .failed
+        }
+    }
+
+    /// The app may keep only `maximumReservedLocales` speech languages: switching Russian ↔ English releases
+    /// the other one when the limit is reached (the system keeps the files if another app uses them).
+    private static func makeRoomForReservation(of locale: Locale) async {
+        let reserved = await AssetInventory.reservedLocales
+        guard !reserved.contains(where: { DictationLocale.isSameLocale($0, locale) }),
+              reserved.count >= AssetInventory.maximumReservedLocales else { return }
+        for other in reserved.prefix(reserved.count - AssetInventory.maximumReservedLocales + 1) {
+            await AssetInventory.release(reservedLocale: other)
         }
     }
 

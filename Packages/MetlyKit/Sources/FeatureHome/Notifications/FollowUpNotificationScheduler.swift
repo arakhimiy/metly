@@ -215,11 +215,10 @@ public final class FollowUpNotificationScheduler {
     }
 
     private func openChannel(for id: UUID) async {
-        guard let followUp = container.mainContext.record(FollowUp.self, id: id) else { return }
-        let value = ChannelLink.value(for: followUp.channel, of: followUp.connection)
-        guard let url = ChannelLink.primaryURL(followUp.channel, value: value) else { return }
+        guard let followUp = container.mainContext.record(FollowUp.self, id: id),
+              let target = ChannelLink.target(followUp.channel, for: followUp.connection) else { return }
         await waitUntilActive()
-        if await UIApplication.shared.open(url) == false, let fallback = ChannelLink.fallbackURL(followUp.channel, value: value) {
+        if await UIApplication.shared.open(target.primary) == false, let fallback = target.fallback {
             await UIApplication.shared.open(fallback)
         }
     }

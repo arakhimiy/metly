@@ -1,10 +1,12 @@
 import MetlyCapture
 import MetlyCore
 import MetlyData
+import MetlyNetworking
 import SwiftData
 import SwiftUI
 
-/// ADD_CONTEXT (SPEC §2.5.32): the capture block for an existing person, with the share-back merge prompt.
+/// ADD_CONTEXT (SPEC §2.5.32): the capture block for an existing person, with the share-back merge prompt,
+/// followed by their contact info (every phone with a label menu, add / delete, email, Telegram…).
 struct AddContextScreen: View {
     @Environment(AppRouter.self) private var router
     @Environment(AppServices.self) private var services
@@ -15,6 +17,7 @@ struct AddContextScreen: View {
     /// The record being edited — switches to the just-met record after a merge.
     @State private var targetID: UUID
     @State private var draft = CaptureDraft()
+    @State private var contactInfo = ContactInfoDraft()
     @State private var loadedID: UUID?
     @State private var dismissedCandidates: Set<UUID> = []
     @State private var showsLimitAlert = false
@@ -38,9 +41,14 @@ struct AddContextScreen: View {
                         }
                         if loadedID == person.id {
                             ContextCaptureForm(draft: $draft)
+                            ContactInfoEditor(draft: $contactInfo)
                         }
                     }
                     .task(id: person.id) { load(person) }
+                    .onChange(of: contactInfo) {
+                        // A number or username typed here decides the channel of a reminder picked next.
+                        if draft.followUp == nil { draft.preferredChannel = contactInfo.preferredChannel }
+                    }
                 } else {
                     ContentUnavailableView("Connection Not Found", systemImage: "person.crop.circle.badge.questionmark")
                 }
@@ -80,6 +88,8 @@ struct AddContextScreen: View {
         guard loadedID != person.id else { return }
         let isFirstCapture = person.note.isEmpty && person.tags.isEmpty
         draft = isFirstCapture ? .capture(for: person, in: modelContext) : CaptureDraft(editing: person)
+        contactInfo = ContactInfoDraft(connection: person, maxAdditionalPhones: LabeledPhone.maxAdditional,
+                                       maxPhoneLength: LabeledPhone.maxValueLength)
         loadedID = person.id
     }
 
@@ -93,6 +103,7 @@ struct AddContextScreen: View {
 
     private func save() {
         guard let person else { return }
+        contactInfo.apply(to: person)   // saved together with the context below
         let result = draft.apply(to: person, in: modelContext, limits: services.entitlements.limits)
         if case .limitReached(let count) = result.followUp {
             limitCount = count

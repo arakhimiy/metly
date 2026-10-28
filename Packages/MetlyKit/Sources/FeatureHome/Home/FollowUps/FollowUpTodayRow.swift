@@ -41,11 +41,13 @@ struct FollowUpTodayRow: View {
 
     @ViewBuilder private var buttons: some View {
         let channel = followUp.channel
+        let target = ChannelLink.target(channel, for: followUp.connection)
         Button(action: actions.openChannel) {
             Label(ChannelLink.actionTitle(channel), systemImage: channel.symbolName)
         }
-        .disabled(!ChannelLink.canOpen(channel, for: followUp.connection))
+        .disabled(target == nil)
         .accessibilityLabel(Text("\(ChannelLink.actionTitle(channel)) \(PersonText.firstName(PersonText.displayName(followUp.connection)))"))
+        .accessibilityHint(target?.isTelegramByPhone == true ? Text("Opens Telegram by phone number") : Text(""))
 
         Menu {
             SnoozeMenuItems(dueAt: followUp.dueAt, action: actions.snooze)

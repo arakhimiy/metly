@@ -29,6 +29,23 @@ import SwiftUI
     .metlyPreview(.full)
 }
 
+/// Several numbers, no Telegram username: Call lists them, Message opens Telegram by phone (or Messages).
+#Preview("Connection · several phones") {
+    NavigationStack {
+        PreviewPerson(name: "Madina Alieva", prepare: { person, _ in
+            PreviewData.giveSeveralPhones(to: person)
+        }) { ConnectionDetailView(connectionID: $0) }
+    }
+    .metlyPreview(.full)
+}
+
+#Preview("Add Context · several phones") {
+    PreviewPerson(name: "Madina Alieva", prepare: { person, _ in
+        PreviewData.giveSeveralPhones(to: person)
+    }) { AddContextSheet(connectionID: $0) }
+    .metlyPreview(.full)
+}
+
 #Preview("Connection · web share-back") {
     NavigationStack {
         PreviewPerson(name: "Dilnoza Ergasheva") { ConnectionDetailView(connectionID: $0) }

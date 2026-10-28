@@ -35,9 +35,11 @@ enum ShareBackMerger {
             || shareBack.fullName.split(separator: " ").count > justMet.fullName.split(separator: " ").count {
             justMet.fullName = shareBack.fullName
         }
-        for kind in ContactFieldKind.allCases where justMet.value(for: kind).isEmpty {
+        for kind in ContactFieldKind.allCases where kind != .phone && justMet.value(for: kind).isEmpty {
             justMet.setValue(shareBack.value(for: kind), for: kind)
         }
+        // Their numbers with their labels: fills the just-met record's gaps, never overwrites a number.
+        justMet.mergePhones(primary: shareBack.phone, label: shareBack.phoneLabel, additional: shareBack.additionalPhones)
         if justMet.jobTitle.isEmpty { justMet.jobTitle = shareBack.jobTitle }
         if justMet.company.isEmpty { justMet.company = shareBack.company }
         if justMet.remoteUserID == nil { justMet.remoteUserID = shareBack.remoteUserID }

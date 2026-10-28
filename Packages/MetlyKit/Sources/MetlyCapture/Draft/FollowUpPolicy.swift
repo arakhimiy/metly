@@ -19,16 +19,23 @@ public enum FollowUpPolicy {
     }
 
     /// Reply channel by available fields: Telegram, else Email, else Call (Telegram when nothing is known).
+    /// Telegram is available with a username **or** a phone Telegram can open by number (`TelegramPhone`).
     public static func preferredChannel(phone: String, email: String, telegram: String) -> FollowUpChannel {
-        if !telegram.trimmed.isEmpty { return .telegram }
+        preferredChannel(phones: [phone], email: email, telegram: telegram)
+    }
+
+    /// - Parameter phones: Every number, mobile ones first.
+    public static func preferredChannel(phones: [String], email: String, telegram: String) -> FollowUpChannel {
+        if TelegramTarget(username: telegram, phones: phones) != nil { return .telegram }
         if !email.trimmed.isEmpty { return .email }
-        if !phone.trimmed.isEmpty { return .call }
+        if phones.contains(where: { !$0.trimmed.isEmpty }) { return .call }
         return .telegram
     }
 
     public static func preferredChannel(for connection: Connection?) -> FollowUpChannel {
         guard let connection else { return .telegram }
-        return preferredChannel(phone: connection.phone, email: connection.email, telegram: connection.telegram)
+        return preferredChannel(phones: connection.phonesForMessaging.map(\.value), email: connection.email,
+                                telegram: connection.telegram)
     }
 
     /// One-tap "Tap a day to reschedule" (CONNECTION_DETAIL chips, Home): moves the person's open reminder,

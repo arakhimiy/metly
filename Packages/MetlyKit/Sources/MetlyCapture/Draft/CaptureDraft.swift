@@ -167,5 +167,5 @@ public extension CaptureDraft {
 }
 
 extension String {
-    var trimmed: String { trimmingCharacters(in: .whitespacesAndNewlines) }
+    nonisolated var trimmed: String { trimmingCharacters(in: .whitespacesAndNewlines) }
 }

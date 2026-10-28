@@ -9,18 +9,36 @@ public struct ContactDraft: Identifiable, Equatable, Sendable {
     public var fullName: String
     public var jobTitle: String
     public var company: String
-    public var phone: String
+    /// Every number with its label, primary first. Saved as Mobile / Work / Home / Other in Contacts.
+    public var phones: [LabeledPhone]
     public var email: String
     public var telegram: String
     public var website: String
     public var linkedin: String
 
+    /// The primary number (first of `phones`).
+    public var phone: String {
+        get { phones.first?.value ?? "" }
+        set {
+            if phones.isEmpty {
+                phones = [LabeledPhone(id: LabeledPhone.primaryID, label: .mobile, value: newValue)]
+            } else {
+                phones[0].value = newValue
+            }
+        }
+    }
+
+    /// - Parameters:
+    ///   - phone: The primary number, labelled `phoneLabel`.
+    ///   - additionalPhones: More numbers after it (work, home…).
     public init(fullName: String, jobTitle: String = "", company: String = "", phone: String = "",
+                phoneLabel: PhoneLabel = .mobile, additionalPhones: [LabeledPhone] = [],
                 email: String = "", telegram: String = "", website: String = "", linkedin: String = "") {
         self.fullName = fullName
         self.jobTitle = jobTitle
         self.company = company
-        self.phone = phone
+        let primary = phone.trimmed.isEmpty ? [] : [LabeledPhone(id: LabeledPhone.primaryID, label: phoneLabel, value: phone)]
+        self.phones = primary + additionalPhones.filter { !$0.isEmpty }
         self.email = email
         self.telegram = telegram
         self.website = website
@@ -29,8 +47,29 @@ public struct ContactDraft: Identifiable, Equatable, Sendable {
 
     public init(connection: Connection) {
         self.init(fullName: connection.fullName, jobTitle: connection.jobTitle, company: connection.company,
-                  phone: connection.phone, email: connection.email, telegram: connection.telegram,
+                  email: connection.email, telegram: connection.telegram,
                   website: connection.website, linkedin: connection.linkedin)
+        phones = connection.allPhones
+    }
+
+    /// The Contacts label for a phone label (`CNLabelPhoneNumberMobile`, `CNLabelWork`, `CNLabelHome`, `CNLabelOther`).
+    static func contactsLabel(for label: PhoneLabel) -> String {
+        switch label {
+        case .mobile: CNLabelPhoneNumberMobile
+        case .work: CNLabelWork
+        case .home: CNLabelHome
+        case .other: CNLabelOther
+        }
+    }
+
+    /// Every non-empty phone once (same digits = same number), labelled for Contacts.
+    var contactPhoneNumbers: [CNLabeledValue<CNPhoneNumber>] {
+        var seen = Set<String>()
+        return phones.compactMap { phone in
+            let value = phone.value.trimmed
+            guard !value.isEmpty, seen.insert(ContactLinks.dialable(value) ?? value).inserted else { return nil }
+            return CNLabeledValue(label: Self.contactsLabel(for: phone.label), value: CNPhoneNumber(stringValue: value))
+        }
     }
 
     /// Builds the `CNMutableContact` shown by `CNContactViewController(forNewContact:)`.
@@ -49,10 +88,7 @@ public struct ContactDraft: Identifiable, Equatable, Sendable {
         contact.jobTitle = jobTitle.trimmed
         contact.organizationName = company.trimmed
 
-        if !phone.trimmed.isEmpty {
-            contact.phoneNumbers = [CNLabeledValue(label: CNLabelPhoneNumberMobile,
-                                                   value: CNPhoneNumber(stringValue: phone.trimmed))]
-        }
+        contact.phoneNumbers = contactPhoneNumbers
         if !email.trimmed.isEmpty {
             contact.emailAddresses = [CNLabeledValue(label: CNLabelWork, value: email.trimmed as NSString)]
         }

@@ -42,6 +42,9 @@ struct IncomingRequestPreviewHost: View {
 
 /// Inserts a fresh connection (no event) into the preview store, then shows CONNECTED for it.
 struct ConnectedPreviewHost: View {
+    /// Extra numbers they shared (work, home…).
+    var additionalPhones: [LabeledPhone] = []
+
     @Environment(\.modelContext) private var modelContext
     @State private var connectionID: UUID?
 
@@ -62,6 +65,7 @@ struct ConnectedPreviewHost: View {
             for field in peer.fields where field.privacy != .private {
                 person.setValue(field.value, for: field.kind)
             }
+            person.additionalPhones = additionalPhones
             person.mySharedCardID = modelContext.defaultCard()?.id
             modelContext.insert(person)
             try? modelContext.save()
