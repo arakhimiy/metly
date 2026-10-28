@@ -1,4 +1,5 @@
 import Foundation
+import MetlyCapture
 import MetlyCore
 import MetlyData
 import SwiftData
@@ -35,9 +36,10 @@ enum ShareBackMerger {
             || shareBack.fullName.split(separator: " ").count > justMet.fullName.split(separator: " ").count {
             justMet.fullName = shareBack.fullName
         }
-        for kind in ContactFieldKind.allCases where justMet.value(for: kind).isEmpty {
+        for kind in ContactFieldKind.allCases where kind != .phone && justMet.value(for: kind).isEmpty {
             justMet.setValue(shareBack.value(for: kind), for: kind)
         }
+        mergePhones(from: shareBack, into: justMet)
         if justMet.jobTitle.isEmpty { justMet.jobTitle = shareBack.jobTitle }
         if justMet.company.isEmpty { justMet.company = shareBack.company }
         if justMet.remoteUserID == nil { justMet.remoteUserID = shareBack.remoteUserID }
@@ -67,5 +69,21 @@ enum ShareBackMerger {
         justMet.markChanged()
         shareBack.markDeleted()
         try? context.save()
+    }
+
+    /// Adds the share-back's numbers (with their labels) the just-met record doesn't have yet; when it had
+    /// none, their first number becomes the primary one.
+    static func mergePhones(from source: Connection, into target: Connection) {
+        var phones = target.allPhones
+        var known = Set(phones.map { ContactLinks.dialable($0.value) ?? $0.value })
+        for phone in source.allPhones where known.insert(ContactLinks.dialable(phone.value) ?? phone.value).inserted {
+            phones.append(phone)
+        }
+        guard let primary = phones.first else { return }
+        target.phone = primary.value
+        target.phoneLabel = primary.label
+        target.additionalPhones = phones.dropFirst().map { phone in
+            phone.isPrimary ? LabeledPhone(label: phone.label, value: phone.value, privacy: phone.privacy) : phone
+        }
     }
 }

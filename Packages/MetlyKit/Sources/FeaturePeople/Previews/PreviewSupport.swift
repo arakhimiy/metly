@@ -75,5 +75,14 @@ enum PreviewData {
         justMet.isPendingMerge = true
         context.insert(justMet)
     }
+
+    /// Mobile + work + home numbers and no Telegram username.
+    static func giveSeveralPhones(to person: Connection) {
+        person.phone = "+998 90 123 45 67"
+        person.phoneLabel = .mobile
+        person.telegram = ""
+        person.additionalPhones = [LabeledPhone(label: .work, value: "+998 71 200 00 00"),
+                                   LabeledPhone(label: .home, value: "+998 66 233 00 00")]
+    }
 }
 #endif
