@@ -32,7 +32,7 @@ Display / links:
 | telegram | `https://t.me/<user>` (existing rules) | `X-SOCIALPROFILE;TYPE=telegram:…` (existing) |
 | instagram | `https://instagram.com/<user>` — accepts `@user`, `user`, or an instagram.com URL | `X-SOCIALPROFILE;TYPE=instagram:…` |
 | email | `mailto:` | `EMAIL;TYPE=INTERNET` |
-| website / linkedin | as today | `URL` / `X-SOCIALPROFILE;TYPE=linkedin` (as today) |
+| website / linkedin | as today | `URL` / a labelled `itemN.URL` + `X-ABLabel:LinkedIn` (as today) |
 
 ## Where it appears
 
@@ -80,11 +80,16 @@ card's `visibleContacts` keeps pointing at it:
 | website | `00000000-0000-0000-0000-00000000f004` |
 | linkedin | `00000000-0000-0000-0000-00000000f005` |
 
-Extra phones keep their own ids. A row stored before this change (empty `contacts`) is read as the
+Extra phones keep their own ids. When the stored list already has an entry in that slot (the first
+phone, the first email…), the rebuilt entry keeps **that entry's id** instead — it may have been
+created by a new app with a random id — and takes the fixed id only when there is none (so a row from
+before the list always gets the fixed ids). Ids never repeat within a list. A row stored before this change (empty `contacts`) is read as the
 list built from its legacy columns with these rules — the app's 2.0.0 → 3.0.0 migration does the same.
 
 ## Merging someone's numbers into a connection
 
 `mergePhones` generalises to entries: an incoming entry whose normalised value (digits for
-`phone`/`whatsapp`, lower-cased handle/URL otherwise) is already in the list is skipped; new ones are
-appended (privacy `connections`) while the list has room.
+`phone`/`whatsapp`, lower-cased handle/URL otherwise) is already in the list **as the same kind** is
+skipped (a WhatsApp number equal to a phone number is its own entry); new ones are appended (privacy
+`connections`) while the list has room. On connect accept a phone already there takes the label of the
+same incoming number, as before.

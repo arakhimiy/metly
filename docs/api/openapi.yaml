@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Tanishly API
-  version: 1.1.0
+  version: 1.2.0
   summary: Backend contract for the Tanishly iOS app (digital business card + personal CRM).
   description: |
     Contract authored by the iOS team; the app ships against `MockMetlyServer` (an in-memory
@@ -583,7 +583,8 @@ paths:
       description: |
         Like `/api/public/cards/{slug}` plus `owner.userId` and `viewer`. If the viewer is a live
         connection of the owner (owner has a connection with `remoteUserId = viewer`), also include the
-        owner's **Connections** fields and Connections-level `additionalPhones`. Blocked viewers get `404`.
+        owner's **Connections** fields, Connections-level `additionalPhones` and Connections-level `contacts`.
+        Blocked viewers get `404`.
       parameters: [{ $ref: '#/components/parameters/Slug' }]
       responses:
         '200': { description: Card, content: { application/json: { schema: { $ref: '#/components/schemas/PublicCard' } } } }
@@ -1118,6 +1119,10 @@ components:
     ContactFieldKind: { type: string, enum: [phone, email, telegram, website, linkedin] }
     FieldPrivacy: { type: string, enum: [public, connections, private] }
     PhoneLabel: { type: string, enum: [mobile, work, home, other], description: 'vCard TEL;TYPE CELL / WORK / HOME / VOICE.' }
+    ContactKind:
+      type: string
+      enum: [phone, whatsapp, telegram, instagram, email, website, linkedin]
+      description: Kind of a contact-list entry (docs/api/CONTACTS.md). A superset of ContactFieldKind.
     CardTemplate: { type: string, enum: [minimal, professional, modern, bold, gradient, split, terminal, stack, editorial] }
     CardPalette: { type: string, enum: [graphite, snow, ink, sand, ocean, ember] }
     CardAppearance: { type: string, enum: [light, dark] }
@@ -1166,6 +1171,38 @@ components:
         label: { $ref: '#/components/schemas/PhoneLabel' }
         value: { type: string, maxLength: 40 }
         privacy: { $ref: '#/components/schemas/FieldPrivacy' }
+    ContactEntry:
+      type: object
+      description: |
+        One entry of the contact list (app schema 3.0.0, docs/api/CONTACTS.md). `id` is a client-generated
+        UUID, unique within the list and stable (cards reference it in `visibleContacts`). `value` is
+        trimmed and non-empty: ≤ 40 characters for `phone`/`whatsapp`, ≤ 500 for `website`/`linkedin`,
+        ≤ 200 otherwise. `label` is meaningful for `phone` only (sent without one → `mobile`); the server
+        stores and returns `null` for every other kind, whatever was sent. On a Connection `privacy`
+        carries no meaning (servers default it to `connections` when omitted).
+      required: [id, kind, value, privacy]
+      properties:
+        id: { type: string, format: uuid }
+        kind: { $ref: '#/components/schemas/ContactKind' }
+        label: { type: [string, 'null'], enum: [mobile, work, home, other, null] }
+        value: { type: string, minLength: 1, maxLength: 500 }
+        privacy: { $ref: '#/components/schemas/FieldPrivacy' }
+      allOf:
+        - if: { properties: { kind: { enum: [phone, whatsapp] } }, required: [kind] }
+          then: { properties: { value: { maxLength: 40 } } }
+        - if: { properties: { kind: { enum: [telegram, instagram, email] } }, required: [kind] }
+          then: { properties: { value: { maxLength: 200 } } }
+    Contacts:
+      type: array
+      maxItems: 10
+      description: |
+        The ordered contact list (the user's order, kept as sent), at most 10 entries, ids unique. **The
+        source of truth** since app schema 3.0.0: the server derives the legacy fields (`contactFields`,
+        `phoneLabel`, `additionalPhones`, connection `phone`/`email`/`telegram`/`website`/`linkedin`) from it
+        on every write and returns both. Optional on write: an app from before the contact list omits it and
+        the server rebuilds the list from the legacy fields, keeping the entries they cannot express
+        (WhatsApp, Instagram, second emails…). Always returned by the server.
+      items: { $ref: '#/components/schemas/ContactEntry' }
     AdditionalPhones:
       type: array
       maxItems: 5
@@ -1191,8 +1228,20 @@ components:
         visibleFields:
           type: array
           uniqueItems: true
-          description: Unordered set; render in ContactFieldKind order.
+          description: |
+            Unordered set; render in ContactFieldKind order. With `visibleContacts` the app keeps it = the
+            legacy kinds among the selected entries, so older apps render the card sensibly.
           items: { $ref: '#/components/schemas/ContactFieldKind' }
+        visibleContacts:
+          type: [array, 'null']
+          maxItems: 50
+          uniqueItems: true
+          description: |
+            Ids of the owner's profile `contacts` this card shows, any order (rendering follows the profile
+            order); unknown ids are ignored, duplicates dropped. Absent/null = a legacy card: it shows every
+            entry whose kind is in `visibleFields` (all phones when `phone` is in it), never WhatsApp/Instagram.
+            Omitted by the server when null.
+          items: { type: string, format: uuid }
     CardSnapshot:
       type: object
       description: Frozen copy of someone's card as shared with the owner.
@@ -1346,6 +1395,11 @@ components:
             additionalPhones:
               allOf: [{ $ref: '#/components/schemas/AdditionalPhones' }]
               description: Each with its own privacy; public surfaces filter them exactly like contact fields.
+            contacts:
+              allOf: [{ $ref: '#/components/schemas/Contacts' }]
+              description: |
+                The contact list, each entry with its own privacy. `contactFields` / `phoneLabel` /
+                `additionalPhones` are derived from it (CONTACTS.md § Legacy fields).
             defaultCardId: { type: [string, 'null'], format: uuid }
             linksPaused: { type: boolean, description: '"Pause All Links".' }
             notificationPrefs: { $ref: '#/components/schemas/NotificationPrefs' }
@@ -1417,6 +1471,9 @@ components:
               default: mobile
               description: Label of `phone`. Optional on write (kept when omitted); always returned.
             additionalPhones: { $ref: '#/components/schemas/AdditionalPhones' }
+            contacts:
+              allOf: [{ $ref: '#/components/schemas/Contacts' }]
+              description: The contact list; `phone`, `phoneLabel`, `additionalPhones`, `email`, `telegram`, `website`, `linkedin` are derived from it.
             email: { type: string }
             telegram: { type: string }
             website: { type: string }
@@ -1780,7 +1837,9 @@ components:
         design: { oneOf: [{ $ref: '#/components/schemas/CardDesign' }, { type: 'null' }] }
         fields:
           type: array
-          description: Public ∩ visibleFields (+ Connections fields for connected viewers on the app route). Never Private.
+          description: |
+            Legacy view of `contacts`: the first visible entry of each ContactFieldKind, in kind order.
+            Never Private.
           items: { $ref: '#/components/schemas/ContactField' }
         phoneLabel:
           allOf: [{ $ref: '#/components/schemas/PhoneLabel' }]
@@ -1790,10 +1849,17 @@ components:
           type: array
           maxItems: 5
           description: |
-            The owner's extra phones filtered exactly like `fields`: only when the card shows `phone`, non-empty,
-            Public (+ Connections for connected viewers on the app route), never Private. Not part of
-            `CardSnapshot` (the app copies them onto a Connection itself).
+            Legacy view of `contacts`: the visible phones after the first. Not part of `CardSnapshot` (the app
+            copies them onto a Connection itself).
           items: { $ref: '#/components/schemas/LabeledPhone' }
+        contacts:
+          type: array
+          maxItems: 10
+          description: |
+            The entries this card shows, in the owner's order: the card's selection (`visibleContacts`, or for a
+            legacy card the `visibleFields` kinds), then audience — Public; Connections too for connected viewers
+            on the app route; Private never. Sent whenever the card is available.
+          items: { $ref: '#/components/schemas/ContactEntry' }
         viewer: { oneOf: [{ $ref: '#/components/schemas/ViewerRelation' }, { type: 'null' }] }
     ShareBackRequest:
       type: object

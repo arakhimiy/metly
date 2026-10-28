@@ -220,7 +220,41 @@ connections (their `updatedAt` = max(own, event's)).
   Connections-level numbers onto the new or existing connection: an empty `phone` takes their first number
   and its label, the same number (digits only) takes their label, other new numbers are appended (cap 5).
   Merging a duplicate connection keeps the newer record's phones and fills gaps from the other.
-- Share-back is unchanged (one phone; dedupe compares `phone` only).
+- Since the contact list (below) these fields are **derived** from `contacts` on every write and every
+  response; the rules above still describe what older apps see.
+- Share-back: one phone and one Telegram per share-back (see § Contact list for dedupe).
+
+### Contact list (schema 3.0.0)
+Full contract: `docs/api/CONTACTS.md`. Server side:
+- `profiles.contacts` / `connections.contacts` (jsonb, default `[]`) hold the ordered list
+  (`ContactEntry {id, kind, label, value, privacy}`, ≤ 10, ids unique, values trimmed and non-empty,
+  ≤ 40 chars for phone/WhatsApp, ≤ 500 for website/LinkedIn, ≤ 200 otherwise; `label` is `null` for
+  every kind but `phone`). Violations → `validation_failed` like any other field.
+- **Writes** with `contacts` store it as sent and rewrite the legacy columns from it (first entry of
+  each legacy kind; label of the first phone; the other phones, up to 5, as `additionalPhones`).
+  **Writes without `contacts`** (an older app) rebuild it: every stored phone and the first stored
+  email/Telegram/website/LinkedIn are replaced by the payload's legacy fields; WhatsApp, Instagram,
+  second emails… are kept after them in stored order. A rebuilt primary entry keeps the id of the stored
+  entry it replaces (else the fixed id of its kind, `…f001`–`…f005`), so cards keep pointing at it.
+- **Responses** (REST, sync push/pull, realtime, exports) always carry `contacts` plus the legacy
+  fields derived from it. A row written before the list (`contacts = []`) reads as the list built from
+  its legacy columns, with the fixed ids — like the app's 2.0.0 → 3.0.0 migration.
+- **Cards**: `design.visibleContacts` (uuid[] ≤ 50, deduplicated; absent/null = legacy card → every
+  entry of a `visibleFields` kind, never WhatsApp/Instagram). Null is not stored and not returned. An
+  older app's card write (no key) turns the card back into a legacy card.
+- **Public surfaces** (`/api/public/cards/{slug}`, `/v1/public-profiles/{slug}`, page, `.vcf`, Wallet):
+  the visible entries — card selection, then audience (Public; Connections too after a mutual connect;
+  Private never) — as `contacts`, profile order. `fields` / `phoneLabel` / `additionalPhones` are derived
+  from those entries. Page: WhatsApp → `https://wa.me/<digits>`, Instagram → `https://instagram.com/<user>`.
+  vCard: every phone as `TEL`, several `EMAIL`, `X-SOCIALPROFILE;TYPE=whatsapp|instagram` (+ a labelled URL,
+  like Telegram). `CardSnapshot` is unchanged (legacy `fields` only).
+- **Merging** (connect accept, duplicate connections, share-back): an entry whose kind + normalised value
+  (digits for phone/WhatsApp, lower-cased handle for Telegram/Instagram, lower-cased address/URL
+  otherwise) is already in the list is skipped; new ones are appended as Connections-level while there is
+  room. Connect accept copies the shared card's Connections-level entries and lets a number already there
+  take its owner's label. Share-back dedupes against every phone/WhatsApp/Telegram entry; "Remove my
+  contact" removes exactly the entries it added.
+- `connections.csv` keeps its columns and adds `all contacts` (`phone (work): …; whatsapp: …`).
 
 ### Free limits (enforced server-side too)
 | | Free | Pro |
