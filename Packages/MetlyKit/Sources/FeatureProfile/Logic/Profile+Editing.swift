@@ -42,11 +42,47 @@ final class ProfileEditor {
         }
     }
 
+    /// A contact value, capped at its server limit (phones 40, the rest 200).
     func valueBinding(for kind: ContactFieldKind) -> Binding<String> {
         Binding {
             self.profile.field(kind).value
         } set: { newValue in
-            self.profile.update(kind) { $0.value = ProfileFieldLimits.capped(newValue, at: ProfileFieldLimits.contactValue) }
+            self.profile.update(kind) { $0.value = ProfileFieldLimits.capped(newValue, at: ProfileFieldLimits.limit(for: kind)) }
+        }
+    }
+
+    // MARK: Phone numbers
+
+    /// Label of the primary phone (Mobile / Work / Home / Other).
+    func phoneLabelBinding() -> Binding<PhoneLabel> {
+        Binding {
+            self.profile.phoneLabel
+        } set: { newValue in
+            self.profile.setPhoneLabel(newValue)
+        }
+    }
+
+    func extraPhoneValueBinding(id: UUID) -> Binding<String> {
+        Binding {
+            self.profile.additionalPhone(id: id)?.value ?? ""
+        } set: { newValue in
+            self.profile.updatePhone(id: id) { $0.value = PhoneListRules.capped(newValue) }
+        }
+    }
+
+    func extraPhoneLabelBinding(id: UUID) -> Binding<PhoneLabel> {
+        Binding {
+            self.profile.additionalPhone(id: id)?.label ?? .other
+        } set: { newValue in
+            self.profile.updatePhone(id: id) { $0.label = newValue }
+        }
+    }
+
+    func extraPhonePrivacyBinding(id: UUID) -> Binding<FieldPrivacy> {
+        Binding {
+            self.profile.additionalPhone(id: id)?.privacy ?? ContactFieldKind.phone.defaultPrivacy
+        } set: { newValue in
+            self.profile.updatePhone(id: id) { $0.privacy = newValue }
         }
     }
 
@@ -87,7 +123,8 @@ extension Profile {
     func normalizeField(_ kind: ContactFieldKind) {
         update(kind) {
             // Normalising can add a character (Telegram's "@").
-            $0.value = ProfileFieldLimits.capped(ContactFieldRules.normalized($0.value, for: kind), at: ProfileFieldLimits.contactValue)
+            $0.value = ProfileFieldLimits.capped(ContactFieldRules.normalized($0.value, for: kind),
+                                                 at: ProfileFieldLimits.limit(for: kind))
         }
     }
 

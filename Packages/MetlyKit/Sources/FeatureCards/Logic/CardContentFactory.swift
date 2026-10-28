@@ -14,13 +14,22 @@ nonisolated enum CardContentFactory {
         }
     }
 
+    /// Extra phone numbers the audience may see — none when the card hides phones (one switch for all numbers).
+    static func phones(_ phones: [LabeledPhone], visible: Set<ContactFieldKind>, audience: CardAudience) -> [LabeledPhone] {
+        guard visible.contains(.phone) else { return [] }
+        return phones.filter { !$0.isEmpty && audience.allows($0.privacy) }
+    }
+
     static func content(fullName: String, jobTitle: String, company: String, photoData: Data?, logoData: Data?,
-                        fields allFields: [ContactField], design: CardDesign, audience: CardAudience,
+                        fields allFields: [ContactField], additionalPhones: [LabeledPhone] = [],
+                        phoneLabel: PhoneLabel = .mobile, design: CardDesign, audience: CardAudience,
                         qrPayload: String) -> CardFaceContent {
         CardFaceContent(fullName: fullName, jobTitle: jobTitle, company: company,
                         photoData: photoData, logoData: logoData,
                         fields: fields(allFields, visible: design.visibleFields, audience: audience),
-                        qrPayload: qrPayload)
+                        qrPayload: qrPayload,
+                        additionalPhones: phones(additionalPhones, visible: design.visibleFields, audience: audience),
+                        phoneLabel: phoneLabel)
     }
 
     /// The offline QR / unpublished export payload: a vCard of the public content (+ link when published).
@@ -37,7 +46,8 @@ extension CardContentFactory {
         guard let profile else { return CardFaceContent(fullName: "", qrPayload: qrPayload) }
         return content(fullName: profile.fullName, jobTitle: profile.jobTitle, company: profile.company,
                        photoData: photo.resolved(profile.photoData), logoData: logo.resolved(profile.logoData),
-                       fields: profile.contactFields, design: design, audience: audience, qrPayload: qrPayload)
+                       fields: profile.contactFields, additionalPhones: profile.additionalPhones,
+                       phoneLabel: profile.phoneLabel, design: design, audience: audience, qrPayload: qrPayload)
     }
 
     /// In-app preview of a stored card (owner's view: Public + Connections).

@@ -5,7 +5,8 @@ import MetlyCore
 /// Pure transformation `WidgetSnapshotInput` → `WidgetSnapshot` (unit-tested).
 ///
 /// • Card faces use `CardAudience.public` semantics: Public, design-visible, non-empty fields in display
-///   order — never Connections or Private (widgets can be on the Lock Screen, SPEC §9 Q4).
+///   order — never Connections or Private (widgets can be on the Lock Screen, SPEC §9 Q4). The same goes
+///   for extra phone numbers (they follow the card's phone switch).
 /// • The QR encodes the card link, or a public-only vCard while the card is unpublished.
 /// • Follow-ups are sorted by due date; the snapshot keeps the first `maxFollowUps` rows plus every due date.
 /// • Connections older than 8 days are dropped (they can never count as "this week").
@@ -58,19 +59,31 @@ nonisolated public enum WidgetSnapshotBuilder {
         }
     }
 
+    /// Public, non-empty extra numbers when the card shows phones (none otherwise).
+    public static func publicPhones(_ phones: [LabeledPhone], design: CardDesign) -> [LabeledPhone] {
+        guard design.visibleFields.contains(.phone) else { return [] }
+        return phones.compactMap { phone in
+            guard !phone.isEmpty, CardAudience.public.allows(phone.privacy) else { return nil }
+            return LabeledPhone(id: phone.id, label: phone.label,
+                                value: phone.value.trimmingCharacters(in: .whitespacesAndNewlines), privacy: .public)
+        }
+    }
+
     static func card(from card: WidgetSnapshotInput.Card, owner: WidgetSnapshotInput.Owner, isDefault: Bool) -> WidgetCard {
         let fields = publicFields(owner.contactFields, design: card.design)
+        let phones = publicPhones(owner.additionalPhones, design: card.design)
         let slug = card.slug.trimmingCharacters(in: .whitespacesAndNewlines)
         let url = slug.isEmpty ? nil : Brand.cardURL(slug: slug)
         let payload: String
         if let url {
             payload = url.absoluteString
         } else {
-            let content = CardFaceContent(fullName: owner.fullName, jobTitle: owner.jobTitle, company: owner.company, fields: fields)
+            let content = CardFaceContent(fullName: owner.fullName, jobTitle: owner.jobTitle, company: owner.company,
+                                          fields: fields, additionalPhones: phones, phoneLabel: owner.phoneLabel)
             payload = VCardBuilder.make(content: content, url: nil)
         }
         return WidgetCard(id: card.id, name: card.name, design: card.design, url: url, fields: fields,
-                          qrPayload: payload, isDefault: isDefault)
+                          qrPayload: payload, isDefault: isDefault, additionalPhones: phones, phoneLabel: owner.phoneLabel)
     }
 
     static func followUp(from followUp: WidgetSnapshotInput.FollowUp) -> WidgetFollowUp {

@@ -7,13 +7,31 @@ import MetlyCore
 /// escaped text, quoted-printable (2.1), `tel:`/`mailto:` URIs, `FN`/`N`, `ORG`, `TITLE`, `TEL`,
 /// `EMAIL`, `URL`, `X-SOCIALPROFILE`, `IMPP` and `X-TELEGRAM`. Returns nil when the text is not a
 /// vCard or carries nothing usable. Only the first card of a multi-card file is read.
+///
+/// Phones: every `TEL` is read with its label — from `TYPE` (`CELL`, `WORK`, `HOME`, v2.1 bare
+/// `TEL;WORK;VOICE:`) or Apple's grouped `itemN.X-ABLabel` (`_$!<Work>!$_`, or a custom "Office" / "моб.").
+/// The first Mobile number becomes the primary phone (else the `PREF` one, else the first); the rest
+/// become `additionalPhones` in file order (at most `maxAdditionalPhones`, duplicates and faxes skipped).
 public enum VCardParser {
+    /// Extra numbers kept beyond the primary one (the profile allows the same).
+    public static let maxAdditionalPhones = 5
+
     public static func parse(_ string: String) -> PaperCardDraft? {
         let properties = properties(in: string)
         guard !properties.isEmpty else { return nil }
-        var accumulator = Accumulator()
+        var accumulator = Accumulator(groupLabels: groupLabels(in: properties))
         for property in properties { accumulator.add(property) }
         return accumulator.draft
+    }
+
+    /// `itemN.X-ABLabel` values by upper-cased group (the label line may come before or after its property).
+    static func groupLabels(in properties: [VCardProperty]) -> [String: String] {
+        var labels: [String: String] = [:]
+        for property in properties where property.name == "X-ABLABEL" {
+            guard let group = property.group?.uppercased(), labels[group] == nil else { continue }
+            labels[group] = property.text
+        }
+        return labels
     }
 
     /// Content lines between the first `BEGIN:VCARD` and its `END:VCARD`, unfolded and split.
@@ -109,12 +127,19 @@ struct VCardProperty: Equatable {
 
 /// Collects the best value per field while walking the properties.
 private struct Accumulator {
+    struct Phone {
+        var value: String
+        var label: PhoneLabel
+        var preferred: Bool
+    }
+
+    let groupLabels: [String: String]
     var formattedName = ""
     var structuredName = ""
     var company = ""
     var title = ""
     var role = ""
-    var phone: (value: String, preferred: Bool)?
+    var phones: [Phone] = []
     var email: (value: String, preferred: Bool)?
     var telegram: String?
     var linkedIn: String?
@@ -133,9 +158,7 @@ private struct Accumulator {
         case "ROLE":
             if role.isEmpty { role = property.text }
         case "TEL":
-            let value = property.text.removingPrefix("tel:")
-            let preferred = !property.types.isDisjoint(with: ["CELL", "MOBILE", "IPHONE", "PREF"])
-            if !value.isEmpty, phone == nil || (preferred && phone?.preferred == false) { phone = (value, preferred) }
+            addPhone(property)
         case "EMAIL":
             let value = property.text.removingPrefix("mailto:")
             let preferred = property.types.contains("PREF")
@@ -154,6 +177,17 @@ private struct Accumulator {
         default:
             break
         }
+    }
+
+    private mutating func addPhone(_ property: VCardProperty) {
+        let value = property.text.removingPrefix("tel:")
+        guard !value.isEmpty else { return }
+        let customLabel = property.group.flatMap { groupLabels[$0.uppercased()] }
+        guard case .phone(let label) = VCardPhoneLabel.classify(types: property.types, customLabel: customLabel)
+        else { return }
+        let digits = value.filter(\.isNumber)
+        if !digits.isEmpty, phones.contains(where: { $0.value.filter(\.isNumber) == digits }) { return }
+        phones.append(Phone(value: value, label: label, preferred: property.types.contains("PREF")))
     }
 
     private mutating func addURL(_ value: String) {
@@ -186,14 +220,22 @@ private struct Accumulator {
     var draft: PaperCardDraft? {
         let name = formattedName.isEmpty ? structuredName : formattedName
         var fields: [ContactField] = []
-        if let phone { fields.append(ContactField(kind: .phone, value: phone.value)) }
+        var orderedPhones = phones
+        let primaryIndex = phones.firstIndex { $0.label == .mobile } ?? phones.firstIndex(where: \.preferred)
+            ?? phones.indices.first
+        let primary = primaryIndex.map { orderedPhones.remove(at: $0) }
+        if let primary { fields.append(ContactField(kind: .phone, value: primary.value)) }
         if let email { fields.append(ContactField(kind: .email, value: email.value)) }
         if let telegram { fields.append(ContactField(kind: .telegram, value: ContactValueFormat.telegramDisplay(username: telegram))) }
         if let website { fields.append(ContactField(kind: .website, value: website)) }
         if let linkedIn { fields.append(ContactField(kind: .linkedin, value: linkedIn)) }
         let jobTitle = title.isEmpty ? role : title
         guard !name.isEmpty || !company.isEmpty || !fields.isEmpty else { return nil }
-        return PaperCardDraft(fullName: name, jobTitle: jobTitle, company: company, fields: fields)
+        let extras = orderedPhones.prefix(VCardParser.maxAdditionalPhones).map {
+            LabeledPhone(label: $0.label, value: $0.value)
+        }
+        return PaperCardDraft(fullName: name, jobTitle: jobTitle, company: company, fields: fields,
+                              phoneLabel: primary?.label ?? .mobile, additionalPhones: Array(extras))
     }
 
     /// "Family;Given;Additional;Prefix;Suffix" → "Prefix Given Additional Family Suffix".

@@ -28,6 +28,17 @@ extension View {
     }
 }
 
+extension Profile {
+    /// Preview helper: a Public office line and a Private home line after the mobile.
+    func addPreviewPhones() {
+        phoneLabel = .mobile
+        additionalPhones = [
+            LabeledPhone(label: .work, value: "+998 71 200 10 20", privacy: .public),
+            LabeledPhone(label: .home, value: "+998 71 255 33 44", privacy: .private),
+        ]
+    }
+}
+
 extension Entitlements {
     /// Preview helper: an active yearly subscription renewing in ~8 months.
     func simulateYearly(willRenew: Bool = true) {

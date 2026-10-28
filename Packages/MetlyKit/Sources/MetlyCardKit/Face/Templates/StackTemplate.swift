@@ -22,7 +22,7 @@ struct StackTemplate: View {
                             Image(systemName: contact.kind.symbolName)
                                 .font(.system(size: max(style.u(2.6), 0.5)))
                                 .foregroundStyle(style.accent)
-                            CardText(text: contact.value, style: style, size: 2.7)
+                            CardContactValue(contact: contact, style: style, fontSize: 2.7)
                         }
                     }
                 }

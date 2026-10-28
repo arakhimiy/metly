@@ -72,6 +72,8 @@ struct CardCreateScreen: View {
         case .details:
             CreateDetailsStep(design: $design, name: $name, content: previewContent,
                               fields: profiles.first?.contactFields ?? ContactField.defaults,
+                              additionalPhones: profiles.first?.additionalPhones ?? [],
+                              phoneLabel: profiles.first?.phoneLabel ?? .mobile,
                               onEditField: { kind, value in profiles.first?.setContactValue(value, for: kind) },
                               onPublish: publish)
         }

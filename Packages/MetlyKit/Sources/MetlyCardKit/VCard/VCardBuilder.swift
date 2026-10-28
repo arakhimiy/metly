@@ -6,7 +6,8 @@ import UniformTypeIdentifiers
 /// Builds a vCard 3.0 for the offline QR (QR_FULLSCREEN "Offline QR") and `.vcf` sharing.
 ///
 /// - Text values are escaped, lines folded at 75 octets, CRLF line breaks (RFC 2426).
-/// - Phone → `TEL;TYPE=CELL`, email → `EMAIL;TYPE=INTERNET`, website → `URL`,
+/// - Phones → one `TEL` per number, primary first, typed by label: Mobile `TYPE=CELL`, Work `TYPE=WORK,VOICE`,
+///   Home `TYPE=HOME,VOICE`, Other `TYPE=VOICE`. Email → `EMAIL;TYPE=INTERNET`, website → `URL`,
 ///   Telegram → `X-SOCIALPROFILE;TYPE=telegram` + labelled `URL`, LinkedIn → labelled `URL`,
 ///   the card link → labelled `URL`. Labels use Apple's `itemN.X-ABLabel` grouping, ignored elsewhere.
 /// - Private fields are never written. `content` should already be filtered for `CardAudience.public`.
@@ -33,11 +34,15 @@ public enum VCardBuilder {
         let title = content.jobTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         if !title.isEmpty { lines.append("TITLE:\(VCardText.escape(title))") }
 
+        for phone in phones(of: content) {
+            lines.append("TEL;\(phone.label.vCardType):\(VCardText.escape(phone.value))")
+        }
+
         for field in orderedFields(content.fields) {
             let value = field.value.trimmingCharacters(in: .whitespacesAndNewlines)
             switch field.kind {
             case .phone:
-                lines.append("TEL;TYPE=CELL:\(VCardText.escape(value))")
+                continue   // written above, with the extra numbers
             case .email:
                 lines.append("EMAIL;TYPE=INTERNET:\(VCardText.escape(value))")
             case .website:
@@ -67,6 +72,29 @@ public enum VCardBuilder {
         ContactFieldKind.allCases.compactMap { kind in
             fields.first { $0.kind == kind && $0.privacy != .private && !$0.isEmpty }
         }
+    }
+
+    /// Every number to write, primary first: the phone in `fields` with `content.phoneLabel`, then the extra
+    /// ones. Private and empty numbers are skipped, and so is a number already written (same digits).
+    static func phones(of content: CardFaceContent) -> [(label: PhoneLabel, value: String)] {
+        var result: [(label: PhoneLabel, value: String)] = []
+        var seen = Set<String>()
+        func add(_ value: String, _ label: PhoneLabel) {
+            let value = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !value.isEmpty else { return }
+            let digits = value.filter(\.isNumber)
+            if !digits.isEmpty {
+                guard seen.insert(digits).inserted else { return }
+            }
+            result.append((label, value))
+        }
+        if let primary = orderedFields(content.fields).first(where: { $0.kind == .phone }) {
+            add(primary.value, content.phoneLabel)
+        }
+        for phone in content.additionalPhones where phone.privacy != .private {
+            add(phone.value, phone.label)
+        }
+        return result
     }
 
     /// URI values are not TEXT-escaped in vCard 3.0; only line breaks are removed.

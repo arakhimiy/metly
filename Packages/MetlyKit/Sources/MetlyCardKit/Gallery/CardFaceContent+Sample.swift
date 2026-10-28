@@ -1,3 +1,4 @@
+import Foundation
 import MetlyCore
 
 public extension CardFaceContent {
@@ -29,6 +30,22 @@ public extension CardFaceContent {
             ContactField(kind: .linkedin, value: "in/alexandrina-konstantinopolskaya-vasquez", privacy: .public),
         ],
         qrPayload: Brand.cardURL(slug: "alexandrina-x9q2").absoluteString
+    )
+
+    /// The sample person with a work and a home number after her mobile.
+    static let sampleSeveralPhones = CardFaceContent(
+        fullName: sample.fullName,
+        jobTitle: sample.jobTitle,
+        company: sample.company,
+        fields: sample.fields,
+        qrPayload: sample.qrPayload,
+        additionalPhones: [
+            LabeledPhone(id: UUID(uuidString: "5A1D0000-0000-4000-8000-000000000001")!, label: .work,
+                         value: "+998 71 200 10 20", privacy: .public),
+            LabeledPhone(id: UUID(uuidString: "5A1D0000-0000-4000-8000-000000000002")!, label: .home,
+                         value: "+998 71 255 33 44 ext. 1290", privacy: .public),
+        ],
+        phoneLabel: .mobile
     )
 
     /// Name only — checks fallbacks (initials, monogram, empty contacts).

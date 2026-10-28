@@ -11,6 +11,9 @@ struct CreateDetailsStep: View {
     let content: CardFaceContent
     /// The profile's fields (values + privacy).
     let fields: [ContactField]
+    /// The profile's extra numbers and the primary phone's label.
+    var additionalPhones: [LabeledPhone] = []
+    var phoneLabel: PhoneLabel = .mobile
     /// Saves a value typed for a field the profile doesn't have yet.
     let onEditField: (ContactFieldKind, String) -> Void
     let onPublish: () -> Void
@@ -40,7 +43,7 @@ struct CreateDetailsStep: View {
                 Text("Card Name")
             }
 
-            CardFieldsSection(fields: fields, design: $design,
+            CardFieldsSection(fields: fields, additionalPhones: additionalPhones, phoneLabel: phoneLabel, design: $design,
                               footer: String(localized: "Values come from your profile. Change privacy there."),
                               onEditValue: onEditField)
         }

@@ -60,6 +60,8 @@ struct ProfileForm: View {
             editor.textBinding(\.company).wrappedValue = profile.company.trimmingCharacters(in: .whitespacesAndNewlines)
         case .contact(let kind):
             profile.normalizeField(kind)
+        case .extraPhone(let id):
+            profile.normalizePhone(id: id)
         }
         services.sync.requestSync()
     }
@@ -83,6 +85,28 @@ struct ProfileForm: View {
             profile.photoData = nil
             profile.contactFields = ContactField.defaults
         }
+}
+
+#Preview("Profile · Several phones") {
+    NavigationStack { ProfileView() }
+        .profilePreview { $0.addPreviewPhones() }
+}
+
+#Preview("Profile · Five extra phones (Add Phone hidden)") {
+    NavigationStack { ProfileView() }
+        .profilePreview { profile in
+            profile.phoneLabel = .work
+            profile.additionalPhones = (1...ProfileFieldLimits.maxAdditionalPhones).map { index in
+                LabeledPhone(label: .other, value: "+998 71 200 10 2\(index)", privacy: .connections)
+            }
+        }
+}
+
+#Preview("Profile · Several phones, accessibility size, dark") {
+    NavigationStack { ProfileView() }
+        .profilePreview { $0.addPreviewPhones() }
+        .dynamicTypeSize(.accessibility2)
+        .preferredColorScheme(.dark)
 }
 
 #Preview("Profile · Links paused, dark") {

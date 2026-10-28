@@ -109,6 +109,48 @@ import SwiftUI
     }
 }
 
+/// Several labelled phones: Detailed fits all three numbers (+ two more lines); Balanced keeps one line
+/// per kind, so the extra numbers stay off; a card showing only phones shows all of them.
+#Preview("Several phones") {
+    let phonesAndEmail: Set<ContactFieldKind> = [.phone, .email]
+    ScrollView {
+        VStack(spacing: 16) {
+            ForEach(CardTemplate.allCases) { template in
+                Text(template.title).font(.headline).frame(maxWidth: .infinity, alignment: .leading)
+                CardFaceView(design: CardDesign(template: template, palette: .ink, appearance: .dark, density: .detailed,
+                                                visibleFields: phonesAndEmail),
+                             content: .sampleSeveralPhones)
+                CardFaceView(design: CardDesign(template: template, palette: .snow, appearance: .light, density: .balanced,
+                                                visibleFields: [.phone]),
+                             content: .sampleSeveralPhones)
+                    .cardFaceElevation()
+            }
+        }
+        .padding()
+    }
+}
+
+#Preview("Several phones · centre, long") {
+    ScrollView {
+        VStack(spacing: 16) {
+            ForEach([CardTemplate.minimal, .bold, .gradient]) { template in
+                CardFaceView(design: CardDesign(template: template, palette: .ocean, appearance: .light, alignment: .center,
+                                                density: .detailed, visibleFields: [.phone, .website]),
+                             content: .sampleSeveralPhones)
+                    .cardFaceElevation()
+            }
+            CardFaceView(design: CardDesign(template: .split, palette: .graphite, density: .detailed,
+                                            visibleFields: Set(ContactFieldKind.allCases)),
+                         content: .sampleSeveralPhones)
+            CardFaceView(design: CardDesign(template: .stack, palette: .sand, appearance: .light, density: .detailed,
+                                            visibleFields: [.phone]),
+                         content: .sampleSeveralPhones)
+                .frame(width: 96)
+        }
+        .padding()
+    }
+}
+
 #Preview("Thumbnail sizes") {
     VStack(alignment: .leading, spacing: 16) {
         HStack {

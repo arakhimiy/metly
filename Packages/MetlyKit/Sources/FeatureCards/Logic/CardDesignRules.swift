@@ -61,11 +61,44 @@ nonisolated enum CardDesignRules {
     static func isLocked(_ palette: CardPalette, allowsPro: Bool) -> Bool { palette.isPro && !allowsPro }
 
     /// How many shown, non-empty fields the density hides (e.g. 4 shown on Balanced → 1 hidden).
-    static func fieldsHiddenByDensity(fields: [ContactField], design: CardDesign) -> Int {
-        let shown = fields.count(where: {
-            !$0.isEmpty && isFieldShown($0.kind, privacy: $0.privacy, in: design)
-        })
-        return max(shown - design.density.maxContacts, 0)
+    /// Every phone number counts as its own line, but only one line per kind is guaranteed (CardKit).
+    static func fieldsHiddenByDensity(fields: [ContactField], additionalPhones: [LabeledPhone] = [],
+                                      design: CardDesign) -> Int {
+        contactLines(fields: fields, additionalPhones: additionalPhones, design: design).hiddenFieldCount
+    }
+
+    /// Extra phone numbers that are switched on but don't fit: they only use lines the other fields leave free.
+    static func phonesHiddenByDensity(fields: [ContactField], additionalPhones: [LabeledPhone],
+                                      design: CardDesign) -> Int {
+        contactLines(fields: fields, additionalPhones: additionalPhones, design: design).hiddenPhoneCount
+    }
+
+    /// The owner's in-app view of the card (Public + Connections), as CardKit lays it out.
+    private static func contactLines(fields: [ContactField], additionalPhones: [LabeledPhone],
+                                     design: CardDesign) -> CardFaceModel.ContactLines {
+        CardFaceModel.contactLines(
+            from: CardContentFactory.fields(fields, visible: design.visibleFields, audience: .connections),
+            additionalPhones: CardContentFactory.phones(additionalPhones, visible: design.visibleFields, audience: .connections),
+            design: design)
+    }
+
+    // MARK: Phone numbers (one switch for every number)
+
+    /// The privacy that decides whether "Phone Numbers" can be switched on: the most open number's.
+    /// Only when every filled number is Private is the switch disabled. Without any number, the
+    /// primary phone's privacy applies (its value can be typed in right there).
+    static func phoneGroupPrivacy(primary: ContactField, additionalPhones: [LabeledPhone]) -> FieldPrivacy {
+        let filled = ([primary].filter { !$0.isEmpty }.map(\.privacy)) + additionalPhones.filter { !$0.isEmpty }.map(\.privacy)
+        if filled.isEmpty { return primary.privacy }
+        if filled.contains(.public) { return .public }
+        if filled.contains(.connections) { return .connections }
+        return .private
+    }
+
+    /// Filled numbers that are Private: they never appear on a card even with the switch on.
+    static func privatePhoneCount(primary: ContactField, additionalPhones: [LabeledPhone]) -> Int {
+        ([primary].filter { !$0.isEmpty && $0.privacy == .private }.count)
+            + additionalPhones.count { !$0.isEmpty && $0.privacy == .private }
     }
 
     /// WCAG AA for normal text (4.5 : 1) between the palette's text and background.
