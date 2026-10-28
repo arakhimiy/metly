@@ -105,6 +105,10 @@ model Profile {
   phoneLabel       String    @default("mobile") @map("phone_label")
   /// LabeledPhone[] ({id, label, value, privacy}), at most 5.
   additionalPhones Json      @default("[]") @map("additional_phones")
+  /// ContactEntry[] ({id, kind, label, value, privacy}), at most 10, the user's order. The source of
+  /// truth since app schema 3.0.0: contactFields / phoneLabel / additionalPhones are derived from it.
+  /// Empty on rows from before it: read as the list built from the legacy columns.
+  contacts         Json      @default("[]")
   defaultCardId    String?   @map("default_card_id") @db.Uuid
   linksPaused      Boolean   @map("links_paused")
   notificationPrefs Json     @map("notification_prefs")
@@ -196,6 +200,10 @@ model Connection {
   phoneLabel       String    @default("mobile") @map("phone_label")
   /// LabeledPhone[] after `phone` (privacy carries no meaning here), at most 5.
   additionalPhones Json      @default("[]") @map("additional_phones")
+  /// ContactEntry[] (privacy carries no meaning here), at most 10. The source of truth since app schema
+  /// 3.0.0: phone / phoneLabel / additionalPhones / email / telegram / website / linkedin are derived
+  /// from it. Empty on rows from before it: read as the list built from those columns.
+  contacts         Json      @default("[]")
   email            String
   telegram         String
   website          String
