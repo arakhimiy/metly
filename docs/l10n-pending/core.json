@@ -1,0 +1,18 @@
+{
+  "phoneLabel.mobile": {
+    "uz": "Mobil",
+    "ru": "Мобильный"
+  },
+  "phoneLabel.work": {
+    "uz": "Ish",
+    "ru": "Рабочий"
+  },
+  "phoneLabel.home": {
+    "uz": "Uy",
+    "ru": "Домашний"
+  },
+  "phoneLabel.other": {
+    "uz": "Boshqa",
+    "ru": "Другой"
+  }
+}
