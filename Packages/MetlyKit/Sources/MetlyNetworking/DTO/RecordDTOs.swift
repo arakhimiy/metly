@@ -30,6 +30,10 @@ public struct ProfileDTO: SyncRecordDTO {
     /// Server-owned. Set via the logo upload flow.
     public var logoURL: URL?
     public var contactFields: [ContactField]
+    /// Label of the phone in `contactFields`. Missing on the wire (older servers/clients) → `.mobile`.
+    public var phoneLabel: PhoneLabel
+    /// Extra phones, each with its own label and privacy (≤ `LabeledPhone.maxAdditional`). Missing → `[]`.
+    public var additionalPhones: [LabeledPhone]
     public var defaultCardID: UUID?
     public var linksPaused: Bool
     public var notificationPrefs: NotificationPrefs
@@ -40,7 +44,8 @@ public struct ProfileDTO: SyncRecordDTO {
     public var deletedAt: Date?
 
     public init(id: UUID, fullName: String, jobTitle: String, company: String, photoURL: URL? = nil, logoURL: URL? = nil,
-                contactFields: [ContactField], defaultCardID: UUID?, linksPaused: Bool, notificationPrefs: NotificationPrefs,
+                contactFields: [ContactField], phoneLabel: PhoneLabel = .mobile, additionalPhones: [LabeledPhone] = [],
+                defaultCardID: UUID?, linksPaused: Bool, notificationPrefs: NotificationPrefs,
                 privacySettings: PrivacySettings, isSetupComplete: Bool, createdAt: Date, updatedAt: Date, deletedAt: Date? = nil) {
         self.id = id
         self.fullName = fullName
@@ -49,6 +54,8 @@ public struct ProfileDTO: SyncRecordDTO {
         self.photoURL = photoURL
         self.logoURL = logoURL
         self.contactFields = contactFields
+        self.phoneLabel = phoneLabel
+        self.additionalPhones = additionalPhones
         self.defaultCardID = defaultCardID
         self.linksPaused = linksPaused
         self.notificationPrefs = notificationPrefs
@@ -57,6 +64,28 @@ public struct ProfileDTO: SyncRecordDTO {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.deletedAt = deletedAt
+    }
+
+    /// Tolerant of payloads written before labelled phones existed (schema 2.0.0).
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        fullName = try container.decode(String.self, forKey: .fullName)
+        jobTitle = try container.decode(String.self, forKey: .jobTitle)
+        company = try container.decode(String.self, forKey: .company)
+        photoURL = try container.decodeIfPresent(URL.self, forKey: .photoURL)
+        logoURL = try container.decodeIfPresent(URL.self, forKey: .logoURL)
+        contactFields = try container.decode([ContactField].self, forKey: .contactFields)
+        phoneLabel = try container.decodePhoneLabel(forKey: .phoneLabel)
+        additionalPhones = try container.decodeLabeledPhones(forKey: .additionalPhones)
+        defaultCardID = try container.decodeIfPresent(UUID.self, forKey: .defaultCardID)
+        linksPaused = try container.decode(Bool.self, forKey: .linksPaused)
+        notificationPrefs = try container.decode(NotificationPrefs.self, forKey: .notificationPrefs)
+        privacySettings = try container.decode(PrivacySettings.self, forKey: .privacySettings)
+        isSetupComplete = try container.decode(Bool.self, forKey: .isSetupComplete)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
     }
 }
 
@@ -186,6 +215,10 @@ public struct ConnectionDTO: SyncRecordDTO {
     public var jobTitle: String
     public var company: String
     public var phone: String
+    /// Label of `phone`. Missing on the wire → `.mobile`.
+    public var phoneLabel: PhoneLabel
+    /// Extra phones after `phone` (privacy is kept but means nothing on a connection). Missing → `[]`.
+    public var additionalPhones: [LabeledPhone]
     public var email: String
     public var telegram: String
     public var website: String
@@ -208,7 +241,8 @@ public struct ConnectionDTO: SyncRecordDTO {
     public var deletedAt: Date?
 
     public init(id: UUID, remoteUserID: UUID? = nil, fullName: String, jobTitle: String = "", company: String = "",
-                phone: String = "", email: String = "", telegram: String = "", website: String = "", linkedin: String = "",
+                phone: String = "", phoneLabel: PhoneLabel = .mobile, additionalPhones: [LabeledPhone] = [],
+                email: String = "", telegram: String = "", website: String = "", linkedin: String = "",
                 avatarURL: URL? = nil, theirCard: CardSnapshot? = nil, mySharedCardID: UUID? = nil, source: ConnectionSource,
                 context: MeetingContext, previousMeetings: [MeetingContext] = [], eventID: UUID? = nil, note: String = "",
                 tags: [String] = [], isMerged: Bool = false, isPendingMerge: Bool = false, isBlocked: Bool = false,
@@ -219,6 +253,8 @@ public struct ConnectionDTO: SyncRecordDTO {
         self.jobTitle = jobTitle
         self.company = company
         self.phone = phone
+        self.phoneLabel = phoneLabel
+        self.additionalPhones = additionalPhones
         self.email = email
         self.telegram = telegram
         self.website = website
@@ -238,6 +274,38 @@ public struct ConnectionDTO: SyncRecordDTO {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.deletedAt = deletedAt
+    }
+
+    /// Tolerant of payloads written before labelled phones existed (schema 2.0.0).
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        remoteUserID = try container.decodeIfPresent(UUID.self, forKey: .remoteUserID)
+        fullName = try container.decode(String.self, forKey: .fullName)
+        jobTitle = try container.decode(String.self, forKey: .jobTitle)
+        company = try container.decode(String.self, forKey: .company)
+        phone = try container.decode(String.self, forKey: .phone)
+        phoneLabel = try container.decodePhoneLabel(forKey: .phoneLabel)
+        additionalPhones = try container.decodeLabeledPhones(forKey: .additionalPhones)
+        email = try container.decode(String.self, forKey: .email)
+        telegram = try container.decode(String.self, forKey: .telegram)
+        website = try container.decode(String.self, forKey: .website)
+        linkedin = try container.decode(String.self, forKey: .linkedin)
+        avatarURL = try container.decodeIfPresent(URL.self, forKey: .avatarURL)
+        theirCard = try container.decodeIfPresent(CardSnapshot.self, forKey: .theirCard)
+        mySharedCardID = try container.decodeIfPresent(UUID.self, forKey: .mySharedCardID)
+        source = try container.decode(ConnectionSource.self, forKey: .source)
+        context = try container.decode(MeetingContext.self, forKey: .context)
+        previousMeetings = try container.decode([MeetingContext].self, forKey: .previousMeetings)
+        eventID = try container.decodeIfPresent(UUID.self, forKey: .eventID)
+        note = try container.decode(String.self, forKey: .note)
+        tags = try container.decode([String].self, forKey: .tags)
+        isMerged = try container.decode(Bool.self, forKey: .isMerged)
+        isPendingMerge = try container.decode(Bool.self, forKey: .isPendingMerge)
+        isBlocked = try container.decode(Bool.self, forKey: .isBlocked)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
     }
 }
 

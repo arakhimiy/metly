@@ -65,6 +65,10 @@ public enum MockSeed {
         public var nearbyToken: String
         public var design: CardDesign
         public var fields: [ContactField]
+        /// Label of the phone in `fields`.
+        public var phoneLabel: PhoneLabel = .mobile
+        /// Extra phones with their own privacy (filtered like `fields` on the public profile).
+        public var additionalPhones: [LabeledPhone] = []
         public var behavior: Behavior
         public var isPaused: Bool
 
@@ -91,6 +95,7 @@ public enum MockSeed {
              fields: [ContactField(kind: .telegram, value: "@kamila.y", privacy: .public),
                       ContactField(kind: .email, value: "kamila@uzum.uz", privacy: .public),
                       ContactField(kind: .phone, value: "+998 90 555 12 34", privacy: .connections)],
+             additionalPhones: [kamilaWorkPhone],
              behavior: .accepts, isPaused: false),
         Peer(userID: uuid("AB02"), fullName: "Sardor Rashidov", jobTitle: "CTO", company: "Payme",
              slug: "sardor-r4t5", nearbyToken: "mock-peer-sardor", design: CardDesign(template: .terminal, palette: .snow, font: .mono),
@@ -111,6 +116,11 @@ public enum MockSeed {
              fields: [ContactField(kind: .website, value: "lola.studio", privacy: .public)],
              behavior: .accepts, isPaused: true),
     ]
+
+    /// Kamila's office line: Public, so it shows on her card for everyone (her mobile is Connections-only).
+    public static let kamilaWorkPhone = LabeledPhone(id: uuid("BB01"), label: .work, value: "+998 71 202 30 40", privacy: .public)
+    /// Aziza's office line: Public extra phone (her mobile is Private), so cards and the web page show a Work phone.
+    public static let ownerWorkPhone = LabeledPhone(id: uuid("BB02"), label: .work, value: "+998 71 150 45 67", privacy: .public)
 
     /// Nearby tokens a simulator build can feed into Connect (Nearby needs real devices otherwise).
     public static var nearbyTokens: [String] { peers.filter { !$0.isPaused }.map(\.nearbyToken) }
@@ -133,6 +143,7 @@ public enum MockSeed {
                 ContactField(kind: .website, value: "aziza.design", privacy: .public),
                 ContactField(kind: .linkedin, value: "in/azizakarimova", privacy: .connections),
             ],
+            additionalPhones: [ownerWorkPhone],
             defaultCardID: workCardID, linksPaused: false, notificationPrefs: NotificationPrefs(),
             privacySettings: PrivacySettings(), isSetupComplete: true, createdAt: day(-30), updatedAt: day(-1))
 
@@ -174,6 +185,9 @@ public enum MockSeed {
                 connection.note = "Interested in a design partnership for Uzum Market. Send the pitch deck."
                 connection.mySharedCardID = workCardID
                 connection.theirCard = peers[0].card
+                // Connected both ways: her mobile (Connections) plus the office line.
+                connection.phone = "+998 90 555 12 34"
+                connection.additionalPhones = [LabeledPhone(id: kamilaWorkPhone.id, label: .work, value: kamilaWorkPhone.value)]
             }
             return connection
         }
