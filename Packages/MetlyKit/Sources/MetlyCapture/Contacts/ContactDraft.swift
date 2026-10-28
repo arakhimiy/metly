@@ -111,3 +111,14 @@ public struct ContactDraft: Identifiable, Equatable, Sendable {
         return contact
     }
 }
+
+public extension ContactDraft {
+    /// Labels the primary phone and appends extra numbers (duplicates of an existing number are skipped).
+    mutating func applyPhones(primaryLabel: PhoneLabel, additional: [LabeledPhone]) {
+        if !phones.isEmpty { phones[0].label = primaryLabel }
+        let digits = { (value: String) in value.filter(\.isNumber) }
+        for phone in additional where !phone.isEmpty && !phones.contains(where: { digits($0.value) == digits(phone.value) }) {
+            phones.append(phone)
+        }
+    }
+}

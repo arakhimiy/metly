@@ -73,8 +73,10 @@ struct ContactCardDetail: View {
     }
 
     private func saveToContacts() {
-        contactDraft = ContactDraft(fullName: ScanConnectionFactory.displayName(for: contact), jobTitle: contact.jobTitle,
-                                    company: contact.company, fields: contact.fields)
+        var draft = ContactDraft(fullName: ScanConnectionFactory.displayName(for: contact), jobTitle: contact.jobTitle,
+                                 company: contact.company, fields: contact.fields)
+        draft.applyPhones(primaryLabel: contact.phoneLabel, additional: contact.additionalPhones)
+        contactDraft = draft
     }
 
     private func contactSaved(_ saved: Bool) {

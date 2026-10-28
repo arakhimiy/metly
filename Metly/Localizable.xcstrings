@@ -179,6 +179,22 @@
         }
       }
     },
+    "%@ Number": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Номер: %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ raqami"
+          }
+        }
+      }
+    },
     "%@ Privacy": {
       "localizations": {
         "ru": {
@@ -309,6 +325,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Maydon: %@"
+          }
+        }
+      }
+    },
+    "%@ has no Telegram username or mobile number saved.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: не сохранены ни имя пользователя Telegram, ни мобильный номер."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ uchun Telegram foydalanuvchi nomi ham, mobil raqam ham saqlanmagan."
           }
         }
       }
@@ -917,6 +949,22 @@
         }
       },
       "shouldTranslate": false
+    },
+    "%@, %@, private, hidden from all cards": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, только мне, скрыто на всех визитках"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, faqat men, barcha vizitkalarda yashirin"
+          }
+        }
+      }
     },
     "%@, Default": {
       "localizations": {
@@ -2296,6 +2344,22 @@
         }
       }
     },
+    "Add Phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telefon qo‘shish"
+          }
+        }
+      }
+    },
     "Add Photo": {
       "localizations": {
         "ru": {
@@ -2440,6 +2504,22 @@
         }
       }
     },
+    "Add to Contacts saves every number with its label.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Добавить в Контакты» сохранит каждый номер с его меткой."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Kontaktlarga qo‘shish» har bir raqamni o‘z turi bilan saqlaydi."
+          }
+        }
+      }
+    },
     "Add to People": {
       "localizations": {
         "ru": {
@@ -2500,6 +2580,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wallet’ga qo‘shildi"
+          }
+        }
+      }
+    },
+    "Adds another phone number": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавляет ещё один номер телефона"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yana bir telefon raqamini qo‘shadi"
           }
         }
       }
@@ -3294,6 +3390,22 @@
         }
       }
     },
+    "Calls this number. Touch and hold to copy": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Звонит на этот номер. Коснитесь и удерживайте, чтобы скопировать"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shu raqamga qo‘ng‘iroq qiladi. Nusxalash uchun bosib turing"
+          }
+        }
+      }
+    },
     "Calls this number. Touch and hold to copy.": {
       "localizations": {
         "ru": {
@@ -3418,6 +3530,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bekor qilish"
+          }
+        }
+      }
+    },
+    "Cancel Dictation": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменить диктовку"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diktovkani bekor qilish"
           }
         }
       }
@@ -4015,6 +4143,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Siz bilan vizitka almashgan odamlar qaysi vizitkani olishini tanlang"
+          }
+        }
+      }
+    },
+    "Choose which field this text fills.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите, какое поле заполнит этот текст."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu matn qaysi maydonga yozilishini tanlang."
           }
         }
       }
@@ -5439,6 +5583,22 @@
         }
       }
     },
+    "Delete %@ Number": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить номер: %@"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ raqamini o‘chirish"
+          }
+        }
+      }
+    },
     "Delete Account": {
       "localizations": {
         "ru": {
@@ -5840,6 +6000,22 @@
         }
       }
     },
+    "Download Didn’t Finish": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загрузка не завершилась"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yuklab olish tugallanmadi"
+          }
+        }
+      }
+    },
     "Download My Data": {
       "localizations": {
         "ru": {
@@ -5868,6 +6044,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avval ma’lumotlarimni yuklab olish"
+          }
+        }
+      }
+    },
+    "Downloading the English speech model…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загружается модель английской речи…"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingliz tilidagi nutq modeli yuklab olinmoqda…"
+          }
+        }
+      }
+    },
+    "Downloading the Russian speech model…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Загружается модель русской речи…"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rus tilidagi nutq modeli yuklab olinmoqda…"
           }
         }
       }
@@ -6220,6 +6428,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tugash"
+          }
+        }
+      }
+    },
+    "English Dictation Isn’t Set Up": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Английская диктовка не настроена"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingliz tilida diktovka sozlanmagan"
+          }
+        }
+      }
+    },
+    "English dictation isn’t available right now. Try again in a moment.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Английская диктовка сейчас недоступна. Попробуйте чуть позже."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingliz tilida diktovka hozir ishlamayapti. Birozdan so‘ng qayta urinib ko‘ring."
           }
         }
       }
@@ -6716,6 +6956,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eksport…"
+          }
+        }
+      }
+    },
+    "Extra phone numbers use only the lines left free, so ^[%lld number](inflect: true) won’t fit.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дополнительные номера занимают только свободные строки, поэтому часть номеров (%lld) не поместится."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qo‘shimcha raqamlar faqat bo‘sh qolgan qatorlarni egallaydi, shuning uchun %lld ta raqam sig‘maydi."
           }
         }
       }
@@ -7684,6 +7940,22 @@
         }
       }
     },
+    "Home phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Домашний телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uy telefoni"
+          }
+        }
+      }
+    },
     "How do you want to start?": {
       "localizations": {
         "ru": {
@@ -7744,6 +8016,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bekor qilsangiz, Pro joriy to‘lov davri oxirigacha saqlanadi. Shundan so‘ng ikkitadan ortiq vizitkalar faqat o‘qish rejimiga o‘tadi."
+          }
+        }
+      }
+    },
+    "Ignore": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Игнорировать"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E’tiborsiz qoldirish"
           }
         }
       }
@@ -8036,6 +8324,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kimdir vizitka almashmoqchi bo‘lsa, bilib oling"
+          }
+        }
+      }
+    },
+    "Label": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тип"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turi"
           }
         }
       }
@@ -8633,6 +8937,38 @@
         }
       }
     },
+    "Message opens Telegram by phone number. Telegram finds them only if their privacy settings allow it.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Сообщение» откроет Telegram по номеру телефона. Telegram найдёт человека, только если это позволяют его настройки конфиденциальности."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Xabar» Telegramni telefon raqami orqali ochadi. Telegram bu odamni faqat uning maxfiylik sozlamalari ruxsat bersa topadi."
+          }
+        }
+      }
+    },
+    "Messages": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сообщения"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xabarlar"
+          }
+        }
+      }
+    },
     "Met": {
       "localizations": {
         "ru": {
@@ -8711,6 +9047,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Minimal"
+          }
+        }
+      }
+    },
+    "Mobile phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мобильный телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mobil telefon"
           }
         }
       }
@@ -9537,6 +9889,22 @@
         }
       }
     },
+    "Not Used": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не используется"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ishlatilmagan"
+          }
+        }
+      }
+    },
     "Not added in Profile": {
       "localizations": {
         "ru": {
@@ -10267,6 +10635,38 @@
         }
       }
     },
+    "Opens Telegram by phone number": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывает Telegram по номеру телефона"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegramni telefon raqami orqali ochadi"
+          }
+        }
+      }
+    },
+    "Opens Telegram by phone number. Telegram finds them only if their privacy settings allow it.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram откроется по номеру телефона. Telegram найдёт человека, только если это позволяют его настройки конфиденциальности."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram telefon raqami orqali ochiladi. Telegram bu odamni faqat uning maxfiylik sozlamalari ruxsat bersa topadi."
+          }
+        }
+      }
+    },
     "Opens Telegram. Touch and hold to copy.": {
       "localizations": {
         "ru": {
@@ -10311,6 +10711,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Numbers, Excel va boshqa jadval ilovalarida ochiladi."
+          }
+        }
+      }
+    },
+    "Opens the chat by phone number": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Откроет чат по номеру телефона"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat telefon raqami orqali ochiladi"
           }
         }
       }
@@ -10471,6 +10887,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Boshqa"
+          }
+        }
+      }
+    },
+    "Other phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Другой телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqa telefon"
           }
         }
       }
@@ -10860,6 +11292,38 @@
         }
       }
     },
+    "Phone Label": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тип номера"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raqam turi"
+          }
+        }
+      }
+    },
+    "Phone Numbers": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Номера телефонов"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telefon raqamlari"
+          }
+        }
+      }
+    },
     "Photo": {
       "localizations": {
         "ru": {
@@ -11080,6 +11544,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tanishly yoki vCard QR kodiga qarating"
+          }
+        }
+      }
+    },
+    "Preparing Dictation": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подготовка диктовки"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diktovka tayyorlanmoqda"
           }
         }
       }
@@ -11305,6 +11785,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Shaxsiy izohlar faqat sizning eksportingizga kiradi. Tanishgan odamlaringizga hech narsa yuborilmaydi."
+          }
+        }
+      }
+    },
+    "Private numbers never appear on a card.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Номера «Только мне» никогда не показываются на визитке."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Faqat men» raqamlari vizitkada hech qachon ko‘rinmaydi."
           }
         }
       }
@@ -11786,6 +12282,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "So‘nggilar"
+          }
+        }
+      }
+    },
+    "Recognized Text": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Распознанный текст"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aniqlangan matn"
           }
         }
       }
@@ -12289,6 +12801,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bir nechta tadbir o‘tkazing"
+          }
+        }
+      }
+    },
+    "Russian Dictation Isn’t Set Up": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Русская диктовка не настроена"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rus tilida diktovka sozlanmagan"
+          }
+        }
+      }
+    },
+    "Russian dictation isn’t available right now. Try again in a moment.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Русская диктовка сейчас недоступна. Попробуйте чуть позже."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rus tilida diktovka hozir ishlamayapti. Birozdan so‘ng qayta urinib ko‘ring."
           }
         }
       }
@@ -14285,6 +14829,22 @@
         }
       }
     },
+    "Swap Name and Company": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поменять имя и компанию"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ism va kompaniyani almashtirish"
+          }
+        }
+      }
+    },
     "Swipe down from the top-right corner of the screen.": {
       "localizations": {
         "ru": {
@@ -14522,6 +15082,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ko‘chirish uchun kunni tanlang."
+          }
+        }
+      }
+    },
+    "Tap a line to use it for another field.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нажмите на строку, чтобы использовать её для другого поля."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qatorni boshqa maydonga qo‘yish uchun ustiga bosing."
           }
         }
       }
@@ -15048,6 +15624,22 @@
         }
       }
     },
+    "The first mobile number is saved as the main one.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Первый мобильный номер сохранится как основной."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birinchi mobil raqam asosiy raqam sifatida saqlanadi."
+          }
+        }
+      }
+    },
     "The image couldn’t be saved to Photos. Try again.": {
       "localizations": {
         "ru": {
@@ -15060,6 +15652,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rasmni Rasmlar ilovasiga saqlab bo‘lmadi. Qayta urinib ko‘ring."
+          }
+        }
+      }
+    },
+    "The microphone couldn’t start. Try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удалось включить микрофон. Попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mikrofonni ishga tushirib bo‘lmadi. Qayta urinib ko‘ring."
           }
         }
       }
@@ -15402,6 +16010,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bu ma’lumot vizitkalaringizga qo‘shiladi. Uni istalgan vaqtda o‘zgartirishingiz mumkin."
+          }
+        }
+      }
+    },
+    "This iPhone can’t recognize English speech on-device. You can still type your note.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Этот iPhone не может распознавать английскую речь на устройстве. Заметку можно ввести вручную."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu iPhone ingliz tilidagi nutqni qurilmaning o‘zida aniqlay olmaydi. Izohni qo‘lda yozishingiz mumkin."
+          }
+        }
+      }
+    },
+    "This iPhone can’t recognize Russian speech on-device. You can still type your note.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Этот iPhone не может распознавать русскую речь на устройстве. Заметку можно ввести вручную."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu iPhone rus tilidagi nutqni qurilmaning o‘zida aniqlay olmaydi. Izohni qo‘lda yozishingiz mumkin."
           }
         }
       }
@@ -16251,6 +16891,22 @@
         }
       }
     },
+    "Use As": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Использовать как"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qayerga qo‘yish"
+          }
+        }
+      }
+    },
     "Use Current Location": {
       "localizations": {
         "ru": {
@@ -16311,6 +16967,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tadbir tugaguncha almashish, QR kodingiz va ulashish uchun ishlatiladi."
+          }
+        }
+      }
+    },
+    "Uzbek voice notes aren’t available yet.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Голосовые заметки на узбекском пока недоступны."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O‘zbek tilida ovozli izohlar hozircha mavjud emas."
           }
         }
       }
@@ -16407,6 +17079,22 @@
         }
       }
     },
+    "Voice Note Language": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Язык голосовых заметок"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovozli izoh tili"
+          }
+        }
+      }
+    },
     "Voice Notes Unavailable": {
       "localizations": {
         "ru": {
@@ -16419,6 +17107,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ovozli izohlar mavjud emas"
+          }
+        }
+      }
+    },
+    "Voice notes are recognized on this iPhone, so iOS needs its English dictation model. Go to Settings › General › Keyboard › Dictation Languages and turn on English (add an English keyboard first if it isn’t listed), then try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Голосовые заметки распознаются на самом iPhone, поэтому iOS нужна модель английской диктовки. Откройте Настройки › Основные › Клавиатура › Языки диктовки и включите английский (если его нет в списке, сначала добавьте английскую клавиатуру), затем попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovozli izohlar shu iPhone’ning o‘zida aniqlanadi, shuning uchun iOS’ga ingliz tilidagi diktovka modeli kerak. Sozlamalar › Umumiy › Klaviatura › Diktovka tillari bo‘limida ingliz tilini yoqing (ro‘yxatda bo‘lmasa, avval inglizcha klaviaturani qo‘shing), so‘ng qayta urinib ko‘ring."
+          }
+        }
+      }
+    },
+    "Voice notes are recognized on this iPhone, so iOS needs its Russian dictation model. Go to Settings › General › Keyboard › Dictation Languages and turn on Russian (add the Russian keyboard first if it isn’t listed), then try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Голосовые заметки распознаются на самом iPhone, поэтому iOS нужна модель русской диктовки. Откройте Настройки › Основные › Клавиатура › Языки диктовки и включите русский (если его нет в списке, сначала добавьте русскую клавиатуру), затем попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovozli izohlar shu iPhone’ning o‘zida aniqlanadi, shuning uchun iOS’ga rus tilidagi diktovka modeli kerak. Sozlamalar › Umumiy › Klaviatura › Diktovka tillari bo‘limida rus tilini yoqing (ro‘yxatda bo‘lmasa, avval rus klaviaturasini qo‘shing), so‘ng qayta urinib ko‘ring."
           }
         }
       }
@@ -16743,6 +17463,22 @@
         }
       }
     },
+    "Who Can See This Number": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кто видит этот номер"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu raqamni kim ko‘ra oladi"
+          }
+        }
+      }
+    },
     "Who Can See Your %@": {
       "localizations": {
         "ru": {
@@ -16872,6 +17608,22 @@
         }
       }
     },
+    "Work phone": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рабочий телефон"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ish telefoni"
+          }
+        }
+      }
+    },
     "Works without internet. Contact only, no analytics or Connect.": {
       "localizations": {
         "ru": {
@@ -16980,6 +17732,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hammasini keyinroq muharrirda o‘zgartirishingiz mumkin."
+          }
+        }
+      }
+    },
+    "You can save up to %lld phone numbers.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Можно сохранить не больше %lld номеров телефона."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko‘pi bilan %lld ta telefon raqamini saqlash mumkin."
           }
         }
       }
@@ -17952,6 +18720,38 @@
         }
       }
     },
+    "iOS couldn’t download the English speech model for voice notes. Check your internet connection and free storage, then try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS не удалось загрузить модель английской речи для голосовых заметок. Проверьте подключение к интернету и свободное место, затем попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS ovozli izohlar uchun ingliz tilidagi nutq modelini yuklab ololmadi. Internet aloqasi va bo‘sh xotirani tekshirib, qayta urinib ko‘ring."
+          }
+        }
+      }
+    },
+    "iOS couldn’t download the Russian speech model for voice notes. Check your internet connection and free storage, then try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS не удалось загрузить модель русской речи для голосовых заметок. Проверьте подключение к интернету и свободное место, затем попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS ovozli izohlar uchun rus tilidagi nutq modelini yuklab ololmadi. Internet aloqasi va bo‘sh xotirani tekshirib, qayta urinib ko‘ring."
+          }
+        }
+      }
+    },
     "now": {
       "localizations": {
         "ru": {
@@ -17981,6 +18781,70 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ kuni"
+          }
+        }
+      }
+    },
+    "phoneLabel.home": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Домашний"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uy"
+          }
+        }
+      }
+    },
+    "phoneLabel.mobile": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мобильный"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mobil"
+          }
+        }
+      }
+    },
+    "phoneLabel.other": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Другой"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boshqa"
+          }
+        }
+      }
+    },
+    "phoneLabel.work": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Рабочий"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ish"
           }
         }
       }

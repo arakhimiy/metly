@@ -117,8 +117,10 @@ struct MetlyCardDetail: View {
     }
 
     private func saveToContacts() {
-        contactDraft = ContactDraft(fullName: snapshot.fullName, jobTitle: snapshot.jobTitle,
-                                    company: snapshot.company, fields: snapshot.fields)
+        var draft = ContactDraft(fullName: snapshot.fullName, jobTitle: snapshot.jobTitle,
+                                 company: snapshot.company, fields: snapshot.fields)
+        draft.applyPhones(primaryLabel: card.phoneLabel, additional: card.additionalPhones)
+        contactDraft = draft
     }
 
     private func contactSaved(_ saved: Bool) {
