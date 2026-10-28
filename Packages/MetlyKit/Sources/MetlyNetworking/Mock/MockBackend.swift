@@ -233,7 +233,8 @@ struct MockBackend: Sendable {
                 if merged.theirCard == nil { merged.theirCard = twin.theirCard }
                 if merged.note.isEmpty { merged.note = twin.note }
                 PhoneMerge.merge(phone: &merged.phone, label: &merged.phoneLabel, additional: &merged.additionalPhones,
-                                 incomingPhone: twin.phone, incomingLabel: twin.phoneLabel, incomingAdditional: twin.additionalPhones)
+                                 incomingPhone: twin.phone, incomingLabel: twin.phoneLabel, incomingAdditional: twin.additionalPhones,
+                                 adoptsLabel: false)
             }
             connections[twin.id] = merged
             touch(.connection, twin.id)

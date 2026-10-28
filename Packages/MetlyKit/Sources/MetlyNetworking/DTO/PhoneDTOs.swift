@@ -26,13 +26,15 @@ public enum PhoneMerge {
 
     /// Fills gaps with someone's labelled phones, never overwriting a number already there:
     /// - without a number in `phone`, their first number (primary, else the first extra) becomes it, label included;
-    /// - one of their numbers equal to `phone` (digits) lends it its label — its owner knows whether it is Mobile or Work;
+    /// - with `adoptsLabel`, one of their numbers equal to `phone` (digits) lends it its label — its owner knows
+    ///   whether it is Mobile or Work (off when merging two of your own records: the newer one's label stays);
     /// - every other number not present yet is appended to `additional` as Connections-level, up to
     ///   `LabeledPhone.maxAdditional`.
     /// - Returns: whether anything changed.
     @discardableResult
     public static func merge(phone: inout String, label: inout PhoneLabel, additional: inout [LabeledPhone],
-                             incomingPhone: String, incomingLabel: PhoneLabel, incomingAdditional: [LabeledPhone]) -> Bool {
+                             incomingPhone: String, incomingLabel: PhoneLabel, incomingAdditional: [LabeledPhone],
+                             adoptsLabel: Bool = true) -> Bool {
         var candidates = ([LabeledPhone(id: LabeledPhone.primaryID, label: incomingLabel, value: incomingPhone)] + incomingAdditional)
             .map { entry in
                 var trimmed = entry
@@ -49,7 +51,7 @@ public enum PhoneMerge {
             changed = true
         }
         let primaryDigits = digits(phone)
-        if let same = candidates.first(where: { digits($0.value) == primaryDigits }), same.label != label {
+        if adoptsLabel, let same = candidates.first(where: { digits($0.value) == primaryDigits }), same.label != label {
             label = same.label
             changed = true
         }

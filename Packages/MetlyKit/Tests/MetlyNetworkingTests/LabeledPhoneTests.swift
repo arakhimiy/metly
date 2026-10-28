@@ -115,6 +115,10 @@ struct LabeledPhoneTests {
         #expect(label == .mobile && extra.count == 1)
         #expect(!PhoneMerge.merge(phone: &phone, label: &label, additional: &extra,
                                   incomingPhone: "+998 90 555-12-34", incomingLabel: .mobile, incomingAdditional: [home]))
+        // Merging two of your own records: the newer one's label stays.
+        #expect(!PhoneMerge.merge(phone: &phone, label: &label, additional: &extra,
+                                  incomingPhone: "+998 90 555 12 34", incomingLabel: .home, incomingAdditional: [], adoptsLabel: false))
+        #expect(label == .mobile)
 
         // A different primary becomes an extra; the list never exceeds the limit.
         let many = (0..<8).map { LabeledPhone(label: .other, value: "+1 555 000 00 0\($0)") }
@@ -183,6 +187,27 @@ struct LabeledPhoneTests {
         #expect(kamila.additionalPhones.map(\.value) == [MockSeed.kamilaWorkPhone.value])
         #expect(kamila.additionalPhones.first?.label == .work)
         #expect(kamila.theirCard?.fields.contains { $0.kind == .phone } == false)   // the snapshot stays Public-only
+    }
+
+    @Test("A duplicate connection pushed without phones keeps the survivor's numbers; its own label wins on the same number")
+    func mockTwinMergeKeepsPhones() async throws {
+        let server = MockMetlyServer(seed: .demo, configuration: .instant)
+        let kamilaID = MockSeed.peers[0].userID
+        let bare = ConnectionDTO(id: UUID(), remoteUserID: kamilaID, fullName: "Kamila Yusupova", source: .connectRequest,
+                                 context: MeetingContext(), createdAt: .now, updatedAt: .now)
+        let merged = try #require(try await server.push(SyncPushRequest(deviceID: nil, changes: SyncChanges(connections: [bare])))
+            .records.connections.first)
+        #expect(merged.id == MockSeed.connectionIDs[0])
+        #expect(merged.phone == "+998 90 555 12 34")
+        #expect(merged.additionalPhones.map(\.value) == [MockSeed.kamilaWorkPhone.value])
+
+        let relabelled = ConnectionDTO(id: UUID(), remoteUserID: kamilaID, fullName: "Kamila Yusupova", phone: "998905551234",
+                                       phoneLabel: .home, source: .connectRequest, context: MeetingContext(),
+                                       createdAt: .now, updatedAt: .now.addingTimeInterval(1))
+        let second = try #require(try await server.push(SyncPushRequest(deviceID: nil, changes: SyncChanges(connections: [relabelled])))
+            .records.connections.first)
+        #expect(second.phoneLabel == .home)
+        #expect(second.additionalPhones.count == 1)
     }
 
     @Test("Sync push keeps phones, rejects more than 5 or over-long numbers (validation_failed)")
