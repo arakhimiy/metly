@@ -129,6 +129,20 @@ struct LabeledPhoneSyncTests {
         #expect(profile.additionalPhones.count == 2)
     }
 
+    /// Regression: + Add Contact, then the echo of the last push arrived 2–3 s later and closed the new
+    /// (still empty, never sent) row while the user was about to type into it.
+    @Test("A row being typed survives the server's copy of the profile")
+    func typingRowSurvivesEcho() throws {
+        let container = try MetlyModelContainer.make(inMemory: true)
+        let profile = Profile(fullName: "Aziza", contactFields: [ContactField(kind: .instagram, value: "@aziza", privacy: .public)])
+        container.mainContext.insert(profile)
+        let echo = profile.dto
+        let typing = try #require(profile.addContact(.telegram))
+        profile.apply(echo)
+        #expect(profile.contacts.map(\.kind) == [.instagram, .telegram])
+        #expect(profile.contacts.last?.id == typing)
+    }
+
     @Test("The contact list round-trips with WhatsApp and Instagram, which older apps never see")
     func contactListRoundTrip() async throws {
         let harness = try SyncHarness(local: .full, server: .demo)

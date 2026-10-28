@@ -108,10 +108,10 @@ struct ScanScreen: View {
             ViewfinderGuide(mode: mode)
         }
         .safeAreaInset(edge: .top) {
-            ScanTopBar(mode: $mode, eventName: activeEvents.first?.name)
+            ScanTopBar(eventName: activeEvents.first?.name)
         }
         .safeAreaInset(edge: .bottom) {
-            ScanBottomBar(mode: mode, isReadingCard: isReadingCard, hasTorch: camera.hasTorch,
+            ScanBottomBar(mode: $mode, isReadingCard: isReadingCard, hasTorch: camera.hasTorch,
                           isTorchOn: $camera.isTorchOn, onPaste: handlePasted, onShutter: readPaperCard)
         }
     }

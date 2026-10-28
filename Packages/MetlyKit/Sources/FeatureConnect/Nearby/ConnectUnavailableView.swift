@@ -27,7 +27,10 @@ struct ConnectUnavailableView: View {
         } description: {
             Text(message)
         } actions: {
+            // In a List row the actions get the row's height and drop their titles otherwise.
             actions
+                .labelStyle(.titleAndIcon)
+                .fixedSize()
         }
     }
 

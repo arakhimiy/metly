@@ -19,7 +19,7 @@ struct ContactInfoSection: View {
                 ForEach(entries) { entry in
                     if entry.kind == .phone {
                         let phone = entry.labeledPhone
-                        PhoneInfoRow(phone: phone, telegramByPhone: telegramByPhone(phone),
+                        PhoneInfoRow(phone: phone, telegramByPhone: telegramByPhone(phone), whatsApp: whatsApp(phone),
                                      onOpen: { openURL($0) }, onCopy: { copy(phone.value) })
                     } else {
                         FieldInfoRow(field: entry.field, url: url(for: entry.field), onOpen: { open(entry.field) },
@@ -40,6 +40,12 @@ struct ContactInfoSection: View {
     private func telegramByPhone(_ phone: LabeledPhone) -> TelegramTarget? {
         guard ContactLinks.telegramHandle(person.telegram) == nil else { return nil }
         return TelegramPhone.digits(from: phone.value).map(TelegramTarget.phone)
+    }
+
+    /// WhatsApp by this number, when WhatsApp is on this iPhone.
+    private func whatsApp(_ phone: LabeledPhone) -> URL? {
+        guard MessengerApps.hasWhatsApp, let digits = TelegramPhone.digits(from: phone.value) else { return nil }
+        return URL(string: "https://wa.me/\(digits)")
     }
 
     private func url(for field: ContactField) -> URL? { ContactLinks.url(for: field.kind, value: field.value) }
@@ -75,6 +81,7 @@ struct ContactInfoSection: View {
 private struct PhoneInfoRow: View {
     let phone: LabeledPhone
     let telegramByPhone: TelegramTarget?
+    let whatsApp: URL?
     let onOpen: (URL) -> Void
     let onCopy: () -> Void
 
@@ -115,6 +122,18 @@ private struct PhoneInfoRow: View {
                         Text("Opens the chat by phone number")
                     } icon: {
                         Image(systemName: "paperplane")
+                    }
+                }
+            }
+            if let whatsApp {
+                Button {
+                    onOpen(whatsApp)
+                } label: {
+                    Label {
+                        Text("WhatsApp")
+                        Text("Opens the chat by phone number")
+                    } icon: {
+                        Image(systemName: "message.circle")
                     }
                 }
             }

@@ -1,9 +1,9 @@
 import MetlyDesign
 import SwiftUI
 
-/// Hint pill + Paste Link · Shutter (Paper mode) · Flashlight.
+/// Mode switch · hint pill · Paste Link · Shutter (Paper mode) · Flashlight.
 struct ScanBottomBar: View {
-    let mode: ScanMode
+    @Binding var mode: ScanMode
     let isReadingCard: Bool
     let hasTorch: Bool
     @Binding var isTorchOn: Bool
@@ -12,6 +12,7 @@ struct ScanBottomBar: View {
 
     var body: some View {
         VStack(spacing: 18) {
+            ScanModePicker(mode: $mode)
             ScanHintPill(text: isReadingCard ? String(localized: "Reading the card…") : mode.hint, showsProgress: isReadingCard)
 
             HStack(alignment: .center, spacing: 16) {

@@ -98,7 +98,9 @@ extension MetlySchemaV3 {
             self.fullName = fullName
             self.jobTitle = jobTitle
             self.company = company
-            self.contacts = contacts + [ContactEntry].fromLegacy(fields: contactFields, phoneLabel: .mobile, additionalPhones: [])
+            self.contacts = contacts + [ContactEntry].fromLegacy(
+                fields: contactFields, phoneLabel: .mobile, additionalPhones: [],
+                keeping: contactFields.filter { !$0.kind.isLegacy }.map { ContactEntry(kind: $0.kind, value: $0.value, privacy: $0.privacy) })
             self.legacyContactFields = []
             self.legacyPhoneLabelRaw = PhoneLabel.mobile.rawValue
             self.legacyAdditionalPhones = []

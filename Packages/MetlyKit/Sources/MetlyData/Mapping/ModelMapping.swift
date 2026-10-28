@@ -23,7 +23,10 @@ public extension Profile {
         fullName = dto.fullName
         jobTitle = dto.jobTitle
         company = dto.company
-        contacts = dto.contacts
+        // A row the user just added with + Add Contact is still empty, so it was never sent: keep it, or the
+        // echo of the last push would close the field under the user's fingers.
+        let typing = contacts.filter { entry in entry.isEmpty && !dto.contacts.contains { $0.id == entry.id } }
+        contacts = dto.contacts + typing
         defaultCardID = dto.defaultCardID
         linksPaused = dto.linksPaused
         notificationPrefs = dto.notificationPrefs

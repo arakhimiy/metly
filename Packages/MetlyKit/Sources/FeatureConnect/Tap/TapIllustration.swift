@@ -8,11 +8,15 @@ struct TapIllustration: View {
     var body: some View {
         let phases: [Bool] = isAnimating && !reduceMotion ? [false, true] : [false]
         PhaseAnimator(phases) { together in
-            VStack(spacing: together ? 2 : 14) {
+            // Offsets, not spacing: the illustration keeps its size, so the text under it stays put.
+            VStack(spacing: 2) {
                 Image(systemName: "iphone.gen3")
                     .rotationEffect(.degrees(180))
+                    .offset(y: together ? 0 : -6)
                 Image(systemName: "iphone.gen3")
+                    .offset(y: together ? 0 : 6)
             }
+            .padding(.vertical, 6)
             .overlay {
                 Image(systemName: "wave.3.up")
                     .font(.footnote.weight(.bold))

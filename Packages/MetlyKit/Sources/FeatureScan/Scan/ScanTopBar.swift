@@ -1,29 +1,33 @@
 import MetlyDesign
 import SwiftUI
 
-/// Mode switch (system segmented control on floating material) + the active event pill.
+/// The active event pill (the mode switch sits at the bottom, in thumb reach — `ScanModePicker`).
 struct ScanTopBar: View {
-    @Binding var mode: ScanMode
     let eventName: String?
 
     var body: some View {
-        VStack(spacing: 10) {
-            Picker("Scan Mode", selection: $mode) {
-                ForEach(ScanMode.allCases) { mode in
-                    Text(mode.title).tag(mode)
-                }
-            }
-            .pickerStyle(.segmented)
-            .padding(4)
-            .glassOrMaterial(in: .rect(cornerRadius: 12, style: .continuous))
-            .frame(maxWidth: 360)
+        if let eventName {
+            EventPill(name: eventName)
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+        }
+    }
+}
 
-            if let eventName {
-                EventPill(name: eventName)
+/// **QR Code | Paper Card** — system segmented control on floating material.
+struct ScanModePicker: View {
+    @Binding var mode: ScanMode
+
+    var body: some View {
+        Picker("Scan Mode", selection: $mode) {
+            ForEach(ScanMode.allCases) { mode in
+                Text(mode.title).tag(mode)
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
+        .pickerStyle(.segmented)
+        .padding(4)
+        .glassOrMaterial(in: .rect(cornerRadius: 12, style: .continuous))
+        .frame(maxWidth: 360)
         .sensoryFeedback(.selection, trigger: mode)
     }
 }

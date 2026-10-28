@@ -105,14 +105,24 @@ struct PhonesTests {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, phone: "+998 90 123 45 67")
         person.contacts.append(ContactEntry(kind: .whatsapp, value: "+998 90 123 45 67"))
-        let reach = PersonReach(person)
+        let reach = PersonReach(person, hasWhatsApp: false)
         let whatsApp = URL(string: "https://wa.me/998901234567")!
-        #expect(reach.message == .whatsApp(whatsApp))   // ahead of Telegram by phone
-        #expect(reach.choices == [.whatsApp(whatsApp), .telegram(.phone("998901234567")),
+        #expect(reach.message == .whatsApp(whatsApp, byPhone: false))   // ahead of Telegram by phone
+        #expect(reach.choices == [.whatsApp(whatsApp, byPhone: false), .telegram(.phone("998901234567")),
                                   .sms(URL(string: "sms:+998901234567")!)])
 
         person.telegram = "@kamila.y"
-        #expect(PersonReach(person).choices == [.telegram(.username("kamila.y")), .whatsApp(whatsApp)])
+        #expect(PersonReach(person, hasWhatsApp: false).choices == [.telegram(.username("kamila.y")), .whatsApp(whatsApp, byPhone: false)])
+    }
+
+    @Test func whatsAppByPhoneNeedsWhatsAppOnThisPhone() throws {
+        let context = try makeContext()
+        let person = insertPerson("Sardor", in: context, phone: "90 123 45 67")
+        let whatsApp = URL(string: "https://wa.me/998901234567")!
+        #expect(!PersonReach(person, hasWhatsApp: false).choices.contains { if case .whatsApp = $0 { true } else { false } })
+        #expect(PersonReach(person, hasWhatsApp: true).choices == [.telegram(.phone("998901234567")),
+                                                                   .whatsApp(whatsApp, byPhone: true),
+                                                                   .sms(URL(string: "sms:901234567")!)])
     }
 
 }

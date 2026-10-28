@@ -68,7 +68,18 @@ struct QuickActionsSection: View {
             }
         case .telegram(let target):
             Button("Telegram", systemImage: "paperplane") { openTelegram(target) }
-        case .whatsApp(let url):
+        case .whatsApp(let url, let byPhone) where byPhone:
+            Button {
+                openURL(url)
+            } label: {
+                Label {
+                    Text("WhatsApp")
+                    Text("Opens the chat by phone number")
+                } icon: {
+                    Image(systemName: "message.circle")
+                }
+            }
+        case .whatsApp(let url, _):
             Button("WhatsApp", systemImage: "message.circle") { openURL(url) }
         case .sms(let url):
             Button("Messages", systemImage: "message") { openURL(url) }
@@ -86,7 +97,7 @@ struct QuickActionsSection: View {
                               accessibilityHint: target.isByPhone ? String(localized: "Opens Telegram by phone number") : nil) {
                 openTelegram(target)
             }
-        case .whatsApp(let url):
+        case .whatsApp(let url, _):
             QuickActionButton(title: title, systemImage: "message.fill", isEnabled: true,
                               accessibilityLabel: String(localized: "Message \(firstName) on WhatsApp")) {
                 openURL(url)
