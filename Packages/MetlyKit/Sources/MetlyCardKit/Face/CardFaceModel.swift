@@ -32,9 +32,9 @@ public struct CardFaceModel: Hashable, Sendable {
     /// Contact lines after the density limit, plus what it left out (CARD_EDITOR notes).
     public struct ContactLines: Hashable, Sendable {
         public let shown: [Contact]
-        /// One-per-kind lines (phone, email, …) the density limit cuts off.
+        /// Non-phone lines the density limit cuts off.
         public let hiddenFieldCount: Int
-        /// Extra phone numbers that don't fit: they only use lines left free after one line per kind.
+        /// Phone lines the density limit cuts off.
         public let hiddenPhoneCount: Int
     }
 
@@ -69,8 +69,8 @@ public struct CardFaceModel: Hashable, Sendable {
         initials = nameInitials.isEmpty ? (company.first.map { String($0).uppercased() } ?? "?") : nameInitials
         monogram = company.first.map { String($0).uppercased() } ?? String(initials.prefix(1))
 
-        let candidates = Self.candidates(fields: content.fields, additionalPhones: content.additionalPhones,
-                                         phoneLabel: content.phoneLabel, design: design)
+        let entries = content.isSelection ? content.contacts : content.contacts.filter { design.visibleFields.contains($0.kind) }
+        let candidates = Self.candidates(entries)
         contacts = Self.allocate(candidates, limit: design.density.maxContacts).shown
         boldContacts = Self.allocate(candidates, limit: min(2, design.density.maxContacts)).shown
         photoData = design.showPhoto ? content.photoData : nil
@@ -80,80 +80,56 @@ public struct CardFaceModel: Hashable, Sendable {
         qrPayload = payload.isEmpty ? "https://\(Brand.linkHost)" : payload
     }
 
-    /// The contacts list rule: design-visible, non-empty, never Private, fixed display order (phone, email,
-    /// telegram, website, linkedin), density limit. Phones are grouped: the primary number first, then the
-    /// extra ones — but extras only take lines left free after one line per kind, so a second number never
-    /// pushes the email or Telegram off the card.
-    public static func contacts(from fields: [ContactField], additionalPhones: [LabeledPhone] = [],
-                                phoneLabel: PhoneLabel = .mobile, design: CardDesign) -> [Contact] {
-        contactLines(from: fields, additionalPhones: additionalPhones, phoneLabel: phoneLabel, design: design).shown
+    /// The contacts list rule (3.0.0): the card's entries in the owner's order — `content.contacts` is
+    /// already the card's selection for the audience — never Private or empty, a number shown once,
+    /// cut at the density limit.
+    public static func contacts(from entries: [ContactEntry], design: CardDesign) -> [Contact] {
+        contactLines(from: entries, design: design).shown
     }
 
-    /// `contacts(from:…)` plus how many lines the density limit left out.
-    public static func contactLines(from fields: [ContactField], additionalPhones: [LabeledPhone] = [],
-                                    phoneLabel: PhoneLabel = .mobile, design: CardDesign) -> ContactLines {
-        allocate(candidates(fields: fields, additionalPhones: additionalPhones, phoneLabel: phoneLabel, design: design),
-                 limit: design.density.maxContacts)
+    /// `contacts(from:design:)` plus how many lines the density limit left out.
+    public static func contactLines(from entries: [ContactEntry], design: CardDesign) -> ContactLines {
+        allocate(candidates(entries), limit: design.density.maxContacts)
+    }
+
+    /// One-value-per-kind input (cards from before 3.0.0): the fields the design shows, then the extra phones.
+    public static func contacts(from fields: [ContactField], additionalPhones: [LabeledPhone] = [],
+                                phoneLabel: PhoneLabel = .mobile, design: CardDesign) -> [Contact] {
+        let visible = fields.filter { design.visibleFields.contains($0.kind) }
+        let phones = design.visibleFields.contains(.phone) ? additionalPhones : []
+        return contacts(from: .fromLegacy(fields: visible, phoneLabel: phoneLabel, additionalPhones: phones,
+                                          keeping: visible.filter { !$0.kind.isLegacy }.map { ContactEntry(kind: $0.kind, value: $0.value, privacy: $0.privacy) }),
+                        design: design)
     }
 
     /// Every line the card could show, before the density limit.
-    struct Candidates: Hashable, Sendable {
-        /// Primary number first, then the extras (duplicates dropped).
-        var phones: [Contact] = []
-        /// One line per remaining kind, in display order.
-        var others: [Contact] = []
-    }
-
-    static func candidates(fields: [ContactField], additionalPhones: [LabeledPhone], phoneLabel: PhoneLabel,
-                           design: CardDesign) -> Candidates {
-        var byKind: [ContactFieldKind: String] = [:]
-        for field in fields where field.privacy != .private && design.visibleFields.contains(field.kind) {
-            let value = singleLine(field.value)
-            guard !value.isEmpty, byKind[field.kind] == nil else { continue }
-            byKind[field.kind] = value
-        }
-
-        var result = Candidates()
+    static func candidates(_ entries: [ContactEntry]) -> [Contact] {
+        var result: [Contact] = []
         var seenNumbers = Set<String>()
-        func addPhone(_ value: String, label: PhoneLabel, id: String) {
-            let digits = value.filter(\.isNumber)
-            if !digits.isEmpty {
-                guard seenNumbers.insert(digits).inserted else { return }
+        for entry in entries where entry.privacy != .private {
+            let value = singleLine(entry.value)
+            guard !value.isEmpty else { continue }
+            if entry.kind == .phone {
+                let digits = value.filter(\.isNumber)
+                if !digits.isEmpty {
+                    guard seenNumbers.insert(digits).inserted else { continue }
+                }
             }
-            result.phones.append(Contact(kind: .phone, value: value, phoneLabel: label, id: id))
-        }
-        if let primary = byKind[.phone] { addPhone(primary, label: phoneLabel, id: ContactFieldKind.phone.rawValue) }
-        if design.visibleFields.contains(.phone) {
-            for phone in additionalPhones where phone.privacy != .private {
-                let value = singleLine(phone.value)
-                guard !value.isEmpty else { continue }
-                addPhone(value, label: phone.label, id: "phone.\(phone.id.uuidString)")
-            }
-        }
-        result.others = ContactFieldKind.allCases.filter { $0 != .phone }.compactMap { kind in
-            byKind[kind].map { Contact(kind: kind, value: $0) }
+            result.append(Contact(kind: entry.kind, value: value, phoneLabel: entry.kind == .phone ? entry.label ?? .mobile : nil,
+                                  id: entry.id.uuidString))
         }
         return result
     }
 
-    /// Fills `limit` lines: one per kind first (the first phone stands for the phone kind), then the extra
-    /// phones in the lines left over. Phone lines carry their label only when more than one is shown.
-    static func allocate(_ candidates: Candidates, limit: Int) -> ContactLines {
-        let limit = max(limit, 0)
-        let perKind = Array(candidates.phones.prefix(1)) + candidates.others
-        let base = Array(perKind.prefix(limit))
-        let phoneLineShown = base.first?.kind == .phone
-        let spare = limit - base.count
-        let extras = phoneLineShown ? Array(candidates.phones.dropFirst().prefix(spare)) : []
-
-        var phones = phoneLineShown ? [candidates.phones[0]] + extras : []
-        let showsLabels = phones.count > 1
-        phones = phones.map { $0.labelled(showsLabels ? $0.phoneLabel : nil) }
-
+    /// The first `limit` lines. Phone lines carry their label only when more than one is shown.
+    static func allocate(_ candidates: [Contact], limit: Int) -> ContactLines {
+        let shown = Array(candidates.prefix(max(limit, 0)))
+        let showsLabels = shown.filter { $0.kind == .phone }.count > 1
+        let hidden = candidates.dropFirst(shown.count)
         return ContactLines(
-            shown: phones + base.filter { $0.kind != .phone },
-            hiddenFieldCount: perKind.count - base.count,
-            hiddenPhoneCount: max(candidates.phones.count - 1, 0) - extras.count
+            shown: shown.map { $0.kind == .phone ? $0.labelled(showsLabels ? $0.phoneLabel : nil) : $0 },
+            hiddenFieldCount: hidden.filter { $0.kind != .phone }.count,
+            hiddenPhoneCount: hidden.filter { $0.kind == .phone }.count
         )
     }
 
@@ -180,6 +156,8 @@ extension ContactFieldKind {
         case .telegram: "tg"
         case .website: "web"
         case .linkedin: "in"
+        case .whatsapp: "wa"
+        case .instagram: "ig"
         }
     }
 }

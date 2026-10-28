@@ -6,9 +6,11 @@ import SwiftUI
 /// "Contact Info" rows: tap to call / mail / open, touch and hold to copy. When a contact has more
 /// than one number (a vCard's TEL;TYPE=CELL / WORK…), each phone row shows its label.
 struct ContactFieldsSection: View {
-    let fields: [ContactField]
+    var fields: [ContactField] = []
     var phoneLabel: PhoneLabel = .mobile
     var additionalPhones: [LabeledPhone] = []
+    /// The contact list (3.0.0); when set, rows follow it and the one-per-kind inputs are ignored.
+    var contacts: [ContactEntry]?
     var footer: String?
 
     var body: some View {
@@ -28,6 +30,13 @@ struct ContactFieldsSection: View {
 
     /// Non-empty fields in order, the extra phones right after the main one (or first without one).
     private var rows: [(id: String, field: ContactField, title: String?)] {
+        if let contacts {
+            let live = contacts.filter { !$0.isEmpty }
+            let labelsPhones = live.filter { $0.kind == .phone }.count > 1
+            return live.map { entry in
+                (entry.id.uuidString, entry.field, entry.kind == .phone && labelsPhones ? entry.label?.title : nil)
+            }
+        }
         let extra = additionalPhones.filter { !$0.isEmpty }
         let extraRows = extra.map { (id: $0.id.uuidString, field: ContactField(kind: .phone, value: $0.value), title: Optional($0.label.title)) }
         var rows: [(id: String, field: ContactField, title: String?)] = []
@@ -78,21 +87,15 @@ struct ContactFieldRow: View {
         .accessibilityHint(hint)
     }
 
-    private var url: URL? {
-        switch field.kind {
-        case .phone: ContactLinks.call(field.value)
-        case .email: ContactLinks.mail(field.value)
-        case .telegram: ContactLinks.telegramWeb(field.value)
-        case .website: ContactLinks.website(field.value)
-        case .linkedin: ContactLinks.linkedIn(field.value)
-        }
-    }
+    private var url: URL? { ContactLinks.url(for: field.kind, value: field.value) }
 
     private var hint: String {
         switch field.kind {
         case .phone: String(localized: "Calls this number. Touch and hold to copy.")
         case .email: String(localized: "Writes an email. Touch and hold to copy.")
         case .telegram: String(localized: "Opens Telegram. Touch and hold to copy.")
+        case .whatsapp: String(localized: "Opens WhatsApp. Touch and hold to copy.")
+        case .instagram: String(localized: "Opens Instagram. Touch and hold to copy.")
         case .website, .linkedin: String(localized: "Opens the page. Touch and hold to copy.")
         }
     }

@@ -4,9 +4,18 @@ import Foundation
 // Raw values are the wire format agreed in docs/api/openapi.yaml — do not rename cases.
 
 public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case phone, email, telegram, website, linkedin   // fixed display order
+    case phone, email, telegram, website, linkedin   // the original five (wire `contactFields` / `visibleFields`)
+    case whatsapp, instagram                          // contact list only (schema 3.0.0, docs/api/CONTACTS.md)
 
     public var id: String { rawValue }
+
+    /// Kinds the legacy wire fields (`contactFields`, `visibleFields`, `CardSnapshot.fields`) can carry;
+    /// older apps fail to decode anything else there.
+    public static let legacy: [ContactFieldKind] = [.phone, .email, .telegram, .website, .linkedin]
+    public var isLegacy: Bool { Self.legacy.contains(self) }
+
+    /// Order of the kinds in "+ Add Contact".
+    public static let addOrder: [ContactFieldKind] = [.phone, .telegram, .whatsapp, .instagram, .email, .website, .linkedin]
 
     public var title: String {
         switch self {
@@ -15,6 +24,8 @@ public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifia
         case .telegram: String(localized: "Telegram")
         case .website: String(localized: "Website")
         case .linkedin: String(localized: "LinkedIn")
+        case .whatsapp: String(localized: "WhatsApp")
+        case .instagram: String(localized: "Instagram")
         }
     }
 
@@ -26,15 +37,20 @@ public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifia
         case .telegram: "paperplane.fill"
         case .website: "globe"
         case .linkedin: "person.crop.square.filled.and.at.rectangle"
+        case .whatsapp: "message.fill"
+        case .instagram: "camera.fill"
         }
     }
 
     public var defaultPrivacy: FieldPrivacy {
         switch self {
-        case .phone, .linkedin: .connections
-        case .email, .telegram, .website: .public
+        case .phone, .linkedin, .whatsapp: .connections
+        case .email, .telegram, .website, .instagram: .public
         }
     }
+
+    /// Values are phone numbers (digits compare equal, `tel:`-style keyboard and limits).
+    public var isPhoneNumber: Bool { self == .phone || self == .whatsapp }
 }
 
 /// Label of a phone number (vCard TEL;TYPE). Added in schema 2.0.0.

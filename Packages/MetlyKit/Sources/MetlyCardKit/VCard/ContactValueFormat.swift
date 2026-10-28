@@ -28,6 +28,35 @@ public enum ContactValueFormat {
     /// "@user" as shown in the app.
     public static func telegramDisplay(username: String) -> String { "@\(username)" }
 
+    // MARK: WhatsApp / Instagram
+
+    /// `https://wa.me/{digits}` from a phone number (or a wa.me link).
+    public static func whatsAppURL(from value: String) -> URL? {
+        var text = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        for prefix in ["https://wa.me/", "http://wa.me/", "wa.me/"] where text.lowercased().hasPrefix(prefix) {
+            text = String(text.dropFirst(prefix.count))
+        }
+        let digits = text.filter(\.isNumber)
+        return digits.isEmpty ? nil : URL(string: "https://wa.me/\(digits)")
+    }
+
+    /// Bare username from "@user", "user", "instagram.com/user/" or a full URL.
+    public static func instagramUsername(from value: String) -> String? {
+        var text = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        for prefix in ["https://", "http://"] where text.lowercased().hasPrefix(prefix) { text = String(text.dropFirst(prefix.count)) }
+        for host in ["www.instagram.com/", "instagram.com/", "instagr.am/"] where text.lowercased().hasPrefix(host) {
+            text = String(text.dropFirst(host.count))
+        }
+        if text.hasPrefix("@") { text.removeFirst() }
+        text = String(text.prefix { $0 != "/" && $0 != "?" && $0 != "#" })
+        guard !text.isEmpty, text.allSatisfy({ $0.isLetter || $0.isNumber || $0 == "_" || $0 == "." }) else { return nil }
+        return text
+    }
+
+    public static func instagramURL(username: String) -> URL? {
+        URL(string: "https://instagram.com/\(username)")
+    }
+
     // MARK: LinkedIn
 
     /// Profile URL from "in/user", "user", "linkedin.com/in/user" or a full URL.

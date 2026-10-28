@@ -6,14 +6,17 @@ import MetlyData
 nonisolated struct CardDraft: Equatable, Sendable {
     var name: String
     var design: CardDesign
+    /// Profile entries the card shows (`Card.visibleContactIDs`); nil = a card from before 3.0.0 not changed yet.
+    var contactIDs: [UUID]?
     /// Profile photo (shared by every card) — applied to `Profile.photoData` on Done.
     var photo: MediaEdit = .unchanged
     /// Profile logo (shared by every card) — applied to `Profile.logoData` on Done.
     var logo: MediaEdit = .unchanged
 
-    init(name: String, design: CardDesign) {
+    init(name: String, design: CardDesign, contactIDs: [UUID]? = nil) {
         self.name = name
         self.design = design
+        self.contactIDs = contactIDs
     }
 
     var trimmedName: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -34,7 +37,7 @@ nonisolated struct CardDraftCommit: Equatable, Sendable {
 extension CardDraft {
     @MainActor
     init(card: Card) {
-        self.init(name: card.name, design: card.design)
+        self.init(name: card.name, design: card.design, contactIDs: card.visibleContactIDs)
     }
 
     /// Writes the draft into the stored card (and profile media), marking only what really changed
@@ -58,6 +61,10 @@ extension CardDraft {
         }
         if design != original.design, design != card.design {
             card.design = design
+            cardChanged = true
+        }
+        if contactIDs != original.contactIDs, contactIDs != card.visibleContactIDs {
+            card.visibleContactIDs = contactIDs
             cardChanged = true
         }
         if cardChanged { card.markChanged() }

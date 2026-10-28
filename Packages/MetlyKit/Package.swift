@@ -79,6 +79,9 @@ let package = Package(
         .testTarget(name: "MetlyDesignTests", dependencies: ["MetlyDesign"]),
         .testTarget(name: "MetlyCardKitTests", dependencies: ["MetlyCardKit"]),
         .testTarget(name: "MetlyDataTests", dependencies: ["MetlyData"]),
+        // Its own process: writing stores with the frozen schemas next to other suites using the current one
+        // makes SwiftData mix up the same-named models.
+        .testTarget(name: "MetlyDataMigrationTests", dependencies: ["MetlyData"]),
         .testTarget(name: "MetlyNetworkingTests", dependencies: ["MetlyNetworking"]),
         .testTarget(name: "MetlyWidgetKitTests", dependencies: ["MetlyWidgetKit"]),
         .testTarget(name: "MetlyCaptureTests", dependencies: ["MetlyCapture"]),

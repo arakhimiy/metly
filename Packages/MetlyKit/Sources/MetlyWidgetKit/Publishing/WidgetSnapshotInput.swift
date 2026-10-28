@@ -19,11 +19,17 @@ nonisolated public struct WidgetSnapshotInput: Sendable {
         public var phoneLabel: PhoneLabel
         /// Extra numbers with their privacy (`Profile.additionalPhones`, filtered to Public by the builder).
         public var additionalPhones: [LabeledPhone]
+        /// The contact list with privacy (`Profile.contacts`); nil = rebuilt from the three fields above.
+        public var explicitContacts: [ContactEntry]?
         public var linksPaused: Bool
+
+        public var contacts: [ContactEntry] {
+            explicitContacts ?? .fromLegacy(fields: contactFields, phoneLabel: phoneLabel, additionalPhones: additionalPhones)
+        }
 
         public init(fullName: String, jobTitle: String = "", company: String = "", photoData: Data? = nil,
                     logoData: Data? = nil, contactFields: [ContactField] = [], phoneLabel: PhoneLabel = .mobile,
-                    additionalPhones: [LabeledPhone] = [], linksPaused: Bool = false) {
+                    additionalPhones: [LabeledPhone] = [], contacts: [ContactEntry]? = nil, linksPaused: Bool = false) {
             self.fullName = fullName
             self.jobTitle = jobTitle
             self.company = company
@@ -32,6 +38,7 @@ nonisolated public struct WidgetSnapshotInput: Sendable {
             self.contactFields = contactFields
             self.phoneLabel = phoneLabel
             self.additionalPhones = additionalPhones
+            self.explicitContacts = contacts
             self.linksPaused = linksPaused
         }
     }
@@ -43,13 +50,17 @@ nonisolated public struct WidgetSnapshotInput: Sendable {
         public var slug: String
         public var sortOrder: Int
         public var design: CardDesign
+        /// Entries the card shows (`Card.visibleContactIDs`); nil = a card from before 3.0.0 (`design.visibleFields`).
+        public var visibleContactIDs: [UUID]?
 
-        public init(id: UUID, name: String, slug: String = "", sortOrder: Int = 0, design: CardDesign = CardDesign()) {
+        public init(id: UUID, name: String, slug: String = "", sortOrder: Int = 0, design: CardDesign = CardDesign(),
+                    visibleContactIDs: [UUID]? = nil) {
             self.id = id
             self.name = name
             self.slug = slug
             self.sortOrder = sortOrder
             self.design = design
+            self.visibleContactIDs = visibleContactIDs
         }
     }
 

@@ -163,13 +163,14 @@ struct VCardPhonesTests {
         #expect(draft.additionalPhones.map(\.label) == [.work, .home, .other, .mobile])
     }
 
-    @Test func keepsAtMostFiveExtrasAndDropsDuplicates() throws {
+    @Test func keepsNumbersUpToTheListLimitAndDropsDuplicates() throws {
         var vcard = "BEGIN:VCARD\nVERSION:3.0\nFN:Many\nTEL;TYPE=CELL:+998 90 000 00 00\nTEL:+998900000000\n"
-        for index in 1...8 { vcard += "TEL;TYPE=WORK:+998 71 000 00 0\(index)\n" }
+        for index in 1...12 { vcard += "TEL;TYPE=WORK:+998 71 000 00 \(String(format: "%02d", index))\n" }
         vcard += "END:VCARD"
         let draft = try #require(VCardParser.parse(vcard))
         #expect(draft.additionalPhones.count == VCardParser.maxAdditionalPhones)
         #expect(draft.additionalPhones.first?.value == "+998 71 000 00 01")
+        #expect(draft.additionalPhones.count + 1 == ContactEntry.maxCount)   // every number up to the list limit
         #expect(!draft.additionalPhones.contains { $0.value == "+998900000000" })
     }
 

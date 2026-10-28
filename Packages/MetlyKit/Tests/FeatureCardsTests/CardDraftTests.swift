@@ -93,4 +93,20 @@ struct CardDraftTests {
         #expect(MediaEdit.replaced(Data([1])).resolved(current) == Data([1]))
         #expect(MediaEdit.removed.resolved(current) == nil)
     }
+
+    @Test func aChangedSelectionIsWrittenAndQueuedOnce() throws {
+        let context = try makeContext()
+        let profile = insertProfile(in: context)
+        let card = insertCard("Work", sortOrder: 0, in: context)
+        card.syncState = .synced
+        let original = CardDraft(card: card)
+        var draft = original
+        draft.contactIDs = [profile.contacts[0].id]
+        let commit = draft.apply(to: card, profile: profile, since: original)
+        #expect(commit.cardChanged)
+        #expect(card.visibleContactIDs == [profile.contacts[0].id])
+        #expect(card.syncState == .pendingUpsert)
+        #expect(!CardDraft(card: card).apply(to: card, profile: profile).changedAnything)
+    }
+
 }

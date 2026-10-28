@@ -122,14 +122,15 @@ struct MockBackend: Sendable {
         SyncResultDTO(type: T.recordType, id: record.id, status: .rejected, error: error.problem)
     }
 
-    /// `additionalPhones`: at most 5, each value ≤ 40 characters (422 validation_failed, like the server).
-    private func invalidPhones<T: SyncRecordDTO>(_ record: T, _ phones: [LabeledPhone]) -> SyncResultDTO? {
-        guard let problem = LabeledPhone.validationProblem(phones) else { return nil }
-        return rejected(record, .mock(422, .validationFailed, problem, details: ["additionalPhones": problem]))
+    /// `contacts`: at most `ContactEntry.maxCount`, values within their kind's limit (422 validation_failed,
+    /// like the server).
+    private func invalidContacts<T: SyncRecordDTO>(_ record: T, _ contacts: [ContactEntry]) -> SyncResultDTO? {
+        guard let problem = ContactEntry.validationProblem(contacts) else { return nil }
+        return rejected(record, .mock(422, .validationFailed, problem, details: ["contacts": problem]))
     }
 
     mutating func upsertProfile(_ incoming: ProfileDTO, canonical: inout SyncChanges) -> SyncResultDTO {
-        if let invalid = invalidPhones(incoming, incoming.additionalPhones) { return invalid }
+        if let invalid = invalidContacts(incoming, incoming.contacts) { return invalid }
         if let tombstone = tombstones[incoming.id], incoming.updatedAt <= tombstone.deletedAt {
             canonical.tombstones.append(tombstone)
             return SyncResultDTO(type: .profile, id: incoming.id, status: .stale)
@@ -216,7 +217,7 @@ struct MockBackend: Sendable {
     }
 
     mutating func upsertConnection(_ incoming: ConnectionDTO, canonical: inout SyncChanges) -> SyncResultDTO {
-        if let invalid = invalidPhones(incoming, incoming.additionalPhones) { return invalid }
+        if let invalid = invalidContacts(incoming, incoming.contacts) { return invalid }
         let existing = connections[incoming.id]
         if let stale = staleResult(incoming, existing: existing, into: \.connections, canonical: &canonical) { return stale }
         // One connection per Tanishly user: a second record for the same remoteUserID (e.g. created
@@ -232,9 +233,7 @@ struct MockBackend: Sendable {
                 merged.avatarURL = twin.avatarURL
                 if merged.theirCard == nil { merged.theirCard = twin.theirCard }
                 if merged.note.isEmpty { merged.note = twin.note }
-                PhoneMerge.merge(phone: &merged.phone, label: &merged.phoneLabel, additional: &merged.additionalPhones,
-                                 incomingPhone: twin.phone, incomingLabel: twin.phoneLabel, incomingAdditional: twin.additionalPhones,
-                                 adoptsLabel: false)
+                merged.contacts.merge(twin.contacts)
             }
             connections[twin.id] = merged
             touch(.connection, twin.id)

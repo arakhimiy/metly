@@ -19,6 +19,7 @@ struct LabeledPhoneSyncTests {
         let context = container.mainContext
         let profile = Profile(fullName: "Aziza")
         context.insert(profile)
+        profile.setField(ContactField(kind: .phone, value: "+998 90 100 00 00", privacy: .public))
         profile.phoneLabel = .home
         profile.additionalPhones = [work, home]
         let profileDTO = profile.dto
@@ -30,18 +31,18 @@ struct LabeledPhoneSyncTests {
         copy.apply(profileDTO)
         #expect(copy.phoneLabel == .home)
         #expect(copy.additionalPhones == [work, home])
-        #expect(copy.allPhones.map(\.value) == [work.value, home.value])   // primary phone is empty in ContactField.defaults
+        #expect(copy.allPhones.map(\.value) == ["+998 90 100 00 00", work.value, home.value])
+        #expect(copy.contacts == profile.contacts)
 
         var connectionDTO = MockSeed.demoAccount().connections[0]
         connectionDTO.phoneLabel = .work
         let connection = Connection(dto: connectionDTO, in: context)
         #expect(connection.phoneLabel == .work)
         #expect(connection.additionalPhones.map(\.label) == [.work])
-        #expect(connection.allPhones.first?.isPrimary == true)
         #expect(connection.dto.phoneLabel == .work)
         #expect(connection.dto.additionalPhones == connectionDTO.additionalPhones)
 
-        // An old payload (no new keys) resets nothing it doesn't know about: defaults.
+        // A payload whose legacy fields say one mobile number: the list follows.
         connectionDTO.phoneLabel = .mobile
         connectionDTO.additionalPhones = []
         connection.apply(connectionDTO, in: context)
@@ -56,7 +57,8 @@ struct LabeledPhoneSyncTests {
         let profile = try #require(context.currentProfile())
         #expect(profile.additionalPhones == [MockSeed.ownerWorkPhone])
         let card = try #require(context.defaultCard())
-        #expect(card.faceContent(profile: profile, audience: .public).additionalPhones == [MockSeed.ownerWorkPhone])
+        let publicPhones = card.faceContent(profile: profile, audience: .public).contacts.filter { $0.kind == .phone }
+        #expect(publicPhones.map(\.value) == [MockSeed.ownerWorkPhone.value])   // her mobile is Connections-only
         let kamila = try #require(context.record(Connection.self, id: PreviewSeed.firstConnectionID))
         #expect(kamila.allPhones.map(\.label) == [.mobile, .work])
         #expect(kamila.mobilePhone == "+998 90 555 12 34")
@@ -115,16 +117,38 @@ struct LabeledPhoneSyncTests {
         #expect(kamila.syncState == .pendingUpsert)
     }
 
-    @Test("A rejected push (more than 5 extra phones) stays local and isn't retried until edited")
+    @Test("A rejected push (a number over 40 characters) stays local and isn't retried until edited")
     func tooManyPhonesRejected() async throws {
         let harness = try SyncHarness(local: .full, server: .demo)
         let profile = try #require(harness.context.currentProfile())
-        profile.additionalPhones = (0..<6).map { LabeledPhone(value: "+998 71 000 00 0\($0)") }
+        profile.contacts.append(ContactEntry(kind: .phone, label: .home, value: String(repeating: "9", count: 41)))
         profile.markChanged()
         try harness.context.save()
         await harness.engine.syncNow()
         #expect(await harness.server.liveRecords().profile?.additionalPhones == [MockSeed.ownerWorkPhone])
-        #expect(profile.additionalPhones.count == 6)
+        #expect(profile.additionalPhones.count == 2)
+    }
+
+    @Test("The contact list round-trips with WhatsApp and Instagram, which older apps never see")
+    func contactListRoundTrip() async throws {
+        let harness = try SyncHarness(local: .full, server: .demo)
+        await harness.engine.syncNow()
+        let profile = try #require(harness.context.currentProfile())
+        profile.contacts.append(ContactEntry(kind: .whatsapp, value: "+998 90 123 45 67", privacy: .public))
+        profile.contacts.append(ContactEntry(kind: .instagram, value: "@aziza", privacy: .public))
+        profile.markChanged()
+        try harness.context.save()
+        await harness.engine.syncNow()
+        let server = try #require(await harness.server.liveRecords().profile)
+        let kinds = server.contacts.map(\.kind)
+        #expect(Array(kinds.suffix(2)) == [.whatsapp, .instagram])
+        let serverKinds = server.contactFields.map(\.kind)
+        #expect(serverKinds.allSatisfy { $0.isLegacy })
+        let wire = try JSONEncoder().encode(profile.dto)
+        let json = try #require(String(data: wire, encoding: .utf8))
+        #expect(json.contains("\"contacts\""))
+        let fields = try JSONDecoder().decode(LegacyFields.self, from: wire).contactFields
+        #expect(fields.allSatisfy { ContactFieldKind.legacy.map(\.rawValue).contains($0.kind) })   // older apps decode these
     }
 
     // MARK: Client (connect / SCANNED_CARD)
@@ -152,4 +176,10 @@ struct LabeledPhoneSyncTests {
         #expect(person.additionalPhones.isEmpty)
         #expect(!person.mergePhones(from: card))   // idempotent
     }
+}
+
+/// What an older app reads from a profile payload.
+private struct LegacyFields: Decodable {
+    struct Field: Decodable { var kind: String }
+    var contactFields: [Field]
 }

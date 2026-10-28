@@ -41,113 +41,99 @@ struct ContactInfoTests {
 
     // MARK: Editing
 
-    @Test func editingStartsFromEveryPhone() throws {
+    @Test func editingStartsFromTheWholeList() throws {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, email: "k@uzum.uz", phone: "+998 90 123 45 67")
         person.additionalPhones = [LabeledPhone(label: .work, value: "+998 71 200 00 00")]
-        let draft = ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40)
-        #expect(draft.phones.map(\.label) == [.mobile, .work])
-        #expect(draft.phones.first?.isPrimary == true)
-        #expect(draft.email == "k@uzum.uz")
+        person.contacts.append(ContactEntry(kind: .instagram, value: "@kamila"))
+        let draft = ContactInfoDraft(connection: person)
+        #expect(draft.entries.map(\.kind) == [.phone, .phone, .email, .instagram])
+        #expect(draft.entries.compactMap(\.label) == [.mobile, .work])
         #expect(draft.nextPhoneLabel == .home)
     }
 
-    @Test func addingPhonesPicksTheNextFreeLabel() {
+    @Test func addingReusesAnEmptyRowAndPicksTheNextFreeLabel() {
         var draft = ContactInfoDraft()
-        #expect(draft.nextPhoneLabel == .mobile)
-        draft.addPhone()
-        draft.addPhone()
-        draft.addPhone()
-        draft.addPhone()
-        draft.addPhone()
-        #expect(draft.phones.map(\.label) == [.mobile, .work, .home, .other, .other])
-        let second = draft.phones[1].id
-        draft.removePhone(id: second)
-        #expect(draft.phones.map(\.label) == [.mobile, .home, .other, .other])
-        draft.removePhones(atOffsets: [0, 2])
-        #expect(draft.phones.map(\.label) == [.home, .other])
+        let first = draft.add(.phone)
+        // Tapping "+ Add Contact" again while the row is still empty moves to it, as another kind if asked.
+        #expect(draft.add(.telegram) == first)
+        #expect(draft.entries.map(\.kind) == [.telegram])
+        draft.entries[0].value = "@kamila"
+        draft.add(.phone)
+        draft.entries[1].value = "90 111 11 11"
+        draft.add(.phone)
+        #expect(draft.entries.compactMap(\.label) == [.mobile, .work])
+        draft.remove(id: draft.entries[1].id)
+        #expect(draft.entries.map(\.kind) == [.telegram, .phone])
+        draft.remove(atOffsets: [0])
+        #expect(draft.entries.map(\.kind) == [.phone])
     }
 
-    @Test func applyWritesThePrimaryAndTheExtraPhones() throws {
+    @Test func applyWritesTheCleanedList() throws {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, phone: "+998 90 123 45 67")
         person.syncState = .synced
-        var draft = ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40)
-        draft.phones[0].label = .work
-        let added = draft.addPhone()
-        draft.phones[draft.phones.firstIndex { $0.id == added }!].value = "  +998   99 000 00 00 "
-        draft.addPhone()   // left empty: dropped
-        draft.telegram = "t.me/kamila_y"
+        var draft = ContactInfoDraft(connection: person)
+        draft.entries[0].label = .work
+        let added = draft.add(.phone)!
+        draft.entries[draft.entries.firstIndex { $0.id == added }!].value = "  +998   99 000 00 00 "
+        let telegram = draft.add(.telegram)!
+        draft.entries[draft.entries.firstIndex { $0.id == telegram }!].value = "t.me/kamila_y"
+        draft.add(.whatsapp)   // left empty: dropped
 
         #expect(draft.apply(to: person))
+        #expect(person.contacts.map(\.kind) == [.phone, .phone, .telegram])
         #expect(person.phone == "+998 90 123 45 67")
         #expect(person.phoneLabel == .work)
         #expect(person.additionalPhones.map(\.value) == ["+998 99 000 00 00"])
-        #expect(person.additionalPhones.map(\.label) == [.mobile])
         #expect(person.telegram == "@kamila_y")
         #expect(person.syncState == .pendingUpsert)
     }
 
-    @Test func deletingThePrimaryPromotesTheNextNumber() throws {
+    @Test func deletingTheFirstNumberPromotesTheNextOne() throws {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, phone: "+998 90 123 45 67")
         person.additionalPhones = [LabeledPhone(label: .work, value: "+998 71 200 00 00")]
-        var draft = ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40)
-        draft.removePhone(id: LabeledPhone.primaryID)
+        var draft = ContactInfoDraft(connection: person)
+        draft.remove(atOffsets: [0])
         draft.apply(to: person)
         #expect(person.phone == "+998 71 200 00 00")
         #expect(person.phoneLabel == .work)
         #expect(person.additionalPhones.isEmpty)
-        #expect(person.allPhones.map(\.labeledValue) == ["Work · +998 71 200 00 00"])
 
-        var cleared = ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40)
-        cleared.phones.removeAll()
+        var cleared = ContactInfoDraft(connection: person)
+        cleared.entries.removeAll()
         cleared.apply(to: person)
         #expect(person.phone.isEmpty)
-        #expect(person.phoneLabel == .mobile)
         #expect(person.allPhones.isEmpty)
-    }
-
-    @Test func thePrimaryIDNeverLandsOnAnExtraNumber() throws {
-        let context = try makeContext()
-        let person = insertPerson("Kamila", in: context)
-        let draft = ContactInfoDraft(phones: [LabeledPhone(label: .mobile, value: "90 111 11 11"),
-                                              LabeledPhone(id: LabeledPhone.primaryID, label: .work, value: "71 200 00 00")])
-        draft.apply(to: person)
-        #expect(person.additionalPhones.count == 1)
-        #expect(person.additionalPhones.allSatisfy { !$0.isPrimary })
     }
 
     @Test func applyWithoutChangesDoesNotQueueASync() throws {
         let context = try makeContext()
         let person = insertPerson("Kamila", in: context, email: "k@uzum.uz", phone: "+998 90 123 45 67")
         person.syncState = .synced
-        #expect(!ContactInfoDraft(connection: person, maxAdditionalPhones: 5, maxPhoneLength: 40).apply(to: person))
+        #expect(!ContactInfoDraft(connection: person).apply(to: person))
         #expect(person.syncState == .synced)
     }
 
-    @Test func phonesStayWithinTheServerLimits() {
-        var draft = ContactInfoDraft(phones: [LabeledPhone(id: LabeledPhone.primaryID, label: .mobile, value: "90 123 45 67")],
-                                     maxAdditionalPhones: 2, maxPhoneLength: 12)
-        #expect(draft.maxPhones == 3)
-        #expect(draft.addPhone() != nil)
-        #expect(draft.addPhone() != nil)
-        #expect(!draft.canAddPhone)
-        #expect(draft.addPhone() == nil)
-        #expect(draft.phones.count == 3)
-        draft.phones[1].value = "+998 71 200 00 00 доб. 123"
-        draft.phones[2].value = "66 233 00 00"
-        #expect(draft.savedPhones.map(\.value) == ["90 123 45 67", "+998 71 200", "66 233 00 00"])
-
-        let unlimited = ContactInfoDraft()
-        #expect(unlimited.maxPhones == .max)
-        #expect(unlimited.canAddPhone)
+    @Test func theListStaysWithinTheServerLimits() {
+        var draft = ContactInfoDraft()
+        for index in 0..<ContactEntry.maxCount {
+            let id = draft.add(.phone)!
+            draft.entries[draft.entries.firstIndex { $0.id == id }!].value = "90 000 00 \(index)"
+        }
+        #expect(!draft.canAdd)
+        #expect(draft.add(.email) == nil)
+        draft.entries[1].value = String(repeating: "1", count: 60)
+        #expect(draft.savedEntries[1].value.count == LabeledPhone.maxValueLength)
+        #expect(draft.savedEntries.count == ContactEntry.maxCount)
     }
 
     @Test func theDraftSuggestsAChannelFromItsValues() {
-        #expect(ContactInfoDraft(phones: [LabeledPhone(label: .work, value: "+998 71 200 00 00")]).preferredChannel == .call)
-        #expect(ContactInfoDraft(phones: [LabeledPhone(label: .work, value: "+998 71 200 00 00"),
-                                          LabeledPhone(label: .mobile, value: "90 123 45 67")]).preferredChannel == .telegram)
-        #expect(ContactInfoDraft(email: "a@b.c").preferredChannel == .email)
+        let work = ContactEntry(kind: .phone, label: .work, value: "+998 71 200 00 00")
+        let mobile = ContactEntry(kind: .phone, label: .mobile, value: "90 123 45 67")
+        #expect(ContactInfoDraft(entries: [work]).preferredChannel == .call)
+        #expect(ContactInfoDraft(entries: [work, mobile]).preferredChannel == .telegram)
+        #expect(ContactInfoDraft(entries: [ContactEntry(kind: .email, value: "a@b.c")]).preferredChannel == .email)
     }
 }

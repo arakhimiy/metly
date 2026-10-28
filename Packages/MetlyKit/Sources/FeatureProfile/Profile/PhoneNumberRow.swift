@@ -42,25 +42,3 @@ struct PhoneNumberRow: View {
         }
     }
 }
-
-/// "Add Phone" — a new, empty number row that takes focus (Contacts' green plus).
-struct AddPhoneRow: View {
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            // Lined up with the tiles and text of the rows above.
-            HStack(spacing: 12) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title3)
-                    .foregroundStyle(.white, .green)
-                    .frame(width: 29)
-                    .accessibilityHidden(true)
-                Text("Add Phone")
-            }
-            .frame(minHeight: 44)
-            .contentShape(.rect)
-        }
-        .accessibilityHint("Adds another phone number")
-    }
-}

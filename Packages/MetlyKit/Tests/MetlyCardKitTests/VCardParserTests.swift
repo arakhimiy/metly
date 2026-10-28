@@ -15,7 +15,7 @@ struct VCardParserTests {
         #expect(draft.fullName == "Kamola Rashidova")
         #expect(draft.jobTitle == "Product Designer")
         #expect(draft.company == "Tezkor")
-        #expect(draft.fields.map(\.kind) == ContactFieldKind.allCases)
+        #expect(draft.fields.map(\.kind) == ContactFieldKind.legacy)
         #expect(value(draft, .phone) == "+998 90 123 45 67")
         #expect(value(draft, .email) == "kamola@tezkor.uz")
         #expect(value(draft, .telegram) == "@kamola.r")

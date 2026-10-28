@@ -2,8 +2,9 @@ import MetlyCore
 import MetlyDesign
 import SwiftUI
 
-/// Editable contact values as Form sections: **Phone Numbers** (label menu per number — Mobile / Work /
-/// Home / Other — add and delete) and **Contact Info** (email, Telegram, website, LinkedIn).
+/// Editable contact list as a Form section: one row per entry (phones with a label menu — Mobile / Work /
+/// Home / Other), delete with − or a swipe, "+ Add Contact" for a phone, Telegram, WhatsApp, Instagram,
+/// email, website or LinkedIn.
 ///
 /// ```swift
 /// Form {
@@ -14,7 +15,7 @@ import SwiftUI
 public struct ContactInfoEditor: View {
     @Binding var draft: ContactInfoDraft
 
-    @FocusState private var focusedPhone: LabeledPhone.ID?
+    @FocusState private var focusedEntry: ContactEntry.ID?
 
     public init(draft: Binding<ContactInfoDraft>) {
         _draft = draft
@@ -22,46 +23,37 @@ public struct ContactInfoEditor: View {
 
     public var body: some View {
         Section {
-            ForEach($draft.phones) { $phone in
-                PhoneEditRow(phone: $phone, maxLength: draft.maxPhoneLength) { delete(phone.id) }
-                    .focused($focusedPhone, equals: phone.id)
+            ForEach($draft.entries) { $entry in
+                EntryEditRow(entry: $entry) { delete(entry.id) }
+                    .focused($focusedEntry, equals: entry.id)
             }
-            .onDelete { draft.removePhones(atOffsets: $0) }
-            if draft.canAddPhone {
-                Button("Add Phone", systemImage: "plus.circle.fill", action: addPhone)
-            }
+            .onDelete { draft.remove(atOffsets: $0) }
+            AddContactMenu(isEnabled: draft.canAdd, action: add)
         } header: {
-            Text("Phone Numbers")
+            Text("Contact Info")
         } footer: {
-            if !draft.canAddPhone {
-                Text("You can save up to \(draft.maxPhones) phone numbers.")
+            if !draft.canAdd {
+                Text("You can save up to \(ContactEntry.maxCount) contacts.")
             }
         }
-        .sensoryFeedback(.selection, trigger: draft.phones.map(\.label))
-
-        Section("Contact Info") {
-            ContactValueRow(kind: .email, value: $draft.email)
-            ContactValueRow(kind: .telegram, value: $draft.telegram)
-            ContactValueRow(kind: .website, value: $draft.website)
-            ContactValueRow(kind: .linkedin, value: $draft.linkedin)
-        }
+        .sensoryFeedback(.selection, trigger: draft.entries.compactMap(\.label))
     }
 
-    private func addPhone() {
-        focusedPhone = draft.addPhone()
+    private func add(_ kind: ContactFieldKind) {
+        guard let id = draft.add(kind) else { return }
+        Task { focusedEntry = id }
     }
 
-    private func delete(_ id: LabeledPhone.ID) {
+    private func delete(_ id: ContactEntry.ID) {
         withAnimation {
-            draft.removePhone(id: id)
+            draft.remove(id: id)
         }
     }
 }
 
-/// − · Mobile ⌃⌄ · number — like Contacts' edit mode.
-private struct PhoneEditRow: View {
-    @Binding var phone: LabeledPhone
-    let maxLength: Int
+/// − · (Mobile ⌃⌄ or the kind's icon) · value — like Contacts' edit mode.
+private struct EntryEditRow: View {
+    @Binding var entry: ContactEntry
     let onDelete: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -77,58 +69,54 @@ private struct PhoneEditRow: View {
                     .contentShape(.rect)
             }
             .buttonStyle(.borderless)
-            .accessibilityLabel(Text("Delete \(phone.label.title) Number"))
+            .accessibilityLabel(Text("Delete \(title)"))
 
             let layout = dynamicTypeSize.isAccessibilitySize
                 ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4)) : AnyLayout(HStackLayout(spacing: 12))
             layout {
-                Picker("Label", selection: $phone.label) {
-                    ForEach(PhoneLabel.allCases) { label in
-                        Label(label.title, systemImage: label.symbolName).tag(label)
+                if entry.kind == .phone {
+                    Picker("Label", selection: Binding { entry.label ?? .mobile } set: { entry.label = $0 }) {
+                        ForEach(PhoneLabel.allCases) { label in
+                            Label(label.title, systemImage: label.symbolName).tag(label)
+                        }
                     }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                    .fixedSize()
+                    .accessibilityLabel("Phone Label")
+                } else {
+                    SettingsIcon(field: entry.kind)
                 }
-                .pickerStyle(.menu)
-                .labelsHidden()
-                .fixedSize()
-                .accessibilityLabel("Phone Label")
 
-                TextField("Phone", text: $phone.value,
-                          prompt: Text(verbatim: ContactFieldInput.placeholder(for: .phone)))
-                    .keyboardType(.phonePad)
-                    .textContentType(.telephoneNumber)
-                    .accessibilityLabel(Text("\(phone.label.title) Number"))
-                    .onChange(of: phone.value) { _, value in
-                        if value.count > maxLength { phone.value = String(value.prefix(maxLength)) }
+                TextField(entry.kind.title, text: $entry.value,
+                          prompt: Text(verbatim: ContactFieldInput.placeholder(for: entry.kind)))
+                    .keyboardType(ContactFieldInput.keyboardType(for: entry.kind))
+                    .textContentType(ContactFieldInput.contentType(for: entry.kind))
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .accessibilityLabel(Text(title))
+                    .onChange(of: entry.value) { _, value in
+                        let limit = ContactEntry.maxLength(for: entry.kind)
+                        if value.count > limit { entry.value = String(value.prefix(limit)) }
                     }
             }
         }
         .listRowInsets(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 16))
     }
-}
 
-/// Icon + text field for one non-phone value.
-private struct ContactValueRow: View {
-    let kind: ContactFieldKind
-    @Binding var value: String
-
-    var body: some View {
-        HStack(spacing: 12) {
-            SettingsIcon(field: kind)
-            TextField(kind.title, text: $value, prompt: Text(verbatim: ContactFieldInput.placeholder(for: kind)))
-                .keyboardType(ContactFieldInput.keyboardType(for: kind))
-                .textContentType(ContactFieldInput.contentType(for: kind))
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .accessibilityLabel(kind.title)
-        }
+    private var title: String {
+        entry.kind == .phone ? String(localized: "\((entry.label ?? .mobile).title) Number") : entry.kind.title
     }
 }
 
 #Preview("Contact Info · editing") {
-    @Previewable @State var draft = ContactInfoDraft(
-        phones: [LabeledPhone(id: LabeledPhone.primaryID, label: .mobile, value: "+998 90 123 45 67"),
-                 LabeledPhone(label: .work, value: "+998 71 200 00 00")],
-        email: "kamila@uzum.uz", telegram: "@kamila.y", maxAdditionalPhones: 5, maxPhoneLength: 40)
+    @Previewable @State var draft = ContactInfoDraft(entries: [
+        ContactEntry(kind: .phone, label: .mobile, value: "+998 90 123 45 67"),
+        ContactEntry(kind: .phone, label: .work, value: "+998 71 200 00 00"),
+        ContactEntry(kind: .email, value: "kamila@uzum.uz"),
+        ContactEntry(kind: .telegram, value: "@kamila.y"),
+        ContactEntry(kind: .instagram, value: "@kamila.design"),
+    ])
     NavigationStack {
         Form { ContactInfoEditor(draft: $draft) }
             .navigationTitle("Edit Context")
@@ -137,7 +125,7 @@ private struct ContactValueRow: View {
 }
 
 #Preview("Contact Info · empty") {
-    @Previewable @State var draft = ContactInfoDraft(maxAdditionalPhones: 5, maxPhoneLength: 40)
+    @Previewable @State var draft = ContactInfoDraft()
     NavigationStack {
         Form { ContactInfoEditor(draft: $draft) }
     }

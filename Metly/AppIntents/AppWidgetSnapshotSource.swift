@@ -56,10 +56,12 @@ final class AppWidgetSnapshotSource: WidgetSnapshotSource {
                 contactFields: profile.contactFields,
                 phoneLabel: profile.phoneLabel,
                 additionalPhones: profile.additionalPhones,
+                contacts: profile.contacts,
                 linksPaused: profile.linksPaused
             ),
             cards: cards.map {
-                WidgetSnapshotInput.Card(id: $0.id, name: $0.name, slug: $0.slug, sortOrder: $0.sortOrder, design: $0.design)
+                WidgetSnapshotInput.Card(id: $0.id, name: $0.name, slug: $0.slug, sortOrder: $0.sortOrder, design: $0.design,
+                                         visibleContactIDs: $0.visibleContactIDs)
             },
             defaultCardID: context.defaultCard()?.id,
             shareCardID: context.cardToShare()?.id,

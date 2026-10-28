@@ -162,7 +162,8 @@ struct LabeledPhoneTests {
         #expect(unconnected.viewer?.isConnected == false)
         #expect(!unconnected.fields.contains { $0.kind == .phone })
         #expect(unconnected.additionalPhones == [MockSeed.kamilaWorkPhone])
-        #expect(unconnected.faceContent?.additionalPhones.first?.label == .work)
+        // Her Work line is the first number this viewer sees.
+        #expect(unconnected.faceContent?.contacts.first { $0.kind == .phone }?.label == .work)
 
         // Own card: Public + Connections, never Private.
         let own = try await connected.publicProfile(slug: "aziza-w7k2")

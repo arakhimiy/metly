@@ -5,163 +5,104 @@ import SwiftData
 import Testing
 @testable import FeatureProfile
 
-/// PROFILE › Contact Details: the primary phone's label and the extra labelled numbers.
-@Suite("Profile phone numbers")
+/// PROFILE › Contact Details (3.0.0): a list the owner builds with "+ Add Contact".
+@Suite("Profile contact list")
 @MainActor
 struct ProfilePhonesTests {
     private func makeProfile() throws -> (ModelContainer, Profile) {
         let container = try MetlyModelContainer.make(inMemory: true)
-        let profile = Profile(fullName: "Aziza Karimova", contactFields: ContactField.defaults)
-        profile.setField(ContactField(kind: .phone, value: "+998 90 123 45 67", privacy: .public))
+        let profile = Profile(fullName: "Aziza Karimova",
+                              contactFields: [ContactField(kind: .phone, value: "+998 90 123 45 67", privacy: .public)])
         container.mainContext.insert(profile)
         profile.syncState = .synced
         return (container, profile)
     }
 
-    @Test func addingSuggestsTheNextUnusedLabel() throws {
+    @Test func addingAppendsAnEmptyEntryWithoutQueueingASync() throws {
         let (container, profile) = try makeProfile()
-        let first = try #require(profile.addPhone())
+        let id = try #require(profile.addContact(.whatsapp))
+        #expect(profile.contacts.map(\.kind) == [.phone, .whatsapp])
+        #expect(profile.contacts.last?.id == id)
+        #expect(profile.contacts.last?.isEmpty == true)
+        #expect(profile.syncState == .synced)   // nothing to send until a value is typed
+        profile.editor.valueBinding(id: id).wrappedValue = "+998 90 123 45 67"
         #expect(profile.syncState == .pendingUpsert)
-        #expect(profile.additionalPhone(id: first)?.label == .work)
-        #expect(profile.additionalPhone(id: first)?.value == "")
-        profile.addPhone()
-        profile.addPhone()
-        #expect(profile.additionalPhones.map(\.label) == [.work, .home, .other])
         withExtendedLifetime(container) {}
     }
 
-    @Test func newNumbersAreNeverMoreOpenThanThePrimary() throws {
+    /// Regression: tapping "Add Phone" twice before typing made the rows jump (the empty one vanished as
+    /// another was added). The empty row is reused instead.
+    @Test func tappingAddAgainReusesTheEmptyRow() throws {
         let (container, profile) = try makeProfile()
-        let shared = try #require(profile.addPhone())
-        #expect(profile.additionalPhone(id: shared)?.privacy == .connections)   // phones start at Connections
-
-        profile.update(.phone) { $0.privacy = .private }
-        let hidden = try #require(profile.addPhone())
-        #expect(profile.additionalPhone(id: hidden)?.privacy == .private)
+        let first = try #require(profile.addContact(.phone))
+        #expect(profile.addContact(.phone) == first)
+        #expect(profile.addContact(.instagram) == first)
+        #expect(profile.contacts.count == 2)
+        #expect(profile.contacts.last?.kind == .instagram)
         withExtendedLifetime(container) {}
     }
 
-    @Test func atMostFiveExtraNumbers() throws {
+    @Test func newNumbersNeverShareMoreThanTheOwnersPhones() throws {
         let (container, profile) = try makeProfile()
-        for _ in 0..<ProfileFieldLimits.maxAdditionalPhones { #expect(profile.addPhone() != nil) }
-        #expect(!profile.canAddPhone)
-        #expect(profile.addPhone() == nil)
-        #expect(profile.additionalPhones.count == 5)
+        let shared = try #require(profile.addContact(.phone))
+        #expect(profile.contacts.first { $0.id == shared }?.privacy == .connections)   // phones start at Connections
+        profile.removeContacts(ids: [shared])
+
+        profile.updateContact(id: profile.contacts[0].id) { $0.privacy = .private }
+        let hidden = try #require(profile.addContact(.whatsapp))
+        #expect(profile.contacts.first { $0.id == hidden }?.privacy == .private)
+        let instagram = try #require(profile.addContact(.instagram))
+        #expect(instagram == hidden)   // still empty: reused
         withExtendedLifetime(container) {}
     }
 
-    @Test func labelPrivacyAndValueEditsMarkTheProfileChanged() throws {
+    @Test func theListStopsAtTheLimit() throws {
         let (container, profile) = try makeProfile()
-        let id = try #require(profile.addPhone())
-        profile.syncState = .synced
-        let editor = profile.editor
+        for index in 1..<ContactEntry.maxCount {
+            let id = try #require(profile.addContact(.phone))
+            profile.updateContact(id: id) { $0.value = "+998 71 200 10 \(index)" }
+        }
+        #expect(!profile.canAddContact)
+        #expect(profile.addContact(.email) == nil)
+        #expect(profile.contacts.count == ContactEntry.maxCount)
+        withExtendedLifetime(container) {}
+    }
 
-        editor.extraPhoneLabelBinding(id: id).wrappedValue = .work   // unchanged
-        editor.extraPhonePrivacyBinding(id: id).wrappedValue = .connections   // unchanged
+    @Test func severalOfTheSameKind() throws {
+        let (container, profile) = try makeProfile()
+        for email in ["aziza@uzum.uz", "aziza@gmail.com"] {
+            let id = try #require(profile.addContact(.email))
+            profile.updateContact(id: id) { $0.value = email }
+        }
+        #expect(profile.contacts.entries(of: .email).map(\.value) == ["aziza@uzum.uz", "aziza@gmail.com"])
+        #expect(profile.field(.email).value == "aziza@uzum.uz")   // the one-per-kind view takes the first
+        withExtendedLifetime(container) {}
+    }
+
+    @Test func emptyRowsAreDroppedAndDeletesQueueASync() throws {
+        let (container, profile) = try makeProfile()
+        profile.addContact(.telegram)
+        profile.removeEmptyContacts()
+        #expect(profile.contacts.map(\.kind) == [.phone])
         #expect(profile.syncState == .synced)
-
-        editor.extraPhoneLabelBinding(id: id).wrappedValue = .home
-        #expect(profile.additionalPhone(id: id)?.label == .home)
-        #expect(profile.syncState == .pendingUpsert)
-
-        profile.syncState = .synced
-        editor.extraPhonePrivacyBinding(id: id).wrappedValue = .public
-        #expect(profile.additionalPhone(id: id)?.privacy == .public)
-        #expect(profile.syncState == .pendingUpsert)
-
-        profile.syncState = .synced
-        editor.extraPhoneValueBinding(id: id).wrappedValue = "+998 71 200 10 20"
-        #expect(profile.additionalPhone(id: id)?.value == "+998 71 200 10 20")
+        profile.removeContacts(ids: [profile.contacts[0].id])
+        #expect(profile.contacts.isEmpty)
         #expect(profile.syncState == .pendingUpsert)
         withExtendedLifetime(container) {}
     }
 
-    @Test func primaryLabelEdits() throws {
+    @Test func aNewNumberTakesTheNextFreeLabel() throws {
+        let (container, profile) = try makeProfile()   // has a Mobile number
+        let second = try #require(profile.addContact(.phone))
+        #expect(profile.contacts.first { $0.id == second }?.label == .work)
+        withExtendedLifetime(container) {}
+    }
+
+    @Test func labelsAreEditable() throws {
         let (container, profile) = try makeProfile()
-        let label = profile.editor.phoneLabelBinding()
-        label.wrappedValue = .mobile
-        #expect(profile.syncState == .synced)
-        label.wrappedValue = .work
+        profile.editor.labelBinding(id: profile.contacts[0].id).wrappedValue = .work
         #expect(profile.phoneLabel == .work)
         #expect(profile.syncState == .pendingUpsert)
         withExtendedLifetime(container) {}
-    }
-
-    /// The API caps every phone number at 40 characters (a longer one gets the whole profile rejected).
-    @Test func numbersAreCappedAtFortyCharacters() throws {
-        let (container, profile) = try makeProfile()
-        let id = try #require(profile.addPhone())
-        let long = "+998 " + String(repeating: "9", count: 60)
-        profile.editor.extraPhoneValueBinding(id: id).wrappedValue = long
-        profile.editor.valueBinding(for: .phone).wrappedValue = long
-        #expect(profile.additionalPhone(id: id)?.value.count == 40)
-        #expect(profile.field(.phone).value.count == 40)
-        #expect(profile.field(.phone).value.hasPrefix("+998 9"))
-        withExtendedLifetime(container) {}
-    }
-
-    @Test func leavingANumberCleansItUpOrRemovesItWhenEmpty() throws {
-        let (container, profile) = try makeProfile()
-        let typed = try #require(profile.addPhone())
-        let blank = try #require(profile.addPhone())
-        profile.editor.extraPhoneValueBinding(id: typed).wrappedValue = "  +998 71   200 10 20 "
-        profile.editor.extraPhoneValueBinding(id: blank).wrappedValue = "   "
-
-        profile.normalizePhone(id: typed)
-        profile.normalizePhone(id: blank)
-        #expect(profile.additionalPhones.map(\.value) == ["+998 71 200 10 20"])
-        withExtendedLifetime(container) {}
-    }
-
-    @Test func removingNumbers() throws {
-        let (container, profile) = try makeProfile()
-        let work = try #require(profile.addPhone())
-        let home = try #require(profile.addPhone())
-        let other = try #require(profile.addPhone())
-        profile.syncState = .synced
-
-        profile.removePhone(id: UUID())   // unknown: nothing to do
-        #expect(profile.syncState == .synced)
-
-        profile.removePhone(id: home)
-        #expect(profile.additionalPhones.map(\.id) == [work, other])
-        #expect(profile.syncState == .pendingUpsert)
-
-        profile.syncState = .synced
-        profile.removePhones(atOffsets: IndexSet([0, 7]))
-        #expect(profile.additionalPhones.map(\.id) == [other])
-        #expect(profile.syncState == .pendingUpsert)
-        withExtendedLifetime(container) {}
-    }
-
-    @Test func allPhonesListsThePrimaryFirst() throws {
-        let (container, profile) = try makeProfile()
-        let id = try #require(profile.addPhone())
-        profile.editor.extraPhoneValueBinding(id: id).wrappedValue = "+998 71 200 10 20"
-        profile.addPhone()   // still empty: skipped
-        #expect(profile.allPhones.map(\.value) == ["+998 90 123 45 67", "+998 71 200 10 20"])
-        #expect(profile.allPhones.first?.isPrimary == true)
-        withExtendedLifetime(container) {}
-    }
-
-    @Test func returnKeyWalksThroughExtraNumbersBeforeEmail() {
-        let first = UUID(), second = UUID()
-        let ids = [first, second]
-        #expect(ProfileFocusField.contact(.phone).next(extraPhoneIDs: ids) == .extraPhone(first))
-        #expect(ProfileFocusField.extraPhone(first).next(extraPhoneIDs: ids) == .extraPhone(second))
-        #expect(ProfileFocusField.extraPhone(second).next(extraPhoneIDs: ids) == .contact(.email))
-        #expect(ProfileFocusField.extraPhone(UUID()).next(extraPhoneIDs: ids) == .contact(.email))
-        #expect(ProfileFocusField.contact(.phone).next(extraPhoneIDs: []) == .contact(.email))
-        #expect(ProfileFocusField.contact(.linkedin).next(extraPhoneIDs: ids) == nil)
-    }
-
-    @Test func suggestedLabelsAndPrivacy() {
-        #expect(PhoneListRules.suggestedLabel(primary: .work, extras: []) == .mobile)
-        #expect(PhoneListRules.suggestedLabel(primary: .mobile, extras: [LabeledPhone(label: .work)]) == .home)
-        #expect(PhoneListRules.suggestedLabel(primary: .mobile, extras: [LabeledPhone(label: .work), LabeledPhone(label: .home)])
-                == .other)
-        #expect(PhoneListRules.suggestedPrivacy(primary: .public) == .connections)
-        #expect(PhoneListRules.suggestedPrivacy(primary: .connections) == .connections)
-        #expect(PhoneListRules.suggestedPrivacy(primary: .private) == .private)
     }
 }

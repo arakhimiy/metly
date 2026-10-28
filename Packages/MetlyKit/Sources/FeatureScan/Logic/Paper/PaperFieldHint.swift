@@ -26,8 +26,10 @@ nonisolated enum PaperFieldHint: Equatable, Sendable {
     static func isWellFormed(_ field: ContactField) -> Bool {
         let value = field.value.trimmingCharacters(in: .whitespaces)
         switch field.kind {
-        case .phone:
+        case .phone, .whatsapp:
             return PhoneFormat.isPlausible(value)
+        case .instagram:
+            return value.wholeMatch(of: /@?[A-Za-z0-9_.]{1,30}/) != nil
         case .email:
             return value.wholeMatch(of: /[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/) != nil
         case .telegram:

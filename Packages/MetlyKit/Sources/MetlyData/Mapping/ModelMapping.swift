@@ -11,8 +11,8 @@ import SwiftData
 
 public extension Profile {
     var dto: ProfileDTO {
-        ProfileDTO(id: id, fullName: fullName, jobTitle: jobTitle, company: company, contactFields: contactFields,
-                   phoneLabel: phoneLabel, additionalPhones: additionalPhones, defaultCardID: defaultCardID,
+        ProfileDTO(id: id, fullName: fullName, jobTitle: jobTitle, company: company, contacts: contacts.trimmedForSync,
+                   defaultCardID: defaultCardID,
                    linksPaused: linksPaused, notificationPrefs: notificationPrefs, privacySettings: privacySettings,
                    isSetupComplete: isSetupComplete, createdAt: createdAt, updatedAt: updatedAt, deletedAt: deletedAt)
     }
@@ -23,9 +23,7 @@ public extension Profile {
         fullName = dto.fullName
         jobTitle = dto.jobTitle
         company = dto.company
-        contactFields = dto.contactFields
-        phoneLabel = dto.phoneLabel
-        additionalPhones = dto.additionalPhones
+        contacts = dto.contacts
         defaultCardID = dto.defaultCardID
         linksPaused = dto.linksPaused
         notificationPrefs = dto.notificationPrefs
@@ -46,7 +44,7 @@ public extension Profile {
 public extension Card {
     var dto: CardDTO {
         CardDTO(id: id, name: name, slug: slug.isEmpty ? nil : slug, url: url, sortOrder: sortOrder, design: design,
-                publishState: publishState, isReadOnly: isReadOnly, stats: stats, createdAt: createdAt,
+                visibleContacts: visibleContactIDs, publishState: publishState, isReadOnly: isReadOnly, stats: stats, createdAt: createdAt,
                 updatedAt: updatedAt, deletedAt: deletedAt)
     }
 
@@ -59,6 +57,7 @@ public extension Card {
         name = dto.name
         sortOrder = dto.sortOrder
         design = dto.design
+        visibleContactIDs = dto.visibleContacts
         createdAt = dto.createdAt
         updatedAt = dto.updatedAt
         deletedAt = dto.deletedAt
@@ -110,8 +109,7 @@ public extension Event {
 public extension Connection {
     var dto: ConnectionDTO {
         ConnectionDTO(id: id, remoteUserID: remoteUserID, fullName: fullName, jobTitle: jobTitle, company: company,
-                      phone: phone, phoneLabel: phoneLabel, additionalPhones: additionalPhones, email: email,
-                      telegram: telegram, website: website, linkedin: linkedin, theirCard: theirCard,
+                      contacts: contacts.trimmedForSync, theirCard: theirCard?.legacyOnly,
                       mySharedCardID: mySharedCardID, source: source, context: context,
                       previousMeetings: previousMeetings, eventID: event?.id ?? context.eventID, note: note, tags: tags,
                       isMerged: isMerged, isPendingMerge: isPendingMerge, isBlocked: isBlocked, createdAt: createdAt,
@@ -130,13 +128,7 @@ public extension Connection {
         fullName = dto.fullName
         jobTitle = dto.jobTitle
         company = dto.company
-        phone = dto.phone
-        phoneLabel = dto.phoneLabel
-        additionalPhones = dto.additionalPhones
-        email = dto.email
-        telegram = dto.telegram
-        website = dto.website
-        linkedin = dto.linkedin
+        contacts = dto.contacts
         theirCard = dto.theirCard
         mySharedCardID = dto.mySharedCardID
         source = dto.source
@@ -304,5 +296,15 @@ extension ModelContext {
         let previousID = optimistic.id
         optimistic.id = dto.id
         return (optimistic, previousID)
+    }
+}
+
+extension CardSnapshot {
+    /// Older apps decode `theirCard` / `peerCard` with the original five kinds only.
+    var legacyOnly: CardSnapshot {
+        var copy = self
+        copy.fields = fields.filter(\.kind.isLegacy)
+        copy.design.visibleFields = design.visibleFields.filter(\.isLegacy)
+        return copy
     }
 }

@@ -69,9 +69,22 @@ nonisolated public enum WidgetSnapshotBuilder {
         }
     }
 
+    /// Public, non-empty entries the card shows, in the owner's order.
+    public static func publicContacts(_ contacts: [ContactEntry], selection: [UUID]?, design: CardDesign) -> [ContactEntry] {
+        let chosen = selection.map(Set.init)
+        return contacts.compactMap { entry in
+            guard !entry.isEmpty, CardAudience.public.allows(entry.privacy),
+                  chosen?.contains(entry.id) ?? design.visibleFields.contains(entry.kind) else { return nil }
+            var copy = entry
+            copy.value = entry.value.trimmingCharacters(in: .whitespacesAndNewlines)
+            return copy
+        }
+    }
+
     static func card(from card: WidgetSnapshotInput.Card, owner: WidgetSnapshotInput.Owner, isDefault: Bool) -> WidgetCard {
-        let fields = publicFields(owner.contactFields, design: card.design)
-        let phones = publicPhones(owner.additionalPhones, design: card.design)
+        let contacts = publicContacts(owner.contacts, selection: card.visibleContactIDs, design: card.design)
+        let fields = ContactFieldKind.allCases.compactMap { contacts.first(of: $0)?.field }
+        let phones = Array(contacts.entries(of: .phone).dropFirst().map(\.labeledPhone))
         let slug = card.slug.trimmingCharacters(in: .whitespacesAndNewlines)
         let url = slug.isEmpty ? nil : Brand.cardURL(slug: slug)
         let payload: String
@@ -79,11 +92,12 @@ nonisolated public enum WidgetSnapshotBuilder {
             payload = url.absoluteString
         } else {
             let content = CardFaceContent(fullName: owner.fullName, jobTitle: owner.jobTitle, company: owner.company,
-                                          fields: fields, additionalPhones: phones, phoneLabel: owner.phoneLabel)
+                                          contacts: contacts)
             payload = VCardBuilder.make(content: content, url: nil)
         }
         return WidgetCard(id: card.id, name: card.name, design: card.design, url: url, fields: fields,
-                          qrPayload: payload, isDefault: isDefault, additionalPhones: phones, phoneLabel: owner.phoneLabel)
+                          qrPayload: payload, isDefault: isDefault, additionalPhones: phones,
+                          phoneLabel: contacts.legacyPhoneLabel, contacts: contacts)
     }
 
     static func followUp(from followUp: WidgetSnapshotInput.FollowUp) -> WidgetFollowUp {

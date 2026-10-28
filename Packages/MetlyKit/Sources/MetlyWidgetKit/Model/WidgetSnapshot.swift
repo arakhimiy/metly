@@ -168,9 +168,12 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
     public var additionalPhones: [LabeledPhone]
     /// Label of the primary phone in `fields`.
     public var phoneLabel: PhoneLabel
+    /// The card's Public entries in the owner's order (3.0.0); nil in snapshots written before.
+    public var contacts: [ContactEntry]?
 
     public init(id: UUID, name: String, design: CardDesign, url: URL?, fields: [ContactField], qrPayload: String,
-                isDefault: Bool = false, additionalPhones: [LabeledPhone] = [], phoneLabel: PhoneLabel = .mobile) {
+                isDefault: Bool = false, additionalPhones: [LabeledPhone] = [], phoneLabel: PhoneLabel = .mobile,
+                contacts: [ContactEntry]? = nil) {
         self.id = id
         self.name = name
         self.design = design
@@ -180,10 +183,11 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
         self.isDefault = isDefault
         self.additionalPhones = additionalPhones
         self.phoneLabel = phoneLabel
+        self.contacts = contacts
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, design, url, fields, qrPayload, isDefault, additionalPhones, phoneLabel
+        case id, name, design, url, fields, qrPayload, isDefault, additionalPhones, phoneLabel, contacts
     }
 
     /// Snapshots written before labelled phones (no `additionalPhones` / `phoneLabel`) still decode.
@@ -198,6 +202,7 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
         isDefault = try container.decode(Bool.self, forKey: .isDefault)
         additionalPhones = try container.decodeIfPresent([LabeledPhone].self, forKey: .additionalPhones) ?? []
         phoneLabel = try container.decodeIfPresent(PhoneLabel.self, forKey: .phoneLabel) ?? .mobile
+        contacts = try? container.decodeIfPresent([ContactEntry].self, forKey: .contacts)
     }
 
     /// "{Card} Card" (SPEC §2.5.16), without doubling a name that already ends in "Card".
@@ -214,7 +219,8 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
     public func faceContent(owner: WidgetOwner) -> CardFaceContent {
         CardFaceContent(fullName: owner.fullName, jobTitle: owner.jobTitle, company: owner.company,
                         photoData: owner.photoThumbnail, logoData: owner.logoThumbnail,
-                        fields: fields, qrPayload: qrPayload, additionalPhones: additionalPhones, phoneLabel: phoneLabel)
+                        fields: fields, qrPayload: qrPayload, additionalPhones: additionalPhones, phoneLabel: phoneLabel,
+                        contacts: contacts)
     }
 
     /// The design the widget renders: always with its QR (the widget exists to be scanned).

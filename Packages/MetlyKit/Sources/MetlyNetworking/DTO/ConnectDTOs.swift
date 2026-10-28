@@ -146,11 +146,14 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
     /// The owner's extra phones, filtered like `fields` (Public, + Connections for connected viewers; only
     /// when the card shows phones). Not part of `snapshot` — copy them with `Connection.mergePhones(from:)`.
     public var additionalPhones: [LabeledPhone]
+    /// The visible contact entries in the owner's order (3.0.0) — what the card shows to this viewer.
+    /// Missing on the wire → rebuilt from `fields` / `phoneLabel` / `additionalPhones`.
+    public var contacts: [ContactEntry]
     public var viewer: ViewerRelationDTO?
 
     public init(slug: String, status: PublicCardStatus, url: URL? = nil, cardName: String? = nil, owner: PublicOwnerDTO? = nil,
                 design: CardDesign? = nil, fields: [ContactField] = [], phoneLabel: PhoneLabel = .mobile,
-                additionalPhones: [LabeledPhone] = [], viewer: ViewerRelationDTO? = nil) {
+                additionalPhones: [LabeledPhone] = [], contacts: [ContactEntry]? = nil, viewer: ViewerRelationDTO? = nil) {
         self.slug = slug
         self.status = status
         self.url = url
@@ -160,6 +163,7 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
         self.fields = fields
         self.phoneLabel = phoneLabel
         self.additionalPhones = additionalPhones
+        self.contacts = contacts ?? .fromLegacy(fields: fields, phoneLabel: phoneLabel, additionalPhones: additionalPhones)
         self.viewer = viewer
     }
 
@@ -174,6 +178,8 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
         fields = try container.decodeIfPresent([ContactField].self, forKey: .fields) ?? []
         phoneLabel = try container.decodePhoneLabel(forKey: .phoneLabel)
         additionalPhones = try container.decodeLabeledPhones(forKey: .additionalPhones)
+        contacts = try container.decodeContacts(forKey: .contacts)
+            ?? .fromLegacy(fields: fields, phoneLabel: phoneLabel, additionalPhones: additionalPhones)
         viewer = try container.decodeIfPresent(ViewerRelationDTO.self, forKey: .viewer)
     }
 
@@ -191,6 +197,8 @@ public struct PublicCardDTO: Codable, Sendable, Hashable {
         var content = snapshot.faceContent
         content.phoneLabel = phoneLabel
         content.additionalPhones = additionalPhones.filter { !$0.isEmpty }
+        content.contacts = contacts.filter { !$0.isEmpty }
+        content.isSelection = true   // the server already applied the card's selection and the audience
         return content
     }
 }

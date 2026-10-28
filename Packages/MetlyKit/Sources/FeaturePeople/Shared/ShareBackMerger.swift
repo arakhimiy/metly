@@ -39,7 +39,7 @@ enum ShareBackMerger {
             justMet.setValue(shareBack.value(for: kind), for: kind)
         }
         // Their numbers with their labels: fills the just-met record's gaps, never overwrites a number.
-        justMet.mergePhones(primary: shareBack.phone, label: shareBack.phoneLabel, additional: shareBack.additionalPhones)
+        justMet.mergeContacts(shareBack.contacts)
         if justMet.jobTitle.isEmpty { justMet.jobTitle = shareBack.jobTitle }
         if justMet.company.isEmpty { justMet.company = shareBack.company }
         if justMet.remoteUserID == nil { justMet.remoteUserID = shareBack.remoteUserID }

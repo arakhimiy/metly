@@ -7,20 +7,21 @@ import SwiftData
 // and `markDeleted()` instead of `modelContext.delete(_:)` so the sync engine sees it.
 // Enum-typed properties are stored as raw strings so they work in #Predicate.
 
-/// 2.0.0 — labelled phones: `phoneLabelRaw` + `additionalPhones` on Profile and Connection.
-public enum MetlySchemaV2: VersionedSchema {
-    public static let versionIdentifier = Schema.Version(2, 0, 0)
+/// 3.0.0 — contact lists (docs/api/CONTACTS.md): `contacts` on Profile and Connection is the source of
+/// truth; the 2.0.0 columns survive as `legacy…` (read once by the migration). `visibleContactIDs` on Card.
+public enum MetlySchemaV3: VersionedSchema {
+    public static let versionIdentifier = Schema.Version(3, 0, 0)
     public static var models: [any PersistentModel.Type] {
         [Profile.self, Card.self, Connection.self, FollowUp.self, Event.self, ConnectRequest.self]
     }
 }
 
-public typealias Profile = MetlySchemaV2.Profile
-public typealias Card = MetlySchemaV2.Card
-public typealias Connection = MetlySchemaV2.Connection
-public typealias FollowUp = MetlySchemaV2.FollowUp
-public typealias Event = MetlySchemaV2.Event
-public typealias ConnectRequest = MetlySchemaV2.ConnectRequest
+public typealias Profile = MetlySchemaV3.Profile
+public typealias Card = MetlySchemaV3.Card
+public typealias Connection = MetlySchemaV3.Connection
+public typealias FollowUp = MetlySchemaV3.FollowUp
+public typealias Event = MetlySchemaV3.Event
+public typealias ConnectRequest = MetlySchemaV3.ConnectRequest
 
 /// Shared sync bookkeeping. Every model conforms.
 public protocol SyncedRecord: PersistentModel {
@@ -63,7 +64,7 @@ public extension SyncedRecord {
     var isDeleted: Bool { deletedAt != nil }
 }
 
-extension MetlySchemaV2 {
+extension MetlySchemaV3 {
 
     // MARK: Profile (singleton per signed-in user)
 
@@ -75,12 +76,12 @@ extension MetlySchemaV2 {
         public var company: String
         @Attribute(.externalStorage) public var photoData: Data?
         @Attribute(.externalStorage) public var logoData: Data?
-        /// One entry per ContactFieldKind, display order.
-        public var contactFields: [ContactField]
-        /// Label of the primary phone in `contactFields` (Mobile by default). Added in 2.0.0.
-        public var phoneLabelRaw: String = PhoneLabel.mobile.rawValue
-        /// Extra phones after the primary one, each with its own label and privacy. Added in 2.0.0.
-        public var additionalPhones: [LabeledPhone] = []
+        /// The owner's contact details in their order (≤ `ContactEntry.maxCount`). Added in 3.0.0.
+        public var contacts: [ContactEntry] = []
+        /// 1.0.0–2.0.0 storage, only read by the 2.0.0 → 3.0.0 migration. Use `contacts`.
+        @Attribute(originalName: "contactFields") public var legacyContactFields: [ContactField] = []
+        @Attribute(originalName: "phoneLabelRaw") public var legacyPhoneLabelRaw: String = PhoneLabel.mobile.rawValue
+        @Attribute(originalName: "additionalPhones") public var legacyAdditionalPhones: [LabeledPhone] = []
         public var defaultCardID: UUID?
         public var linksPaused: Bool
         public var notificationPrefs: NotificationPrefs
@@ -92,14 +93,15 @@ extension MetlySchemaV2 {
         public var deletedAt: Date?
 
         public init(id: UUID = UUID(), fullName: String = "", jobTitle: String = "", company: String = "",
-                    contactFields: [ContactField] = ContactField.defaults, isSetupComplete: Bool = false) {
+                    contactFields: [ContactField] = [], contacts: [ContactEntry] = [], isSetupComplete: Bool = false) {
             self.id = id
             self.fullName = fullName
             self.jobTitle = jobTitle
             self.company = company
-            self.contactFields = contactFields
-            self.phoneLabelRaw = PhoneLabel.mobile.rawValue
-            self.additionalPhones = []
+            self.contacts = contacts + [ContactEntry].fromLegacy(fields: contactFields, phoneLabel: .mobile, additionalPhones: [])
+            self.legacyContactFields = []
+            self.legacyPhoneLabelRaw = PhoneLabel.mobile.rawValue
+            self.legacyAdditionalPhones = []
             self.linksPaused = false
             self.notificationPrefs = NotificationPrefs()
             self.privacySettings = PrivacySettings()
@@ -109,31 +111,39 @@ extension MetlySchemaV2 {
             self.syncStateRaw = SyncState.pendingUpsert.rawValue
         }
 
+        // MARK: One-value-per-kind view of `contacts` (code written before 3.0.0)
+
+        /// The first entry of each kind as a field (empty when there is none), every kind.
+        public var contactFields: [ContactField] {
+            get { ContactFieldKind.allCases.map(field) }
+            set { newValue.forEach(setField) }
+        }
+
+        /// The first entry of `kind`, or an empty field with the kind's default privacy.
         public func field(_ kind: ContactFieldKind) -> ContactField {
-            contactFields.first { $0.kind == kind } ?? ContactField(kind: kind)
+            contacts.first(of: kind)?.field ?? ContactField(kind: kind)
         }
 
+        /// Writes the first entry of the field's kind: updated in place, appended when there is none,
+        /// removed when the value is empty.
         public func setField(_ field: ContactField) {
-            if let index = contactFields.firstIndex(where: { $0.kind == field.kind }) {
-                contactFields[index] = field
-            } else {
-                contactFields.append(field)
-                contactFields.sort { ContactFieldKind.allCases.firstIndex(of: $0.kind)! < ContactFieldKind.allCases.firstIndex(of: $1.kind)! }
-            }
+            contacts.setFirst(field.kind, value: field.value, privacy: field.privacy)
         }
 
+        /// Label of the first phone (Mobile when there is none).
         public var phoneLabel: PhoneLabel {
-            get { PhoneLabel(rawValue: phoneLabelRaw) ?? .mobile }
-            set { phoneLabelRaw = newValue.rawValue }
+            get { contacts.legacyPhoneLabel }
+            set { contacts.setFirstPhoneLabel(newValue) }
         }
 
-        /// Every phone, primary first (empty values skipped). Privacy comes from each entry.
-        public var allPhones: [LabeledPhone] {
-            let primary = field(.phone)
-            let first = primary.isEmpty ? [] : [LabeledPhone(id: LabeledPhone.primaryID, label: phoneLabel,
-                                                             value: primary.value, privacy: primary.privacy)]
-            return first + additionalPhones.filter { !$0.isEmpty }
+        /// The phones after the first one. Setting replaces them (kept right after the first phone).
+        public var additionalPhones: [LabeledPhone] {
+            get { Array(contacts.entries(of: .phone).dropFirst().map(\.labeledPhone)) }
+            set { contacts.setExtraPhones(newValue) }
         }
+
+        /// Every phone, first one first (empty values skipped). Privacy comes from each entry.
+        public var allPhones: [LabeledPhone] { contacts.entries(of: .phone).map(\.labeledPhone) }
 
         /// A user edit of one field's value (its privacy stays); queues the profile for sync.
         public func setContactValue(_ value: String, for kind: ContactFieldKind) {
@@ -155,6 +165,9 @@ extension MetlySchemaV2 {
         public var slug: String
         public var sortOrder: Int
         public var design: CardDesign
+        /// Profile contact entries this card shows (`ContactEntry.id`); nil = a card from before 3.0.0,
+        /// which shows the entries whose kind is in `design.visibleFields`. Added in 3.0.0.
+        public var visibleContactIDs: [UUID]? = nil
         public var publishStateRaw: String
         /// Pro downgrade beyond the Free card limit.
         public var isReadOnly: Bool
@@ -197,15 +210,16 @@ extension MetlySchemaV2 {
         public var fullName: String
         public var jobTitle: String
         public var company: String
-        public var phone: String
-        /// Label of `phone` (Mobile by default). Added in 2.0.0.
-        public var phoneLabelRaw: String = PhoneLabel.mobile.rawValue
-        /// Extra phones after `phone` (work, home…). Added in 2.0.0.
-        public var additionalPhones: [LabeledPhone] = []
-        public var email: String
-        public var telegram: String
-        public var website: String
-        public var linkedin: String
+        /// The person's contact details in order (≤ `ContactEntry.maxCount`). Added in 3.0.0.
+        public var contacts: [ContactEntry] = []
+        /// 1.0.0–2.0.0 storage, only read by the 2.0.0 → 3.0.0 migration. Use `contacts`.
+        @Attribute(originalName: "phone") public var legacyPhone: String = ""
+        @Attribute(originalName: "phoneLabelRaw") public var legacyPhoneLabelRaw: String = PhoneLabel.mobile.rawValue
+        @Attribute(originalName: "additionalPhones") public var legacyAdditionalPhones: [LabeledPhone] = []
+        @Attribute(originalName: "email") public var legacyEmail: String = ""
+        @Attribute(originalName: "telegram") public var legacyTelegram: String = ""
+        @Attribute(originalName: "website") public var legacyWebsite: String = ""
+        @Attribute(originalName: "linkedin") public var legacyLinkedin: String = ""
         @Attribute(.externalStorage) public var avatarData: Data?
         public var theirCard: CardSnapshot?
         /// "You shared your Work card with …"
@@ -233,13 +247,14 @@ extension MetlySchemaV2 {
             self.fullName = fullName
             self.jobTitle = jobTitle
             self.company = company
-            self.phone = ""
-            self.phoneLabelRaw = PhoneLabel.mobile.rawValue
-            self.additionalPhones = []
-            self.email = ""
-            self.telegram = ""
-            self.website = ""
-            self.linkedin = ""
+            self.contacts = []
+            self.legacyPhone = ""
+            self.legacyPhoneLabelRaw = PhoneLabel.mobile.rawValue
+            self.legacyAdditionalPhones = []
+            self.legacyEmail = ""
+            self.legacyTelegram = ""
+            self.legacyWebsite = ""
+            self.legacyLinkedin = ""
             self.sourceRaw = source.rawValue
             self.context = context
             self.previousMeetings = []
@@ -259,45 +274,58 @@ extension MetlySchemaV2 {
             set { sourceRaw = newValue.rawValue }
         }
 
+        // MARK: One-value-per-kind view of `contacts` (code written before 3.0.0)
+
+        public var phone: String {
+            get { value(for: .phone) }
+            set { setValue(newValue, for: .phone) }
+        }
+        public var email: String {
+            get { value(for: .email) }
+            set { setValue(newValue, for: .email) }
+        }
+        public var telegram: String {
+            get { value(for: .telegram) }
+            set { setValue(newValue, for: .telegram) }
+        }
+        public var website: String {
+            get { value(for: .website) }
+            set { setValue(newValue, for: .website) }
+        }
+        public var linkedin: String {
+            get { value(for: .linkedin) }
+            set { setValue(newValue, for: .linkedin) }
+        }
+
+        /// Value of the first entry of `kind`, or "".
         public func value(for kind: ContactFieldKind) -> String {
-            switch kind {
-            case .phone: phone
-            case .email: email
-            case .telegram: telegram
-            case .website: website
-            case .linkedin: linkedin
-            }
+            contacts.first(of: kind)?.value ?? ""
         }
 
+        /// Writes the first entry of `kind`: updated in place, appended when there is none, removed when empty.
         public func setValue(_ value: String, for kind: ContactFieldKind) {
-            switch kind {
-            case .phone: phone = value
-            case .email: email = value
-            case .telegram: telegram = value
-            case .website: website = value
-            case .linkedin: linkedin = value
-            }
+            contacts.setFirst(kind, value: value, privacy: contacts.first(of: kind) == nil ? .connections : nil)
         }
 
-        /// Non-empty contact values in display order.
+        /// The first entry of each kind, non-empty only, in kind order.
         public var availableFields: [ContactField] {
-            ContactFieldKind.allCases.compactMap { kind in
-                let value = value(for: kind)
-                return value.isEmpty ? nil : ContactField(kind: kind, value: value, privacy: .connections)
-            }
+            ContactFieldKind.allCases.compactMap { contacts.first(of: $0).map { ContactField(kind: $0.kind, value: $0.value, privacy: .connections) } }
         }
 
+        /// Label of the first phone (Mobile when there is none).
         public var phoneLabel: PhoneLabel {
-            get { PhoneLabel(rawValue: phoneLabelRaw) ?? .mobile }
-            set { phoneLabelRaw = newValue.rawValue }
+            get { contacts.legacyPhoneLabel }
+            set { contacts.setFirstPhoneLabel(newValue) }
         }
 
-        /// Every phone, primary (`phone`) first, empty values skipped.
-        public var allPhones: [LabeledPhone] {
-            let first = phone.isEmpty ? [] : [LabeledPhone(id: LabeledPhone.primaryID, label: phoneLabel,
-                                                           value: phone, privacy: .connections)]
-            return first + additionalPhones.filter { !$0.isEmpty }
+        /// The phones after the first one. Setting replaces them (kept right after the first phone).
+        public var additionalPhones: [LabeledPhone] {
+            get { Array(contacts.entries(of: .phone).dropFirst().map(\.labeledPhone)) }
+            set { contacts.setExtraPhones(newValue, privacy: .connections) }
         }
+
+        /// Every phone, first one first, empty values skipped.
+        public var allPhones: [LabeledPhone] { contacts.entries(of: .phone).map(\.labeledPhone) }
 
         /// The number most likely to reach the person on a messenger (mobile first, then the primary).
         public var mobilePhone: String? {
@@ -446,7 +474,38 @@ extension MetlySchemaV2 {
 }
 
 public enum MetlyMigrationPlan: SchemaMigrationPlan {
-    public static var schemas: [any VersionedSchema.Type] { [MetlySchemaV1.self, MetlySchemaV2.self] }
+    public static var schemas: [any VersionedSchema.Type] { [MetlySchemaV1.self, MetlySchemaV2.self, MetlySchemaV3.self] }
+    public static var stages: [MigrationStage] { [v1ToV2, v2ToV3] }
+
     /// 1 → 2 only adds attributes with defaults, so SwiftData migrates it in place.
-    public static var stages: [MigrationStage] { [.lightweight(fromVersion: MetlySchemaV1.self, toVersion: MetlySchemaV2.self)] }
+    static let v1ToV2 = MigrationStage.lightweight(fromVersion: MetlySchemaV1.self, toVersion: MetlySchemaV2.self)
+
+    /// 2 → 3 renames the per-kind columns to `legacy…` and adds `contacts`, then builds each list from
+    /// the legacy values (docs/api/CONTACTS.md "Legacy → list").
+    static let v2ToV3 = MigrationStage.custom(fromVersion: MetlySchemaV2.self, toVersion: MetlySchemaV3.self,
+                                              willMigrate: nil, didMigrate: { context in
+        try migrateContacts(in: context)
+    })
+
+    static func migrateContacts(in context: ModelContext) throws {
+        for profile in try context.fetch(FetchDescriptor<MetlySchemaV3.Profile>()) where profile.contacts.isEmpty {
+            profile.contacts = .fromLegacy(fields: profile.legacyContactFields,
+                                           phoneLabel: PhoneLabel(rawValue: profile.legacyPhoneLabelRaw) ?? .mobile,
+                                           additionalPhones: profile.legacyAdditionalPhones)
+        }
+        for person in try context.fetch(FetchDescriptor<MetlySchemaV3.Connection>()) where person.contacts.isEmpty {
+            let fields = [
+                ContactField(kind: .phone, value: person.legacyPhone, privacy: .connections),
+                ContactField(kind: .email, value: person.legacyEmail, privacy: .connections),
+                ContactField(kind: .telegram, value: person.legacyTelegram, privacy: .connections),
+                ContactField(kind: .website, value: person.legacyWebsite, privacy: .connections),
+                ContactField(kind: .linkedin, value: person.legacyLinkedin, privacy: .connections),
+            ]
+            person.contacts = .fromLegacy(fields: fields, phoneLabel: PhoneLabel(rawValue: person.legacyPhoneLabelRaw) ?? .mobile,
+                                          additionalPhones: person.legacyAdditionalPhones.map {
+                                              LabeledPhone(id: $0.id, label: $0.label, value: $0.value, privacy: .connections)
+                                          })
+        }
+        try context.save()
+    }
 }

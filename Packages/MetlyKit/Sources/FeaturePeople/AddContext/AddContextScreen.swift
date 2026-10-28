@@ -88,8 +88,7 @@ struct AddContextScreen: View {
         guard loadedID != person.id else { return }
         let isFirstCapture = person.note.isEmpty && person.tags.isEmpty
         draft = isFirstCapture ? .capture(for: person, in: modelContext) : CaptureDraft(editing: person)
-        contactInfo = ContactInfoDraft(connection: person, maxAdditionalPhones: LabeledPhone.maxAdditional,
-                                       maxPhoneLength: LabeledPhone.maxValueLength)
+        contactInfo = ContactInfoDraft(connection: person)
         loadedID = person.id
     }
 

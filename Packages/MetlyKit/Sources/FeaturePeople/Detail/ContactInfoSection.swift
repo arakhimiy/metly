@@ -4,8 +4,8 @@ import MetlyData
 import MetlyDesign
 import SwiftUI
 
-/// Their contact values: every phone with its label (Mobile, Work…), then email, Telegram, website,
-/// LinkedIn. Tap opens the right app, touch and hold copies.
+/// Their contact values in their order: phones with their label (Mobile, Work…), email, Telegram, WhatsApp,
+/// Instagram, website, LinkedIn. Tap opens the right app, touch and hold copies.
 struct ContactInfoSection: View {
     let person: Connection
 
@@ -13,17 +13,18 @@ struct ContactInfoSection: View {
     @Environment(\.openURL) private var openURL
 
     var body: some View {
-        let phones = person.allPhones
-        let fields = person.availableFields.filter { $0.kind != .phone }
-        if !phones.isEmpty || !fields.isEmpty {
+        let entries = person.contacts.filter { !$0.isEmpty }
+        if !entries.isEmpty {
             Section {
-                ForEach(phones) { phone in
-                    PhoneInfoRow(phone: phone, telegramByPhone: telegramByPhone(phone),
-                                 onOpen: { openURL($0) }, onCopy: { copy(phone.value) })
-                }
-                ForEach(fields) { field in
-                    FieldInfoRow(field: field, url: url(for: field), onOpen: { open(field) },
-                                 onCopy: { copy(field) })
+                ForEach(entries) { entry in
+                    if entry.kind == .phone {
+                        let phone = entry.labeledPhone
+                        PhoneInfoRow(phone: phone, telegramByPhone: telegramByPhone(phone),
+                                     onOpen: { openURL($0) }, onCopy: { copy(phone.value) })
+                    } else {
+                        FieldInfoRow(field: entry.field, url: url(for: entry.field), onOpen: { open(entry.field) },
+                                     onCopy: { copy(entry.field) })
+                    }
                 }
             } header: {
                 Text("Contact Info")
@@ -41,15 +42,7 @@ struct ContactInfoSection: View {
         return TelegramPhone.digits(from: phone.value).map(TelegramTarget.phone)
     }
 
-    private func url(for field: ContactField) -> URL? {
-        switch field.kind {
-        case .phone: ContactLinks.call(field.value)
-        case .email: ContactLinks.mail(field.value)
-        case .telegram: ContactLinks.telegramWeb(field.value)
-        case .website: ContactLinks.website(field.value)
-        case .linkedin: ContactLinks.linkedIn(field.value)
-        }
-    }
+    private func url(for field: ContactField) -> URL? { ContactLinks.url(for: field.kind, value: field.value) }
 
     private func open(_ field: ContactField) {
         if field.kind == .telegram, let target = TelegramTarget(username: field.value, phones: []) {
@@ -134,7 +127,7 @@ private struct PhoneInfoRow: View {
     }
 }
 
-/// Email, Telegram, website or LinkedIn — tap opens it.
+/// Email, Telegram, WhatsApp, Instagram, website or LinkedIn — tap opens it.
 private struct FieldInfoRow: View {
     let field: ContactField
     let url: URL?

@@ -58,10 +58,8 @@ struct ProfileForm: View {
             editor.textBinding(\.jobTitle).wrappedValue = profile.jobTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         case .company:
             editor.textBinding(\.company).wrappedValue = profile.company.trimmingCharacters(in: .whitespacesAndNewlines)
-        case .contact(let kind):
-            profile.normalizeField(kind)
-        case .extraPhone(let id):
-            profile.normalizePhone(id: id)
+        case .contact(let id):
+            profile.normalizeContact(id: id)
         }
         services.sync.requestSync()
     }

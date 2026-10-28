@@ -20,15 +20,30 @@ struct WidgetPhonesTests {
         ], defaultCardID: workCardID)
     }
 
-    @Test("Only Public, non-empty extra numbers reach the snapshot, trimmed")
+    @Test("Only Public, non-empty numbers reach the snapshot, trimmed")
     func publicExtrasOnly() throws {
         let card = try #require(build(input(design: designWithoutTelegram)).card(id: workCardID))
-        #expect(card.additionalPhones.map(\.value) == ["+998 71 200 10 20"])
-        #expect(card.additionalPhones.allSatisfy { $0.privacy == .public })
+        let phones = (card.contacts ?? []).filter { $0.kind == .phone }
+        #expect(phones.map(\.value) == ["+998 71 200 10 20"])   // the Connections primary stays out
+        #expect(phones.allSatisfy { $0.privacy == .public })
         #expect(card.phoneLabel == .work)
         let face = card.faceContent(owner: WidgetSnapshot.sampleOwner)
-        #expect(face.additionalPhones == card.additionalPhones)
+        #expect(face.contacts == card.contacts)
         #expect(face.phoneLabel == .work)
+    }
+
+    @Test("Each card shows its own selection, WhatsApp and Instagram included")
+    func selection() throws {
+        var snapshotInput = input(design: designWithoutTelegram)
+        let whatsapp = ContactEntry(kind: .whatsapp, value: "+998 90 123 45 67", privacy: .public)
+        snapshotInput.owner.explicitContacts = snapshotInput.owner.contacts + [whatsapp]
+        snapshotInput.cards = snapshotInput.cards.map { card in
+            var copy = card
+            copy.visibleContactIDs = [whatsapp.id]
+            return copy
+        }
+        let card = try #require(build(snapshotInput).card(id: workCardID))
+        #expect(card.contacts?.map(\.kind) == [.whatsapp])
     }
 
     @Test("A card that hides phones carries no extra numbers")

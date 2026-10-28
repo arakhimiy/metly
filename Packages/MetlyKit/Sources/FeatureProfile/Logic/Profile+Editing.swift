@@ -42,55 +42,31 @@ final class ProfileEditor {
         }
     }
 
-    /// A contact value, capped at its server limit (phones 40, the rest 200).
-    func valueBinding(for kind: ContactFieldKind) -> Binding<String> {
+    // MARK: Contact entries
+
+    /// An entry's value, capped at its server limit (phone numbers 40, links 500, the rest 200).
+    func valueBinding(id: UUID) -> Binding<String> {
         Binding {
-            self.profile.field(kind).value
+            self.profile.contacts.first { $0.id == id }?.value ?? ""
         } set: { newValue in
-            self.profile.update(kind) { $0.value = ProfileFieldLimits.capped(newValue, at: ProfileFieldLimits.limit(for: kind)) }
+            self.profile.updateContact(id: id) { $0.value = newValue }
         }
     }
 
-    // MARK: Phone numbers
-
-    /// Label of the primary phone (Mobile / Work / Home / Other).
-    func phoneLabelBinding() -> Binding<PhoneLabel> {
+    /// A phone's label (Mobile / Work / Home / Other).
+    func labelBinding(id: UUID) -> Binding<PhoneLabel> {
         Binding {
-            self.profile.phoneLabel
+            self.profile.contacts.first { $0.id == id }?.label ?? .mobile
         } set: { newValue in
-            self.profile.setPhoneLabel(newValue)
+            self.profile.updateContact(id: id) { $0.label = newValue }
         }
     }
 
-    func extraPhoneValueBinding(id: UUID) -> Binding<String> {
+    func privacyBinding(id: UUID) -> Binding<FieldPrivacy> {
         Binding {
-            self.profile.additionalPhone(id: id)?.value ?? ""
+            self.profile.contacts.first { $0.id == id }?.privacy ?? .connections
         } set: { newValue in
-            self.profile.updatePhone(id: id) { $0.value = PhoneListRules.capped(newValue) }
-        }
-    }
-
-    func extraPhoneLabelBinding(id: UUID) -> Binding<PhoneLabel> {
-        Binding {
-            self.profile.additionalPhone(id: id)?.label ?? .other
-        } set: { newValue in
-            self.profile.updatePhone(id: id) { $0.label = newValue }
-        }
-    }
-
-    func extraPhonePrivacyBinding(id: UUID) -> Binding<FieldPrivacy> {
-        Binding {
-            self.profile.additionalPhone(id: id)?.privacy ?? ContactFieldKind.phone.defaultPrivacy
-        } set: { newValue in
-            self.profile.updatePhone(id: id) { $0.privacy = newValue }
-        }
-    }
-
-    func privacyBinding(for kind: ContactFieldKind) -> Binding<FieldPrivacy> {
-        Binding {
-            self.profile.field(kind).privacy
-        } set: { newValue in
-            self.profile.update(kind) { $0.privacy = newValue }
+            self.profile.updateContact(id: id) { $0.privacy = newValue }
         }
     }
 
@@ -119,12 +95,14 @@ final class ProfileEditor {
 extension Profile {
     @MainActor var editor: ProfileEditor { ProfileEditor(self) }
 
-    /// Applies `ContactFieldRules.normalized` to a field (called when the user leaves it).
-    func normalizeField(_ kind: ContactFieldKind) {
-        update(kind) {
-            // Normalising can add a character (Telegram's "@").
-            $0.value = ProfileFieldLimits.capped(ContactFieldRules.normalized($0.value, for: kind),
-                                                 at: ProfileFieldLimits.limit(for: kind))
+    /// Cleans an entry up when the user leaves it ("@handle", no https://); one left empty is removed.
+    func normalizeContact(id: UUID) {
+        guard let entry = contacts.first(where: { $0.id == id }) else { return }
+        let value = ContactFieldRules.normalized(entry.value, for: entry.kind)
+        if value.isEmpty {
+            removeContacts(ids: [id])
+        } else {
+            updateContact(id: id) { $0.value = value }
         }
     }
 

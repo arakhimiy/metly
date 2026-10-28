@@ -6,9 +6,9 @@ import UniformTypeIdentifiers
 /// Builds a vCard 3.0 for the offline QR (QR_FULLSCREEN "Offline QR") and `.vcf` sharing.
 ///
 /// - Text values are escaped, lines folded at 75 octets, CRLF line breaks (RFC 2426).
-/// - Phones → one `TEL` per number, primary first, typed by label: Mobile `TYPE=CELL`, Work `TYPE=WORK,VOICE`,
+/// - Entries in `content.contacts` order. Phones → one `TEL` per number, typed by label: Mobile `TYPE=CELL`, Work `TYPE=WORK,VOICE`,
 ///   Home `TYPE=HOME,VOICE`, Other `TYPE=VOICE`. Email → `EMAIL;TYPE=INTERNET`, website → `URL`,
-///   Telegram → `X-SOCIALPROFILE;TYPE=telegram` + labelled `URL`, LinkedIn → labelled `URL`,
+///   Telegram / WhatsApp / Instagram → `X-SOCIALPROFILE;TYPE=…` + labelled `URL`, LinkedIn → labelled `URL`,
 ///   the card link → labelled `URL`. Labels use Apple's `itemN.X-ABLabel` grouping, ignored elsewhere.
 /// - Private fields are never written. `content` should already be filtered for `CardAudience.public`.
 /// - `PHOTO` (base64 JPEG, ≤ 256 px) only when `includePhoto` is set — keep it off for QR codes.
@@ -38,11 +38,11 @@ public enum VCardBuilder {
             lines.append("TEL;\(phone.label.vCardType):\(VCardText.escape(phone.value))")
         }
 
-        for field in orderedFields(content.fields) {
-            let value = field.value.trimmingCharacters(in: .whitespacesAndNewlines)
-            switch field.kind {
+        for entry in content.contacts where entry.privacy != .private && !entry.isEmpty {
+            let value = entry.value.trimmingCharacters(in: .whitespacesAndNewlines)
+            switch entry.kind {
             case .phone:
-                continue   // written above, with the extra numbers
+                continue   // written above, deduplicated
             case .email:
                 lines.append("EMAIL;TYPE=INTERNET:\(VCardText.escape(value))")
             case .website:
@@ -52,6 +52,15 @@ public enum VCardBuilder {
                       let url = ContactValueFormat.telegramURL(username: username) else { continue }
                 lines.append("X-SOCIALPROFILE;TYPE=telegram;X-USER=\(username):\(uri(url.absoluteString))")
                 labelledURL(url.absoluteString, label: "Telegram")
+            case .whatsapp:
+                guard let url = ContactValueFormat.whatsAppURL(from: value) else { continue }
+                lines.append("X-SOCIALPROFILE;TYPE=whatsapp:\(uri(url.absoluteString))")
+                labelledURL(url.absoluteString, label: "WhatsApp")
+            case .instagram:
+                guard let username = ContactValueFormat.instagramUsername(from: value),
+                      let url = ContactValueFormat.instagramURL(username: username) else { continue }
+                lines.append("X-SOCIALPROFILE;TYPE=instagram;X-USER=\(username):\(uri(url.absoluteString))")
+                labelledURL(url.absoluteString, label: "Instagram")
             case .linkedin:
                 if let url = ContactValueFormat.linkedInURL(from: value) { labelledURL(url.absoluteString, label: "LinkedIn") }
             }
@@ -74,25 +83,19 @@ public enum VCardBuilder {
         }
     }
 
-    /// Every number to write, primary first: the phone in `fields` with `content.phoneLabel`, then the extra
-    /// ones. Private and empty numbers are skipped, and so is a number already written (same digits).
+    /// Every number to write, in the card's order. Private and empty numbers are skipped, and so is a number
+    /// already written (same digits).
     static func phones(of content: CardFaceContent) -> [(label: PhoneLabel, value: String)] {
         var result: [(label: PhoneLabel, value: String)] = []
         var seen = Set<String>()
-        func add(_ value: String, _ label: PhoneLabel) {
-            let value = value.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !value.isEmpty else { return }
+        for entry in content.contacts where entry.kind == .phone && entry.privacy != .private {
+            let value = entry.value.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !value.isEmpty else { continue }
             let digits = value.filter(\.isNumber)
             if !digits.isEmpty {
-                guard seen.insert(digits).inserted else { return }
+                guard seen.insert(digits).inserted else { continue }
             }
-            result.append((label, value))
-        }
-        if let primary = orderedFields(content.fields).first(where: { $0.kind == .phone }) {
-            add(primary.value, content.phoneLabel)
-        }
-        for phone in content.additionalPhones where phone.privacy != .private {
-            add(phone.value, phone.label)
+            result.append((entry.label ?? .mobile, value))
         }
         return result
     }

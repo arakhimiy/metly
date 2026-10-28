@@ -12,36 +12,42 @@ struct PublicContentTests {
     @Test func publicAudienceKeepsOnlyPublicFields() throws {
         let context = try makeContext()
         let profile = insertProfile(in: context)
-        let content = CardContentFactory.content(profile: profile, design: allVisible, audience: .public, qrPayload: "")
+        let content = CardContentFactory.content(profile: profile, design: allVisible, selection: nil, audience: .public, qrPayload: "")
         #expect(content.fields.map(\.kind) == [.telegram, .website])   // LinkedIn is public but empty
     }
 
     @Test func connectionsAudienceAddsConnectionsButNeverPrivate() throws {
         let context = try makeContext()
         let profile = insertProfile(in: context)
-        let content = CardContentFactory.content(profile: profile, design: allVisible, audience: .connections, qrPayload: "")
+        let content = CardContentFactory.content(profile: profile, design: allVisible, selection: nil, audience: .connections, qrPayload: "")
         #expect(content.fields.map(\.kind) == [.email, .telegram, .website])
     }
 
-    @Test func hiddenFieldsStayHidden() {
-        let fields = [ContactField(kind: .website, value: "aziza.design", privacy: .public),
-                      ContactField(kind: .telegram, value: "@aziza", privacy: .public)]
-        let result = CardContentFactory.fields(fields, visible: [.website], audience: .public)
-        #expect(result.map(\.kind) == [.website])
+    @Test func onlyTheSelectedEntriesShowInTheOwnersOrder() throws {
+        let context = try makeContext()
+        let profile = insertProfile(in: context)
+        let instagram = ContactEntry(kind: .instagram, value: "@aziza.k", privacy: .public)
+        profile.contacts.insert(instagram, at: 0)
+        let website = try #require(profile.contacts.first { $0.kind == .website })
+        let content = CardContentFactory.content(profile: profile, design: CardDesign(), selection: [website.id, instagram.id],
+                                                 audience: .public, qrPayload: "")
+        #expect(content.contacts.map(\.kind) == [.instagram, .website])
     }
 
-    @Test func fieldsComeOutInDisplayOrder() {
-        let fields = [ContactField(kind: .linkedin, value: "in/a", privacy: .public),
-                      ContactField(kind: .phone, value: "1", privacy: .public)]
-        let result = CardContentFactory.fields(fields, visible: Set(ContactFieldKind.allCases), audience: .public)
-        #expect(result.map(\.kind) == [.phone, .linkedin])
+    @Test func aCardFromBefore3ShowsItsKindsButNeverTheNewOnes() throws {
+        let context = try makeContext()
+        let profile = insertProfile(in: context)
+        profile.contacts.append(ContactEntry(kind: .whatsapp, value: "+998 90 1", privacy: .public))
+        let content = CardContentFactory.content(profile: profile, design: CardDesign(visibleFields: [.website, .telegram]),
+                                                 selection: nil, audience: .public, qrPayload: "")
+        #expect(content.contacts.map(\.kind) == [.telegram, .website])
     }
 
     @Test func draftMediaOverridesTheProfile() throws {
         let context = try makeContext()
         let profile = insertProfile(in: context)
         profile.photoData = Data([1])
-        let content = CardContentFactory.content(profile: profile, design: allVisible, audience: .connections,
+        let content = CardContentFactory.content(profile: profile, design: allVisible, selection: nil, audience: .connections,
                                                  qrPayload: "", photo: .removed, logo: .replaced(Data([2])))
         #expect(content.photoData == nil)
         #expect(content.logoData == Data([2]))

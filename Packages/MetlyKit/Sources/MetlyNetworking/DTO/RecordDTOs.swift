@@ -29,11 +29,8 @@ public struct ProfileDTO: SyncRecordDTO {
     public var photoURL: URL?
     /// Server-owned. Set via the logo upload flow.
     public var logoURL: URL?
-    public var contactFields: [ContactField]
-    /// Label of the phone in `contactFields`. Missing on the wire (older servers/clients) → `.mobile`.
-    public var phoneLabel: PhoneLabel
-    /// Extra phones, each with its own label and privacy (≤ `LabeledPhone.maxAdditional`). Missing → `[]`.
-    public var additionalPhones: [LabeledPhone]
+    /// The contact list (3.0.0), the only stored form. Missing on the wire → rebuilt from the legacy fields.
+    public var contacts: [ContactEntry]
     public var defaultCardID: UUID?
     public var linksPaused: Bool
     public var notificationPrefs: NotificationPrefs
@@ -44,7 +41,8 @@ public struct ProfileDTO: SyncRecordDTO {
     public var deletedAt: Date?
 
     public init(id: UUID, fullName: String, jobTitle: String, company: String, photoURL: URL? = nil, logoURL: URL? = nil,
-                contactFields: [ContactField], phoneLabel: PhoneLabel = .mobile, additionalPhones: [LabeledPhone] = [],
+                contactFields: [ContactField] = [], phoneLabel: PhoneLabel = .mobile, additionalPhones: [LabeledPhone] = [],
+                contacts: [ContactEntry]? = nil,
                 defaultCardID: UUID?, linksPaused: Bool, notificationPrefs: NotificationPrefs,
                 privacySettings: PrivacySettings, isSetupComplete: Bool, createdAt: Date, updatedAt: Date, deletedAt: Date? = nil) {
         self.id = id
@@ -53,9 +51,7 @@ public struct ProfileDTO: SyncRecordDTO {
         self.company = company
         self.photoURL = photoURL
         self.logoURL = logoURL
-        self.contactFields = contactFields
-        self.phoneLabel = phoneLabel
-        self.additionalPhones = additionalPhones
+        self.contacts = contacts ?? .fromLegacy(fields: contactFields, phoneLabel: phoneLabel, additionalPhones: additionalPhones)
         self.defaultCardID = defaultCardID
         self.linksPaused = linksPaused
         self.notificationPrefs = notificationPrefs
@@ -75,9 +71,11 @@ public struct ProfileDTO: SyncRecordDTO {
         company = try container.decode(String.self, forKey: .company)
         photoURL = try container.decodeIfPresent(URL.self, forKey: .photoURL)
         logoURL = try container.decodeIfPresent(URL.self, forKey: .logoURL)
-        contactFields = try container.decode([ContactField].self, forKey: .contactFields)
-        phoneLabel = try container.decodePhoneLabel(forKey: .phoneLabel)
-        additionalPhones = try container.decodeLabeledPhones(forKey: .additionalPhones)
+        let fields = try container.decode([ContactField].self, forKey: .contactFields)
+        let label = try container.decodePhoneLabel(forKey: .phoneLabel)
+        let extras = try container.decodeLabeledPhones(forKey: .additionalPhones)
+        contacts = try container.decodeContacts(forKey: .contacts)
+            ?? .fromLegacy(fields: fields, phoneLabel: label, additionalPhones: extras)
         defaultCardID = try container.decodeIfPresent(UUID.self, forKey: .defaultCardID)
         linksPaused = try container.decode(Bool.self, forKey: .linksPaused)
         notificationPrefs = try container.decode(NotificationPrefs.self, forKey: .notificationPrefs)
@@ -86,6 +84,54 @@ public struct ProfileDTO: SyncRecordDTO {
         createdAt = try container.decode(Date.self, forKey: .createdAt)
         updatedAt = try container.decode(Date.self, forKey: .updatedAt)
         deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, fullName, jobTitle, company, photoURL, logoURL, contactFields, phoneLabel, additionalPhones, contacts
+        case defaultCardID, linksPaused, notificationPrefs, privacySettings, isSetupComplete, createdAt, updatedAt, deletedAt
+    }
+
+    /// Sends the list plus the legacy fields derived from it (the server still requires `contactFields`).
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(fullName, forKey: .fullName)
+        try container.encode(jobTitle, forKey: .jobTitle)
+        try container.encode(company, forKey: .company)
+        try container.encodeIfPresent(photoURL, forKey: .photoURL)
+        try container.encodeIfPresent(logoURL, forKey: .logoURL)
+        try container.encode(contactFields, forKey: .contactFields)
+        try container.encode(phoneLabel, forKey: .phoneLabel)
+        try container.encode(additionalPhones, forKey: .additionalPhones)
+        try container.encode(contacts, forKey: .contacts)
+        try container.encodeIfPresent(defaultCardID, forKey: .defaultCardID)
+        try container.encode(linksPaused, forKey: .linksPaused)
+        try container.encode(notificationPrefs, forKey: .notificationPrefs)
+        try container.encode(privacySettings, forKey: .privacySettings)
+        try container.encode(isSetupComplete, forKey: .isSetupComplete)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encodeIfPresent(deletedAt, forKey: .deletedAt)
+    }
+
+    // MARK: Legacy one-per-kind view of `contacts` (older apps, the server's required fields)
+
+    /// One field per original kind, display order (empty when the list has none).
+    public var contactFields: [ContactField] {
+        get { contacts.legacyFields }
+        set { newValue.forEach { contacts.setFirst($0.kind, value: $0.value, privacy: $0.privacy) } }
+    }
+
+    /// Label of the first phone (`.mobile` without one).
+    public var phoneLabel: PhoneLabel {
+        get { contacts.legacyPhoneLabel }
+        set { contacts.setFirstPhoneLabel(newValue) }
+    }
+
+    /// The phones after the first one (≤ `LabeledPhone.maxAdditional` on the wire).
+    public var additionalPhones: [LabeledPhone] {
+        get { contacts.legacyAdditionalPhones }
+        set { contacts.setExtraPhones(newValue) }
     }
 }
 
@@ -137,6 +183,9 @@ public struct CardDTO: SyncRecordDTO {
     public var url: URL?
     public var sortOrder: Int
     public var design: CardDesign
+    /// Profile contact entries the card shows; nil = a card from before 3.0.0 (`design.visibleFields`).
+    /// Travels inside `design` on the wire (`design.visibleContacts`).
+    public var visibleContacts: [UUID]?
     /// Server-owned: `published` once the server accepted the card (there are no server-side drafts).
     public var publishState: CardPublishState
     /// Server-owned: true for cards beyond the Free limit after a Pro downgrade.
@@ -150,7 +199,7 @@ public struct CardDTO: SyncRecordDTO {
     public var deletedAt: Date?
 
     public init(id: UUID, name: String, slug: String? = nil, url: URL? = nil, sortOrder: Int, design: CardDesign,
-                publishState: CardPublishState = .draft, isReadOnly: Bool = false, isPaused: Bool = false,
+                visibleContacts: [UUID]? = nil, publishState: CardPublishState = .draft, isReadOnly: Bool = false, isPaused: Bool = false,
                 stats: CardStats? = nil, createdAt: Date, updatedAt: Date, deletedAt: Date? = nil) {
         self.id = id
         self.name = name
@@ -158,6 +207,7 @@ public struct CardDTO: SyncRecordDTO {
         self.url = url
         self.sortOrder = sortOrder
         self.design = design
+        self.visibleContacts = visibleContacts
         self.publishState = publishState
         self.isReadOnly = isReadOnly
         self.isPaused = isPaused
@@ -165,6 +215,44 @@ public struct CardDTO: SyncRecordDTO {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.deletedAt = deletedAt
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, slug, url, sortOrder, design, publishState, isReadOnly, isPaused, stats, createdAt, updatedAt, deletedAt
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        slug = try container.decodeIfPresent(String.self, forKey: .slug)
+        url = try container.decodeIfPresent(URL.self, forKey: .url)
+        sortOrder = try container.decode(Int.self, forKey: .sortOrder)
+        (design, visibleContacts) = try WireCardDesign.decode(from: container, forKey: .design)
+        publishState = try container.decode(CardPublishState.self, forKey: .publishState)
+        isReadOnly = try container.decode(Bool.self, forKey: .isReadOnly)
+        isPaused = try container.decode(Bool.self, forKey: .isPaused)
+        stats = try container.decodeIfPresent(CardStats.self, forKey: .stats)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encodeIfPresent(slug, forKey: .slug)
+        try container.encodeIfPresent(url, forKey: .url)
+        try container.encode(sortOrder, forKey: .sortOrder)
+        try WireCardDesign.encode(design, visibleContacts: visibleContacts, to: &container, forKey: .design)
+        try container.encode(publishState, forKey: .publishState)
+        try container.encode(isReadOnly, forKey: .isReadOnly)
+        try container.encode(isPaused, forKey: .isPaused)
+        try container.encodeIfPresent(stats, forKey: .stats)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encodeIfPresent(deletedAt, forKey: .deletedAt)
     }
 }
 
@@ -214,15 +302,9 @@ public struct ConnectionDTO: SyncRecordDTO {
     public var fullName: String
     public var jobTitle: String
     public var company: String
-    public var phone: String
-    /// Label of `phone`. Missing on the wire → `.mobile`.
-    public var phoneLabel: PhoneLabel
-    /// Extra phones after `phone` (privacy is kept but means nothing on a connection). Missing → `[]`.
-    public var additionalPhones: [LabeledPhone]
-    public var email: String
-    public var telegram: String
-    public var website: String
-    public var linkedin: String
+    /// The contact list (3.0.0), the only stored form; `phone`…`linkedin`, `phoneLabel` and
+    /// `additionalPhones` are views of it for older apps. Missing on the wire → rebuilt from them.
+    public var contacts: [ContactEntry]
     /// Server-owned (peer's profile photo for app users).
     public var avatarURL: URL?
     public var theirCard: CardSnapshot?
@@ -243,7 +325,7 @@ public struct ConnectionDTO: SyncRecordDTO {
     public init(id: UUID, remoteUserID: UUID? = nil, fullName: String, jobTitle: String = "", company: String = "",
                 phone: String = "", phoneLabel: PhoneLabel = .mobile, additionalPhones: [LabeledPhone] = [],
                 email: String = "", telegram: String = "", website: String = "", linkedin: String = "",
-                avatarURL: URL? = nil, theirCard: CardSnapshot? = nil, mySharedCardID: UUID? = nil, source: ConnectionSource,
+                contacts: [ContactEntry]? = nil, avatarURL: URL? = nil, theirCard: CardSnapshot? = nil, mySharedCardID: UUID? = nil, source: ConnectionSource,
                 context: MeetingContext, previousMeetings: [MeetingContext] = [], eventID: UUID? = nil, note: String = "",
                 tags: [String] = [], isMerged: Bool = false, isPendingMerge: Bool = false, isBlocked: Bool = false,
                 createdAt: Date, updatedAt: Date, deletedAt: Date? = nil) {
@@ -252,13 +334,8 @@ public struct ConnectionDTO: SyncRecordDTO {
         self.fullName = fullName
         self.jobTitle = jobTitle
         self.company = company
-        self.phone = phone
-        self.phoneLabel = phoneLabel
-        self.additionalPhones = additionalPhones
-        self.email = email
-        self.telegram = telegram
-        self.website = website
-        self.linkedin = linkedin
+        self.contacts = contacts ?? Self.legacyContacts(phone: phone, phoneLabel: phoneLabel, additionalPhones: additionalPhones,
+                                                         email: email, telegram: telegram, website: website, linkedin: linkedin)
         self.avatarURL = avatarURL
         self.theirCard = theirCard
         self.mySharedCardID = mySharedCardID
@@ -276,7 +353,7 @@ public struct ConnectionDTO: SyncRecordDTO {
         self.deletedAt = deletedAt
     }
 
-    /// Tolerant of payloads written before labelled phones existed (schema 2.0.0).
+    /// Tolerant of payloads written before labelled phones (2.0.0) and contact lists (3.0.0) existed.
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
@@ -284,13 +361,14 @@ public struct ConnectionDTO: SyncRecordDTO {
         fullName = try container.decode(String.self, forKey: .fullName)
         jobTitle = try container.decode(String.self, forKey: .jobTitle)
         company = try container.decode(String.self, forKey: .company)
-        phone = try container.decode(String.self, forKey: .phone)
-        phoneLabel = try container.decodePhoneLabel(forKey: .phoneLabel)
-        additionalPhones = try container.decodeLabeledPhones(forKey: .additionalPhones)
-        email = try container.decode(String.self, forKey: .email)
-        telegram = try container.decode(String.self, forKey: .telegram)
-        website = try container.decode(String.self, forKey: .website)
-        linkedin = try container.decode(String.self, forKey: .linkedin)
+        contacts = try container.decodeContacts(forKey: .contacts)
+            ?? Self.legacyContacts(phone: try container.decode(String.self, forKey: .phone),
+                                   phoneLabel: try container.decodePhoneLabel(forKey: .phoneLabel),
+                                   additionalPhones: try container.decodeLabeledPhones(forKey: .additionalPhones),
+                                   email: try container.decode(String.self, forKey: .email),
+                                   telegram: try container.decode(String.self, forKey: .telegram),
+                                   website: try container.decode(String.self, forKey: .website),
+                                   linkedin: try container.decode(String.self, forKey: .linkedin))
         avatarURL = try container.decodeIfPresent(URL.self, forKey: .avatarURL)
         theirCard = try container.decodeIfPresent(CardSnapshot.self, forKey: .theirCard)
         mySharedCardID = try container.decodeIfPresent(UUID.self, forKey: .mySharedCardID)
@@ -306,6 +384,92 @@ public struct ConnectionDTO: SyncRecordDTO {
         createdAt = try container.decode(Date.self, forKey: .createdAt)
         updatedAt = try container.decode(Date.self, forKey: .updatedAt)
         deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, remoteUserID, fullName, jobTitle, company, phone, phoneLabel, additionalPhones, email, telegram, website
+        case linkedin, contacts, avatarURL, theirCard, mySharedCardID, source, context, previousMeetings, eventID, note, tags
+        case isMerged, isPendingMerge, isBlocked, createdAt, updatedAt, deletedAt
+    }
+
+    /// Sends the list plus the legacy fields derived from it (the server still requires them).
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encodeIfPresent(remoteUserID, forKey: .remoteUserID)
+        try container.encode(fullName, forKey: .fullName)
+        try container.encode(jobTitle, forKey: .jobTitle)
+        try container.encode(company, forKey: .company)
+        try container.encode(phone, forKey: .phone)
+        try container.encode(phoneLabel, forKey: .phoneLabel)
+        try container.encode(additionalPhones, forKey: .additionalPhones)
+        try container.encode(email, forKey: .email)
+        try container.encode(telegram, forKey: .telegram)
+        try container.encode(website, forKey: .website)
+        try container.encode(linkedin, forKey: .linkedin)
+        try container.encode(contacts, forKey: .contacts)
+        try container.encodeIfPresent(avatarURL, forKey: .avatarURL)
+        try container.encodeIfPresent(theirCard, forKey: .theirCard)
+        try container.encodeIfPresent(mySharedCardID, forKey: .mySharedCardID)
+        try container.encode(source, forKey: .source)
+        try container.encode(context, forKey: .context)
+        try container.encode(previousMeetings, forKey: .previousMeetings)
+        try container.encodeIfPresent(eventID, forKey: .eventID)
+        try container.encode(note, forKey: .note)
+        try container.encode(tags, forKey: .tags)
+        try container.encode(isMerged, forKey: .isMerged)
+        try container.encode(isPendingMerge, forKey: .isPendingMerge)
+        try container.encode(isBlocked, forKey: .isBlocked)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encodeIfPresent(deletedAt, forKey: .deletedAt)
+    }
+
+    static func legacyContacts(phone: String, phoneLabel: PhoneLabel, additionalPhones: [LabeledPhone], email: String,
+                               telegram: String, website: String, linkedin: String) -> [ContactEntry] {
+        let fields = [ContactField(kind: .phone, value: phone, privacy: .connections),
+                      ContactField(kind: .email, value: email, privacy: .connections),
+                      ContactField(kind: .telegram, value: telegram, privacy: .connections),
+                      ContactField(kind: .website, value: website, privacy: .connections),
+                      ContactField(kind: .linkedin, value: linkedin, privacy: .connections)]
+        return .fromLegacy(fields: fields, phoneLabel: phoneLabel,
+                           additionalPhones: additionalPhones.map { LabeledPhone(id: $0.id, label: $0.label, value: $0.value, privacy: .connections) })
+    }
+
+    /// Replaces the list.
+    public mutating func setContacts(_ list: [ContactEntry]) {
+        contacts = list
+    }
+
+    // MARK: Legacy one-per-kind view of `contacts` (older apps, the server's required fields)
+
+    public var phone: String {
+        get { contacts.first(of: .phone)?.value ?? "" }
+        set { contacts.setFirst(.phone, value: newValue, privacy: contacts.first(of: .phone) == nil ? .connections : nil) }
+    }
+    public var phoneLabel: PhoneLabel {
+        get { contacts.legacyPhoneLabel }
+        set { contacts.setFirstPhoneLabel(newValue) }
+    }
+    public var additionalPhones: [LabeledPhone] {
+        get { contacts.legacyAdditionalPhones }
+        set { contacts.setExtraPhones(newValue, privacy: .connections) }
+    }
+    public var email: String {
+        get { contacts.first(of: .email)?.value ?? "" }
+        set { contacts.setFirst(.email, value: newValue, privacy: contacts.first(of: .email) == nil ? .connections : nil) }
+    }
+    public var telegram: String {
+        get { contacts.first(of: .telegram)?.value ?? "" }
+        set { contacts.setFirst(.telegram, value: newValue, privacy: contacts.first(of: .telegram) == nil ? .connections : nil) }
+    }
+    public var website: String {
+        get { contacts.first(of: .website)?.value ?? "" }
+        set { contacts.setFirst(.website, value: newValue, privacy: contacts.first(of: .website) == nil ? .connections : nil) }
+    }
+    public var linkedin: String {
+        get { contacts.first(of: .linkedin)?.value ?? "" }
+        set { contacts.setFirst(.linkedin, value: newValue, privacy: contacts.first(of: .linkedin) == nil ? .connections : nil) }
     }
 }
 

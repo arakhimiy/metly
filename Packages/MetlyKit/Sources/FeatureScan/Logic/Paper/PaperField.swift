@@ -14,6 +14,9 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
         case .telegram: self = .telegram
         case .website: self = .website
         case .linkedin: self = .linkedin
+        // The paper reader never produces these; they read as the closest row.
+        case .whatsapp: self = .phone
+        case .instagram: self = .website
         }
     }
 

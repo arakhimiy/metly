@@ -68,11 +68,8 @@ struct CardEditorForm: View {
         case .type:
             EditorTypeSection(design: $draft.design)
         case .fields:
-            CardFieldsSection(fields: profile?.contactFields ?? ContactField.defaults,
-                              additionalPhones: profile?.additionalPhones ?? [],
-                              phoneLabel: profile?.phoneLabel ?? .mobile, design: $draft.design,
-                              footer: String(localized: "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with."),
-                              onEditValue: { kind, value in profile?.setContactValue(value, for: kind) })
+            CardFieldsSection(profile: profile, selection: $draft.contactIDs, design: $draft.design,
+                              footer: String(localized: "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with."))
         case .media:
             EditorMediaSection(draft: $draft, profile: profile)
         }
@@ -103,7 +100,7 @@ struct CardEditorForm: View {
 
     /// In-app preview: Public + Connections fields, the draft's photo/logo.
     private var previewContent: CardFaceContent {
-        CardContentFactory.content(profile: profile, design: draft.design, audience: .connections,
+        CardContentFactory.content(profile: profile, design: draft.design, selection: draft.contactIDs, audience: .connections,
                                    qrPayload: card.url?.absoluteString ?? "", photo: draft.photo, logo: draft.logo)
     }
 
@@ -147,6 +144,7 @@ struct CardEditorForm: View {
 
     private func save() {
         // Only what was edited here: the card may have been renamed / synced while the editor was open.
+        profile?.removeEmptyContacts()
         let commit = draft.apply(to: card, profile: profile, since: original)
         router.dismiss()
         guard commit.changedAnything else { return }

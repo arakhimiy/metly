@@ -18,11 +18,12 @@ enum CardLibrary {
 
     /// Inserts a new card at the end of the Home order. The very first card becomes the default.
     @discardableResult
-    static func create(name: String, design: CardDesign, in context: ModelContext) -> Card {
+    static func create(name: String, design: CardDesign, contactIDs: [UUID]? = nil, in context: ModelContext) -> Card {
         let existing = liveCards(in: context)
         let card = Card(name: name.trimmingCharacters(in: .whitespacesAndNewlines),
                         sortOrder: CardOrdering.nextSortOrder(after: summaries(existing)),
                         design: design)
+        card.visibleContactIDs = contactIDs
         context.insert(card)
         if existing.isEmpty, let profile = context.currentProfile() {
             profile.defaultCardID = card.id
@@ -37,6 +38,7 @@ enum CardLibrary {
         let existing = liveCards(in: context)
         let copy = Card(name: CardNaming.copyName(for: source.name, existing: existing.map(\.name)),
                         sortOrder: source.sortOrder + 1, design: source.design)
+        copy.visibleContactIDs = source.visibleContactIDs
         context.insert(copy)
         let order = CardOrdering.inserting(copy.id, after: source.id,
                                            in: CardOrdering.orderedIDs(summaries(existing)))

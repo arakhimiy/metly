@@ -9,24 +9,33 @@ public extension Card {
         FetchDescriptor(predicate: #Predicate { $0.deletedAt == nil }, sortBy: [SortDescriptor(\.sortOrder)])
     }
 
+    /// Profile entries this card shows, in the profile's order, before the audience filter.
+    func selectedContacts(of profile: Profile) -> [ContactEntry] {
+        profile.contacts(selectedBy: visibleContactIDs, design: design)
+    }
+
+    /// Stores a selection of profile entries, keeping `design.visibleFields` in step with it.
+    func setSelectedContacts(_ ids: [UUID], of profile: Profile) {
+        visibleContactIDs = ids
+        design.syncVisibleFields(with: ids, in: profile.contacts)
+    }
+
     /// Values rendered on this card's face for the given audience.
     func faceContent(profile: Profile?, audience: CardAudience, qrPayload: String? = nil) -> CardFaceContent {
         guard let profile else { return CardFaceContent(fullName: name) }
-        let fields = profile.contactFields.filter {
-            !$0.isEmpty && audience.allows($0.privacy) && design.visibleFields.contains($0.kind)
-        }
+        let visible = selectedContacts(of: profile).filter { audience.allows($0.privacy) }
         return CardFaceContent(
             fullName: profile.fullName,
             jobTitle: profile.jobTitle,
             company: profile.company,
             photoData: profile.photoData,
             logoData: profile.logoData,
-            fields: fields,
+            fields: ContactFieldKind.allCases.compactMap { visible.first(of: $0)?.field },
             // Unpublished cards have no link yet: never encode a fake card URL (CardKit falls back to the site).
             qrPayload: qrPayload ?? url?.absoluteString ?? "",
-            additionalPhones: design.visibleFields.contains(.phone)
-                ? profile.additionalPhones.filter { !$0.isEmpty && audience.allows($0.privacy) } : [],
-            phoneLabel: profile.phoneLabel
+            additionalPhones: Array(visible.entries(of: .phone).dropFirst().map(\.labeledPhone)),
+            phoneLabel: visible.legacyPhoneLabel,
+            contacts: visible
         )
     }
 }

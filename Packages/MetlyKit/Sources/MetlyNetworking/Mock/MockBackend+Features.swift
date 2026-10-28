@@ -142,11 +142,11 @@ extension MockBackend {
             for field in peer.fields where field.privacy != .private && connection.value(for: field.kind).isEmpty {
                 connection.setValue(field.value, for: field.kind)
             }
-            // Accepted and mutual: their Connections-level phones too, labels included (the snapshot has none).
-            let primary = peer.fields.first { $0.kind == .phone && $0.privacy != .private }?.value ?? ""
+            // Accepted and mutual: their Connections-level entries too, labels included (the snapshot has none).
             let extras = peer.design.visibleFields.contains(.phone) ? peer.additionalPhones.filter { $0.privacy != .private } : []
-            PhoneMerge.merge(phone: &connection.phone, label: &connection.phoneLabel, additional: &connection.additionalPhones,
-                             incomingPhone: primary, incomingLabel: peer.phoneLabel, incomingAdditional: extras)
+            let theirs = [ContactEntry].fromLegacy(fields: peer.fields.filter { $0.privacy != .private }, phoneLabel: peer.phoneLabel,
+                                                   additionalPhones: extras)
+            connection.contacts.merge(theirs, adoptsLabels: true)
         }
         // The owner's side of the meeting: their own active event as a whole (name, venue, city) —
         // never the requester's venue next to the owner's city. Without one: what the request carried.
@@ -293,23 +293,11 @@ extension Data {
 
 extension ConnectionDTO {
     func value(for kind: ContactFieldKind) -> String {
-        switch kind {
-        case .phone: phone
-        case .email: email
-        case .telegram: telegram
-        case .website: website
-        case .linkedin: linkedin
-        }
+        contacts.first(of: kind)?.value ?? ""
     }
 
     mutating func setValue(_ value: String, for kind: ContactFieldKind) {
-        switch kind {
-        case .phone: phone = value
-        case .email: email = value
-        case .telegram: telegram = value
-        case .website: website = value
-        case .linkedin: linkedin = value
-        }
+        contacts.setFirst(kind, value: value, privacy: contacts.first(of: kind) == nil ? .connections : nil)
     }
 }
 

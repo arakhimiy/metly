@@ -78,12 +78,14 @@ struct ContactFieldRulesTests {
     }
 
     @Test @MainActor func returnKeyWalksThroughEveryField() {
+        let ids = [UUID(), UUID(), UUID()]
         var field: ProfileFocusField? = .name
         var visited: [ProfileFocusField] = []
         while let current = field {
             visited.append(current)
-            field = current.next
+            field = current.next(contactIDs: ids)
         }
-        #expect(visited == [.name, .jobTitle, .company] + ContactFieldKind.allCases.map { .contact($0) })
+        #expect(visited == [.name, .jobTitle, .company] + ids.map { .contact($0) })
+        #expect(ProfileFocusField.company.next(contactIDs: []) == nil)
     }
 }

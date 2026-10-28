@@ -18,8 +18,8 @@ struct PaperPhonesSection: View {
             .onDelete { details.removePhones(at: $0) }
 
             Button("Add Phone", systemImage: "plus.circle.fill", action: addPhone)
-                // The main number plus at most `LabeledPhone.maxAdditional` more (server limit).
-                .disabled(details.phones.count > LabeledPhone.maxAdditional)
+                // Every number on the card, up to the contact list limit.
+                .disabled(details.phones.count >= ContactEntry.maxCount)
         } header: {
             Text("Phone")
         } footer: {

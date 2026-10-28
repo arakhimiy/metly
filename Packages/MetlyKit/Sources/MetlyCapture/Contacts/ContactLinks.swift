@@ -1,4 +1,5 @@
 import Foundation
+import MetlyCore
 
 /// URLs for contacting someone from their stored values (Message / Call / Mail actions, follow-up channels).
 nonisolated public enum ContactLinks {
@@ -77,6 +78,45 @@ nonisolated public enum ContactLinks {
         let string = lower.hasPrefix("http://") || lower.hasPrefix("https://") ? trimmed : "https://\(trimmed)"
         guard let url = URL(string: string), url.host() != nil else { return nil }
         return url
+    }
+
+    /// `https://wa.me/{digits}` — opens WhatsApp (or its web page) on that number. Nil without digits.
+    public static func whatsApp(_ phone: String) -> URL? {
+        var value = phone.trimmed
+        for prefix in ["https://wa.me/", "http://wa.me/", "wa.me/"] where value.lowercased().hasPrefix(prefix) {
+            value = String(value.dropFirst(prefix.count))
+        }
+        let digits = value.filter(\.isNumber)
+        return digits.isEmpty ? nil : URL(string: "https://wa.me/\(digits)")
+    }
+
+    /// "@aziza.k", "aziza.k", "instagram.com/aziza.k/" or a full URL → "aziza.k". Nil when empty.
+    public static func instagramHandle(_ value: String) -> String? {
+        var handle = value.trimmed
+        for prefix in ["https://", "http://", "www.", "instagram.com/", "instagr.am/", "@"] where handle.lowercased().hasPrefix(prefix) {
+            handle = String(handle.dropFirst(prefix.count))
+        }
+        handle = handle.split(separator: "/").first.map(String.init) ?? ""
+        handle = handle.split(separator: "?").first.map(String.init) ?? ""
+        return handle.isEmpty || handle.contains(" ") ? nil : handle
+    }
+
+    /// `https://instagram.com/{handle}`.
+    public static func instagram(_ value: String) -> URL? {
+        instagramHandle(value).flatMap { URL(string: "https://instagram.com/\($0)") }
+    }
+
+    /// Where tapping an entry goes (web links, so they work without the app installed).
+    public static func url(for kind: ContactFieldKind, value: String) -> URL? {
+        switch kind {
+        case .phone: call(value)
+        case .whatsapp: whatsApp(value)
+        case .telegram: telegramWeb(value)
+        case .instagram: instagram(value)
+        case .email: mail(value)
+        case .website: website(value)
+        case .linkedin: linkedIn(value)
+        }
     }
 
     /// "in/azizakarimova", "linkedin.com/in/…" or a full URL → https://www.linkedin.com/in/…

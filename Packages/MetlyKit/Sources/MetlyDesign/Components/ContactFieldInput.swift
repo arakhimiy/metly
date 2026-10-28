@@ -15,24 +15,26 @@ public nonisolated enum ContactFieldInput {
         case .telegram: "@username"
         case .website: "yoursite.com"
         case .linkedin: "in/username"
+        case .whatsapp: "+998 90 123 45 67"
+        case .instagram: "@username"
         }
     }
 
     public static func keyboardType(for kind: ContactFieldKind) -> UIKeyboardType {
         switch kind {
-        case .phone: .phonePad
+        case .phone, .whatsapp: .phonePad
         case .email: .emailAddress
-        case .telegram: .twitter
+        case .telegram, .instagram: .twitter
         case .website, .linkedin: .URL
         }
     }
 
     public static func contentType(for kind: ContactFieldKind) -> UITextContentType? {
         switch kind {
-        case .phone: .telephoneNumber
+        case .phone, .whatsapp: .telephoneNumber
         case .email: .emailAddress
         case .website, .linkedin: .URL
-        case .telegram: nil
+        case .telegram, .instagram: nil
         }
     }
 
@@ -41,7 +43,8 @@ public nonisolated enum ContactFieldInput {
         var result = value.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !result.isEmpty else { return "" }
         switch kind {
-        case .phone:
+        case .phone, .whatsapp:
+            result = strippingPrefixes(["https://wa.me/", "http://wa.me/", "wa.me/"], from: result)
             result = result.split(whereSeparator: \.isWhitespace).joined(separator: " ")
         case .email:
             result = result.lowercased()
@@ -49,6 +52,13 @@ public nonisolated enum ContactFieldInput {
             result = strippingPrefixes(["https://", "http://"], from: result)
             result = strippingPrefixes(["t.me/", "telegram.me/"], from: result)
             result = trimmingTrailingSlashes(result)
+            if !result.hasPrefix("@") { result = "@" + result }
+        case .instagram:
+            result = strippingPrefixes(["https://", "http://"], from: result)
+            result = strippingPrefixes(["www."], from: result)
+            result = strippingPrefixes(["instagram.com/", "instagr.am/"], from: result)
+            result = trimmingTrailingSlashes(result)
+            if let query = result.firstIndex(of: "?") { result = String(result[..<query]) }
             if !result.hasPrefix("@") { result = "@" + result }
         case .website:
             result = trimmingTrailingSlashes(strippingPrefixes(["https://", "http://"], from: result))

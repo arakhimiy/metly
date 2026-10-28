@@ -44,8 +44,9 @@ import MetlyCore
 //    (TelegramPhone: E.164 digits; +998 added to 9-digit Uzbek mobiles; landlines skipped). Show
 //    `TelegramTarget.byPhoneNote` wherever a by-phone action appears.
 //  • connection.phonesForMessaging (Mobile first), LabeledPhone.labeledValue ("Mobile · +998…").
-//  • ContactInfoDraft + ContactInfoEditor(draft:) — editable phones (label menu, add / delete) + email,
-//    Telegram, website, LinkedIn as Form sections; commit with `draft.apply(to: connection)`.
+//  • ContactInfoDraft + ContactInfoEditor(draft:) — editable contact list (+ Add Contact: phones with labels,
+//    Telegram, WhatsApp, Instagram, email, website, LinkedIn) as a Form section; commit with
+//    `draft.apply(to: connection)`.
 //  • LocationContextProvider, VoiceNoteRecognizer — @Observable helpers if you need them directly
 //    (dictation: SpeechAnalyzer on iOS 26+, SFSpeechRecognizer restarted per task on iOS 18–25; language
 //    Русский / English picked next to the mic and remembered — `DictationLanguage`; no Uzbek model).

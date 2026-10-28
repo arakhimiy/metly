@@ -45,36 +45,32 @@ struct CardDesignRulesTests {
         #expect(CardDesignRules.settingGradient(true, in: design) == .updated(CardDesign(template: .minimal, background: .gradient)))
     }
 
-    @Test func privateFieldsCanNeverBeShown() {
-        let design = CardDesign(visibleFields: [])
-        #expect(CardDesignRules.settingField(.phone, visible: true, privacy: .private, in: design) == .blocked(.privateField))
-        // …even when the stored design still lists them (privacy changed in Profile later).
-        #expect(!CardDesignRules.isFieldShown(.phone, privacy: .private, in: CardDesign(visibleFields: [.phone])))
+    @Test func privateEntriesCanNeverBeShown() {
+        let phone = ContactEntry(kind: .phone, value: "1", privacy: .private)
+        #expect(CardDesignRules.settingContact(phone, visible: true, in: []) == .blocked(.privateField))
+        // Hiding one is always fine.
+        #expect(CardDesignRules.settingContact(phone, visible: false, in: [phone.id]) == .updated([]))
     }
 
-    @Test func fieldTogglesUpdateVisibleFields() {
-        let design = CardDesign(visibleFields: [.email])
-        #expect(CardDesignRules.settingField(.telegram, visible: true, privacy: .public, in: design)
-                == .updated(CardDesign(visibleFields: [.email, .telegram])))
-        #expect(CardDesignRules.settingField(.email, visible: false, privacy: .connections, in: design)
-                == .updated(CardDesign(visibleFields: [])))
-        // Hiding a private field is always fine.
-        #expect(CardDesignRules.settingField(.phone, visible: false, privacy: .private, in: CardDesign(visibleFields: [.phone]))
-                == .updated(CardDesign(visibleFields: [])))
+    @Test func togglesUpdateTheSelection() {
+        let email = ContactEntry(kind: .email, value: "a@b.c", privacy: .public)
+        let whatsapp = ContactEntry(kind: .whatsapp, value: "90 1", privacy: .connections)
+        #expect(CardDesignRules.settingContact(whatsapp, visible: true, in: [email.id]) == .updated([email.id, whatsapp.id]))
+        #expect(CardDesignRules.settingContact(email, visible: false, in: [email.id, whatsapp.id]) == .updated([whatsapp.id]))
+        #expect(CardDesignRules.settingContact(email, visible: true, in: [email.id]) == .updated([email.id]))
     }
 
-    @Test func densityHidesExtraFields() {
-        let fields = [
-            ContactField(kind: .phone, value: "1", privacy: .public),
-            ContactField(kind: .email, value: "a@b.c", privacy: .public),
-            ContactField(kind: .telegram, value: "@t", privacy: .connections),
-            ContactField(kind: .website, value: "w.uz", privacy: .public),
-            ContactField(kind: .linkedin, value: "", privacy: .public),        // empty → not counted
+    @Test func densityHidesExtraEntries() {
+        let entries = [
+            ContactEntry(kind: .phone, value: "1", privacy: .public),
+            ContactEntry(kind: .email, value: "a@b.c", privacy: .public),
+            ContactEntry(kind: .telegram, value: "@t", privacy: .connections),
+            ContactEntry(kind: .phone, label: .work, value: "2", privacy: .public),
+            ContactEntry(kind: .instagram, value: "@i", privacy: .private),      // Private → not counted
         ]
-        let all: Set<ContactFieldKind> = Set(ContactFieldKind.allCases)
-        #expect(CardDesignRules.fieldsHiddenByDensity(fields: fields, design: CardDesign(density: .minimal, visibleFields: all)) == 2)
-        #expect(CardDesignRules.fieldsHiddenByDensity(fields: fields, design: CardDesign(density: .balanced, visibleFields: all)) == 1)
-        #expect(CardDesignRules.fieldsHiddenByDensity(fields: fields, design: CardDesign(density: .detailed, visibleFields: all)) == 0)
+        #expect(CardDesignRules.hiddenByDensity(entries, design: CardDesign(density: .minimal)) == (fields: 1, phones: 1))
+        #expect(CardDesignRules.hiddenByDensity(entries, design: CardDesign(density: .balanced)) == (fields: 0, phones: 1))
+        #expect(CardDesignRules.hiddenByDensity(entries, design: CardDesign(density: .detailed)) == (fields: 0, phones: 0))
     }
 
     @Test func everyPaletteMeetsContrastAA() {

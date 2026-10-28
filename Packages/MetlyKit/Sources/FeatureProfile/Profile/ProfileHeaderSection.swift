@@ -6,6 +6,8 @@ import SwiftUI
 /// Avatar (photo picker) + inline-editable name, job title and company.
 struct ProfileHeaderSection: View {
     let profile: Profile
+
+    private var contactIDs: [UUID] { profile.contacts.map(\.id) }
     var focusedField: FocusState<ProfileFocusField?>.Binding
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -26,7 +28,7 @@ struct ProfileHeaderSection: View {
                         .textInputAutocapitalization(.words)
                         .submitLabel(.next)
                         .focused(focusedField, equals: .name)
-                        .onSubmit { focusedField.wrappedValue = ProfileFocusField.name.next }
+                        .onSubmit { focusedField.wrappedValue = ProfileFocusField.name.next(contactIDs: contactIDs) }
 
                     Divider()
 
@@ -35,7 +37,7 @@ struct ProfileHeaderSection: View {
                         .textInputAutocapitalization(.words)
                         .submitLabel(.next)
                         .focused(focusedField, equals: .jobTitle)
-                        .onSubmit { focusedField.wrappedValue = ProfileFocusField.jobTitle.next }
+                        .onSubmit { focusedField.wrappedValue = ProfileFocusField.jobTitle.next(contactIDs: contactIDs) }
                 }
             }
             .padding(.vertical, 4)
@@ -48,7 +50,7 @@ struct ProfileHeaderSection: View {
                     .textInputAutocapitalization(.words)
                     .submitLabel(.next)
                     .focused(focusedField, equals: .company)
-                    .onSubmit { focusedField.wrappedValue = ProfileFocusField.company.next }
+                    .onSubmit { focusedField.wrappedValue = ProfileFocusField.company.next(contactIDs: contactIDs) }
             } accessory: {
                 EmptyView()
             }

@@ -19,7 +19,9 @@ struct ProfileEditorTests {
     @Test func unchangedValuesDoNotDirtyTheProfile() throws {
         let (container, profile) = try makeProfile()
         profile.editor.binding(\.fullName).wrappedValue = "Aziza Karimova"
-        profile.editor.privacyBinding(for: .phone).wrappedValue = ContactFieldKind.phone.defaultPrivacy
+        let phone = try #require(profile.addContact(.phone))
+        profile.editor.privacyBinding(id: phone).wrappedValue = ContactFieldKind.phone.defaultPrivacy
+        profile.editor.valueBinding(id: phone).wrappedValue = ""
         #expect(profile.syncState == .synced)
         withExtendedLifetime(container) {}
     }
@@ -32,15 +34,20 @@ struct ProfileEditorTests {
         withExtendedLifetime(container) {}
     }
 
-    @Test func contactFieldEditsKeepOneEntryPerKind() throws {
+    @Test func contactEditsAreCleanedUpWhenLeft() throws {
         let (container, profile) = try makeProfile()
         let editor = profile.editor
-        editor.valueBinding(for: .telegram).wrappedValue = "t.me/aziza"
-        editor.privacyBinding(for: .telegram).wrappedValue = .private
-        profile.normalizeField(.telegram)
+        let telegram = try #require(profile.addContact(.telegram))
+        editor.valueBinding(id: telegram).wrappedValue = "t.me/aziza"
+        editor.privacyBinding(id: telegram).wrappedValue = .private
+        profile.normalizeContact(id: telegram)
         #expect(profile.field(.telegram) == ContactField(kind: .telegram, value: "@aziza", privacy: .private))
-        #expect(profile.contactFields.count == ContactFieldKind.allCases.count)
         #expect(profile.syncState == .pendingUpsert)
+
+        // A row left empty goes away.
+        let empty = try #require(profile.addContact(.instagram))
+        profile.normalizeContact(id: empty)
+        #expect(!profile.contacts.contains { $0.id == empty })
         withExtendedLifetime(container) {}
     }
 
@@ -64,12 +71,16 @@ struct ProfileEditorTests {
         editor.textBinding(\.fullName).wrappedValue = String(repeating: "A", count: 120)
         editor.textBinding(\.jobTitle).wrappedValue = String(repeating: "B", count: 81)
         editor.textBinding(\.company).wrappedValue = String(repeating: "C", count: 80)
-        editor.valueBinding(for: .website).wrappedValue = "example.com/" + String(repeating: "x", count: 300)
+        let website = try #require(profile.addContact(.website))
+        editor.valueBinding(id: website).wrappedValue = "example.com/" + String(repeating: "x", count: 600)
+        let phone = try #require(profile.addContact(.phone))
+        editor.valueBinding(id: phone).wrappedValue = String(repeating: "9", count: 60)
         #expect(profile.fullName.count == 80)
         #expect(profile.jobTitle.count == 80)
         #expect(profile.company.count == 80)
-        #expect(profile.field(.website).value.count == 200)
+        #expect(profile.field(.website).value.count == 500)
         #expect(profile.field(.website).value.hasPrefix("example.com/"))
+        #expect(profile.field(.phone).value.count == LabeledPhone.maxValueLength)
         withExtendedLifetime(container) {}
     }
 

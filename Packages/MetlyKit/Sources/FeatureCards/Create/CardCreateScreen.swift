@@ -20,6 +20,7 @@ struct CardCreateScreen: View {
 
     @State private var path: [CreateStep] = []
     @State private var design = CardDesign()
+    @State private var contactIDs: [UUID]?
     @State private var name = ""
     @State private var createdCardID: UUID?
     @State private var createdOffline = false
@@ -70,12 +71,8 @@ struct CardCreateScreen: View {
             CreateStyleStep(design: $design, content: previewContent, allowsPro: allowsPro,
                             onRequirePro: showPaywall, onContinue: { path.append(.details) })
         case .details:
-            CreateDetailsStep(design: $design, name: $name, content: previewContent,
-                              fields: profiles.first?.contactFields ?? ContactField.defaults,
-                              additionalPhones: profiles.first?.additionalPhones ?? [],
-                              phoneLabel: profiles.first?.phoneLabel ?? .mobile,
-                              onEditField: { kind, value in profiles.first?.setContactValue(value, for: kind) },
-                              onPublish: publish)
+            CreateDetailsStep(design: $design, selection: $contactIDs, name: $name, content: previewContent,
+                              profile: profiles.first, onPublish: publish)
         }
     }
 
@@ -96,7 +93,9 @@ struct CardCreateScreen: View {
 
     /// In-app preview with the user's own details (Public + Connections).
     private var previewContent: CardFaceContent {
-        CardContentFactory.content(profile: profiles.first, design: design, audience: .connections, qrPayload: "")
+        CardContentFactory.content(profile: profiles.first, design: design,
+                                   selection: contactIDs ?? profiles.first?.defaultCardSelection, audience: .connections,
+                                   qrPayload: "")
     }
 
     // MARK: Actions
@@ -128,7 +127,9 @@ struct CardCreateScreen: View {
             isShowingLimitAlert = true
             return
         }
-        let card = CardLibrary.create(name: name, design: design, in: modelContext)
+        profiles.first?.removeEmptyContacts()
+        let card = CardLibrary.create(name: name, design: design,
+                                      contactIDs: contactIDs ?? profiles.first?.defaultCardSelection, in: modelContext)
         try? modelContext.save()
         services.preferences.activeCardID = card.id   // the new card becomes the active one
         services.sync.requestSync()
