@@ -4,8 +4,8 @@ import MetlyData
 import SwiftUI
 
 /// Message · Call · Mail · Save (PLAN Q40: capitalised labels).
-/// Message opens Telegram, WhatsApp or Messages directly when only one fits, else a menu of them
-/// (Telegram by username, WhatsApp, Telegram by phone number, Messages);
+/// Message opens a menu of Telegram (username, else by phone number), WhatsApp and Messages — or
+/// Messages directly when there's no messenger;
 /// Call dials the only number directly, or lists every number ("Mobile · +998…") when there are several.
 struct QuickActionsSection: View {
     let person: Connection

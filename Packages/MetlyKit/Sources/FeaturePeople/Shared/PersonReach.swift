@@ -19,8 +19,7 @@ struct PersonReach: Equatable {
 
     /// What Message opens with one tap: Telegram by username › WhatsApp › Telegram by phone › Messages.
     let message: Message
-    /// Every way to message them, in that order (Messages only without a Telegram username); more than
-    /// one → Message opens a menu.
+    /// Every way to message them, in that order, Messages last; more than one → Message opens a menu.
     let choices: [Message]
     /// Their WhatsApp chat: the saved WhatsApp, else their mobile number when WhatsApp is on this iPhone.
     let whatsAppURL: URL?
@@ -45,8 +44,8 @@ struct PersonReach: Equatable {
         if let savedWhatsApp { choices.append(.whatsApp(savedWhatsApp, byPhone: false)) }
         if let telegram, telegram.isByPhone { choices.append(.telegram(telegram)) }
         if savedWhatsApp == nil, let whatsAppByPhone { choices.append(.whatsApp(whatsAppByPhone, byPhone: true)) }
-        // A saved Telegram username is how they want to be messaged: no Messages next to it (as before).
-        if let smsURL, telegram?.isByPhone ?? true { choices.append(.sms(smsURL)) }
+        // Messages always closes the list; alone (no Telegram, no WhatsApp) it opens straight away.
+        if let smsURL { choices.append(.sms(smsURL)) }
         self.choices = choices
         message = choices.first ?? .none
     }

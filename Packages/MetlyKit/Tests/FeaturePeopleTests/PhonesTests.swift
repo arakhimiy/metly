@@ -112,7 +112,8 @@ struct PhonesTests {
                                   .sms(URL(string: "sms:+998901234567")!)])
 
         person.telegram = "@kamila.y"
-        #expect(PersonReach(person, hasWhatsApp: false).choices == [.telegram(.username("kamila.y")), .whatsApp(whatsApp, byPhone: false)])
+        #expect(PersonReach(person, hasWhatsApp: false).choices == [.telegram(.username("kamila.y")), .whatsApp(whatsApp, byPhone: false),
+                                                                    .sms(URL(string: "sms:+998901234567")!)])
     }
 
     @Test func whatsAppByPhoneNeedsWhatsAppOnThisPhone() throws {
@@ -123,6 +124,15 @@ struct PhonesTests {
         #expect(PersonReach(person, hasWhatsApp: true).choices == [.telegram(.phone("998901234567")),
                                                                    .whatsApp(whatsApp, byPhone: true),
                                                                    .sms(URL(string: "sms:901234567")!)])
+    }
+
+
+    @Test func withoutAMessengerMessageOpensMessagesDirectly() throws {
+        let context = try makeContext()
+        let person = insertPerson("Diyor", in: context, phone: "+998 71 200 00 00")   // a landline: no Telegram by phone
+        let reach = PersonReach(person, hasWhatsApp: false)
+        #expect(reach.choices == [.sms(URL(string: "sms:+998712000000")!)])
+        #expect(reach.message == .sms(URL(string: "sms:+998712000000")!))
     }
 
 }
