@@ -12,8 +12,8 @@ struct EventFollowUpPlannerTests {
         let context = try makeContext()
         let event = insertEvent(in: context)
         let telegram = insertPerson("Telegram", at: event, in: context, telegram: "@t", email: "t@x.uz")
-        let email = insertPerson("Email", at: event, in: context, email: "e@x.uz", phone: "+998 90 000 00 00")
-        let phone = insertPerson("Phone", at: event, in: context, phone: "+998 90 000 00 01")
+        let email = insertPerson("Email", at: event, in: context, email: "e@x.uz", phone: "+998 71 200 00 00")
+        let phone = insertPerson("Phone", at: event, in: context, phone: "+998 71 200 00 01")
         let covered = insertPerson("Covered", at: event, in: context)
         let existing = insertFollowUp(for: covered, in: context, dueInDays: 5)
 

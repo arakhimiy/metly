@@ -27,6 +27,11 @@ public struct LabeledPhone: Codable, Hashable, Sendable, Identifiable {
     public var value: String
     public var privacy: FieldPrivacy
 
+    /// Server-validated: at most this many extra phones per profile / connection.
+    public static let maxAdditional = 5
+    /// Server-validated: a phone value is at most this many characters.
+    public static let maxValueLength = 40
+
     /// Stable id used when the primary phone is presented as a `LabeledPhone` (`allPhones`).
     public static let primaryID = UUID(uuidString: "00000000-0000-0000-0000-00000000F001")!
 

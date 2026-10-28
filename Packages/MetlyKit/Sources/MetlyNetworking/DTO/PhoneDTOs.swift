@@ -6,10 +6,7 @@ import MetlyCore
 // Payloads from before the feature carry neither key: decoding falls back to `.mobile` / `[]`.
 
 public extension LabeledPhone {
-    /// Server-validated: at most this many extra phones per profile / connection.
-    static let maxAdditional = 5
-    /// Server-validated: a phone value is at most this many characters.
-    static let maxValueLength = 40
+    // `maxAdditional` / `maxValueLength` live in MetlyCore (DomainValues) so every module sees them.
 
     /// Why the server would reject these extra phones, or nil when they are valid.
     static func validationProblem(_ phones: [LabeledPhone]) -> String? {

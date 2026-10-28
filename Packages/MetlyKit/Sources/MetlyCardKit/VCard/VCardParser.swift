@@ -14,7 +14,7 @@ import MetlyCore
 /// become `additionalPhones` in file order (at most `maxAdditionalPhones`, duplicates and faxes skipped).
 public enum VCardParser {
     /// Extra numbers kept beyond the primary one (the profile allows the same).
-    public static let maxAdditionalPhones = 5
+    public static let maxAdditionalPhones = LabeledPhone.maxAdditional
 
     public static func parse(_ string: String) -> PaperCardDraft? {
         let properties = properties(in: string)
