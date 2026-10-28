@@ -17,6 +17,18 @@ struct PaperCorpusTests {
 
     @Test("Reads the card", arguments: PaperCardCorpus.samples)
     func reads(_ sample: PaperCardSample) {
+        check(sample)
+    }
+
+    /// Written after the tuning above and first measured blind (roles 14/15, fully correct 13/15);
+    /// the two misses (a lower-case university name taken for a slogan, "(+998 71) …" cut short)
+    /// were then fixed in general ways.
+    @Test("Reads held-out cards", arguments: PaperHoldoutCorpus.samples)
+    func readsHoldout(_ sample: PaperCardSample) {
+        check(sample)
+    }
+
+    private func check(_ sample: PaperCardSample) {
         let draft = PaperCardParser.parse(Self.lines(sample))
         #expect(draft.fullName == sample.fullName)
         #expect(draft.jobTitle == sample.jobTitle)

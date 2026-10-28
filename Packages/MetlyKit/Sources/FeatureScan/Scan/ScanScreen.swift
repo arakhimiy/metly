@@ -20,7 +20,6 @@ struct ScanScreen: View {
     @State private var isReadingCard = false
     /// The on-device model that helps read paper cards (iOS 26+ with Apple Intelligence), looked up in Paper mode.
     @State private var cardModel: (any PaperCardLanguageModel)?
-    @State private var didLookUpCardModel = false
 
     @State private var invalidCode: InvalidCodeAlert?
     @State private var showsInvalidCode: Bool
@@ -189,13 +188,11 @@ struct ScanScreen: View {
 
     // MARK: Paper cards
 
-    /// In Paper mode: finds the on-device model once and loads it ahead of the shutter.
+    /// In Paper mode: finds the on-device model (again, while it is still downloading or switched
+    /// off) and loads it ahead of the shutter.
     private func prepareCardModel() {
         guard mode == .paper else { return }
-        if !didLookUpCardModel {
-            didLookUpCardModel = true
-            cardModel = PaperCardModels.available()
-        }
+        if cardModel == nil { cardModel = PaperCardModels.available() }
         guard let cardModel else { return }
         Task { await cardModel.prepare() }
     }

@@ -143,6 +143,90 @@ struct PaperModelTests {
         #expect(scan.draft.additionalPhones.first { $0.value == "+1 415 555 0123" }?.label == .work)
     }
 
+    // MARK: Recorded answers of the real on-device model (same prompt and schema, greedy)
+
+    private func sample(_ prefix: String) throws -> PaperCardSample {
+        try #require(PaperCardCorpus.samples.first { $0.name.hasPrefix(prefix) })
+    }
+
+    private func expectMatches(_ scan: PaperScan, _ sample: PaperCardSample) {
+        #expect(scan.draft.fullName == sample.fullName)
+        #expect(scan.draft.jobTitle == sample.jobTitle)
+        #expect(scan.draft.company == sample.company)
+        let phones = [(phone(scan.draft), scan.draft.phoneLabel)] + scan.draft.additionalPhones.map { ($0.value, $0.label) }
+        #expect(phones.map(\.0) == sample.phones.map(\.0))
+        #expect(phones.map(\.1) == sample.phones.map(\.1))
+        #expect(scan.draft.value(for: .email) == sample.email)
+        #expect(scan.draft.value(for: .telegram) == sample.telegram)
+        #expect(scan.draft.value(for: .website) == sample.website)
+    }
+
+    @Test("Recorded: website taken for the company, invented email and Telegram — all dropped")
+    func recordedPersonalWebsite() async throws {
+        let sample = try sample("Personal website")
+        let model = MockCardModel(answer: PaperModelOutput(
+            fullName: "Jasur Karimov", jobTitle: "Photographer", company: "karimov.uz",
+            phones: [.init(number: "+998 90 555 44 33", label: .work), .init(number: "@jasur_photo", label: .mobile)],
+            email: "jkarimov@karimov.uz", telegram: "jkarimov", website: "https://www.karimov.uz"))
+        expectMatches(await PaperCardRecognizer.recognize(PaperCorpusTests.lines(sample), model: model), sample)
+    }
+
+    @Test("Recorded: an email as a phone, a Telegram and website made up from the email — dropped")
+    func recordedBrandOnTop() async throws {
+        let sample = try sample("Brand logo in two words")
+        let model = MockCardModel(answer: PaperModelOutput(
+            fullName: "Davron Rahim", jobTitle: "Bosh menejer", company: "GRAND LUX",
+            phones: [.init(number: "+998 95 145 67 89", label: .mobile), .init(number: "d.rahim@gmail.com", label: .other)],
+            email: "d.rahim@gmail.com", telegram: "https://t.me/d.rahim", website: "https://www.grandlux.uz"))
+        expectMatches(await PaperCardRecognizer.recognize(PaperCorpusTests.lines(sample), model: model), sample)
+    }
+
+    @Test("Recorded: straight quotes, extension kept on the number, invented handle — mapped back or dropped")
+    func recordedCyrillic() async throws {
+        let sample = try sample("Cyrillic: patronymic")
+        let model = MockCardModel(answer: PaperModelOutput(
+            fullName: "Иванова Анна Сергеевна", jobTitle: "Руководитель отдела продаж", company: "АО \"Узпромстройбанк\"",
+            phones: [.init(number: "+998 (71) 120-45-00 доб. 210", label: .work), .init(number: "+998 (90) 350-12-34", label: .mobile)],
+            email: "a.ivanova@uzpsb.uz", telegram: "https://t.me/ivanova_anna_sergeevna", website: "https://www.uzpsb.uz"))
+        let scan = await PaperCardRecognizer.recognize(PaperCorpusTests.lines(sample), model: model)
+        expectMatches(scan, sample)
+        #expect(scan.confidentFields == [.name, .title, .company])
+    }
+
+    @Test("Recorded: wrong labels for printed Tel / Ish numbers — the card's labels win")
+    func recordedLabels() async throws {
+        for (prefix, answer) in [
+            ("Cyrillic: bank logo", PaperModelOutput(fullName: "Шерзод Алимов", jobTitle: "Главный специалист", company: "КАПИТАЛБАНК",
+                                                     phones: [.init(number: "+998 71 200 15 15", label: .mobile),
+                                                              .init(number: "+998 97 444 55 66", label: .mobile)],
+                                                     email: "s.alimov@kapitalbank.uz", telegram: "https://t.me/s.alimov",
+                                                     website: "https://www.kapitalbank.uz")),
+            ("Logo and tagline", PaperModelOutput(fullName: "Dilnoza Yusupova", jobTitle: "Marketing menejeri", company: "ARTEL",
+                                                  phones: [.init(number: "+998 93 555 12 34", label: .mobile),
+                                                           .init(number: "+998 71 200 00 00", label: .home)],
+                                                  email: "d.yusupova@artel.uz")),
+        ] {
+            let sample = try sample(prefix)
+            expectMatches(await PaperCardRecognizer.recognize(PaperCorpusTests.lines(sample), model: MockCardModel(answer: answer)), sample)
+        }
+    }
+
+    @Test("Recorded: the model fixes the layout the heuristics get wrong; repeated phones collapse")
+    func recordedAmbiguous() async {
+        let lines = [OCRLine("Bobo Tosh", height: 0.09), OCRLine("Grand Lux", height: 0.06), OCRLine("Bosh menejer", height: 0.035),
+                     OCRLine("+998 95 145 67 89")]
+        let repeated = Array(repeating: PaperModelOutput.Phone(number: "+998 95 145 67 89", label: .mobile), count: 5)
+        let model = MockCardModel(answer: PaperModelOutput(fullName: "Bobo Tosh", jobTitle: "Bosh menejer", company: "Grand Lux",
+                                                           phones: repeated, telegram: "empty", website: "empty"))
+        let scan = await PaperCardRecognizer.recognize(lines, model: model)
+        #expect(scan.draft.fullName == "Bobo Tosh")
+        #expect(scan.draft.company == "Grand Lux")
+        #expect(phone(scan.draft) == "+998 95 145 67 89")
+        #expect(scan.draft.additionalPhones.isEmpty)
+        #expect(scan.draft.value(for: .telegram).isEmpty)
+        #expect(scan.draft.value(for: .website).isEmpty)
+    }
+
     // MARK: Time box & errors
 
     @Test("Errors and refusals fall back to the heuristics")

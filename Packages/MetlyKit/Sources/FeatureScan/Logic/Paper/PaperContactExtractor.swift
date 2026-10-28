@@ -161,8 +161,15 @@ nonisolated struct PaperContactExtractor {
                 if let range = Range(match.range, in: text) { found.append((range, String(text[range]))) }
             }
         }
-        for match in text.matches(of: Self.phone) where !found.contains(where: { $0.0.overlaps(match.range) }) {
-            found.append((match.range, String(match.output)))
+        // The pattern also catches what the detector cuts short ("(+998 71) 200-11-22" → "200-11-22"):
+        // on overlap the plausible match with more digits wins.
+        for match in text.matches(of: Self.phone) {
+            let value = String(match.output)
+            let overlapping = found.indices.filter { found[$0].0.overlaps(match.range) }
+            let longest = overlapping.map { PhoneFormat.digits(found[$0].1).count }.max() ?? 0
+            guard overlapping.isEmpty || (PhoneFormat.isPlausible(value) && PhoneFormat.digits(value).count > longest) else { continue }
+            for index in overlapping.reversed() { found.remove(at: index) }
+            found.append((match.range, value))
         }
         let valid = found
             .map { ($0.0, Self.removingExtension(from: $0.1)) }

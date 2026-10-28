@@ -15,15 +15,19 @@ nonisolated enum PaperModelValidator {
         let context = analysis.context
         var result = PaperModelOutput()
 
-        // Name, title, company: a run of words from one line, sanity-checked against the evidence.
-        if let name = span(matching: output.fullName, in: segments), isPlausibleName(name, context: context) {
+        // Name, title, company: a run of words from one of the role lines — the text left once
+        // contacts, labels and addresses are taken out — so a website ("karimov.uz") or an email
+        // can't become the company. Then sanity-checked against the evidence.
+        var seen = Set<String>()
+        let roleLines = analysis.candidates.map(\.text).filter { seen.insert($0).inserted }
+        if let name = span(matching: output.fullName, in: roleLines), isPlausibleName(name, context: context) {
             result.fullName = PaperText.titleCasedIfAllCaps(name)
         }
-        if let title = span(matching: output.jobTitle, in: segments), isPlausibleRole(title),
+        if let title = span(matching: output.jobTitle, in: roleLines), isPlausibleRole(title),
            !PaperRoleClassifier.overlaps(title, result.fullName) {
             result.jobTitle = PaperText.titleCasedIfAllCaps(title)
         }
-        if let company = span(matching: output.company, in: segments), isPlausibleCompany(company, context: context),
+        if let company = span(matching: output.company, in: roleLines), isPlausibleCompany(company, context: context),
            !PaperRoleClassifier.overlaps(company, result.fullName), !PaperRoleClassifier.overlaps(company, result.jobTitle) {
             result.company = company
         }
@@ -124,13 +128,16 @@ nonisolated enum PaperModelValidator {
     }
 
     /// The model's number when its digits are on the card; the heuristics' formatting when they read it too.
-    static func validatedPhone(_ number: String, digitRuns: [String], known: [PaperContacts.Phone]) -> String? {
-        let digits = PhoneFormat.digits(number)
-        guard PhoneFormat.isPlausible(number), !number.contains("@") else { return nil }
-        if let match = known.first(where: { PhoneFormat.key($0.value) == PhoneFormat.key(number) }) { return match.value }
+    static func validatedPhone(_ raw: String, digitRuns: [String], known: [PaperContacts.Phone]) -> String? {
+        guard !raw.contains("@") else { return nil }
+        // "+998 (71) 120-45-00 доб. 210" → the number without its label or extension.
+        let number = PhoneContactCleaner.clean(raw)
+        guard PhoneFormat.isPlausible(number) else { return nil }
         let key = PhoneFormat.key(number)
+        if let match = known.first(where: { PhoneFormat.key($0.value) == key }) { return match.value }
+        let digits = PhoneFormat.digits(number)
         guard digitRuns.contains(where: { $0.contains(digits) || $0.contains(key) }) else { return nil }
-        return PhoneFormat.display(PhoneContactCleaner.clean(number))
+        return PhoneFormat.display(number)
     }
 }
 

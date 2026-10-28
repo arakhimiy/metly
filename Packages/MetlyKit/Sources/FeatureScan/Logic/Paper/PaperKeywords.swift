@@ -37,6 +37,8 @@ nonisolated enum PaperKeywords {
         "экономист", "логист", "realtor", "rieltor", "риэлтор", "makler", "маклер", "технолог", "texnolog",
         "technologist", "mechanic", "mexanik", "механик", "electrician", "elektrik", "электрик", "barista",
         "кассир", "kassir", "cashier", "officer", "ofitser", "hakam", "sudya", "судья", "prokuror", "прокурор",
+        "dotsent", "доцент", "lecturer", "kardiolog", "кардиолог", "nevrolog", "невролог", "psixolog", "психолог",
+        "pediatr", "педиатр", "terapevt", "терапевт", "jarroh", "ginekolog", "гинеколог", "urolog", "уролог",
     ]
 
     /// Modifiers that only count together with another hint ("Senior", "Sales", "Bosh").

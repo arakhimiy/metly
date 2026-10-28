@@ -89,7 +89,7 @@ nonisolated struct RoleEvidence: Equatable, Sendable {
         }
         isLogoLike = parts.count == 1 || (PaperText.isAllCaps(text) && parts.count <= 3)
         isTagline = Self.isTagline(text, words: words, lowercaseWords: lowercaseWords, titleKeywords: titleKeywords,
-                                   hasLegalForm: hasLegalForm)
+                                   hasLegalForm: hasLegalForm, hasCompanyNoun: hasCompanyNoun)
         isLargest = context.maxHeight > 0 && candidate.height >= context.maxHeight * 0.95
         isFirst = candidate.index == context.firstIndex
         followsAt = candidate.followsAt
@@ -137,12 +137,14 @@ nonisolated struct RoleEvidence: Equatable, Sendable {
     }
 
     /// Slogans: start like a sentence ("Your…", "Мы…"), end with "!" / ".", or are mostly lower-case
-    /// words without a job title or legal form ("Home appliances for every family").
-    static func isTagline(_ text: String, words: [String], lowercaseWords: Int, titleKeywords: Int, hasLegalForm: Bool) -> Bool {
+    /// words without a job title, legal form or company noun ("Home appliances for every family" —
+    /// but not "Toshkent davlat iqtisodiyot universiteti").
+    static func isTagline(_ text: String, words: [String], lowercaseWords: Int, titleKeywords: Int,
+                          hasLegalForm: Bool, hasCompanyNoun: Bool) -> Bool {
         guard words.count >= 3, !hasLegalForm else { return false }
         if let first = words.first, PaperKeywords.taglineLeads.contains(where: { matches(first, stem: $0) }) { return true }
         if let last = text.trimmingCharacters(in: .whitespaces).last, "!.".contains(last) { return true }
-        return lowercaseWords >= 2 && titleKeywords == 0
+        return lowercaseWords >= 2 && titleKeywords == 0 && !hasCompanyNoun
     }
 
     private static let smallWords: Set<String> = [
