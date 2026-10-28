@@ -1,4 +1,3 @@
-import MetlyCardKit
 import MetlyCore
 import SwiftUI
 
@@ -33,7 +32,7 @@ struct PhoneLabelMenu: View {
         }
         .sensoryFeedback(.selection, trigger: label)
         .accessibilityLabel("Phone Label")
-        .accessibilityValue(label.phoneNumberTitle)
+        .accessibilityValue(label.title)
     }
 }
 
