@@ -1,11 +1,11 @@
-import type { ContactField, ContactFieldKind, PhoneLabel } from '../records/wire';
+import type { ContactKind, PhoneLabel } from '../records/wire';
 import { safeUrl } from './html';
 
 // Contact values as typed in the app ("@handle", "in/handle", "site.com") → tap actions and display
 // text. Mirrors MetlyCardKit `ContactValueFormat`.
 
 export interface ContactAction {
-  kind: ContactFieldKind;
+  kind: ContactKind;
   /** Lowercase label shown next to the value. */
   label: string;
   /** Short key for the Terminal template. */
@@ -20,8 +20,10 @@ export interface ContactAction {
 /** Terminal-template keys per phone label. */
 export const PHONE_KEYS: Record<PhoneLabel, string> = { mobile: 'mob', work: 'work', home: 'home', other: 'tel' };
 
-const LABELS: Record<ContactFieldKind, { label: string; key: string }> = {
+const LABELS: Record<ContactKind, { label: string; key: string }> = {
   phone: { label: 'phone', key: 'tel' },
+  whatsapp: { label: 'whatsapp', key: 'wa' },
+  instagram: { label: 'instagram', key: 'ig' },
   email: { label: 'email', key: 'mail' },
   telegram: { label: 'telegram', key: 'tg' },
   website: { label: 'website', key: 'web' },
@@ -36,6 +38,22 @@ export function telegramUsername(value: string): string | null {
   if (text.startsWith('@')) text = text.slice(1);
   text = text.split(/[/?#&]/)[0] ?? '';
   return /^[A-Za-z0-9_]{1,64}$/.test(text) ? text : null;
+}
+
+/** Bare username from "@user", "user", "instagram.com/user", "https://www.instagram.com/user/?hl=en". */
+export function instagramUsername(value: string): string | null {
+  let text = value.trim();
+  text = text.replace(/^https?:\/\//i, '');
+  text = text.replace(/^(www\.|m\.)?(instagram\.com|instagr\.am)\//i, '');
+  if (text.startsWith('@')) text = text.slice(1);
+  text = text.split(/[/?#&]/)[0] ?? '';
+  return /^[A-Za-z0-9._]{1,30}$/.test(text) ? text : null;
+}
+
+/** `https://wa.me/<digits>` (international number, digits only), or null without enough digits. */
+export function whatsappUrl(value: string): string | null {
+  const digits = value.replace(/\D/g, '');
+  return digits.length >= 6 && digits.length <= 15 ? `https://wa.me/${digits}` : null;
 }
 
 /** Adds `https://` when the value has no scheme; only http(s) survive. */
@@ -73,8 +91,8 @@ function linkedInDisplay(href: string): string {
   return websiteDisplay(href);
 }
 
-/** The action for one contact field, or null when its value is empty. */
-export function contactAction(field: ContactField): ContactAction | null {
+/** The action for one contact field or list entry, or null when its value is empty. */
+export function contactAction(field: { kind: ContactKind; value: string; privacy?: string }): ContactAction | null {
   const value = field.value.trim();
   if (!value) return null;
   const { label, key } = LABELS[field.kind];
@@ -82,6 +100,18 @@ export function contactAction(field: ContactField): ContactAction | null {
     case 'phone': {
       const dial = value.replace(/[^\d+]/g, '').replace(/(?!^)\+/g, '');
       return { kind: field.kind, label, key, display: value, href: /\d{3,}/.test(dial) ? `tel:${dial}` : null };
+    }
+    case 'whatsapp':
+      return { kind: field.kind, label, key, display: value, href: whatsappUrl(value) };
+    case 'instagram': {
+      const username = instagramUsername(value);
+      return {
+        kind: field.kind,
+        label,
+        key,
+        display: username ? `@${username}` : value,
+        href: username ? `https://instagram.com/${username}` : null,
+      };
     }
     case 'email': {
       const ok = /^[^\s@<>"'(),;:\\]+@[^\s@<>"'(),;:\\]+\.[^\s@<>"'(),;:\\]+$/.test(value);

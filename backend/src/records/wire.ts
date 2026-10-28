@@ -89,7 +89,82 @@ const additionalPhonesIn = (phone: z.ZodType<LabeledPhone, unknown>) =>
 /** On a connection the privacy means nothing; older or sparse payloads may omit it. */
 const ConnectionPhone = LabeledPhone.extend({ privacy: FieldPrivacy.nullish().transform((v) => v ?? 'connections') });
 
-export const CardDesign = z.object({
+// Contact list (app schema 3.0.0, docs/api/CONTACTS.md): an ordered list of entries, any kind, several
+// of the same kind. The legacy fields above are derived from it (src/records/contacts.ts).
+export const contactKinds = ['phone', 'whatsapp', 'telegram', 'instagram', 'email', 'website', 'linkedin'] as const;
+export const ContactKind = z.enum(contactKinds);
+export type ContactKind = z.infer<typeof ContactKind>;
+export const MAX_CONTACTS = 10;
+/** A card may reference at most this many entry ids (unknown ones are ignored). */
+export const MAX_VISIBLE_CONTACTS = 50;
+/** Longest value per kind, after trimming. */
+export const CONTACT_VALUE_MAX: Record<ContactKind, number> = {
+  phone: MAX_PHONE_LENGTH,
+  whatsapp: MAX_PHONE_LENGTH,
+  telegram: 200,
+  instagram: 200,
+  email: 200,
+  website: 500,
+  linkedin: 500,
+};
+
+export interface ContactEntry {
+  id: string;
+  kind: ContactKind;
+  /** Phones only (`mobile` when sent without one); null for every other kind. */
+  label: PhoneLabel | null;
+  value: string;
+  privacy: z.infer<typeof FieldPrivacy>;
+}
+
+const contactEntry = (privacy: z.ZodType<z.infer<typeof FieldPrivacy>, unknown>) =>
+  z
+    .object({
+      id: uuid,
+      kind: ContactKind,
+      // Meaningful for phones only; ignored for every other kind.
+      label: z.string().nullish(),
+      value: z.string(),
+      privacy,
+    })
+    .superRefine((entry, ctx) => {
+      const value = entry.value.trim();
+      const max = CONTACT_VALUE_MAX[entry.kind];
+      if (!value) ctx.addIssue({ code: 'custom', path: ['value'], message: 'must not be empty' });
+      else if (value.length > max) ctx.addIssue({ code: 'custom', path: ['value'], message: `must be at most ${max} characters` });
+      if (entry.kind === 'phone' && entry.label != null && !(phoneLabels as readonly string[]).includes(entry.label)) {
+        ctx.addIssue({ code: 'custom', path: ['label'], message: `must be one of ${phoneLabels.join(', ')}` });
+      }
+    })
+    .transform(
+      (entry): ContactEntry => ({
+        id: entry.id,
+        kind: entry.kind,
+        label: entry.kind === 'phone' ? ((entry.label as PhoneLabel | null | undefined) ?? 'mobile') : null,
+        value: entry.value.trim(),
+        privacy: entry.privacy,
+      }),
+    );
+export const ContactEntry = contactEntry(FieldPrivacy);
+/** On a connection the privacy means nothing (omitted → `connections`). */
+export const ConnectionContactEntry = contactEntry(FieldPrivacy.nullish().transform((v) => v ?? 'connections'));
+
+/** Absent or null (an app from before the contact list) → undefined: the list is rebuilt from the legacy fields. */
+const contactsIn = (entry: z.ZodType<ContactEntry, unknown>) =>
+  z
+    .array(entry)
+    .max(MAX_CONTACTS)
+    .superRefine((list, ctx) => {
+      const seen = new Set<string>();
+      list.forEach((e, i) => {
+        if (seen.has(e.id)) ctx.addIssue({ code: 'custom', path: [i, 'id'], message: 'duplicate id' });
+        seen.add(e.id);
+      });
+    })
+    .nullish()
+    .transform((v) => v ?? undefined);
+
+const CardDesignObject = z.object({
   template: CardTemplate,
   palette: CardPalette,
   appearance: z.enum(['light', 'dark']),
@@ -100,9 +175,16 @@ export const CardDesign = z.object({
   showQR: z.boolean(),
   showPhoto: z.boolean(),
   showLogo: z.boolean(),
+  /** Legacy kinds only; with `visibleContacts` the new app keeps it = the legacy kinds among the selection. */
   visibleFields: z.array(ContactFieldKind).transform((fields) => [...new Set(fields)]),
+  /** Ids of the owner's profile contact entries this card shows; absent/null = a legacy card. */
+  visibleContacts: z.array(uuid).max(MAX_VISIBLE_CONTACTS).nullish(),
 });
-export type CardDesign = z.infer<typeof CardDesign>;
+/** A null selection is not stored at all, so designs written before the contact list compare equal. */
+export type CardDesign = Omit<z.output<typeof CardDesignObject>, 'visibleContacts'> & { visibleContacts?: string[] };
+export const CardDesign = CardDesignObject.transform(
+  ({ visibleContacts, ...design }): CardDesign => (visibleContacts ? { ...design, visibleContacts: [...new Set(visibleContacts)] } : design),
+);
 
 export const CardSnapshot = z.object({
   cardName: z.string(),
@@ -171,6 +253,7 @@ export const ProfileIn = z.object({
   contactFields: z.array(ContactField),
   phoneLabel: phoneLabelIn,
   additionalPhones: additionalPhonesIn(LabeledPhone),
+  contacts: contactsIn(ContactEntry),
   defaultCardId: nullableUuid,
   linksPaused: z.boolean(),
   notificationPrefs: NotificationPrefs,
@@ -210,6 +293,7 @@ export const ConnectionIn = z.object({
   phone: z.string().max(200),
   phoneLabel: phoneLabelIn,
   additionalPhones: additionalPhonesIn(ConnectionPhone),
+  contacts: contactsIn(ConnectionContactEntry),
   email: z.string().max(200),
   telegram: z.string().max(200),
   website: z.string().max(500),

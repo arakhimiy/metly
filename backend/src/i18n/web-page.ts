@@ -1,4 +1,4 @@
-import type { ContactFieldKind, PhoneLabel } from '../records/wire';
+import type { ContactKind, PhoneLabel } from '../records/wire';
 import type { Lang } from './lang';
 
 // Texts of the public card page (WEB_CARD, WEB_SHAREBACK_SHEET, WEB_CONFIRMATION) and WEB_UNAVAILABLE.
@@ -34,7 +34,7 @@ export interface CardPageText {
   copyLink: string;
   contactDetails: string;
   /** Lowercase field labels, like the app's card. */
-  fieldLabel: Record<ContactFieldKind, string>;
+  fieldLabel: Record<ContactKind, string>;
   /** Lowercase phone labels, used once a card shows more than one phone or a non-mobile one. */
   phoneLabel: Record<PhoneLabel, string>;
   copy: string;
@@ -79,7 +79,15 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     inAppNotice: 'Kontaktni saqlash uchun sahifani brauzerda oching.',
     copyLink: 'Havolani nusxalash',
     contactDetails: 'Kontakt ma’lumotlari',
-    fieldLabel: { phone: 'telefon', email: 'email', telegram: 'telegram', website: 'veb-sayt', linkedin: 'linkedin' },
+    fieldLabel: {
+      phone: 'telefon',
+      whatsapp: 'whatsapp',
+      telegram: 'telegram',
+      instagram: 'instagram',
+      email: 'email',
+      website: 'veb-sayt',
+      linkedin: 'linkedin',
+    },
     phoneLabel: { mobile: 'mobil', work: 'ish telefoni', home: 'uy telefoni', other: 'boshqa telefon' },
     copy: 'Nusxalash',
     copyAria: (label) => `Nusxalash: ${label}`,
@@ -137,7 +145,15 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     inAppNotice: 'Чтобы сохранить контакт, откройте страницу в браузере.',
     copyLink: 'Скопировать ссылку',
     contactDetails: 'Контактные данные',
-    fieldLabel: { phone: 'телефон', email: 'email', telegram: 'telegram', website: 'сайт', linkedin: 'linkedin' },
+    fieldLabel: {
+      phone: 'телефон',
+      whatsapp: 'whatsapp',
+      telegram: 'telegram',
+      instagram: 'instagram',
+      email: 'email',
+      website: 'сайт',
+      linkedin: 'linkedin',
+    },
     phoneLabel: { mobile: 'мобильный', work: 'рабочий телефон', home: 'домашний телефон', other: 'другой телефон' },
     copy: 'Копировать',
     copyAria: (label) => `Скопировать: ${label}`,
@@ -195,7 +211,15 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     inAppNotice: 'Open this page in your browser to save the contact.',
     copyLink: 'Copy link',
     contactDetails: 'Contact details',
-    fieldLabel: { phone: 'phone', email: 'email', telegram: 'telegram', website: 'website', linkedin: 'linkedin' },
+    fieldLabel: {
+      phone: 'phone',
+      whatsapp: 'whatsapp',
+      telegram: 'telegram',
+      instagram: 'instagram',
+      email: 'email',
+      website: 'website',
+      linkedin: 'linkedin',
+    },
     phoneLabel: { mobile: 'mobile', work: 'work phone', home: 'home phone', other: 'other phone' },
     copy: 'Copy',
     copyAria: (label) => `Copy ${label}`,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { contactAction, linkedInUrl, telegramUsername, websiteUrl } from './contact-links';
+import { contactAction, instagramUsername, linkedInUrl, telegramUsername, websiteUrl, whatsappUrl } from './contact-links';
 
 describe('contact links', () => {
   it('phone → tel: with digits and a leading +', () => {
@@ -37,6 +37,26 @@ describe('contact links', () => {
     expect(linkedInUrl('kamola')).toBe('https://www.linkedin.com/in/kamola');
     expect(linkedInUrl('linkedin.com/in/kamola')).toBe('https://linkedin.com/in/kamola');
     expect(contactAction({ kind: 'linkedin', value: 'kamola', privacy: 'public' })?.display).toBe('in/kamola');
+  });
+
+  it('whatsapp links wa.me with the digits only', () => {
+    expect(whatsappUrl('+998 (90) 123-45-67')).toBe('https://wa.me/998901234567');
+    expect(whatsappUrl('12')).toBeNull();
+    expect(contactAction({ kind: 'whatsapp', value: '+998 90 123 45 67' })).toMatchObject({
+      display: '+998 90 123 45 67',
+      href: 'https://wa.me/998901234567',
+      key: 'wa',
+    });
+  });
+
+  it('instagram accepts @user, user and instagram.com URLs', () => {
+    expect(instagramUsername('@kamola.y')).toBe('kamola.y');
+    expect(instagramUsername('kamola_y')).toBe('kamola_y');
+    expect(instagramUsername('https://www.instagram.com/kamola.y/?hl=en')).toBe('kamola.y');
+    expect(instagramUsername('instagram.com/kamola')).toBe('kamola');
+    expect(instagramUsername('not a handle')).toBeNull();
+    expect(contactAction({ kind: 'instagram', value: 'instagram.com/kamola' })).toMatchObject({ display: '@kamola', href: 'https://instagram.com/kamola' });
+    expect(contactAction({ kind: 'instagram', value: 'bad handle!' })).toMatchObject({ display: 'bad handle!', href: null });
   });
 
   it('empty values have no action', () => {
