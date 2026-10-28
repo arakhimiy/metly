@@ -74,7 +74,7 @@ struct CardFieldToggleRow: View {
     /// Writes the value to the profile as it is typed; cleans it up ("@handle", no https://) on leave.
     private func commit(normalizing: Bool) {
         guard let onEditValue, asksForValue else { return }
-        var text = String(value.prefix(ContactFieldInput.maxLength))
+        var text = String(value.prefix(Self.maxLength(for: field.kind)))
         if normalizing {
             text = ContactFieldInput.normalized(text, for: field.kind)
             if value != text { value = text }
@@ -82,6 +82,11 @@ struct CardFieldToggleRow: View {
         guard text != field.value else { return }
         onEditValue(text)
         if !text.trimmingCharacters(in: .whitespaces).isEmpty, !isOn { isOn = true }
+    }
+
+    /// Server limits: every phone number 40 characters, other values 200.
+    static func maxLength(for kind: ContactFieldKind) -> Int {
+        kind == .phone ? 40 : ContactFieldInput.maxLength
     }
 
     private var subtitle: String {

@@ -67,6 +67,12 @@ struct SetupProfileFormTests {
         #expect(form.contactValues.first { $0.kind == .email }?.value.count == 200)
     }
 
+    /// Phone numbers are capped at 40 characters, like every number in Profile.
+    @Test func phoneIsCappedAtFortyCharacters() {
+        let form = SetupProfileForm(fullName: "A", phone: "+998 " + String(repeating: "9", count: 60))
+        #expect(form.contactValues.first { $0.kind == .phone }?.value.count == 40)
+    }
+
     @Test func nameTitleAndCompanyAreTrimmedAndCapped() {
         let long = String(repeating: "x", count: 95)
         let form = SetupProfileForm(fullName: "  Aziza Karimova ", jobTitle: long, company: " Tezkor ")
