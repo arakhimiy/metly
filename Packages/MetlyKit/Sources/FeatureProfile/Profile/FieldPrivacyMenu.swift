@@ -3,12 +3,25 @@ import SwiftUI
 
 /// MENU_FIELD_PRIVACY — ✓ Public (Anyone with your link) · Connections · Private.
 struct FieldPrivacyMenu: View {
-    let kind: ContactFieldKind
+    /// Menu header ("Who Can See Your Email").
+    let title: String
+    /// Spoken name of the field ("Email", "Work phone").
+    let fieldName: String
     @Binding var privacy: FieldPrivacy
+
+    init(kind: ContactFieldKind, privacy: Binding<FieldPrivacy>) {
+        self.init(title: String(localized: "Who Can See Your \(kind.title)"), fieldName: kind.title, privacy: privacy)
+    }
+
+    init(title: String, fieldName: String, privacy: Binding<FieldPrivacy>) {
+        self.title = title
+        self.fieldName = fieldName
+        _privacy = privacy
+    }
 
     var body: some View {
         Menu {
-            Section("Who Can See Your \(kind.title)") {
+            Section(title) {
                 Picker("Privacy", selection: $privacy) {
                     ForEach(FieldPrivacy.allCases) { option in
                         Label {
@@ -29,7 +42,7 @@ struct FieldPrivacyMenu: View {
             }
         }
         .sensoryFeedback(.selection, trigger: privacy)
-        .accessibilityLabel("\(kind.title) Privacy")
+        .accessibilityLabel("\(fieldName) Privacy")
         .accessibilityValue(privacy.title)
         .accessibilityHint(privacy.explanation)
     }
