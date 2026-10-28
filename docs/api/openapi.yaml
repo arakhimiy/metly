@@ -1157,7 +1157,7 @@ components:
       required: [kind, value, privacy]
       properties:
         kind: { $ref: '#/components/schemas/ContactFieldKind' }
-        value: { type: string, maxLength: 200 }
+        value: { type: string, maxLength: 500, description: '500 since the contact list (website/LinkedIn entries); 200 before.' }
         privacy: { $ref: '#/components/schemas/FieldPrivacy' }
     LabeledPhone:
       type: object

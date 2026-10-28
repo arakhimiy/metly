@@ -54,7 +54,8 @@ export const PRO_PALETTES = new Set(['ocean', 'ember']);
 
 export const ContactField = z.object({
   kind: ContactFieldKind,
-  value: z.string().max(200),
+  // 500 since the contact list: a website/LinkedIn entry may be that long and the field is derived from it.
+  value: z.string().max(500),
   privacy: FieldPrivacy,
 });
 export type ContactField = z.infer<typeof ContactField>;

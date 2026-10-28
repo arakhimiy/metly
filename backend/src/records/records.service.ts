@@ -196,7 +196,7 @@ export class RecordsService {
       existing.fullName !== row.fullName ||
       existing.jobTitle !== row.jobTitle ||
       existing.company !== row.company ||
-      !sameJson(profileContacts(existing), row.contacts);
+      !sameJson(profileContacts(existing), profileContacts(row));
     ctx.setLinksPaused(row.linksPaused);
     if (pauseChanged || publicChanged) await this.touchAllCards(ctx, { republish: true, bumpSeq: pauseChanged });
     this.emitProfile(ctx, row);
