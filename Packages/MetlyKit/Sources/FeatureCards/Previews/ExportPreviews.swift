@@ -30,6 +30,19 @@ import SwiftUI
         .metlyPreview(.full)
 }
 
+/// Only the Public office number joins the mobile; the Connections and Private numbers stay off the export.
+#Preview("Export · Image, several phones") {
+    PreviewPrepared(prepare: {
+        PreviewStore.addPhones(in: $0, primaryPrivacy: .public)
+        PreviewStore.useDesign(CardDesign(template: .professional, palette: .ink, density: .detailed,
+                                          visibleFields: [.phone, .email]),
+                               for: PreviewStore.workCardID, in: $0)
+    }) {
+        CardExportView(cardID: PreviewStore.workCardID, tab: .image)
+    }
+    .metlyPreview(.full)
+}
+
 #Preview("Export · Image, unpublished, dark") {
     PreviewPrepared(prepare: { PreviewStore.unpublish(PreviewStore.workCardID, in: $0) }) {
         CardExportView(cardID: PreviewStore.workCardID, tab: .image)

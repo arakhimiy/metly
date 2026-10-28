@@ -63,6 +63,36 @@ import SwiftUI
     .metlyPreview(.full)
 }
 
+/// "Phone Numbers": one switch for every number, the Private one noted; Balanced density leaves the
+/// extra numbers out once email, Telegram and website are on (footer note).
+#Preview("Editor · Fields (several phones)") {
+    PreviewPrepared(prepare: {
+        PreviewStore.addPhones(in: $0, primaryPrivacy: .public)
+        PreviewStore.useDesign(CardDesign(template: .minimal, palette: .ink, density: .balanced,
+                                          visibleFields: [.phone, .email, .telegram]),
+                               for: PreviewStore.workCardID, in: $0)
+    }) {
+        PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
+            CardEditorForm(card: card, profile: profile, initialTab: .fields)
+        }
+    }
+    .metlyPreview(.full)
+}
+
+#Preview("Editor · Fields (several phones, Detailed)") {
+    PreviewPrepared(prepare: {
+        PreviewStore.addPhones(in: $0)
+        PreviewStore.useDesign(CardDesign(template: .terminal, palette: .graphite, density: .detailed,
+                                          visibleFields: [.phone, .email]),
+                               for: PreviewStore.workCardID, in: $0)
+    }) {
+        PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
+            CardEditorForm(card: card, profile: profile, initialTab: .fields)
+        }
+    }
+    .metlyPreview(.full)
+}
+
 #Preview("Editor · Media") {
     PreviewPrepared(prepare: {
         PreviewStore.addPhoto(in: $0)

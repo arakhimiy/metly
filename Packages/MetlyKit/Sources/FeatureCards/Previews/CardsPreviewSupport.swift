@@ -71,6 +71,22 @@ enum PreviewStore {
         context.record(Card.self, id: cardID)?.design = design
     }
 
+    /// Extra numbers: a Public office line, a Connections home line and a Private second mobile.
+    static func addPhones(in context: ModelContext, primaryPrivacy: FieldPrivacy? = nil) {
+        guard let profile = context.currentProfile() else { return }
+        if let primaryPrivacy {
+            var phone = profile.field(.phone)
+            phone.privacy = primaryPrivacy
+            profile.setField(phone)
+        }
+        profile.phoneLabel = .mobile
+        profile.additionalPhones = [
+            LabeledPhone(label: .work, value: "+998 71 200 10 20", privacy: .public),
+            LabeledPhone(label: .home, value: "+998 71 255 33 44", privacy: .connections),
+            LabeledPhone(label: .mobile, value: "+998 93 444 55 66", privacy: .private),
+        ]
+    }
+
     /// A profile photo so Modern / Split / Stack show it.
     static func addPhoto(in context: ModelContext) {
         let renderer = ImageRenderer(content: Image(systemName: "person.crop.circle.fill")
