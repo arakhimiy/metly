@@ -19,6 +19,7 @@ export const CONNECTIONS_CSV_HEADER = [
   'telegram',
   'website',
   'linkedin',
+  'all contacts',
   'met at',
   'event',
   'place',
@@ -36,6 +37,15 @@ function otherPhones(value: unknown): string {
     .join('; ');
 }
 
+/** "phone (mobile): +998 90…; whatsapp: +998 90…; instagram: @user" — the whole contact list, in order. */
+function allContacts(value: unknown): string {
+  const entries = Array.isArray(value) ? (value as { kind?: string; label?: string | null; value?: string }[]) : [];
+  return entries
+    .filter((e) => typeof e.kind === 'string' && typeof e.value === 'string' && e.value.trim())
+    .map((e) => `${e.kind}${e.kind === 'phone' && e.label ? ` (${e.label})` : ''}: ${e.value!.trim()}`)
+    .join('; ');
+}
+
 /** connections.csv from wire connections. */
 export function connectionsCsv(connections: WireRecord[]): string {
   const rows = connections.map((c) => {
@@ -50,6 +60,7 @@ export function connectionsCsv(connections: WireRecord[]): string {
       c.telegram,
       c.website,
       c.linkedin,
+      allContacts(c.contacts),
       context.metAt,
       context.eventName,
       context.place,

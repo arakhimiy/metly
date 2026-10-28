@@ -13,16 +13,13 @@ import { PushService } from '../push/push.service';
 import { RealtimeService } from '../realtime/realtime.service';
 import { connectionToWire } from '../records/mappers';
 import { Effects, RecordsService } from '../records/records.service';
-import { mergePhones, type PhoneSet, storedPhoneLabel, storedPhones, visiblePhones } from '../records/phones';
+import { cardContactsView, connectionContactData, connectionContacts, mergeContacts } from '../records/contacts';
 import { pathUuid } from '../records/rest';
 import { cardSnapshot, firstName } from '../records/snapshot';
 import {
   type CardDesign,
   ConnectMethod,
   type ConnectionSource,
-  type ContactField,
-  type ContactFieldKind,
-  contactFieldKinds,
   nullableUuid,
   type PrivacySettings,
   uuid,
@@ -471,17 +468,9 @@ export class ConnectService {
     const { ownerId, remoteId, remoteProfile, remoteCard } = side;
     // Accepted and mutual: the other side's Connections-level fields.
     const snapshot = remoteCard && remoteProfile ? cardSnapshot(remoteCard, remoteProfile, 'connections', this.env.WEB_BASE_URL) : null;
-    const contact = contactValues(snapshot?.fields ?? []);
-    // Their phone labels and extra phones too (the snapshot carries neither): Connections-level, like the fields.
-    const theirPhones =
-      remoteCard && remoteProfile
-        ? {
-            phone: contact.phone ?? '',
-            phoneLabel: storedPhoneLabel(remoteProfile.phoneLabel),
-            additionalPhones: visiblePhones(remoteProfile, remoteCard.design as CardDesign, 'connections'),
-          }
-        : null;
-    const withTheirPhones = (mine: PhoneSet) => (theirPhones ? mergePhones(mine, theirPhones) : { ...mine, changed: false });
+    // Every entry their card shows at Connections level (the snapshot carries the legacy fields only),
+    // merged into the connection's list without duplicates; a number already there takes their label.
+    const theirContacts = remoteCard && remoteProfile ? cardContactsView(remoteProfile, remoteCard.design as CardDesign, 'connections').contacts : [];
     const context = await this.meetingContext(tx, ownerId, request, now, side.isRequester);
     const seq = await this.bump(tx, effects, ownerId);
 
@@ -491,24 +480,15 @@ export class ConnectService {
       orderBy: { createdAt: 'asc' },
     });
     if (existing) {
-      const fill: Partial<Record<ContactFieldKind, string>> = {};
-      for (const kind of contactFieldKinds) if (existing[kind] === '' && contact[kind]) fill[kind] = contact[kind];
       const previousContext = (existing.context ?? {}) as { eventName?: string | null };
       const previousMeetings = (existing.previousMeetings as unknown[] | null) ?? [];
       const moved = (previousContext.eventName ?? null) !== context.eventName ? [existing.context, ...previousMeetings] : previousMeetings;
-      const phones = withTheirPhones({
-        phone: existing.phone,
-        phoneLabel: storedPhoneLabel(existing.phoneLabel),
-        additionalPhones: storedPhones(existing.additionalPhones),
-      });
+      const contacts = mergeContacts(connectionContacts(existing), theirContacts, { adoptLabel: true });
       return tx.connection.update({
         where: { id: existing.id },
         data: {
           ...(remoteProfile ? { fullName: remoteProfile.fullName, jobTitle: remoteProfile.jobTitle, company: remoteProfile.company } : {}),
-          ...fill,
-          ...(phones.changed
-            ? { phone: phones.phone, phoneLabel: phones.phoneLabel, additionalPhones: phones.additionalPhones as unknown as Prisma.InputJsonValue }
-            : {}),
+          ...connectionContactData(contacts.contacts),
           ...(remoteProfile?.photoUrl ? { avatarUrl: remoteProfile.photoUrl } : {}),
           ...(snapshot ? { theirCard: snapshot as unknown as Prisma.InputJsonValue } : {}),
           mySharedCardId: side.mySharedCardId,
@@ -521,7 +501,7 @@ export class ConnectService {
         },
       });
     }
-    const phones = withTheirPhones({ phone: '', phoneLabel: 'mobile', additionalPhones: [] });
+    const contacts = mergeContacts([], theirContacts).contacts;
     return tx.connection.create({
       data: {
         id: randomUUID(),
@@ -530,13 +510,7 @@ export class ConnectService {
         fullName: remoteProfile?.fullName ?? 'Tanishly user',
         jobTitle: remoteProfile?.jobTitle ?? '',
         company: remoteProfile?.company ?? '',
-        phone: phones.phone,
-        phoneLabel: phones.phoneLabel,
-        additionalPhones: phones.additionalPhones as unknown as Prisma.InputJsonValue,
-        email: contact.email ?? '',
-        telegram: contact.telegram ?? '',
-        website: contact.website ?? '',
-        linkedin: contact.linkedin ?? '',
+        ...connectionContactData(contacts),
         avatarUrl: remoteProfile?.photoUrl ?? null,
         ...(snapshot ? { theirCard: snapshot as unknown as Prisma.InputJsonValue } : {}),
         mySharedCardId: side.mySharedCardId,
@@ -657,13 +631,6 @@ export class ConnectService {
   private background(promise: Promise<unknown>) {
     promise.catch((error: unknown) => this.logger.warn({ err: error }, 'connect notification failed'));
   }
-}
-
-/** First non-empty value per contact kind. */
-function contactValues(fields: ContactField[]): Partial<Record<ContactFieldKind, string>> {
-  const values: Partial<Record<ContactFieldKind, string>> = {};
-  for (const f of fields) if (!values[f.kind] && f.value.trim()) values[f.kind] = f.value;
-  return values;
 }
 
 /** Database filter equal to `visibleStatus(r, viewer) === status` for one direction. */

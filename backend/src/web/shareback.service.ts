@@ -11,6 +11,7 @@ import { userLang } from '../i18n/user-lang';
 import { PrismaService } from '../prisma/prisma.service';
 import { PushService } from '../push/push.service';
 import { RealtimeService } from '../realtime/realtime.service';
+import { connectionContactData, connectionContacts, mergeContacts, newContact } from '../records/contacts';
 import { connectionToWire, contextToJson } from '../records/mappers';
 import { RecordsService, type WriteContext } from '../records/records.service';
 import { firstName } from '../records/snapshot';
@@ -146,11 +147,18 @@ export class ShareBackService {
     });
     const digits = input.phone ? digitsOnly(input.phone) : '';
     const handle = input.telegram ? telegramKey(input.telegram) : '';
+    // Any phone / WhatsApp entry with the same digits, or Telegram entry with the same handle (the
+    // legacy columns cover rows stored before the contact list).
     const [twin] = await tx.$queryRaw<{ id: string }[]>`
-      SELECT id FROM connections
+      SELECT id FROM connections c
       WHERE user_id = ${ownerId}::uuid AND deleted_at IS NULL AND (
         (${digits} <> '' AND regexp_replace(phone, '[^0-9]', '', 'g') = ${digits})
         OR (${handle} <> '' AND lower(ltrim(btrim(telegram), '@')) = ${handle})
+        OR EXISTS (
+          SELECT 1 FROM jsonb_array_elements(CASE WHEN jsonb_typeof(c.contacts) = 'array' THEN c.contacts ELSE '[]'::jsonb END) e
+          WHERE (${digits} <> '' AND e->>'kind' IN ('phone', 'whatsapp') AND regexp_replace(e->>'value', '[^0-9]', '', 'g') = ${digits})
+             OR (${handle} <> '' AND e->>'kind' = 'telegram' AND lower(ltrim(btrim(e->>'value'), '@')) = ${handle})
+        )
       )
       ORDER BY created_at ASC
       LIMIT 1`;
@@ -168,14 +176,15 @@ export class ShareBackService {
       // The owner blocked this person: discard (README: blocked senders are dropped silently).
       if (existing.isBlocked) return null;
       mergeResult = 'dedupedByPhoneOrTelegram';
-      if (input.phone && existing.phone.trim() === '') addedPhone = input.phone;
-      if (input.telegram && existing.telegram.trim() === '') addedTelegram = input.telegram;
-      if (addedPhone || addedTelegram) {
+      // Their phone / Telegram join the list unless already there (same digits / handle).
+      const merged = mergeContacts(connectionContacts(existing), shareBackContacts(input.phone, input.telegram));
+      addedPhone = merged.added.find((e) => e.kind === 'phone')?.value ?? null;
+      addedTelegram = merged.added.find((e) => e.kind === 'telegram')?.value ?? null;
+      if (merged.changed) {
         connection = await tx.connection.update({
           where: { id: existing.id },
           data: {
-            ...(addedPhone ? { phone: addedPhone } : {}),
-            ...(addedTelegram ? { telegram: addedTelegram } : {}),
+            ...connectionContactData(merged.contacts),
             updatedAt: existing.updatedAt > now ? new Date(existing.updatedAt.getTime() + 1) : now,
             seq: await this.bump(ctx),
           },
@@ -214,11 +223,7 @@ export class ShareBackService {
           fullName: input.name,
           jobTitle: input.placeholder.jobTitle,
           company: input.placeholder.company,
-          phone: input.phone ?? '',
-          email: '',
-          telegram: input.telegram ?? '',
-          website: '',
-          linkedin: '',
+          ...connectionContactData(shareBackContacts(input.phone, input.telegram)),
           mySharedCardId: input.card.id,
           source: 'webShareBack',
           context: context as Prisma.InputJsonValue,
@@ -287,14 +292,18 @@ export class ShareBackService {
         const deletedAt = connection.updatedAt > now ? connection.updatedAt : now;
         await this.records.applyTombstone(ctx, { type: 'connection', id: connection.id, deletedAt });
       } else if (connection) {
-        const data: Prisma.ConnectionUpdateInput = {};
-        if (fresh.addedPhone && connection.phone === fresh.addedPhone) data.phone = '';
-        if (fresh.addedTelegram && connection.telegram === fresh.addedTelegram) data.telegram = '';
-        if (Object.keys(data).length > 0) {
+        // Only the entries it added, and only while they still hold those values.
+        const before = connectionContacts(connection);
+        const remove = (list: typeof before, kind: 'phone' | 'telegram', value: string | null) => {
+          const i = value ? list.findIndex((e) => e.kind === kind && e.value === value) : -1;
+          return i < 0 ? list : [...list.slice(0, i), ...list.slice(i + 1)];
+        };
+        const after = remove(remove(before, 'phone', fresh.addedPhone), 'telegram', fresh.addedTelegram);
+        if (after.length !== before.length) {
           const updated = await ctx.tx.connection.update({
             where: { id: connection.id },
             data: {
-              ...data,
+              ...connectionContactData(after),
               updatedAt: connection.updatedAt >= now ? new Date(connection.updatedAt.getTime() + 1) : now,
               seq: await this.bump(ctx),
             },
@@ -305,4 +314,9 @@ export class ShareBackService {
       await ctx.tx.shareBack.update({ where: { id: row.id }, data: { removedAt: now } });
     });
   }
+}
+
+/** A share-back's phone and Telegram as connection entries (the connection's privacy means nothing). */
+function shareBackContacts(phone: string | null, telegram: string | null) {
+  return [...(phone ? [newContact('phone', phone, 'connections')] : []), ...(telegram ? [newContact('telegram', telegram, 'connections')] : [])];
 }

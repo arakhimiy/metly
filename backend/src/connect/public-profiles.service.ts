@@ -2,10 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ApiError } from '../common/api-error';
 import { ENV, type Env } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
-import { cardUrl } from '../records/mappers';
-import { storedPhoneLabel, visiblePhones } from '../records/phones';
-import { firstName, visibleFields } from '../records/snapshot';
-import type { CardDesign } from '../records/wire';
+import { cardContactsView } from '../records/contacts';
+import { cardUrl, designToWire } from '../records/mappers';
+import { firstName } from '../records/snapshot';
 import { hasBlocked } from './blocks';
 
 const SLUG = /^[a-z0-9-]{1,100}$/;
@@ -55,8 +54,9 @@ export class PublicProfilesService {
           }),
         ]);
     const connected = ownerSide !== null;
-    const design = card.design as CardDesign;
+    const design = designToWire(card.design);
     const audience = isSelf || connected ? 'connections' : 'public';
+    const { contacts, fields, phoneLabel, additionalPhones } = cardContactsView(profile, design, audience);
     return {
       slug,
       status: 'available',
@@ -71,9 +71,10 @@ export class PublicProfilesService {
         ...(profile.photoUrl ? { photoUrl: profile.photoUrl } : {}),
       },
       design,
-      fields: visibleFields(profile, design, audience),
-      phoneLabel: storedPhoneLabel(profile.phoneLabel),
-      additionalPhones: visiblePhones(profile, design, audience),
+      fields,
+      phoneLabel,
+      additionalPhones,
+      contacts,
       // isConnected: the server-side accepted connect (their Connections fields are visible).
       // connectionId: the viewer's own live connection to the owner, so the app finds it in People.
       viewer: { isSelf, isConnected: connected, ...(viewerSide ? { connectionId: viewerSide.id } : {}) },

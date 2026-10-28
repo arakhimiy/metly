@@ -10,7 +10,6 @@ import { profileToWire } from './mappers';
 import { RecordsService } from './records.service';
 import { restRecord } from './rest';
 import {
-  type ContactField,
   DEFAULT_NOTIFICATION_PREFS,
   DEFAULT_PRIVACY,
   NotificationPrefs,
@@ -87,7 +86,6 @@ export class ProfileController {
     if (!profile) throw ApiError.notFound('Set up your profile first.');
     const merged = ProfileIn.parse({
       ...profileToWire(profile),
-      contactFields: profile.contactFields as ContactField[],
       ...(patch.notificationPrefs ? { notificationPrefs: patch.notificationPrefs } : {}),
       ...(patch.privacySettings ? { privacySettings: patch.privacySettings } : {}),
       ...(patch.linksPaused !== null && patch.linksPaused !== undefined ? { linksPaused: patch.linksPaused } : {}),

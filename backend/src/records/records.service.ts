@@ -15,12 +15,23 @@ import {
   followUpToWire,
   profileToWire,
 } from './mappers';
-import { mergePhones, storedPhoneLabel, storedPhones } from './phones';
+import {
+  connectionContactData,
+  connectionContacts,
+  connectionLegacyInput,
+  contactsToLegacy,
+  legacyToContacts,
+  mergeContacts,
+  profileContactData,
+  profileContacts,
+  profileLegacyInput,
+} from './contacts';
 import { slugCandidate, slugStem } from './slug';
 import {
   type CardDesign,
   type CardIn,
   type ConnectionIn,
+  type ContactEntry,
   type EventIn,
   type FollowUpIn,
   PRO_PALETTES,
@@ -75,8 +86,7 @@ function lww(existing: { updatedAt: Date; deletedAt: Date | null } | null, updat
   return existing.updatedAt > updatedAt ? 'staleLive' : 'apply';
 }
 
-const CONTACT_KINDS = ['phone', 'email', 'telegram', 'website', 'linkedin'] as const;
-const STRING_FIELDS = ['fullName', 'jobTitle', 'company', ...CONTACT_KINDS, 'note'] as const;
+const STRING_FIELDS = ['fullName', 'jobTitle', 'company', 'note'] as const;
 
 const designUsesPro = (design: CardDesign) => PRO_TEMPLATES.has(design.template) || PRO_PALETTES.has(design.palette);
 const sameJson = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
@@ -166,10 +176,7 @@ export class RecordsService {
       fullName: incoming.fullName,
       jobTitle: incoming.jobTitle,
       company: incoming.company,
-      contactFields: incoming.contactFields as unknown as Prisma.InputJsonValue,
-      // Absent (a client from before labelled phones): an update keeps them, a create takes the defaults.
-      phoneLabel: incoming.phoneLabel,
-      additionalPhones: incoming.additionalPhones as Prisma.InputJsonValue | undefined,
+      ...profileContactData(this.incomingProfileContacts(incoming, existing)),
       defaultCardId: incoming.defaultCardId,
       linksPaused: incoming.linksPaused,
       notificationPrefs: notificationPrefs as unknown as Prisma.InputJsonValue,
@@ -189,13 +196,31 @@ export class RecordsService {
       existing.fullName !== row.fullName ||
       existing.jobTitle !== row.jobTitle ||
       existing.company !== row.company ||
-      !sameJson(existing.contactFields, row.contactFields) ||
-      existing.phoneLabel !== row.phoneLabel ||
-      !sameJson(existing.additionalPhones, row.additionalPhones);
+      !sameJson(profileContacts(existing), row.contacts);
     ctx.setLinksPaused(row.linksPaused);
     if (pauseChanged || publicChanged) await this.touchAllCards(ctx, { republish: true, bumpSeq: pauseChanged });
     this.emitProfile(ctx, row);
     return { status: 'applied' };
+  }
+
+  /**
+   * The list a profile write stores: `contacts` as sent, or — from an app before the contact list —
+   * the stored list with what the legacy fields express rebuilt from them (CONTACTS.md § Legacy → list).
+   * Without `phoneLabel`/`additionalPhones` (an app before labelled phones) the stored ones are kept.
+   */
+  private incomingProfileContacts(incoming: ProfileIn, existing: Profile | null): ContactEntry[] {
+    if (incoming.contacts) return incoming.contacts;
+    const stored = existing && !existing.deletedAt ? profileContacts(existing) : [];
+    const storedLegacy = contactsToLegacy(stored);
+    const input = profileLegacyInput({ contactFields: incoming.contactFields });
+    return legacyToContacts(
+      {
+        primary: input.primary,
+        phoneLabel: incoming.phoneLabel ?? storedLegacy.phoneLabel,
+        additionalPhones: incoming.additionalPhones ?? storedLegacy.additionalPhones,
+      },
+      stored,
+    );
   }
 
   /**
@@ -361,20 +386,32 @@ export class RecordsService {
 
   // ───────────────────────────── Connections ─────────────────────────────
 
-  connectionData(incoming: ConnectionIn) {
+  /**
+   * The list a connection write stores: `contacts` as sent, or — from an app before the contact list —
+   * `stored` with what the legacy fields express rebuilt from them. Without `phoneLabel` /
+   * `additionalPhones` (an app before labelled phones) the stored ones are kept.
+   */
+  incomingConnectionContacts(incoming: ConnectionIn, stored: ContactEntry[]): ContactEntry[] {
+    if (incoming.contacts) return incoming.contacts;
+    const storedLegacy = contactsToLegacy(stored);
+    const input = connectionLegacyInput({ ...incoming, phoneLabel: undefined, additionalPhones: undefined });
+    return legacyToContacts(
+      {
+        primary: input.primary,
+        phoneLabel: incoming.phoneLabel ?? storedLegacy.phoneLabel,
+        additionalPhones: incoming.additionalPhones ?? storedLegacy.additionalPhones,
+      },
+      stored,
+    );
+  }
+
+  connectionData(incoming: ConnectionIn, contacts: ContactEntry[]) {
     return {
       remoteUserId: incoming.remoteUserId,
       fullName: incoming.fullName,
       jobTitle: incoming.jobTitle,
       company: incoming.company,
-      phone: incoming.phone,
-      // Absent (a client from before labelled phones): an update keeps them, a create takes the defaults.
-      phoneLabel: incoming.phoneLabel,
-      additionalPhones: incoming.additionalPhones as Prisma.InputJsonValue | undefined,
-      email: incoming.email,
-      telegram: incoming.telegram,
-      website: incoming.website,
-      linkedin: incoming.linkedin,
+      ...connectionContactData(contacts),
       theirCard: (incoming.theirCard ?? undefined) as Prisma.InputJsonValue | undefined,
       mySharedCardId: incoming.mySharedCardId,
       source: incoming.source,
@@ -417,8 +454,9 @@ export class RecordsService {
     }
 
     const seq = await this.bump(ctx);
+    const stored = live ? connectionContacts(live) : [];
     const data = {
-      ...this.connectionData(incoming),
+      ...this.connectionData(incoming, this.incomingConnectionContacts(incoming, stored)),
       theirCard: (incoming.theirCard ?? null) as Prisma.InputJsonValue,
       deletedAt: null,
       seq,
@@ -440,26 +478,21 @@ export class RecordsService {
       const other = incomingWins ? (twinWire[field] as string) : incoming[field];
       merged[field] = mine !== '' ? mine : other;
     }
-    const base = incomingWins ? this.connectionData(incoming) : null;
+    // Contacts: the newer record's list, then the other's entries not in it yet (a record that didn't
+    // send a list — an older client — counts as its legacy fields).
+    const storedIncoming = existing && !existing.deletedAt ? connectionContacts(existing) : [];
+    const incomingContacts = this.incomingConnectionContacts(incoming, storedIncoming);
+    const twinContacts = connectionContacts(twin);
+    const [winner, loser] = incomingWins ? [incomingContacts, twinContacts] : [twinContacts, incomingContacts];
+    const contacts = mergeContacts(winner, loser).contacts;
+    const base = incomingWins ? this.connectionData(incoming, contacts) : null;
     const theirCard = (incomingWins ? (incoming.theirCard ?? twin.theirCard) : (twin.theirCard ?? incoming.theirCard)) ?? null;
-    // Phones: the newer record's numbers and labels, gaps filled from the other (a record that didn't
-    // send them — an older client — counts as having none).
-    const twinPhones = { phone: twin.phone, phoneLabel: storedPhoneLabel(twin.phoneLabel), additionalPhones: storedPhones(twin.additionalPhones) };
-    const incomingPhones = {
-      phone: incoming.phone,
-      phoneLabel: incoming.phoneLabel ?? (incoming.phone === twin.phone ? twinPhones.phoneLabel : 'mobile'),
-      additionalPhones: incoming.additionalPhones ?? [],
-    };
-    const [winner, loser] = incomingWins ? [incomingPhones, twinPhones] : [twinPhones, incomingPhones];
-    const phones = mergePhones(winner, loser, { adoptLabel: false });
     const survivor = await tx.connection.update({
       where: { id: twin.id },
       data: {
         ...(base ?? {}),
         ...merged,
-        phone: phones.phone,
-        phoneLabel: phones.phoneLabel,
-        additionalPhones: phones.additionalPhones as Prisma.InputJsonValue,
+        ...connectionContactData(contacts),
         remoteUserId: twin.remoteUserId,
         theirCard: theirCard as Prisma.InputJsonValue,
         createdAt: twin.createdAt < incoming.createdAt ? twin.createdAt : incoming.createdAt,
@@ -471,7 +504,7 @@ export class RecordsService {
     // The pushed id becomes a tombstone (kept for sync like any other).
     const deletedAt = incoming.updatedAt;
     const tombstoneData = {
-      ...this.connectionData(incoming),
+      ...this.connectionData(incoming, incomingContacts),
       theirCard: undefined,
       note: '',
       deletedAt,

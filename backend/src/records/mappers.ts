@@ -1,16 +1,15 @@
 import type { Card, Connection, Event, FollowUp, Profile } from '../generated/prisma/client';
 import { iso } from '../common/time';
+import { connectionContacts, contactsToLegacy, profileContacts } from './contacts';
 import {
   type CardDesign,
   type CardSnapshot,
-  type ContactField,
   DEFAULT_NOTIFICATION_PREFS,
   DEFAULT_PRIVACY,
   type MeetingContext,
   type NotificationPrefs,
   type PrivacySettings,
 } from './wire';
-import { storedPhoneLabel, storedPhones } from './phones';
 
 // Database rows → wire JSON (docs/api/openapi.yaml). Optional members are omitted when null, except
 // where the schema requires the key. URLs are never empty strings: Swift's URL decoding rejects them.
@@ -47,13 +46,25 @@ export function contextToJson(context: MeetingContext): Record<string, unknown> 
   };
 }
 
+/** A stored design → wire: `visibleContacts` only when the card has a selection (null/absent = legacy card). */
+export function designToWire(design: unknown): CardDesign {
+  const { visibleContacts, ...rest } = (design ?? {}) as CardDesign & { visibleContacts?: string[] | null };
+  return Array.isArray(visibleContacts) ? { ...rest, visibleContacts } : rest;
+}
+
 export function snapshotToWire(snapshot: unknown): WireRecord | null {
   if (!snapshot) return null;
   const s = snapshot as CardSnapshot;
-  return compact({ ...s, url: s.url ?? null });
+  return compact({ ...s, design: designToWire(s.design), url: s.url ?? null });
 }
 
+/**
+ * The list and the legacy fields derived from it (a row from before the list reads as the list built
+ * from its legacy columns), so every response carries both.
+ */
 export function profileToWire(p: Profile): WireRecord {
+  const contacts = profileContacts(p);
+  const legacy = contactsToLegacy(contacts);
   return compact({
     id: p.id,
     fullName: p.fullName,
@@ -61,9 +72,10 @@ export function profileToWire(p: Profile): WireRecord {
     company: p.company,
     photoUrl: p.photoUrl,
     logoUrl: p.logoUrl,
-    contactFields: p.contactFields as ContactField[],
-    phoneLabel: storedPhoneLabel(p.phoneLabel),
-    additionalPhones: storedPhones(p.additionalPhones),
+    contactFields: legacy.contactFields,
+    phoneLabel: legacy.phoneLabel,
+    additionalPhones: legacy.additionalPhones,
+    contacts,
     defaultCardId: p.defaultCardId,
     linksPaused: p.linksPaused,
     notificationPrefs: { ...DEFAULT_NOTIFICATION_PREFS, ...(p.notificationPrefs as NotificationPrefs) },
@@ -91,7 +103,7 @@ export function cardToWire(c: Card, ctx: CardContext): WireRecord {
     slug: c.slug,
     url: c.slug ? cardUrl(ctx.webBaseUrl, c.slug) : null,
     sortOrder: c.sortOrder,
-    design: c.design as CardDesign,
+    design: designToWire(c.design),
     publishState: 'published',
     isReadOnly: c.isReadOnly,
     isPaused: ctx.linksPaused,
@@ -121,19 +133,23 @@ export function eventToWire(e: Event): WireRecord {
 }
 
 export function connectionToWire(c: Connection): WireRecord {
+  const contacts = connectionContacts(c);
+  const legacy = contactsToLegacy(contacts);
+  const value = (kind: string) => legacy.contactFields.find((f) => f.kind === kind)?.value ?? '';
   return compact({
     id: c.id,
     remoteUserId: c.remoteUserId,
     fullName: c.fullName,
     jobTitle: c.jobTitle,
     company: c.company,
-    phone: c.phone,
-    phoneLabel: storedPhoneLabel(c.phoneLabel),
-    additionalPhones: storedPhones(c.additionalPhones),
-    email: c.email,
-    telegram: c.telegram,
-    website: c.website,
-    linkedin: c.linkedin,
+    phone: value('phone'),
+    phoneLabel: legacy.phoneLabel,
+    additionalPhones: legacy.additionalPhones,
+    contacts,
+    email: value('email'),
+    telegram: value('telegram'),
+    website: value('website'),
+    linkedin: value('linkedin'),
     avatarUrl: c.avatarUrl,
     theirCard: snapshotToWire(c.theirCard),
     mySharedCardId: c.mySharedCardId,

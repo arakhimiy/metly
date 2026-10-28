@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ENV, type Env } from '../config/env';
 import type { Card, Profile } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { cardUrl } from '../records/mappers';
+import { cardContactsView } from '../records/contacts';
+import { cardUrl, designToWire } from '../records/mappers';
 import { SLUG_PATTERN } from '../records/slug';
-import { storedPhoneLabel, visiblePhones } from '../records/phones';
-import { firstName, visibleFields } from '../records/snapshot';
-import type { CardDesign, ContactField, LabeledPhone, PhoneLabel } from '../records/wire';
+import { firstName } from '../records/snapshot';
+import type { CardDesign, ContactEntry, ContactField, LabeledPhone, PhoneLabel } from '../records/wire';
 import { safeHttpUrl } from './html';
 
 export type ResolvedCard =
@@ -22,11 +22,13 @@ export interface PublicView {
   card: Card;
   profile: Profile;
   design: CardDesign;
-  /** Public ∩ visibleFields — never Connections or Private. */
+  /** The card's selection ∩ Public, profile order — never Connections or Private. */
+  contacts: ContactEntry[];
+  /** Legacy: the first of each legacy kind among `contacts`, in kind order. */
   fields: ContactField[];
-  /** Label of the phone in `fields`. */
+  /** Legacy: label of the phone in `fields`. */
   phoneLabel: PhoneLabel;
-  /** Public extra phones, only when the card shows phones. */
+  /** Legacy: the phones of `contacts` after the first. */
   additionalPhones: LabeledPhone[];
   fullName: string;
   firstName: string;
@@ -74,16 +76,18 @@ export class PublicCardService {
 
   view(resolved: Extract<ResolvedCard, { status: 'available' }>): PublicView {
     const { card, profile, slug } = resolved;
-    const design = card.design as CardDesign;
+    const design = designToWire(card.design);
+    const { contacts, fields, phoneLabel, additionalPhones } = cardContactsView(profile, design, 'public');
     return {
       slug,
       url: cardUrl(this.env.WEB_BASE_URL, slug),
       card,
       profile,
       design,
-      fields: visibleFields(profile, design, 'public'),
-      phoneLabel: storedPhoneLabel(profile.phoneLabel),
-      additionalPhones: visiblePhones(profile, design, 'public'),
+      contacts,
+      fields,
+      phoneLabel,
+      additionalPhones,
       fullName: profile.fullName,
       firstName: firstName(profile.fullName),
       photoUrl: design.showPhoto ? safeHttpUrl(profile.photoUrl) : null,
@@ -111,6 +115,7 @@ export class PublicCardService {
       fields: v.fields,
       phoneLabel: v.phoneLabel,
       additionalPhones: v.additionalPhones,
+      contacts: v.contacts,
     };
   }
 }
