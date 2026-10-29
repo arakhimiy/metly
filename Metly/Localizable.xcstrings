@@ -19190,6 +19190,22 @@
         }
       }
     },
+    "iOS doesn’t let apps set the wallpaper. After saving, open Photos, choose the image, tap Share › Use as Wallpaper, then Add.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS не позволяет приложениям ставить обои самостоятельно. После сохранения откройте «Фото», выберите изображение, нажмите «Поделиться» › «Сделать обоями», затем «Добавить»."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS ilovalarga fon rasmini o‘zi o‘rnatishga ruxsat bermaydi. Saqlagach, Photos’ni oching, rasmni tanlang, Share › Use as Wallpaper’ni bosing, keyin Add."
+          }
+        }
+      }
+    },
     "now": {
       "localizations": {
         "ru": {

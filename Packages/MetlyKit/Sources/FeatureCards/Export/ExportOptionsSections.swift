@@ -43,12 +43,17 @@ struct ExportOptionsSections: View {
                 }
             }
         case .lockScreen:
-            Section("Device") {
+            Section {
                 ForEach(CardExporter.LockScreenDevice.allCases) { device in
                     ExportOptionRow(title: device.title, subtitle: device.subtitle, isSelected: options.device == device) {
                         options.device = device
                     }
                 }
+            } header: {
+                Text("Device")
+            } footer: {
+                // iOS lets no app set the wallpaper itself; the user picks it from Photos.
+                Text("iOS doesn’t let apps set the wallpaper. After saving, open Photos, choose the image, tap Share › Use as Wallpaper, then Add.")
             }
         }
 
