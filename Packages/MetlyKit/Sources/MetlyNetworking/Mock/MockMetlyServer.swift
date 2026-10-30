@@ -52,6 +52,8 @@ public actor MockMetlyServer: MetlyAPI {
     private var subscribers: [UUID: AsyncStream<ConnectEvent>.Continuation] = [:]
     private var timers: [UUID: Task<Void, Never>] = [:]
     public private(set) var isReachable = true
+    /// False = no object storage configured: image uploads answer `503 service_unavailable`.
+    public private(set) var hasImageStorage = true
     /// Number of API calls served (tests/diagnostics).
     public private(set) var callCount = 0
 
@@ -85,6 +87,8 @@ public actor MockMetlyServer: MetlyAPI {
     // MARK: Simulation controls (previews, tests, DEBUG menus)
 
     public func setReachable(_ reachable: Bool) { isReachable = reachable }
+
+    public func setImageStorage(_ available: Bool) { hasImageStorage = available }
 
     /// Every live record the server holds.
     public func liveRecords() -> SyncChanges {
@@ -281,6 +285,7 @@ extension MockMetlyServer: ProfileAPI {
 
     public func requestImageUpload(_ kind: ProfileImageKind, _ request: UploadTicketRequest) async throws -> UploadTicket {
         try await serve()
+        guard hasImageStorage else { throw APIError.mock(503, .serviceUnavailable, "Image uploads are not available right now.") }
         guard request.byteSize <= 5_000_000 else { throw APIError.mock(413, .payloadTooLarge, "Images must be 5 MB or smaller.") }
         let id = "up_\(UUID().uuidString.lowercased())"
         return UploadTicket(uploadID: id, uploadURL: URL(string: "https://uploads.mock.tanishly.app/\(id)")!,

@@ -327,6 +327,29 @@ struct SyncEngineTests {
         #expect(try await harness.server.fetchRequest(id: request.id).status == .declined)
     }
 
+    @Test("A photo upload the server can't take doesn't hold back the rest of the sync")
+    func imageFailureDoesNotBlockPull() async throws {
+        let harness = try SyncHarness(local: .full, server: .demo)
+        await harness.engine.syncNow()
+        await harness.server.setImageStorage(false)
+        let profile = try #require(harness.context.currentProfile())
+        profile.photoData = TestImage.jpeg
+        profile.markChanged()
+        try harness.context.save()
+
+        // A web visitor shares their contact while the photo can't be uploaded.
+        let notice = await harness.server.simulateShareBack(name: "Azamat", phone: "+998 90 555 44 33")
+        await harness.engine.syncNow()
+        #expect(harness.all(Connection.self).contains { $0.id == notice.connection.id })
+        #expect(await harness.server.liveRecords().profile?.photoURL == nil)
+
+        // Once storage is back, the photo goes up on the next pass.
+        await harness.server.setImageStorage(true)
+        await harness.engine.syncNow()
+        #expect(await harness.server.liveRecords().profile?.photoURL != nil)
+        harness.engine.reset()
+    }
+
     @Test("Profile photos upload on change and download on another device")
     func profileImages() async throws {
         let harness = try SyncHarness(local: .full, server: .demo)

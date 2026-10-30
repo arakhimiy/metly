@@ -193,11 +193,9 @@ public final class SyncEngine: SyncServicing {
         heldTombstonesDue = nil
         do {
             try await pushRecords()
-            try await pushProfileImages()
             try await pushConnectRequestActions()
             try await pull()
-            try await pullProfileImages()
-            try await pullConnectionAvatars()
+            try await syncImages()
             guard generation == self.generation else { return }
             let now = Date.now
             lastSyncedAt = now
@@ -343,6 +341,22 @@ public final class SyncEngine: SyncServicing {
             }
         }
         try context.save()
+    }
+
+    /// Images go after the records and never fail the pass: an upload the server can't take (no
+    /// object storage, `503`) must not hold back people and cards. They're tried again next pass.
+    private func syncImages() async throws {
+        do {
+            try await pushProfileImages()
+            try await pullProfileImages()
+            try await pullConnectionAvatars()
+        } catch {
+            let apiError = APIError(error)
+            switch apiError {
+            case .cancelled, .unauthorized: throw apiError
+            default: break
+            }
+        }
     }
 
     private func pushProfileImages() async throws {
