@@ -120,9 +120,11 @@ paths:
       summary: Rotate tokens
       description: |
         Refresh tokens are opaque, single-use and rotated on every call (new access **and** refresh
-        token). Reuse of an already-rotated refresh token outside a 30-second grace window revokes the
-        whole token family (theft detection) → `401 invalid_grant`. Within the grace window, or for a
-        retry carrying the same `Idempotency-Key`, return the same new pair (clients retry on timeouts).
+        token). Within a 30-second grace window, or for a retry carrying the same `Idempotency-Key`,
+        reuse of an already-rotated refresh token returns the same new pair (clients retry on timeouts).
+        Later reuse still returns the same refresh token (with a fresh access token) while that newer
+        token has never been used — its response was lost (server cold start, app suspended). Reuse
+        after the newer token was used revokes the whole token family (theft detection) → `401 invalid_grant`.
         Access tokens: JWT, 15–60 min lifetime. Refresh tokens: 60 days sliding.
         The client refreshes proactively ~60 s before expiry and on `401`, single-flight.
       security: []

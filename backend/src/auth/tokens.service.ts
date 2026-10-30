@@ -8,7 +8,7 @@ import { ENV, type Env } from '../config/env';
 import type { RefreshToken } from '../generated/prisma/client';
 import { PrismaService, type Tx } from '../prisma/prisma.service';
 
-/** Reuse of a rotated refresh token inside this window returns the same pair (client retries). */
+/** Reuse of a rotated refresh token inside this window returns the byte-identical pair (client retries). */
 const REUSE_GRACE_MS = 30_000;
 const ISSUER = 'metly';
 const AUDIENCE = 'metly-app';
@@ -57,8 +57,9 @@ export class TokensService {
 
   /**
    * Rotates a refresh token. Single use: the child is derived from the parent's hash, so a retry of
-   * the same rotation inside the grace window yields byte-identical tokens. A replay after that window
-   * means the token leaked — the whole family is revoked.
+   * the same rotation inside the grace window yields byte-identical tokens. Later, the parent still
+   * yields its child while the child is unused (a lost response); once the child has been used, a
+   * replay of the parent means the token leaked — the whole family is revoked.
    */
   async refresh(refreshToken: string): Promise<SessionTokens> {
     const invalid = () => ApiError.unauthorized('Your session ended. Sign in again.', 'invalid_grant');
@@ -77,13 +78,15 @@ export class TokensService {
 
       const childToken = hmac(this.env.JWT_SECRET, `refresh:${parentHash}`);
       if (parent.rotatedAt) {
-        if (now.getTime() - parent.rotatedAt.getTime() > REUSE_GRACE_MS) {
-          await tx.refreshToken.updateMany({ where: { familyId: parent.familyId, revokedAt: null }, data: { revokedAt: now } });
-          return REVOKED;
-        }
         const child = await tx.refreshToken.findUnique({ where: { tokenHash: sha256(childToken) } });
         if (!child || child.revokedAt) throw invalid();
-        return this.pair(child, childToken, parent.rotatedAt);
+        if (now.getTime() - parent.rotatedAt.getTime() <= REUSE_GRACE_MS) return this.pair(child, childToken, parent.rotatedAt);
+        // The child was never used: the rotation's response never reached the phone (server cold
+        // start, app suspended mid-request). Hand the same child out again instead of signing the
+        // user out; a leaked parent still gets caught at the child's own rotation.
+        if (!child.rotatedAt) return this.pair(child, childToken, now);
+        await tx.refreshToken.updateMany({ where: { familyId: parent.familyId, revokedAt: null }, data: { revokedAt: now } });
+        return REVOKED;
       }
 
       await tx.refreshToken.update({ where: { id: parent.id }, data: { rotatedAt: now } });

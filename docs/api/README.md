@@ -119,7 +119,8 @@ per configuration once the backend exists.
 ### Accounts & sessions
 - Sign in with Apple / Google only (no email/password, no magic link in v1). See `/v1/auth/*`.
 - Access token: JWT (15–60 min). Refresh token: opaque, single-use, rotated on every refresh,
-  60-day sliding expiry; reuse outside a 30 s grace window revokes the family. The client refreshes
+  60-day sliding expiry. A rotated token used again returns its child while the child is unused (a
+  lost response); once the child was used, reuse outside a 30 s grace window revokes the family. The client refreshes
   proactively and on `401`, one refresh at a time, and replays the failed request once.
 - `401 invalid_grant` on refresh = signed out. Sign-out/delete wipe the device.
 - Account deletion must also revoke the Apple token (`/auth/revoke`) — App Store requirement.

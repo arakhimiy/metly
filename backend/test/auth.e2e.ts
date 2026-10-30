@@ -55,15 +55,29 @@ describe('auth', () => {
     await request(app.getHttpServer()).get('/v1/me').set('Authorization', `Bearer ${a.body.accessToken}`).expect(200);
   });
 
-  it('revokes the whole family when a rotated token is replayed after the grace window', async () => {
+  it('re-sends the unused child when a rotation response was lost (cold start, app suspended)', async () => {
     const session = await signIn(app);
-    const rotated = await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: session.refreshToken }).expect(200);
+    const lost = await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: session.refreshToken }).expect(200);
+    await prisma.refreshToken.updateMany({ where: { userId: session.userId, rotatedAt: { not: null } }, data: { rotatedAt: new Date(Date.now() - 3 * 3_600_000) } });
+
+    // Hours later the phone still holds the parent: it gets the same child, with a fresh access token.
+    const again = await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: session.refreshToken }).expect(200);
+    expect(again.body.refreshToken).toBe(lost.body.refreshToken);
+    expect(Date.parse(again.body.accessTokenExpiresAt)).toBeGreaterThan(Date.now());
+    await request(app.getHttpServer()).get('/v1/me').set('Authorization', `Bearer ${again.body.accessToken}`).expect(200);
+    await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: again.body.refreshToken }).expect(200);
+  });
+
+  it('revokes the whole family when a rotated token is replayed after its child was used', async () => {
+    const session = await signIn(app);
+    const child = await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: session.refreshToken }).expect(200);
+    const grandchild = await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: child.body.refreshToken }).expect(200);
     await prisma.refreshToken.updateMany({ where: { userId: session.userId, rotatedAt: { not: null } }, data: { rotatedAt: new Date(Date.now() - 60_000) } });
 
     const replay = await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: session.refreshToken }).expect(401);
     expect(replay.body.code).toBe('invalid_grant');
-    // The legitimate child is revoked too (theft detection).
-    await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: rotated.body.refreshToken }).expect(401);
+    // The legitimate newest token is revoked too (theft detection).
+    await request(app.getHttpServer()).post('/v1/auth/refresh').send({ refreshToken: grandchild.body.refreshToken }).expect(401);
   });
 
   it('logs out by revoking the refresh token', async () => {
