@@ -169,20 +169,26 @@ describe('public web', () => {
       expect(uz.text).toContain('<meta property="og:locale" content="uz_UZ">');
       expect(uz.text).toContain('Kontaktlarga saqlash');
       expect(uz.text).toContain('Kamola bilan kontakt almashish');
-      expect(uz.text).toContain('Buni faqat Kamola ko‘radi.');
+      expect(uz.text).toContain('Kontaktingiz Kamolaga yuboriladi. Faqat u ko‘radi.');
+      expect(uz.text).toContain('>Kontaktimni yuborish</button>');
+      expect(uz.text).toContain('Kontaktingiz Kamolaga yuborildi');
       expect(uz.text).not.toContain('Save to Contacts');
 
       const ru = await http().get(`/c/${o.slug}`).set('User-Agent', IPHONE).set('Accept-Language', 'ru-RU,ru;q=0.9,en;q=0.8').expect(200);
       expect(ru.text).toContain('<html lang="ru">');
       expect(ru.text).toContain('Сохранить в контакты');
       expect(ru.text).toContain('Обменяться контактами');
-      expect(ru.text).toContain('Это увидит только Kamola.');
+      expect(ru.text).toContain('Ваш контакт получит Kamola. Больше его никто не увидит.');
+      expect(ru.text).toContain('>Отправить мой контакт</button>');
       expect(ru.text).toContain('<span class="label">телефон</span>');
       expect(ru.text).not.toContain('Save to Contacts');
 
       const en = await http().get(`/c/${o.slug}`).set('User-Agent', IPHONE).set('Accept-Language', 'en-GB,en;q=0.9').expect(200);
       expect(en.text).toContain('<html lang="en">');
       expect(en.text).toContain('Save to Contacts');
+      expect(en.text).toContain('Your contact will be sent to Kamola. Only they will see it.');
+      expect(en.text).toContain('>Send my contact</button>');
+      expect(en.text).toContain('Your contact was sent to Kamola');
 
       const forced = await http().get(`/c/${o.slug}?src=qr&lang=ru`).set('User-Agent', IPHONE).set('Accept-Language', 'en-US').expect(200);
       expect(forced.text).toContain('<html lang="ru">');
@@ -596,9 +602,12 @@ describe('public web with App Store and team ids', () => {
     const slug = pushed.body.records.cards[0].slug;
     const page = await request(app.getHttpServer()).get(`/c/${slug}`).set('User-Agent', IPHONE).expect(200);
     expect(page.text).toContain(`<meta name="apple-itunes-app" content="app-id=6700000001, app-argument=https://metly.test/c/${slug}">`);
-    expect(page.text).toContain(`href="/c/${slug}/get-app"`);
-    const redirect = await request(app.getHttpServer()).get(`/c/${slug}/get-app`).set('User-Agent', IPHONE).expect(302);
-    expect(redirect.headers.location).toBe('https://apps.apple.com/app/id6700000001');
+    expect(page.text).toContain(`href="/c/${slug}/get-app?from=footer"`);
+    expect(page.text).toContain(`href="/c/${slug}/get-app?from=shareback"`);
+    const redirect = await request(app.getHttpServer()).get(`/c/${slug}/get-app?from=footer`).set('User-Agent', IPHONE).expect(302);
+    expect(redirect.headers.location).toBe('https://apps.apple.com/app/id6700000001?ct=webcard');
+    const afterShareBack = await request(app.getHttpServer()).get(`/c/${slug}/get-app?from=shareback`).set('User-Agent', IPHONE).expect(302);
+    expect(afterShareBack.headers.location).toBe('https://apps.apple.com/app/id6700000001?ct=shareback');
   });
 });
 
@@ -627,8 +636,8 @@ describe('public web with a pre-release download link', () => {
     const slug = pushed.body.records.cards[0].slug;
     const page = await request(app.getHttpServer()).get(`/c/${slug}`).set('User-Agent', IPHONE).expect(200);
     expect(page.text).not.toContain('apple-itunes-app');
-    expect(page.text).toContain(`href="/c/${slug}/get-app"`);
-    const redirect = await request(app.getHttpServer()).get(`/c/${slug}/get-app`).set('User-Agent', IPHONE).expect(302);
+    expect(page.text).toContain(`href="/c/${slug}/get-app?from=footer"`);
+    const redirect = await request(app.getHttpServer()).get(`/c/${slug}/get-app?from=shareback`).set('User-Agent', IPHONE).expect(302);
     expect(redirect.headers.location).toBe(beta);
   });
 

@@ -9,7 +9,7 @@ import { DeferredLinksService } from './deferred-links.service';
 import { renderCardPage, renderUnavailablePage, pageCsp } from './page';
 import { PublicCardService } from './public-card.service';
 import { buildVCard, vcardFilename } from './vcard';
-import { platformFromUserAgent } from './visitor';
+import { isAndroidUserAgent, platformFromUserAgent } from './visitor';
 import { WebStatsService } from './web-stats.service';
 
 /** tanishly.app: the card page, its vCard, "Get the app" and the Apple app-site association. */
@@ -47,6 +47,9 @@ export class WebController {
           lang,
           appStoreId: this.env.APP_STORE_ID,
           appAvailable: appDownloadUrl(this.env) !== undefined,
+          android: isAndroidUserAgent(userAgent),
+          // The waitlist lives in the Telegram bot, so it shows only once the bot is connected.
+          androidWaitlistUrl: this.env.TELEGRAM_BOT_TOKEN ? `https://t.me/${this.env.TELEGRAM_BOT_USERNAME}?start=android` : undefined,
         }),
       );
       return;
@@ -84,6 +87,7 @@ export class WebController {
   /**
    * "Get the app": stores a deferred-link click (network prefix, user agent, locale, time zone — never
    * the full IP), counts a `get_app` event and redirects to the App Store (or the TestFlight link, or the site).
+   * `?from=shareback` (the thank-you sheet) or `footer` becomes the App Store campaign token `ct`.
    */
   @Get('c/:slug/get-app')
   @RateLimit('analytics')
@@ -91,11 +95,12 @@ export class WebController {
     @Param('slug') rawSlug: string,
     @Query('tz') tz: string | undefined,
     @Query('lang') lang: string | undefined,
+    @Query('from') from: string | undefined,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     const resolved = await this.cards.resolve(rawSlug);
-    const appStoreUrl = appDownloadUrl(this.env) ?? this.env.WEB_BASE_URL;
+    const appStoreUrl = withCampaign(appDownloadUrl(this.env) ?? this.env.WEB_BASE_URL, from === 'shareback' ? 'shareback' : 'webcard');
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('X-Robots-Tag', 'noindex, nofollow');
     if (resolved.status === 'available') {
@@ -149,4 +154,12 @@ export class WebController {
     res.setHeader('Cache-Control', 'public, max-age=3600');
     res.send(JSON.stringify(body));
   }
+}
+
+/** Adds the App Store Connect campaign token; other destinations (TestFlight, the site) stay as they are. */
+function withCampaign(url: string, campaign: string): string {
+  if (!url.startsWith('https://apps.apple.com/')) return url;
+  const target = new URL(url);
+  target.searchParams.set('ct', campaign);
+  return target.toString();
 }

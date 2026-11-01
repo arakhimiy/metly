@@ -25,6 +25,11 @@ export function platformFromUserAgent(userAgent: string | undefined | null): Web
   return 'desktop';
 }
 
+/** Android, in-app browsers (Telegram, Instagram…) included. */
+export function isAndroidUserAgent(userAgent: string | undefined | null): boolean {
+  return /Android/i.test(userAgent ?? '');
+}
+
 /** iOS major version from a Safari/WebKit user agent ("iPhone OS 18_1" / "CPU OS 17_4"), else null. */
 export function iosMajorFromUserAgent(userAgent: string | undefined | null): number | null {
   const match = /(?:iPhone|CPU) OS (\d+)[_.]/.exec(userAgent ?? '');

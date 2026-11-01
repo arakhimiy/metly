@@ -2,9 +2,17 @@ import type { ContactKind, PhoneLabel } from '../records/wire';
 import type { Lang } from './lang';
 
 // Texts of the public card page (WEB_CARD, WEB_SHAREBACK_SHEET, WEB_CONFIRMATION) and WEB_UNAVAILABLE.
-// `first` is the card owner's first name as typed (Latin or Cyrillic). Russian texts keep it in the
-// nominative (no "с Камолой" / "контакт Камолы": names do not decline reliably); Uzbek texts attach no
-// suffix to it ("Kamola kontaktini", "Kamola bilan").
+// `first` is the card owner's first name as typed (Latin or Cyrillic), or "the card owner" when the
+// card has none. Russian texts keep it in the nominative (no "с Камолой" / "контакт Камолы": names do
+// not decline reliably); Uzbek texts attach no suffix to it ("Kamola kontaktini", "Kamola bilan"),
+// except the dative "-ga" of "who receives it", which `uzDative` spells after the name's last letter.
+
+/** Uzbek dative: "Kamola" → "Kamolaga", "Malik" → "Malikka", "Tohir Oq" → "Tohir Oqqa", "Камола" → "Камолага". */
+export function uzDative(name: string): string {
+  const last = name.trim().slice(-1);
+  const suffix: Record<string, string> = { k: 'ka', K: 'ka', q: 'qa', Q: 'qa', к: 'ка', К: 'ка', қ: 'қа', Қ: 'қа' };
+  return name.trim() + (suffix[last] ?? (/[\u0400-\u04FF]/.test(last) ? 'га' : 'ga'));
+}
 
 /** Texts the page script shows (toasts, form hints). Sent to the browser as JSON in `data-t`. */
 export interface CardScriptText {
@@ -49,6 +57,12 @@ export interface CardPageText {
   ctaTitle: string;
   ctaSubtitle: string;
   ctaButton: string;
+  /** Android visitors instead of the App Store button: with the Telegram waitlist, and without it. */
+  androidWaitlist: string;
+  androidOnly: string;
+  notifyMe: string;
+  /** `first` when the card shows no first name. */
+  cardOwner: string;
   foot: string;
   sheetTitle: (first: string) => string;
   sheetSubtitle: (first: string) => string;
@@ -60,8 +74,9 @@ export interface CardPageText {
   metAt: string;
   metAtPlaceholder: string;
   phoneOrTelegram: string;
-  onlyOwnerSees: (first: string) => string;
-  send: (first: string) => string;
+  /** Above the send button: who receives the contact. */
+  sendsTo: (first: string) => string;
+  send: string;
   skip: string;
   doneTitle: (first: string) => string;
   doneSubtitle: string;
@@ -97,11 +112,15 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     saveToContacts: 'Kontaktlarga saqlash',
     messageOnTelegram: 'Telegram’da yozish',
     exchange: (first) => `${first} bilan kontakt almashish`,
-    sent: (first) => `${first} kontaktingizni oldi.`,
+    sent: (first) => `Kontaktingiz ${uzDative(first)} yuborildi.`,
     removeMine: 'Kontaktimni o‘chirish',
-    ctaTitle: 'Sizga ham shunday vizitka kerakmi?',
-    ctaSubtitle: 'Bepul, 30 soniyada.',
-    ctaButton: 'Yuklab olish',
+    ctaTitle: 'Sizga ham shunday karta kerakmi?',
+    ctaSubtitle: 'Tanishly bilan 1 daqiqada yarating. Tanishganlaringiz hech qachon yo‘qolmaydi.',
+    ctaButton: 'Bepul yaratish',
+    androidWaitlist: 'Hozircha faqat iPhone uchun. Android chiqqanda xabar beramiz.',
+    androidOnly: 'Hozircha faqat iPhone uchun.',
+    notifyMe: 'Xabar olish',
+    cardOwner: 'karta egasi',
     foot: 'Tanishly’da yaratilgan · Faqat ochiq ma’lumotlar ko‘rsatiladi',
     sheetTitle: (first) => `${first} bilan kontakt almashish`,
     sheetSubtitle: (first) => `Kontaktingizni yuboring va ${first} kontaktini saqlang — bir qadamda.`,
@@ -113,10 +132,10 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     metAt: 'Qayerda tanishdik',
     metAtPlaceholder: 'Qayerda tanishdik? Ixtiyoriy',
     phoneOrTelegram: 'Telefon yoki Telegram’dan kamida bittasini kiriting.',
-    onlyOwnerSees: (first) => `Buni faqat ${first} ko‘radi.`,
-    send: (first) => `Yuborish va ${first} kontaktini saqlash`,
+    sendsTo: (first) => `Kontaktingiz ${uzDative(first)} yuboriladi. Faqat u ko‘radi.`,
+    send: 'Kontaktimni yuborish',
     skip: 'O‘tkazib yuborish',
-    doneTitle: (first) => `Tayyor! ${first} kontaktingizni oldi.`,
+    doneTitle: (first) => `Kontaktingiz ${uzDative(first)} yuborildi`,
     doneSubtitle: 'Qayerda tanishganingiz ham qo‘shiladi — keyin bog‘lanish oson bo‘ladi.',
     doneSave: (first) => `${first} kontaktini saqlash`,
     doneSaved: (first) => `${first} kontakti saqlandi`,
@@ -167,8 +186,12 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     sent: () => 'Ваш контакт отправлен.',
     removeMine: 'Удалить мой контакт',
     ctaTitle: 'Хотите такую же визитку?',
-    ctaSubtitle: 'Бесплатно, за 30 секунд.',
-    ctaButton: 'Скачать Tanishly',
+    ctaSubtitle: 'Создайте её в Tanishly за 1 минуту. Ваши знакомства больше не потеряются.',
+    ctaButton: 'Создать бесплатно',
+    androidWaitlist: 'Пока только для iPhone. Сообщим, когда выйдет версия для Android.',
+    androidOnly: 'Пока только для iPhone.',
+    notifyMe: 'Сообщить мне',
+    cardOwner: 'владелец визитки',
     foot: 'Сделано в Tanishly · Показаны только открытые данные',
     sheetTitle: () => 'Обмен контактами',
     sheetSubtitle: (first) => `${first} получит ваш контакт, а вы сохраните визитку — в один шаг.`,
@@ -180,8 +203,8 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     metAt: 'Где познакомились',
     metAtPlaceholder: 'Где мы познакомились? Необязательно',
     phoneOrTelegram: 'Укажите телефон или Telegram — хотя бы что-то одно.',
-    onlyOwnerSees: (first) => `Это увидит только ${first}.`,
-    send: () => 'Отправить и сохранить контакт',
+    sendsTo: (first) => `Ваш контакт получит ${first}. Больше его никто не увидит.`,
+    send: 'Отправить мой контакт',
     skip: 'Пропустить',
     doneTitle: (first) => `Готово! ${first} уже видит ваш контакт.`,
     doneSubtitle: 'Вместе с ним сохранится, где вы познакомились, — так проще продолжить общение.',
@@ -234,8 +257,12 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     sent: (first) => `Your contact was sent to ${first}.`,
     removeMine: 'Remove my contact',
     ctaTitle: 'Want a card like this?',
-    ctaSubtitle: 'Free, 30 seconds.',
-    ctaButton: 'Get Tanishly',
+    ctaSubtitle: 'Create yours with Tanishly in 1 minute. Never lose a new contact again.',
+    ctaButton: 'Create for free',
+    androidWaitlist: 'iPhone only for now. We’ll let you know when Android is ready.',
+    androidOnly: 'iPhone only for now.',
+    notifyMe: 'Notify me',
+    cardOwner: 'the card owner',
     foot: 'Made with Tanishly · Only public details are shown',
     sheetTitle: (first) => `Exchange contacts with ${first}`,
     sheetSubtitle: (first) => `Send yours and save ${first}’s in one step.`,
@@ -247,10 +274,10 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     metAt: 'Met at',
     metAtPlaceholder: 'Where did we meet? Optional',
     phoneOrTelegram: 'Add a phone or Telegram — at least one.',
-    onlyOwnerSees: (first) => `Only ${first} will see this.`,
-    send: (first) => `Send & Save ${first}’s Contact`,
+    sendsTo: (first) => `Your contact will be sent to ${first}. Only they will see it.`,
+    send: 'Send my contact',
     skip: 'Skip',
-    doneTitle: (first) => `Done! ${first} got your contact.`,
+    doneTitle: (first) => `Your contact was sent to ${first}`,
     doneSubtitle: 'It arrives with where you met, so a follow-up is easy.',
     doneSave: (first) => `Save ${first}’s Contact`,
     doneSaved: (first) => `${first}’s contact is saved`,

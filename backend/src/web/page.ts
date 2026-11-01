@@ -18,11 +18,14 @@ export interface CardPageOptions {
   nonce: string;
   platform: WebPlatform;
   lang: Lang;
-  /** App Store id: Smart App Banner + "Get the app" (both hidden without it). */
   /** Smart App Banner; only once the App Store listing exists. */
   appStoreId?: string;
   /** Show "Get the app" (App Store or the pre-release TestFlight link). */
   appAvailable?: boolean;
+  /** The visitor's device runs Android (in-app browsers included): the "Get the app" block's variant. */
+  android?: boolean;
+  /** Android visitors get "Notify me" (the Telegram bot's waitlist) instead of the App Store button. */
+  androidWaitlistUrl?: string;
 }
 
 const ICONS: Record<string, SafeHtml> = {
@@ -147,12 +150,14 @@ const CARD_CSS = String.raw`
 .actions{display:grid;gap:10px;margin-top:20px}
 .shared{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;min-height:44px;font-size:15px;color:var(--muted)}
 .shared svg{color:#16a34a}
-.cta{display:flex;align-items:center;gap:14px;margin-top:20px;padding:14px 16px;border-radius:16px;border:1px solid rgba(var(--fg-rgb),.12)}
-.cta div{flex:1;display:flex;flex-direction:column}
+.cta{display:flex;flex-direction:column;gap:12px;margin-top:20px;padding:14px 16px;border-radius:16px;border:1px solid rgba(var(--fg-rgb),.12)}
+.cta-text{display:flex;flex-direction:column;gap:2px}
 .cta strong{font-size:15px}
-.cta span{font-size:13px;color:var(--muted)}
-.cta .btn{width:auto;min-height:40px;font-size:15px}
-.p-android .cta{display:none}
+.cta-text span{font-size:13px;color:var(--muted)}
+.cta .btn{min-height:44px;font-size:15px;color:var(--accent)}
+.cta .android,.os-android .cta .get{display:none}
+.os-android .cta-text .android{display:block}
+.os-android .cta .btn.android{display:flex}
 dialog{width:100%;max-width:460px;max-height:calc(100dvh - 24px);margin:auto auto 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom));border:0;border-radius:22px 22px 0 0;background:var(--bg);color:var(--fg);overflow:auto;box-shadow:0 -8px 40px rgba(0,0,0,.25)}
 dialog::backdrop{background:rgba(0,0,0,.45)}
 dialog:not([open]){display:none}
@@ -171,6 +176,7 @@ input::placeholder{color:var(--muted);opacity:.8}
 #sb-form .btn+.btn{margin-top:8px}
 .done{text-align:center}
 .done .btn{margin-top:10px}
+.done .cta .btn{margin-top:0}
 .check{width:56px;height:56px;margin:8px auto 14px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center}
 .check svg{width:30px;height:30px}
 .saved-row{display:flex;align-items:center;justify-content:center;gap:6px;margin:14px 0 0;color:var(--muted)}
@@ -208,6 +214,7 @@ const CARD_JS = String.raw`(function () {
   }
   var platform = b.getAttribute('data-platform') === 'inapp' ? 'inapp' : detect();
   b.className = b.className.replace(/\bp-[a-z]+\b/g, '') + ' p-' + platform;
+  if (/Android/i.test(navigator.userAgent || '')) b.classList.add('os-android');
   var source = /(?:^|[?&])src=qr(?:&|$)/.test(location.search) ? 'qr' : 'link';
   function referrer() { try { return d.referrer ? new URL(d.referrer).origin : null; } catch (e) { return null; } }
   function track(type) {
@@ -475,11 +482,22 @@ function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText, lab
   return html`<li class="field">${link}${copy}</li>`;
 }
 
+/**
+ * "Want a card like this?" — at the foot of the card and after a share-back (`from` tags the App Store
+ * campaign). Android visitors see "iPhone only for now" and, with the bot's waitlist, "Notify me";
+ * the `os-android` class (server user agent, then the page script) picks the variant.
+ */
+function cta(t: CardPageText, getAppHref: string, from: 'footer' | 'shareback', androidWaitlistUrl?: string): SafeHtml {
+  return html`<section class="cta"><div class="cta-text"><strong>${t.ctaTitle}</strong><span class="get">${t.ctaSubtitle}</span><span class="android">${androidWaitlistUrl ? t.androidWaitlist : t.androidOnly}</span></div><a class="btn get" href="${getAppHref}?from=${from}" data-get-app>${t.ctaButton}</a>${
+    androidWaitlistUrl ? html`<a class="btn android" href="${androidWaitlistUrl}" target="_blank" rel="noopener noreferrer">${t.notifyMe}</a>` : ''
+  }</section>`;
+}
+
 export function renderCardPage(opts: CardPageOptions): string {
-  const { view, nonce, platform, lang, appStoreId, appAvailable } = opts;
+  const { view, nonce, platform, lang, appStoreId, appAvailable, androidWaitlistUrl } = opts;
   const t = CARD_PAGE_TEXT[lang];
   const colors = pageColors(view.design);
-  const first = view.firstName;
+  const first = view.firstName.trim() || t.cardOwner;
   const role = [view.profile.jobTitle.trim(), view.profile.company.trim()].filter(Boolean).join(' · ');
   const { actions, labelPhones } = contactRows(view);
   const telegram = actions.find((a) => a.kind === 'telegram' && a.href);
@@ -488,9 +506,8 @@ export function renderCardPage(opts: CardPageOptions): string {
   const banner = appStoreId
     ? html`<meta name="apple-itunes-app" content="app-id=${appStoreId}, app-argument=${view.url}">`
     : undefined;
-  const cta = appAvailable
-    ? html`<section class="cta"><div><strong>${t.ctaTitle}</strong><span>${t.ctaSubtitle}</span></div><a class="btn primary" href="${getAppHref}" data-get-app>${t.ctaButton}</a></section>`
-    : '';
+  const footerCta = appAvailable ? cta(t, getAppHref, 'footer', androidWaitlistUrl) : '';
+  const sharebackCta = appAvailable ? cta(t, getAppHref, 'shareback', androidWaitlistUrl) : '';
 
   const doc = html`<!doctype html>
 <html lang="${lang}">
@@ -505,7 +522,7 @@ ${head({
   ogImage: view.photoUrl ? safeHttpUrl(view.photoUrl) : null,
   appBanner: banner,
 })}
-<body class="p-${platform}" data-slug="${view.slug}" data-platform="${platform}" data-t="${JSON.stringify(t.script)}">
+<body class="p-${platform}${opts.android ? ' os-android' : ''}" data-slug="${view.slug}" data-platform="${platform}" data-t="${JSON.stringify(t.script)}">
 <main class="wrap">
 ${face(view)}
 <div class="notice inapp" role="note"><span>${t.inAppNotice}</span><button class="btn" type="button" id="copy-link">${t.copyLink}</button></div>
@@ -516,7 +533,7 @@ ${telegram ? html`<a class="btn" href="${telegram.href}" target="_blank" rel="no
 <button class="btn" type="button" id="exchange">${t.exchange(first)}</button>
 <p class="shared" id="shared" hidden>${ICONS.check}<span>${t.sent(first)}</span><button class="link" type="button" id="remove-inline">${t.removeMine}</button></p>
 </div>
-${cta}
+${footerCta}
 <p class="foot">${t.foot}</p>
 </main>
 <dialog id="sheet" aria-labelledby="sheet-title">
@@ -531,8 +548,8 @@ ${cta}
 <label class="input"><span>${t.metAt}</span><input name="metAt" maxlength="120" placeholder="${t.metAtPlaceholder}"></label>
 <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
 <p class="hint" id="sb-hint" role="status" aria-live="polite"></p>
-<p class="private">${ICONS.lock}<span>${t.onlyOwnerSees(first)}</span></p>
-<button class="btn primary" id="sb-send" type="submit" disabled>${t.send(first)}</button>
+<p class="private">${ICONS.lock}<span>${t.sendsTo(first)}</span></p>
+<button class="btn primary" id="sb-send" type="submit" disabled>${t.send}</button>
 <button class="btn plain" id="sb-skip" type="button">${t.skip}</button>
 </form>
 <div class="done" id="sb-done" hidden>
@@ -541,7 +558,7 @@ ${cta}
 <p class="sub">${t.doneSubtitle}</p>
 <a class="btn primary" id="done-save" href="${vcfHref}">${t.doneSave(first)}</a>
 <p class="saved-row" id="done-saved" hidden>${ICONS.check}<span>${t.doneSaved(first)}</span></p>
-${cta}
+${sharebackCta}
 <button class="btn" type="button" id="done-back">${t.doneBack(first)}</button>
 <p class="mind">${t.changedMind} <button class="link" type="button" id="done-remove">${t.removeMine}</button></p>
 </div>
