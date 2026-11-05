@@ -12650,6 +12650,22 @@
         }
       }
     },
+    "Redeem Promo Code": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ввести промокод"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promo kodni kiritish"
+          }
+        }
+      }
+    },
     "Remember everyone you meet and follow up on time.": {
       "localizations": {
         "ru": {

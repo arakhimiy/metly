@@ -23,9 +23,17 @@
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "21500002",
-          "introductoryOffer" : null,
+          "introductoryOffer" : {
+            "internalID" : "21500010",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
           "localizations" : [
-            { "description" : "Billed yearly. Save 44% compared with monthly.", "displayName" : "Tanishly Pro Yearly", "locale" : "en_US" }
+            {
+              "description" : "All Pro features, billed yearly.",
+              "displayName" : "Tanishly Pro Yearly",
+              "locale" : "en_US"
+            }
           ],
           "productID" : "app.tanishly.ios.pro.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
@@ -36,14 +44,31 @@
         },
         {
           "adHocOffers" : [],
-          "codeOffers" : [],
+          "codeOffers" : [
+            {
+              "displayPrice" : "0.0",
+              "eligibility" : [
+                "expired",
+                "new"
+              ],
+              "internalID" : "21500011",
+              "isStackable" : true,
+              "paymentMode" : "free",
+              "referenceName" : "TESTPROMO2026",
+              "subscriptionPeriod" : "P3M"
+            }
+          ],
           "displayPrice" : "2.99",
           "familyShareable" : false,
           "groupNumber" : 2,
           "internalID" : "21500003",
           "introductoryOffer" : null,
           "localizations" : [
-            { "description" : "Billed monthly. Cancel anytime.", "displayName" : "Tanishly Pro Monthly", "locale" : "en_US" }
+            {
+              "description" : "All Pro features, billed monthly.",
+              "displayName" : "Tanishly Pro Monthly",
+              "locale" : "en_US"
+            }
           ],
           "productID" : "app.tanishly.ios.pro.monthly",
           "recurringSubscriptionPeriod" : "P1M",
@@ -55,5 +80,8 @@
       ]
     }
   ],
-  "version" : { "major" : 4, "minor" : 0 }
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
 }

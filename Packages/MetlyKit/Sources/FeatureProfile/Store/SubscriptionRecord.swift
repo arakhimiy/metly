@@ -26,7 +26,7 @@ nonisolated struct SubscriptionRecord: Equatable, Sendable {
 }
 
 /// What the app shows / gates on. Applied to `Entitlements` in MetlyCore.
-nonisolated struct EntitlementSnapshot: Equatable, Sendable {
+nonisolated struct EntitlementSnapshot: Codable, Equatable, Sendable {
     var isPro: Bool
     var productID: String?
     var renewsAt: Date?

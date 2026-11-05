@@ -5,6 +5,7 @@ import SwiftData
 import SwiftUI
 
 /// SETTINGS_SUBSCRIPTION (SPEC §2.5.19). Cancel / change plan → App Store `manageSubscriptionsSheet` (Q27).
+/// Free: Redeem Promo Code opens the App Store's offer code sheet (partner codes from events).
 struct SubscriptionSettingsScreen: View {
     @Environment(AppRouter.self) private var router
     @Environment(AppServices.self) private var services
@@ -12,6 +13,7 @@ struct SubscriptionSettingsScreen: View {
     @Query(FollowUp.open) private var openFollowUps: [FollowUp]
     @State private var isManaging = false
     @State private var isRestoring = false
+    @State private var isRedeemingCode = false
     @State private var errorMessage: String?
     @State private var isShowingError = false
 
@@ -40,6 +42,7 @@ struct SubscriptionSettingsScreen: View {
             } else {
                 Section {
                     Button("Upgrade to \(Brand.proName)", systemImage: "crown", action: upgrade)
+                    Button("Redeem Promo Code", systemImage: "ticket") { isRedeemingCode = true }
                 } footer: {
                     Text("Unlimited cards, follow-ups and events, every template and palette, and event export to CSV.")
                 }
@@ -63,6 +66,7 @@ struct SubscriptionSettingsScreen: View {
         .navigationTitle("Subscription")
         .navigationBarTitleDisplayMode(.inline)
         .manageSubscriptionsSheet(isPresented: $isManaging)
+        .offerCodeRedemption(isPresented: $isRedeemingCode) { _ in refreshAfterRedeeming() }
         .onChange(of: isManaging) { _, isPresented in
             if !isPresented { refreshAfterManaging() }
         }
@@ -95,6 +99,18 @@ struct SubscriptionSettingsScreen: View {
     private func refreshAfterManaging() {
         let services = services
         Task { await SubscriptionManager.refreshEntitlements(services: services) }
+    }
+
+    /// A redeemed code also arrives through `Transaction.updates`; re-read now so the plan flips right away.
+    private func refreshAfterRedeeming() {
+        let services = services
+        let router = router
+        Task {
+            await SubscriptionManager.refreshEntitlements(services: services, verifyWithServer: true)
+            if services.entitlements.isPro {
+                router.showToast(String(localized: "Welcome to \(Brand.proName)"), systemImage: "crown.fill")
+            }
+        }
     }
 
     private func restorePurchases() {

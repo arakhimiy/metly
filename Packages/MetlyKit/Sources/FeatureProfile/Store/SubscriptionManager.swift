@@ -13,10 +13,12 @@ import UIKit
 /// It listens to `Transaction.updates` (renewals, refunds, Ask to Buy approvals, purchases made on
 /// other devices), re-evaluates `Transaction.currentEntitlements` at launch and whenever the app
 /// becomes active, finishes transactions and forwards their JWS to the backend
-/// (`services.subscriptions.verify`), ignoring failures (offline-first).
+/// (`services.subscriptions.verify`), ignoring failures (offline-first). The last known plan is
+/// cached on the device (`EntitlementCache`) and applied first, so Pro doesn't blink to Free at launch.
 @MainActor
 public final class SubscriptionManager {
     private var tasks: [Task<Void, Never>] = []
+    private static let cache = EntitlementCache()
 
     public init() {}
 
@@ -25,6 +27,9 @@ public final class SubscriptionManager {
     /// Starts listening. Safe to call more than once (later calls are ignored).
     public func start(services: AppServices) {
         guard tasks.isEmpty else { return }
+        if let cached = Self.cache.load(now: .now) {
+            Self.apply(cached, to: services.entitlements)
+        }
         tasks = [
             Task { await Self.refreshEntitlements(services: services, verifyWithServer: true) },
             Task { await Self.listenForTransactionUpdates(services: services) },
@@ -56,7 +61,9 @@ public final class SubscriptionManager {
             records.append(await record(for: transaction))
             signedTransactions.append(result.jwsRepresentation)
         }
-        apply(EntitlementMapper.snapshot(from: records, now: .now), to: services.entitlements)
+        let snapshot = EntitlementMapper.snapshot(from: records, now: .now)
+        apply(snapshot, to: services.entitlements)
+        cache.save(snapshot)
 
         guard verifyWithServer else { return }
         for jws in signedTransactions {
