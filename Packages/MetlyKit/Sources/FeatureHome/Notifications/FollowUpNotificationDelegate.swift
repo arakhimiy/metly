@@ -7,15 +7,21 @@ nonisolated final class FollowUpNotificationDelegate: NSObject, UNUserNotificati
     typealias Handler = @MainActor @Sendable (FollowUpNotificationAction) async -> Void
 
     private let handler: Handler
+    private let onRemoteNotification: @MainActor @Sendable () -> Void
 
-    init(handler: @escaping Handler) {
+    init(handler: @escaping Handler, onRemoteNotification: @escaping @MainActor @Sendable () -> Void = {}) {
         self.handler = handler
+        self.onRemoteNotification = onRemoteNotification
     }
 
-    /// Show reminders (and any other notification) as a banner while the app is open.
+    /// Show reminders (and any other notification) as a banner while the app is open. A push means
+    /// something changed on the server, so the app catches up at once (the realtime socket may be down).
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound]
+        if notification.request.trigger is UNPushNotificationTrigger {
+            await onRemoteNotification()
+        }
+        return [.banner, .list, .sound]
     }
 
     /// Taps and action buttons. The system keeps the app running until this returns, so

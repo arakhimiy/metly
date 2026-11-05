@@ -44,6 +44,7 @@ struct AddContextScreen: View {
                             ContactInfoEditor(draft: $contactInfo)
                         }
                     }
+                    .scrollDismissesKeyboard(.interactively)
                     .task(id: person.id) { load(person) }
                     .onChange(of: contactInfo) {
                         // A number or username typed here decides the channel of a reminder picked next.

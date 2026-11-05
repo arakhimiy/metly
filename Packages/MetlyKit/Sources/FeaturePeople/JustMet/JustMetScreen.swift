@@ -37,6 +37,7 @@ struct JustMetScreen: View {
                     Text("If they share their contact from your page later, \(Brand.appName) asks before merging the two.")
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle("Who did you just meet?")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

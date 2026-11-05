@@ -1,4 +1,5 @@
 import FeatureCards
+import FeatureConnect
 import FeatureHome
 import FeatureProfile
 import MetlyCore
@@ -45,6 +46,11 @@ struct MetlyApp: App {
         let router = AppRouter()
         _router = State(initialValue: router)
         // Owns the UNUserNotificationCenter delegate; must be set before launch finishes.
+        FollowUpNotificationScheduler.answerConnectRequest = { [client] requestID, accept in
+            await ConnectRequestResponder.answer(requestID: requestID, accept: accept, client: client,
+                                                 context: container.mainContext, router: router)
+        }
+        FollowUpNotificationScheduler.onRemoteNotification = { [client] in client.catchUpNow() }
         FollowUpNotificationScheduler.configure(router: router, container: container, services: services)
     }
 
@@ -70,7 +76,9 @@ struct MetlyApp: App {
                 }
                 .onChange(of: scenePhase) { _, phase in
                     switch phase {
-                    case .active: services.sync.requestSync()
+                    case .active:
+                        services.sync.requestSync()
+                        client.catchUpNow()
                     case .background: environment.syncEngine.scheduleBackgroundSync()
                     default: break
                     }

@@ -266,6 +266,8 @@ export class ConnectService {
         this.push.notify(target.userId, {
           type: 'connect_request',
           text: { id: 'connectRequest', params: { name: this.first(me), eventName: request.eventName || null } },
+          // The app's Accept / Decline notification actions.
+          category: 'CONNECT_REQUEST',
           data: { requestId: request.id },
         }),
       );

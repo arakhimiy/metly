@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Multiline private note + voice dictation (live transcript appended to what was typed) in the language
-/// chosen next to the mic.
+/// chosen next to the mic. Return adds a line, so the keyboard gets a Done button.
 struct PrivateNoteSection: View {
     @Binding var note: String
     let voice: VoiceNoteRecognizer
@@ -10,16 +10,26 @@ struct PrivateNoteSection: View {
     @State private var noteBeforeDictation = ""
     @State private var settingsAlert: SettingsAlert?
     @State private var problem: DictationProblem?
+    @FocusState private var isEditingNote: Bool
 
     var body: some View {
         Section {
             TextField("What did you talk about?", text: $note, axis: .vertical)
                 .lineLimit(3...8)
+                .focused($isEditingNote)
             DictationRow(voice: voice, action: toggleDictation)
         } header: {
             Text("Private Note")
         } footer: {
             Label("Only you can see this. Audio isn't stored.", systemImage: "lock.fill")
+        }
+        .toolbar {
+            if isEditingNote {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { isEditingNote = false }
+                }
+            }
         }
         .onChange(of: voice.transcript) { _, transcript in
             guard voice.isListening || !transcript.isEmpty else { return }

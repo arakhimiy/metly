@@ -176,7 +176,11 @@ input::placeholder{color:var(--muted);opacity:.8}
 #sb-form .btn+.btn{margin-top:8px}
 .done{text-align:center}
 .done .btn{margin-top:10px}
+.done h2+.btn{margin-top:18px}
+.done .cta{margin-top:22px}
+.done .cta-text .get{display:none}
 .done .cta .btn{margin-top:0}
+.done .cta .btn.get,.done .cta .btn.android{min-height:50px;font-size:17px;background:var(--accent);color:var(--on-accent)}
 .check{width:56px;height:56px;margin:8px auto 14px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center}
 .check svg{width:30px;height:30px}
 .saved-row{display:flex;align-items:center;justify-content:center;gap:6px;margin:14px 0 0;color:var(--muted)}
@@ -555,11 +559,10 @@ ${footerCta}
 <div class="done" id="sb-done" hidden>
 <div class="check">${ICONS.check}</div>
 <h2>${t.doneTitle(first)}</h2>
-<p class="sub">${t.doneSubtitle}</p>
-<a class="btn primary" id="done-save" href="${vcfHref}">${t.doneSave(first)}</a>
+<a class="btn${appAvailable ? '' : ' primary'}" id="done-save" href="${vcfHref}">${t.doneSave(first)}</a>
 <p class="saved-row" id="done-saved" hidden>${ICONS.check}<span>${t.doneSaved(first)}</span></p>
 ${sharebackCta}
-<button class="btn" type="button" id="done-back">${t.doneBack(first)}</button>
+<button class="btn plain" type="button" id="done-back">${t.doneBack(first)}</button>
 <p class="mind">${t.changedMind} <button class="link" type="button" id="done-remove">${t.removeMine}</button></p>
 </div>
 </dialog>

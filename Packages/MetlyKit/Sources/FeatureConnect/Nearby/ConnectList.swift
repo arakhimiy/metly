@@ -13,12 +13,14 @@ struct ConnectList: View {
     var body: some View {
         List {
             Section {
-                Picker("Mode", selection: $model.mode) {
-                    ForEach(ConnectMode.allCases) { mode in
-                        Text(mode.title).tag(mode)
+                if ConnectMode.offered.count > 1 {
+                    Picker("Mode", selection: $model.mode) {
+                        ForEach(ConnectMode.offered) { mode in
+                            Text(mode.title).tag(mode)
+                        }
                     }
+                    .pickerStyle(.segmented)
                 }
-                .pickerStyle(.segmented)
                 if let activeEventName {
                     EventPill(name: activeEventName)
                         .frame(maxWidth: .infinity)

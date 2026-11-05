@@ -36,6 +36,10 @@ public final class FollowUpNotificationScheduler {
     /// queue until the app applies them. They get no notification although the store still has them open.
     /// The app target wires this to `WidgetSnapshotStore.pendingFollowUpCompletionIDs()`.
     public static var pendingCompletionIDs: @MainActor () -> Set<UUID> = { [] }
+    /// "Accept" / "Decline" on a connect request push. The app target wires this to FeatureConnect.
+    public static var answerConnectRequest: @MainActor (_ requestID: UUID, _ accept: Bool) async -> Void = { _, _ in }
+    /// A push arrived while the app is open. The app target wires this to `MetlyClient.catchUpNow()`.
+    public static var onRemoteNotification: @MainActor () -> Void = {}
 
     private init(router: AppRouter, container: ModelContainer, services: AppServices, center: UNUserNotificationCenter) {
         self.center = center
@@ -61,10 +65,13 @@ public final class FollowUpNotificationScheduler {
     private func start() {
         let delegate = FollowUpNotificationDelegate { [weak self] action in
             await self?.handle(action)
+        } onRemoteNotification: {
+            Self.onRemoteNotification()
         }
         self.delegate = delegate
         center.delegate = delegate
-        center.setNotificationCategories(FollowUpNotificationCategory.makeCategories())
+        center.setNotificationCategories(FollowUpNotificationCategory.makeCategories()
+            .union([ConnectRequestNotificationCategory.makeCategory()]))
 
         for name in [ModelContext.didSave, UIApplication.didBecomeActiveNotification,
                      UIApplication.significantTimeChangeNotification, .NSSystemTimeZoneDidChange] {
@@ -190,6 +197,10 @@ public final class FollowUpNotificationScheduler {
         case .openChannel(let id):
             await openFollowUps()
             await openChannel(for: id)
+        case .answerConnectRequest(let requestID, let accept):
+            // Accept lands on CONNECTED, so wait for the UI; Decline runs in the background.
+            if accept { guard await waitUntilMainPhase() else { return } }
+            await Self.answerConnectRequest(requestID, accept)
         case .openLink(let url):
             guard await waitUntilMainPhase() else { return }
             await UIApplication.shared.open(url)

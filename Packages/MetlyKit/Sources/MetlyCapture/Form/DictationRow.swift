@@ -7,6 +7,8 @@ struct DictationRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // Labels keep one line, so a row that doesn't fit falls back to the stacked layout
+            // instead of wrapping "Dictate" (large text, Uzbek).
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 10) { controls }
                 VStack(alignment: .leading, spacing: 10) { controls }
@@ -42,6 +44,8 @@ private struct DictationMicButton: View {
             Label(title, systemImage: isListening ? "waveform" : "mic.fill")
                 .contentTransition(.symbolEffect(.replace))
                 .symbolEffect(.variableColor.iterative, isActive: isListening)
+                .lineLimit(1)
+                .fixedSize()
                 .frame(minHeight: 30)
         }
         .buttonStyle(.bordered)
@@ -85,6 +89,8 @@ private struct DictationLanguageMenu: View {
             } icon: {
                 Image(systemName: "globe")
             }
+            .lineLimit(1)
+            .fixedSize()
             .frame(minHeight: 30)
         }
         .menuStyle(.button)

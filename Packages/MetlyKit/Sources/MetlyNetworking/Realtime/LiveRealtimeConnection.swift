@@ -41,6 +41,16 @@ actor LiveRealtimeConnection: RealtimeAPI {
         return stream
     }
 
+    /// A server that was asleep (or a phone that was offline) shouldn't wait out a long backoff:
+    /// restart the loop now unless the socket is up.
+    func reconnectNow() {
+        guard state != .connected, !subscribers.isEmpty else { return }
+        runTask?.cancel()
+        let id = UUID()
+        runID = id
+        runTask = Task { await self.run(id) }
+    }
+
     private func removeSubscriber(_ id: UUID) {
         subscribers[id] = nil
         if subscribers.isEmpty {
@@ -85,12 +95,14 @@ actor LiveRealtimeConnection: RealtimeAPI {
             } catch {
                 failures += 1
             }
-            setState(.disconnected)
             guard !Task.isCancelled else { break }
+            setState(.disconnected)
             let delay = Duration.seconds(min(60, 1 << min(failures, 6)))
             try? await Task.sleep(for: delay * Double.random(in: 0.8...1.2))
         }
-        if runID == id { runTask = nil }
+        // A loop replaced by `reconnectNow()` leaves the state to its successor.
+        guard runID == id else { return }
+        runTask = nil
         setState(.disconnected)
     }
 

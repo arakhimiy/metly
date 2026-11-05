@@ -134,6 +134,28 @@ struct NotificationActionTests {
                                                  categoryIdentifier: "", requestIdentifier: "remote-2", userInfo: [:])
         #expect(unknown == .ignore)
     }
+
+    @Test func connectRequestActionsAnswerTheRequest() {
+        let requestID = UUID()
+        let info: [AnyHashable: Any] = ["requestId": requestID.uuidString, "link": "tanishly://people"]
+        func answer(_ identifier: String, _ info: [AnyHashable: Any]) -> FollowUpNotificationAction {
+            FollowUpNotificationAction(actionIdentifier: identifier, categoryIdentifier: "CONNECT_REQUEST",
+                                       requestIdentifier: "remote-3", userInfo: info)
+        }
+        #expect(answer("CONNECT_REQUEST_ACCEPT", info) == .answerConnectRequest(requestID: requestID, accept: true))
+        #expect(answer("CONNECT_REQUEST_DECLINE", info) == .answerConnectRequest(requestID: requestID, accept: false))
+        #expect(answer(UNNotificationDefaultActionIdentifier, info) == .openLink(URL(string: "tanishly://people")!))
+        // No request id: fall back to opening People.
+        #expect(answer("CONNECT_REQUEST_ACCEPT", ["link": "tanishly://people"]) == .openLink(URL(string: "tanishly://people")!))
+    }
+
+    @Test func connectRequestCategoryHasAcceptAndDecline() {
+        let category = ConnectRequestNotificationCategory.makeCategory()
+        #expect(category.identifier == "CONNECT_REQUEST")
+        #expect(category.actions.map(\.identifier) == ["CONNECT_REQUEST_ACCEPT", "CONNECT_REQUEST_DECLINE"])
+        #expect(category.actions[0].options.contains(.foreground))
+        #expect(!category.actions[1].options.contains(.foreground))
+    }
 }
 
 struct NotificationPlannerTests {

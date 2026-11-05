@@ -36,7 +36,8 @@ export interface PushMessage {
   collapseId?: string;
   /**
    * Notification category the app registers: `FOLLOW_UP_TELEGRAM` / `_EMAIL` / `_CALL` ("Open …" +
-   * "Snooze 1 Day") or `FOLLOW_UP` (snooze only) — FollowUpNotificationCategory.swift.
+   * "Snooze 1 Day") or `FOLLOW_UP` (snooze only) — FollowUpNotificationCategory.swift; `CONNECT_REQUEST`
+   * (Accept + Decline) — ConnectRequestNotificationCategory.swift.
    */
   category?: string;
   threadId?: string;

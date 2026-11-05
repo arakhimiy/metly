@@ -80,6 +80,15 @@ public final class MetlyClient {
         }
     }
 
+    /// Catch up right away (app back in the foreground, a push arrived while open): reconnect the
+    /// socket without waiting out its backoff and pull what changed.
+    public func catchUpNow() {
+        guard realtimeTask != nil else { return }
+        let api = api
+        Task { await api.realtime.reconnectNow() }
+        onSyncHint()
+    }
+
     public func stopRealtime() {
         realtimeTask?.cancel()
         realtimeTask = nil

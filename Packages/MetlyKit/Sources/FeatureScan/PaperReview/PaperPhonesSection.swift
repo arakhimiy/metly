@@ -128,35 +128,31 @@ struct PaperPhoneRowView: View {
     var focus: FocusState<PaperFocus?>.Binding
     let isFocused: Bool
 
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     var body: some View {
-        let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
-            : AnyLayout(HStackLayout(spacing: 12))
         VStack(alignment: .leading, spacing: 6) {
-            layout {
-                Picker("Label", selection: $row.label) {
-                    ForEach(PhoneLabel.allCases) { label in
-                        Label(label.title, systemImage: label.symbolName).tag(label)
+            PaperContactRowLayout(symbolName: row.label.symbolName, tint: ContactFieldKind.phone.tint, hint: hint) {
+                Menu {
+                    Picker("Label", selection: $row.label) {
+                        ForEach(PhoneLabel.allCases) { label in
+                            Label(label.title, systemImage: label.symbolName).tag(label)
+                        }
+                    }
+                    .pickerStyle(.inline)
+                } label: {
+                    HStack(spacing: 3) {
+                        Text(row.label.title)
+                        Image(systemName: "chevron.up.chevron.down")
+                            .imageScale(.small)
                     }
                 }
-                .pickerStyle(.menu)
-                .labelsHidden()
-                .fixedSize()
                 .accessibilityLabel("Phone Label")
-
-                HStack(spacing: 8) {
-                    TextField("Phone", text: $row.value, prompt: Text(PaperField.phone.placeholder))
-                        .multilineTextAlignment(dynamicTypeSize.isAccessibilitySize ? .leading : .trailing)
-                        .textContentType(.telephoneNumber)
-                        .keyboardType(.phonePad)
-                        .focused(focus, equals: .phone(row.id))
-                        .accessibilityLabel(row.label.title)
-                    if let hint {
-                        HintBadge(hint: hint)
-                    }
-                }
+                .accessibilityValue(row.label.title)
+            } value: {
+                TextField("Phone", text: $row.value, prompt: Text(PaperField.phone.placeholder))
+                    .textContentType(.telephoneNumber)
+                    .keyboardType(.phonePad)
+                    .focused(focus, equals: .phone(row.id))
+                    .accessibilityLabel(row.label.title)
             }
             if !isFocused, let problem = ContactFieldInput.problem(row.value, for: .phone) {
                 ContactProblemNote(problem)
@@ -175,9 +171,46 @@ struct PaperContactFieldRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            PaperFieldRow(field: field, text: $text, hint: hint, focus: focus) { focus.wrappedValue = nil }
+            PaperContactRowLayout(symbolName: field.symbolName, tint: field.tint, hint: hint) {
+                Text(field.title)
+                    .foregroundStyle(.secondary)
+            } value: {
+                TextField(field.title, text: $text, prompt: Text(field.placeholder))
+                    .textContentType(field.contentType)
+                    .keyboardType(field.keyboard)
+                    .textInputAutocapitalization(field.capitalizesWords ? .words : .never)
+                    .autocorrectionDisabled(!field.capitalizesWords)
+                    .submitLabel(.done)
+                    .focused(focus, equals: .field(field))
+                    .onSubmit { focus.wrappedValue = nil }
+                    .accessibilityHint(hint == .guessed ? String(localized: "Guessed from the card’s layout. Check it.") : "")
+            }
             if !isFocused, let kind = field.kind, let problem = ContactFieldInput.problem(text, for: kind) {
                 ContactProblemNote(problem)
+            }
+        }
+    }
+}
+
+/// One contact row: icon, the label on top and the value under it at full width, so long emails and links
+/// show whole and every row lines up the same way (like Contacts). A phone's label is its tinted menu.
+private struct PaperContactRowLayout<RowLabel: View, Value: View>: View {
+    let symbolName: String
+    let tint: Color
+    let hint: PaperFieldHint?
+    @ViewBuilder let label: RowLabel
+    @ViewBuilder let value: Value
+
+    var body: some View {
+        HStack(spacing: 12) {
+            SettingsIcon(symbolName, color: tint)
+            VStack(alignment: .leading, spacing: 2) {
+                label
+                    .font(.subheadline)
+                value
+            }
+            if let hint {
+                HintBadge(hint: hint)
             }
         }
     }

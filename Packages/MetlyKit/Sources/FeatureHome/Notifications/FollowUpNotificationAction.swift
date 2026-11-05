@@ -9,6 +9,8 @@ nonisolated public enum FollowUpNotificationAction: Equatable, Sendable {
     case openChannel(followUpID: UUID)
     /// "Snooze 1 Day" (handled in the background).
     case snooze(followUpID: UUID)
+    /// "Accept" / "Decline" on a connect request push.
+    case answerConnectRequest(requestID: UUID, accept: Bool)
     /// Another notification carrying a `link` (`tanishly://…`) — routed through the app's deep links.
     case openLink(URL)
     /// Dismissed, or nothing we understand.
@@ -20,12 +22,16 @@ nonisolated public enum FollowUpNotificationAction: Equatable, Sendable {
             ?? FollowUpNotificationPayload.followUpID(fromIdentifier: requestIdentifier)
         let link = (userInfo[FollowUpNotificationPayload.UserInfoKey.link] as? String).flatMap(URL.init(string:))
         let isFollowUp = FollowUpNotificationCategory.isFollowUpCategory(categoryIdentifier) || followUpID != nil
+        let requestID = (userInfo[ConnectRequestNotificationCategory.requestIDKey] as? String).flatMap(UUID.init(uuidString:))
 
         switch actionIdentifier {
         case UNNotificationDismissActionIdentifier:
             self = .ignore
         case FollowUpNotificationCategory.snoozeAction:
             self = followUpID.map { .snooze(followUpID: $0) } ?? .ignore
+        case ConnectRequestNotificationCategory.acceptAction, ConnectRequestNotificationCategory.declineAction:
+            let accept = actionIdentifier == ConnectRequestNotificationCategory.acceptAction
+            self = requestID.map { .answerConnectRequest(requestID: $0, accept: accept) } ?? link.map(Self.openLink) ?? .ignore
         case FollowUpNotificationCategory.openChannelAction:
             self = followUpID.map { .openChannel(followUpID: $0) } ?? .openFollowUps(followUpID: nil)
         default:

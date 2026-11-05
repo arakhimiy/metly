@@ -79,7 +79,6 @@ export interface CardPageText {
   send: string;
   skip: string;
   doneTitle: (first: string) => string;
-  doneSubtitle: string;
   doneSave: (first: string) => string;
   doneSaved: (first: string) => string;
   doneBack: (first: string) => string;
@@ -136,7 +135,6 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     send: 'Kontaktimni yuborish',
     skip: 'O‘tkazib yuborish',
     doneTitle: (first) => `Kontaktingiz ${uzDative(first)} yuborildi`,
-    doneSubtitle: 'Qayerda tanishganingiz ham qo‘shiladi — keyin bog‘lanish oson bo‘ladi.',
     doneSave: (first) => `${first} kontaktini saqlash`,
     doneSaved: (first) => `${first} kontakti saqlandi`,
     doneBack: (first) => `${first} vizitkasiga qaytish`,
@@ -207,7 +205,6 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     send: 'Отправить мой контакт',
     skip: 'Пропустить',
     doneTitle: (first) => `Готово! ${first} уже видит ваш контакт.`,
-    doneSubtitle: 'Вместе с ним сохранится, где вы познакомились, — так проще продолжить общение.',
     doneSave: () => 'Сохранить контакт',
     doneSaved: () => 'Контакт сохранён',
     doneBack: () => 'Вернуться к визитке',
@@ -278,7 +275,6 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     send: 'Send my contact',
     skip: 'Skip',
     doneTitle: (first) => `Your contact was sent to ${first}`,
-    doneSubtitle: 'It arrives with where you met, so a follow-up is easy.',
     doneSave: (first) => `Save ${first}’s Contact`,
     doneSaved: (first) => `${first}’s contact is saved`,
     doneBack: (first) => `Back to ${first}’s Card`,

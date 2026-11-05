@@ -6900,18 +6900,18 @@
         }
       }
     },
-    "Everyone you connect with is added to this event — by QR, Nearby, Tap Phones, your web page or a paper card. It ends by itself after the last day and shows you a summary.": {
+    "Everyone you connect with is added to this event — by QR, Nearby, your web page or a paper card. It ends by itself after the last day and shows you a summary.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Все, с кем вы обменяетесь визитками, добавляются в это мероприятие — через QR, «Рядом», «Коснуться телефонами», вашу веб-страницу или бумажную визитку. Оно завершится само после последнего дня и покажет итоги."
+            "value": "Все, с кем вы обменяетесь визитками, добавляются в это мероприятие — через QR, «Рядом», вашу веб-страницу или бумажную визитку. Оно завершится само после последнего дня и покажет итоги."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitka almashgan har bir kishi shu tadbirga qo‘shiladi — QR, «Yaqin atrofda», «Telefonlarni tegizish», veb-sahifangiz yoki qog‘oz vizitka orqali. Tadbir oxirgi kundan keyin o‘zi yakunlanadi va sizga yakunini ko‘rsatadi."
+            "value": "Vizitka almashgan har bir kishi shu tadbirga qo‘shiladi — QR, «Yaqin atrofda», veb-sahifangiz yoki qog‘oz vizitka orqali. Tadbir oxirgi kundan keyin o‘zi yakunlanadi va sizga yakunini ko‘rsatadi."
           }
         }
       }

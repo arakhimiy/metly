@@ -154,6 +154,12 @@ public protocol RealtimeAPI: Sendable {
     /// Live events (`GET /v1/realtime` WebSocket). Each call returns an independent stream;
     /// the connection stays open while at least one stream is being iterated.
     func connectEvents() async -> AsyncStream<ConnectEvent>
+    /// Skips the reconnect backoff (the app came back, a push arrived) when the socket is down.
+    func reconnectNow() async
+}
+
+public extension RealtimeAPI {
+    func reconnectNow() async {}
 }
 
 public protocol PublicProfilesAPI: Sendable {

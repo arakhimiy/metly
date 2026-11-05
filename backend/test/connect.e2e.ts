@@ -148,6 +148,7 @@ describe('connect', () => {
       expect.objectContaining({
         type: 'connect_request',
         text: { id: 'connectRequest', params: { name: 'Bobur', eventName: 'ICT Week' } },
+        category: 'CONNECT_REQUEST',
         data: { requestId: sent.body.id },
       }),
     ]);

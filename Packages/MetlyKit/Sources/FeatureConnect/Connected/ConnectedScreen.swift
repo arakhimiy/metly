@@ -40,6 +40,7 @@ struct ConnectedScreen: View {
                                 .disabled(addedToContacts)
                         }
                     }
+                    .scrollDismissesKeyboard(.interactively)
                 } else if hasLoaded {
                     ContentUnavailableView("Connection Not Found", systemImage: "person.crop.circle.badge.questionmark",
                                            description: Text("It may have been removed on another device."))

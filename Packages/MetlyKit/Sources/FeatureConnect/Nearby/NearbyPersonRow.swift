@@ -12,19 +12,21 @@ struct NearbyPersonRow: View {
     let onConnect: () -> Void
     let onCancel: () -> Void
 
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .headline) private var avatarSize: CGFloat = 44
 
+    /// One line when the name and the button fit side by side; otherwise the button goes under the
+    /// name (large text, long names, "Waiting… Cancel") instead of squeezing both.
     var body: some View {
-        let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
-            : AnyLayout(HStackLayout(spacing: 12))
-        layout {
-            identity
-            if !dynamicTypeSize.isAccessibilitySize {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                identity
                 Spacer(minLength: 8)
+                trailing
             }
-            trailing
+            VStack(alignment: .leading, spacing: 12) {
+                identity
+                trailing
+            }
         }
         .padding(.vertical, 4)
     }
