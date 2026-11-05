@@ -64,7 +64,7 @@ struct FollowUpRow: View {
     }
 }
 
-/// Avatar · what (struck through when done) · "{name} · {event or company}" · due label + channel icon.
+/// Avatar · name (struck through when done) · "{task} · {event or company}" · due label + channel icon.
 struct FollowUpRowContent: View {
     let followUp: FollowUp
     let now: Date
@@ -75,7 +75,7 @@ struct FollowUpRowContent: View {
         let calendar = Calendar.current
         let person = followUp.connection
         let name = PersonText.displayName(person)
-        let subtitle = [name, PersonText.context(of: person)].compactMap { $0 }.joined(separator: " · ")
+        let detail = PersonText.reminderDetail(of: followUp)
         let due = FollowUpDates.dueLabel(followUp.dueAt, now: now, calendar: calendar)
         let emphasis = DueEmphasis.of(dueAt: followUp.dueAt, isDone: followUp.isDone, now: now, calendar: calendar)
         let layout = dynamicTypeSize.isAccessibilitySize
@@ -86,13 +86,15 @@ struct FollowUpRowContent: View {
             InitialsAvatar(name: name, imageData: person?.avatarData, size: 40)
                 .opacity(followUp.isDone ? 0.6 : 1)
             VStack(alignment: .leading, spacing: 2) {
-                Text(followUp.title)
+                Text(name)
                     .font(.body.weight(.semibold))
                     .strikethrough(followUp.isDone)
                     .foregroundStyle(followUp.isDone ? .secondary : .primary)
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                if let detail {
+                    Text(detail)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: 6) {
@@ -106,7 +108,7 @@ struct FollowUpRowContent: View {
         }
         .padding(.vertical, 2)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("\(followUp.title), \(name)"))
+        .accessibilityLabel(Text([name, detail].compactMap { $0 }.joined(separator: ", ")))
         .accessibilityValue(Text(accessibilityValue(due: due, emphasis: emphasis)))
     }
 

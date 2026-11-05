@@ -22,6 +22,20 @@ nonisolated enum PersonText {
         return candidates.compactMap { $0?.trimmingCharacters(in: .whitespaces) }.first { !$0.isEmpty }
     }
 
+    /// A reminder's own task, or nil while it's still the default "Follow up" — then the person
+    /// leads the row and the task adds nothing.
+    static func task(of followUp: FollowUp) -> String? {
+        let title = followUp.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let defaults = ["Follow up", String(localized: "Follow up")].map { $0.lowercased() }
+        return title.isEmpty || defaults.contains(title.lowercased()) ? nil : title
+    }
+
+    /// Under the person's name on a reminder: "{task} · {event or company}" (either may be missing).
+    static func reminderDetail(of followUp: FollowUp) -> String? {
+        let parts = [task(of: followUp), context(of: followUp.connection)].compactMap { $0 }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
     /// "{event} · {city}" for Recent rows (falls back to place / company).
     static func meetingMeta(of person: Connection) -> String {
         let context = person.context

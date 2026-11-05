@@ -3,7 +3,7 @@ import MetlyData
 import MetlyDesign
 import SwiftUI
 
-/// A Home reminder: avatar, what, "{name} · {due}" (tap → REMINDER_EDIT), then
+/// A Home reminder: avatar, name, "{task} · {event or company} · {due}" (tap → REMINDER_EDIT), then
 /// channel action · Snooze ▾ · Done.
 struct FollowUpTodayRow: View {
     struct Actions {
@@ -63,7 +63,7 @@ struct FollowUpTodayRow: View {
     }
 }
 
-/// Avatar + what + "{name} · {due}" — the tappable part of a Home reminder.
+/// Avatar + name + "{task} · {event or company} · {due}" — the tappable part of a Home reminder.
 struct FollowUpSummary: View {
     let followUp: FollowUp
     let now: Date
@@ -78,16 +78,22 @@ struct FollowUpSummary: View {
         HStack(spacing: 12) {
             InitialsAvatar(name: name, imageData: followUp.connection?.avatarData, size: 40)
             VStack(alignment: .leading, spacing: 2) {
-                Text(followUp.title)
+                Text(name)
                     .font(.headline)
                     .foregroundStyle(.primary)
-                Text("\(name) · \(dueText)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Group {
+                    if let detail = PersonText.reminderDetail(of: followUp) {
+                        Text("\(detail) · \(dueText)")
+                    } else {
+                        dueText
+                    }
+                }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("\(followUp.title), \(name)"))
+        .accessibilityLabel(Text([name, PersonText.reminderDetail(of: followUp)].compactMap { $0 }.joined(separator: ", ")))
         .accessibilityValue(Text([due, emphasis.accessibilityNote].compactMap { $0 }.joined(separator: ", ")))
     }
 }

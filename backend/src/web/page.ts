@@ -155,6 +155,9 @@ const CARD_CSS = String.raw`
 .cta strong{font-size:15px}
 .cta-text span{font-size:13px;color:var(--muted)}
 .cta .btn{min-height:44px;font-size:15px;color:var(--accent)}
+.acted .cta-footer{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;background:var(--bg);background-image:linear-gradient(rgba(var(--fg-rgb),.06),rgba(var(--fg-rgb),.06));box-shadow:0 10px 30px -8px rgba(0,0,0,.35)}
+.acted .cta-footer .cta-text .get{display:none}
+.acted .cta-footer .btn.get,.acted .cta-footer .btn.android{background:var(--accent);color:var(--on-accent)}
 .cta .android,.os-android .cta .get{display:none}
 .os-android .cta-text .android{display:block}
 .os-android .cta .btn.android{display:flex}
@@ -266,6 +269,8 @@ const CARD_JS = String.raw`(function () {
     if ($('shared')) $('shared').hidden = !shared;
     if ($('done-save')) $('done-save').hidden = saved;
     if ($('done-saved')) $('done-saved').hidden = !saved;
+    // Once they've saved or shared, "Want a card like this?" stays in view at the bottom.
+    document.body.classList.toggle('acted', shared || saved);
   }
   function markSaved() { put('localStorage', SAVED, { at: Date.now() }); setTimeout(refresh, 500); }
   function onSave(e) {
@@ -492,7 +497,7 @@ function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText, lab
  * the `os-android` class (server user agent, then the page script) picks the variant.
  */
 function cta(t: CardPageText, getAppHref: string, from: 'footer' | 'shareback', androidWaitlistUrl?: string): SafeHtml {
-  return html`<section class="cta"><div class="cta-text"><strong>${t.ctaTitle}</strong><span class="get">${t.ctaSubtitle}</span><span class="android">${androidWaitlistUrl ? t.androidWaitlist : t.androidOnly}</span></div><a class="btn get" href="${getAppHref}?from=${from}" data-get-app>${t.ctaButton}</a>${
+  return html`<section class="cta cta-${from}"><div class="cta-text"><strong>${t.ctaTitle}</strong><span class="get">${t.ctaSubtitle}</span><span class="android">${androidWaitlistUrl ? t.androidWaitlist : t.androidOnly}</span></div><a class="btn get" href="${getAppHref}?from=${from}" data-get-app>${t.ctaButton}</a>${
     androidWaitlistUrl ? html`<a class="btn android" href="${androidWaitlistUrl}" target="_blank" rel="noopener noreferrer">${t.notifyMe}</a>` : ''
   }</section>`;
 }

@@ -47,7 +47,7 @@ describe('card page: "Want a card like this?"', () => {
   });
 
   it('is left out when there is no app to download yet', () => {
-    expect(page({ appAvailable: false })).not.toContain('class="cta"');
+    expect(page({ appAvailable: false })).not.toContain('class="cta ');
   });
 
   it('marks Android visitors; "Notify me" only once the bot’s waitlist exists', () => {

@@ -15,20 +15,26 @@ struct ScanBottomBar: View {
             ScanModePicker(mode: $mode)
             ScanHintPill(text: isReadingCard ? String(localized: "Reading the card…") : mode.hint, showsProgress: isReadingCard)
 
+            // The side slots always take their share (Paste Link only shows with a link on the
+            // clipboard), so the shutter stays centred.
             HStack(alignment: .center, spacing: 16) {
-                PasteLinkButton(onPaste: onPaste)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    PasteLinkButton(onPaste: onPaste)
+                    Spacer(minLength: 0)
+                }
+                .frame(maxWidth: .infinity)
 
                 if mode == .paper {
                     ShutterButton(isBusy: isReadingCard, action: onShutter)
                 }
 
-                Group {
+                HStack {
+                    Spacer(minLength: 0)
                     if hasTorch {
                         TorchButton(isOn: $isTorchOn)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .trailing)
+                .frame(maxWidth: .infinity)
             }
         }
         .padding(.horizontal, 20)

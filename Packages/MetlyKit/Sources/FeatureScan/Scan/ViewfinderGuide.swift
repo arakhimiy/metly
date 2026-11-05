@@ -4,6 +4,8 @@ import SwiftUI
 /// Decorative: the hint pill below says what to do.
 struct ViewfinderGuide: View {
     let mode: ScanMode
+    /// The corners' frame on screen (global), without the padding around them.
+    var onFrameChange: (CGRect) -> Void = { _ in }
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isSweeping = false
@@ -21,6 +23,7 @@ struct ViewfinderGuide: View {
             }
             .aspectRatio(mode.aspectRatio, contentMode: .fit)
             .frame(maxWidth: mode.maxGuideWidth)
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { onFrameChange($0) }
             .padding(.horizontal, 40)
             .shadow(color: .black.opacity(0.35), radius: 6)
             .animation(.smooth, value: mode)

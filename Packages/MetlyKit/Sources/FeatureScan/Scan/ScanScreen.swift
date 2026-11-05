@@ -18,6 +18,9 @@ struct ScanScreen: View {
     @State private var debouncer = ScanDebouncer()
     @State private var isVisible = false
     @State private var isReadingCard = false
+    /// The camera preview and the card guide on screen: the photo is read inside the guide only.
+    @State private var previewFrame: CGRect = .zero
+    @State private var guideFrame: CGRect = .zero
     /// The on-device model that helps read paper cards (iOS 26+ with Apple Intelligence), looked up in Paper mode.
     @State private var cardModel: (any PaperCardLanguageModel)?
 
@@ -103,9 +106,10 @@ struct ScanScreen: View {
             if isCameraActive {
                 ScanCameraFeed(mode: mode, camera: camera, onCode: handleScanned)
                     .ignoresSafeArea()
+                    .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { previewFrame = $0 }
                     .accessibilityLabel("Camera Viewfinder")
             }
-            ViewfinderGuide(mode: mode)
+            ViewfinderGuide(mode: mode) { guideFrame = $0 }
         }
         .safeAreaInset(edge: .top) {
             ScanTopBar(eventName: activeEvents.first?.name)
@@ -204,7 +208,8 @@ struct ScanScreen: View {
             defer { isReadingCard = false }
             do {
                 let photo = try await camera.capturePhoto()
-                handlePaperScan(await PaperCardReader.read(photo, model: cardModel))
+                let region = PaperCrop.region(guide: guideFrame, preview: previewFrame, photoSize: photo.size)
+                handlePaperScan(await PaperCardReader.read(photo, region: region, model: cardModel))
             } catch {
                 handlePaperScan(PaperScan(draft: PaperCardDraft()))
             }
