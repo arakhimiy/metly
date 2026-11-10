@@ -56,6 +56,8 @@ public final class VoiceNoteRecognizer {
         }
     }
 
+    /// Names and words likely to be said (people, companies, the event); see `DictationVocabulary`.
+    @ObservationIgnored public var vocabulary: [String] = []
     @ObservationIgnored private let store: DictationLanguageStore
     @ObservationIgnored private let permissions: Permissions
     @ObservationIgnored private let makeSession: SessionFactory
@@ -111,6 +113,7 @@ public final class VoiceNoteRecognizer {
         let language = language
         let permissions = permissions
         let makeSession = makeSession
+        let vocabulary = vocabulary
         let progress: ProgressHandler = { [weak self] fraction in
             await self?.modelDownloadProgressed(fraction)
         }
@@ -140,7 +143,7 @@ public final class VoiceNoteRecognizer {
             }
             let events: AsyncStream<DictationEvent>
             do {
-                events = try await session.start()
+                events = try await session.start(vocabulary: vocabulary)
             } catch {
                 session.cancel()
                 self?.sessionFailedToStart(session)

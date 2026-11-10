@@ -7,8 +7,8 @@ struct DictationRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // Labels keep one line, so a row that doesn't fit falls back to the stacked layout
-            // instead of wrapping "Dictate" (large text, Uzbek).
+            // The row is measured at its natural width, so when it doesn't fit (large text, Uzbek)
+            // the stacked layout is used instead of wrapping "Dictate".
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 10) { controls }
                 VStack(alignment: .leading, spacing: 10) { controls }
@@ -41,12 +41,16 @@ private struct DictationMicButton: View {
 
     var body: some View {
         Button(action: action) {
-            Label(title, systemImage: isListening ? "waveform" : "mic.fill")
-                .contentTransition(.symbolEffect(.replace))
-                .symbolEffect(.variableColor.iterative, isActive: isListening)
-                .lineLimit(1)
-                .fixedSize()
-                .frame(minHeight: 30)
+            // Icon and title side by side (not a Label): the title keeps one line, so a row that
+            // doesn't fit stacks instead of wrapping it.
+            HStack(spacing: 6) {
+                Image(systemName: isListening ? "waveform" : "mic.fill")
+                    .contentTransition(.symbolEffect(.replace))
+                    .symbolEffect(.variableColor.iterative, isActive: isListening)
+                Text(title)
+                    .fixedSize()
+            }
+            .frame(minHeight: 30)
         }
         .buttonStyle(.bordered)
         .buttonBorderShape(.capsule)
@@ -84,13 +88,11 @@ private struct DictationLanguageMenu: View {
                 }
             }
         } label: {
-            Label {
-                Text(verbatim: language.nativeName)
-            } icon: {
+            HStack(spacing: 6) {
                 Image(systemName: "globe")
+                Text(verbatim: language.nativeName)
+                    .fixedSize()
             }
-            .lineLimit(1)
-            .fixedSize()
             .frame(minHeight: 30)
         }
         .menuStyle(.button)

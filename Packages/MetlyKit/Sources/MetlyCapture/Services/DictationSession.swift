@@ -15,7 +15,9 @@ nonisolated enum DictationEvent: Equatable, Sendable {
 /// remove the input tap and deactivate the audio session, so the microphone is off afterwards.
 nonisolated protocol DictationSession: AnyObject, Sendable {
     /// Starts the microphone and recognition. Events arrive until the stream finishes.
-    func start() async throws -> AsyncStream<DictationEvent>
+    /// - Parameter vocabulary: names and words likely to be said (people, companies, the event) —
+    ///   the recognizer favours them over similar-sounding words.
+    func start(vocabulary: [String]) async throws -> AsyncStream<DictationEvent>
     /// Stops listening; the final transcript follows, then the stream finishes.
     func finish()
     /// Stops immediately and finishes the stream without a final result.

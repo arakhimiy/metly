@@ -115,7 +115,7 @@ nonisolated final class AnalyzerDictationSession: DictationSession, @unchecked S
 
     // MARK: DictationSession
 
-    func start() async throws -> AsyncStream<DictationEvent> {
+    func start(vocabulary: [String]) async throws -> AsyncStream<DictationEvent> {
         let module = transcriber.module
         let (stream, output) = AsyncStream.makeStream(of: DictationEvent.self)
         let (inputSequence, input) = AsyncStream.makeStream(of: AnalyzerInput.self)
@@ -138,6 +138,11 @@ nonisolated final class AnalyzerDictationSession: DictationSession, @unchecked S
                 ?? micFormat
             let converter = try AudioBufferConverter(from: micFormat, to: analyzerFormat)
             try await analyzer.prepareToAnalyze(in: analyzerFormat)
+            if !vocabulary.isEmpty {
+                let context = AnalysisContext()
+                context.contextualStrings[.general] = vocabulary
+                try? await analyzer.setContext(context)
+            }
             try checkStillWanted()
 
             let results = Task { [weak self] in

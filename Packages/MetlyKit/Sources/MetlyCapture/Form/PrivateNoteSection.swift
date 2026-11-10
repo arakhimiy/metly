@@ -5,6 +5,8 @@ import SwiftUI
 struct PrivateNoteSection: View {
     @Binding var note: String
     let voice: VoiceNoteRecognizer
+    /// Read when dictation starts (`DictationVocabulary`).
+    var vocabulary: () -> [String] = { [] }
 
     /// The note as it was when dictation started; the live transcript is appended to it.
     @State private var noteBeforeDictation = ""
@@ -66,6 +68,7 @@ struct PrivateNoteSection: View {
 
     private func startDictation() {
         noteBeforeDictation = note
+        voice.vocabulary = vocabulary()
         voice.start()
     }
 

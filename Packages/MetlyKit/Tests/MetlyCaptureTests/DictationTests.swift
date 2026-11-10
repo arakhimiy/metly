@@ -7,10 +7,12 @@ final class FakeDictationSession: DictationSession, @unchecked Sendable {
     private(set) var started = false
     private(set) var finished = false
     private(set) var cancelled = false
+    private(set) var vocabulary: [String] = []
     private var continuation: AsyncStream<DictationEvent>.Continuation?
 
-    func start() async throws -> AsyncStream<DictationEvent> {
+    func start(vocabulary: [String]) async throws -> AsyncStream<DictationEvent> {
         started = true
+        self.vocabulary = vocabulary
         let (stream, continuation) = AsyncStream.makeStream(of: DictationEvent.self)
         self.continuation = continuation
         return stream
@@ -115,6 +117,22 @@ struct DictationTests {
         #expect(session.finished)
         try await waitFor { recognizer.state == .idle }
         #expect(recognizer.transcript == "Hello there")
+    }
+
+    @Test func theVocabularyReachesTheSession() async {
+        let session = FakeDictationSession()
+        let recognizer = VoiceNoteRecognizer(store: freshStore(), permissions: granted) { _, _ in .ready(session) }
+        recognizer.vocabulary = ["Payme", "Kamila Yusupova"]
+        await recognizer.startAndWait()
+        #expect(session.vocabulary == ["Payme", "Kamila Yusupova"])
+        recognizer.stop()
+    }
+
+    @Test func vocabularyDropsBlanksAndRepeatsAndStaysShort() {
+        let words = DictationVocabulary.make([["Tashkent Tech Week", " ", "Payme"], ["payme", "Uzum", "A"]])
+        #expect(words == ["Tashkent Tech Week", "Payme", "Uzum"])
+        let many = DictationVocabulary.make([(1...300).map { "Name \($0)" }])
+        #expect(many.count == DictationVocabulary.limit)
     }
 
     /// Dismissing the form drops the recognizer: the microphone must stop with it.

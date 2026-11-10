@@ -18,6 +18,7 @@ public struct ContextCaptureForm: View {
 
     @State private var location = LocationContextProvider()
     @State private var voice = VoiceNoteRecognizer()
+    @Environment(\.modelContext) private var modelContext
 
     public init(draft: Binding<CaptureDraft>, sections: CaptureSections = .all) {
         _draft = draft
@@ -29,7 +30,9 @@ public struct ContextCaptureForm: View {
             WhereYouMetSection(draft: $draft, location: location)
         }
         if sections.contains(.note) {
-            PrivateNoteSection(note: $draft.note, voice: voice)
+            PrivateNoteSection(note: $draft.note, voice: voice) { [draft, modelContext] in
+                DictationVocabulary.gather(for: draft, in: modelContext)
+            }
         }
         if sections.contains(.tags) {
             TagsSection(tags: $draft.tags)

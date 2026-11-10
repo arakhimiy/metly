@@ -28,6 +28,7 @@ nonisolated final class SpeechSession: DictationSession, @unchecked Sendable {
     private var continuation: AsyncStream<DictationEvent>.Continuation?
     private var interruptionObserver: (any NSObjectProtocol)?
     private var finishRequested = false
+    private var vocabulary: [String] = []
     private var isTornDown = false
 
     /// A session for exactly `locale` when this iPhone recognizes it on-device (PLAN Q17: on-device only),
@@ -46,10 +47,11 @@ nonisolated final class SpeechSession: DictationSession, @unchecked Sendable {
         self.recognizer = recognizer
     }
 
-    func start() async throws -> AsyncStream<DictationEvent> {
+    func start(vocabulary: [String]) async throws -> AsyncStream<DictationEvent> {
         let (stream, continuation) = AsyncStream.makeStream(of: DictationEvent.self)
         let stopped: Bool = lock.withLock {
             self.continuation = continuation
+            self.vocabulary = vocabulary
             return finishRequested || isTornDown
         }
         guard !stopped else {
@@ -115,6 +117,7 @@ nonisolated final class SpeechSession: DictationSession, @unchecked Sendable {
         request.requiresOnDeviceRecognition = true
         request.addsPunctuation = true
         request.taskHint = .dictation
+        request.contextualStrings = lock.withLock { vocabulary }
 
         let id: Int? = lock.withLock {
             guard !isTornDown else { return nil }
