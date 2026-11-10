@@ -14,6 +14,15 @@ public struct ProfileView: View {
     }
 }
 
+/// SETTINGS (Profile › ⚙️).
+public struct SettingsView: View {
+    public init() {}
+
+    public var body: some View {
+        SettingsScreen()
+    }
+}
+
 /// SETTINGS_NOTIFICATIONS.
 public struct NotificationSettingsView: View {
     public init() {}

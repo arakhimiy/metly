@@ -22,6 +22,15 @@ struct QRPayloadClassifierTests {
         #expect(QRPayloadClassifier.classify(raw) == kamila)
     }
 
+    @Test("Only cards count as cards (a paper card's website QR is ignored while framing it)")
+    func onlyCardsAreCards() {
+        #expect(kamila.isCard)
+        #expect(QRPayload.ownCard(slug: "me").isCard)
+        #expect(QRPayload.vCard("BEGIN:VCARD").isCard)
+        #expect(!QRPayload.webLink(URL(string: "https://example.com")!).isCard)
+        #expect(!QRPayload.other.isCard)
+    }
+
     @Test("The owner's own card is recognised")
     func ownCard() {
         let own: Set = ["aziza-w7k2", "aziza-p3x9"]

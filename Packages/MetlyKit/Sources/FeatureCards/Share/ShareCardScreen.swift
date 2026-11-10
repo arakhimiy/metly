@@ -49,7 +49,7 @@ struct ShareCardScreen: View {
             followUp = nil
             router.presentRoute(next)
         } else if JustMetPrompter.claimAfterShare(didShare: didShare, preferences: services.preferences) {
-            router.present(.justMet(cardID: cardID))
+            JustMetPrompter.nudge(cardID: cardID, router: router)
         }
     }
 }

@@ -21,7 +21,7 @@ struct PeopleList: View {
         List {
             Section {
                 Picker("Filter", selection: $filter) {
-                    ForEach(PeopleFilter.allCases) { filter in
+                    ForEach(PeopleFilter.offered) { filter in
                         Text(filter.title).tag(filter)
                     }
                 }

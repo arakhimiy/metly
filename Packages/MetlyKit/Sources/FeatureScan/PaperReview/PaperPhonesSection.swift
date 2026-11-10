@@ -13,6 +13,8 @@ struct PaperContactInfoSection: View {
     let hints: [PaperField: PaperFieldHint]
     let phoneHints: [PaperPhoneRow.ID: PaperFieldHint]
     var focus: FocusState<PaperFocus?>.Binding
+    /// Read off a photo (false when typed in by hand: no "Read on your iPhone" note).
+    var wasRead = true
 
     /// Order of the non-phone rows.
     static let fieldOrder: [PaperField] = [.telegram, .whatsapp, .instagram, .email, .website, .linkedin, .address]
@@ -56,7 +58,9 @@ struct PaperContactInfoSection: View {
                 if details.phones.filter({ !$0.isEmpty }).count > 1 {
                     Text("The first mobile number is saved as the main one.")
                 }
-                Text("Read on your iPhone. Check the details before saving.")
+                if wasRead {
+                    Text("Read on your iPhone. Check the details before saving.")
+                }
             }
         }
         .onChange(of: focus.wrappedValue) { old, _ in

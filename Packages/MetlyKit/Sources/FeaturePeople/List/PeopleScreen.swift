@@ -56,8 +56,15 @@ struct PeopleScreen: View {
         .searchable(text: $query, prompt: "Search")
         .refreshable { await services.sync.syncNow() }
         .toolbar {
+            // "+" means adding someone: type them in, read their paper card, or swap with someone nearby.
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Connect", systemImage: "person.badge.plus", action: openConnect)
+                Menu {
+                    Button("Add Manually", systemImage: "square.and.pencil", action: addManually)
+                    Button("Scan Paper Card", systemImage: "camera.viewfinder", action: scanPaperCard)
+                    Button("Connect Nearby", systemImage: "dot.radiowaves.left.and.right", action: openConnect)
+                } label: {
+                    Label("Add Contact", systemImage: "plus")
+                }
             }
         }
         .alert(removeTitle, isPresented: $isConfirmingRemove, presenting: personToRemove) { person in
@@ -87,6 +94,15 @@ struct PeopleScreen: View {
 
     private func openConnect() {
         router.present(.connect(cardID: nil))
+    }
+
+    /// An empty contact form (the paper card review without a photo).
+    private func addManually() {
+        router.push(.paperReview(PaperCardDraft()))
+    }
+
+    private func scanPaperCard() {
+        router.select(.scan)
     }
 
     private func showQR() {

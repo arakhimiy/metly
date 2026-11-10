@@ -39,7 +39,7 @@ enum PeopleIndex {
         }
     }
 
-    /// Matches name, company, title, event, place, city and tags.
+    /// Matches name, company, title, event, place, city, tags and the private note.
     static func search(_ people: [Connection], query: String) -> [Connection] {
         let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !query.isEmpty else { return people }
@@ -50,7 +50,7 @@ enum PeopleIndex {
 
     static func searchableFields(of person: Connection) -> [String] {
         [person.fullName, person.company, person.jobTitle,
-         person.context.eventName ?? "", person.context.place ?? "", person.context.city ?? ""] + person.tags
+         person.context.eventName ?? "", person.context.place ?? "", person.context.city ?? "", person.note] + person.tags
     }
 
     /// Places: one group per city (most recent first); people without a city go to "Other" at the end.

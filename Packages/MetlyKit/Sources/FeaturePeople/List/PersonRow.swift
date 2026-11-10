@@ -15,15 +15,21 @@ enum PersonRowMeta {
 struct PersonRow: View {
     let person: Connection
     var meta: PersonRowMeta = .event
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    /// Large text: lines wrap to two instead of cutting off, and the "via web" badge keeps its icon only.
+    private var isLargeText: Bool { dynamicTypeSize >= .xxLarge }
 
     var body: some View {
+        let lines = isLargeText ? 2 : 1
         HStack(spacing: 12) {
             InitialsAvatar(name: person.fullName, imageData: person.avatarData, size: 44)
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
                     Text(person.fullName)
                         .font(.headline)
-                        .lineLimit(1)
+                        .lineLimit(lines)
+                        .layoutPriority(1)
                     if person.isMerged {
                         Image(systemName: "arrow.triangle.merge")
                             .font(.footnote)
@@ -31,20 +37,20 @@ struct PersonRow: View {
                             .accessibilityLabel("Merged")
                     }
                     if person.source == .webShareBack {
-                        ViaWebBadge()
+                        ViaWebBadge(showsTitle: !isLargeText)
                     }
                 }
                 if !role.isEmpty {
                     Text(role)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                        .lineLimit(lines)
                 }
                 if let metaText {
                     Text(metaText)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                        .lineLimit(lines)
                 }
             }
         }
@@ -76,17 +82,24 @@ struct PersonRow: View {
     }
 }
 
-/// "via web" capsule for web share-backs.
+/// "via web" capsule for web share-backs (the globe alone with large text).
 struct ViaWebBadge: View {
+    var showsTitle = true
+
     var body: some View {
-        Label("via web", systemImage: "globe")
-            .font(.caption.weight(.medium))
-            .foregroundStyle(.tint)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(.tint.opacity(0.12), in: .capsule)
-            .labelStyle(.titleAndIcon)
-            .fixedSize()
+        Group {
+            if showsTitle {
+                Label("via web", systemImage: "globe").labelStyle(.titleAndIcon)
+            } else {
+                Label("via web", systemImage: "globe").labelStyle(.iconOnly)
+            }
+        }
+        .font(.caption.weight(.medium))
+        .foregroundStyle(.tint)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 2)
+        .background(.tint.opacity(0.12), in: .capsule)
+        .fixedSize()
     }
 }
 

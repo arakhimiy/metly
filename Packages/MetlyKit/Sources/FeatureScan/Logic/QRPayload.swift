@@ -14,6 +14,14 @@ nonisolated enum QRPayload: Equatable, Sendable {
     /// Plain text, Wi-Fi credentials, phone numbers… → ALERT_INVALID_QR without a link.
     case other
 
+    /// Someone's (or the owner's own) contact card, as opposed to any other code.
+    var isCard: Bool {
+        switch self {
+        case .metlyCard, .ownCard, .vCard: true
+        case .webLink, .other: false
+        }
+    }
+
     /// Lower-cased host without "www." for alert copy ("This QR code opens example.com…").
     var displayDomain: String? {
         guard case .webLink(let url) = self, var host = url.host()?.lowercased() else { return nil }

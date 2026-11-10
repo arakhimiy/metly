@@ -7,6 +7,7 @@ import SwiftUI
 /// PAPER_REVIEW (SPEC §2.5.10): check what was read from a paper card, add the context
 /// (where you met · note · tags · follow-up), then Save → `Connection(source: .paper)` →
 /// CONNECTION_DETAIL. The photo is shown here only; it isn't stored (SPEC §9 Q44).
+/// Opened with an empty draft (People › + › Add Manually) it's the "New Contact" form → `.manual`.
 struct PaperReviewScreen: View {
     @Environment(AppRouter.self) private var router
     @Environment(AppServices.self) private var services
@@ -16,6 +17,8 @@ struct PaperReviewScreen: View {
     private let imageData: Data?
     private let detectedCount: Int
     private let recognizedText: [String]
+    /// Typed in by hand: no photo and nothing read.
+    private let isManual: Bool
 
     @State private var details: PaperCardDetails
     @State private var hints: [PaperField: PaperFieldHint]
@@ -34,12 +37,15 @@ struct PaperReviewScreen: View {
         imageData = draft.imageData
         detectedCount = draft.detectedFieldCount
         recognizedText = scan?.recognizedText ?? []
-        let details = PaperCardDetails(draft: draft)
+        isManual = draft.imageData == nil && scan == nil && draft.fullName.isEmpty && draft.fields.isEmpty
+        var details = PaperCardDetails(draft: draft)
+        if isManual { _ = details.addPhone() }
         _details = State(initialValue: details)
         var hints = PaperFieldHint.assess(draft, confident: scan?.confidentFields ?? [])
         hints[.phone] = nil
         _hints = State(initialValue: hints)
-        _phoneHints = State(initialValue: Dictionary(uniqueKeysWithValues: details.phones.map { row in
+        // Typed by hand: nothing was read, so nothing to flag as detected or guessed.
+        _phoneHints = State(initialValue: isManual ? [:] : Dictionary(uniqueKeysWithValues: details.phones.map { row in
             (row.id, PhoneFormat.isPlausible(row.value) ? PaperFieldHint.detected : .guessed)
         }))
     }
@@ -49,8 +55,9 @@ struct PaperReviewScreen: View {
             if let imageData {
                 PaperImageSection(imageData: imageData, detectedCount: detectedCount, onRetake: retake)
             }
-            PaperDetailsSection(details: $details, hints: hints, focus: $focus, onSwap: swapNameAndCompany)
-            PaperContactInfoSection(details: $details, added: $addedFields, hints: hints, phoneHints: phoneHints, focus: $focus)
+            PaperDetailsSection(details: $details, hints: hints, focus: $focus, onSwap: swapNameAndCompany, wasRead: !isManual)
+            PaperContactInfoSection(details: $details, added: $addedFields, hints: hints, phoneHints: phoneHints, focus: $focus,
+                                    wasRead: !isManual)
             if !recognizedText.isEmpty {
                 PaperRecognizedTextSection(lines: recognizedText, details: details, onUse: use)
             }
@@ -65,7 +72,7 @@ struct PaperReviewScreen: View {
                 ContextCaptureForm(draft: $capture)
             }
         }
-        .navigationTitle("Paper Card")
+        .navigationTitle(isManual ? "New Contact" : "Paper Card")
         .navigationBarTitleDisplayMode(.inline)
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
@@ -94,6 +101,13 @@ struct PaperReviewScreen: View {
         capture = .capture(for: nil, in: modelContext)
         capture.preferredChannel = preferredChannel(for: details)
         isCaptureReady = true
+        if isManual {
+            // After the push settles, or the keyboard doesn't come up.
+            Task {
+                try? await Task.sleep(for: .milliseconds(500))
+                focus = .field(.name)
+            }
+        }
     }
 
     /// Edited values lose their hint; the reminder channel follows the available fields.
@@ -141,7 +155,8 @@ struct PaperReviewScreen: View {
             showsLimitAlert = true
             return
         }
-        let connection = ScanConnectionFactory.insertConnection(from: details.draft, source: .paper, in: modelContext)
+        let connection = ScanConnectionFactory.insertConnection(from: details.draft, source: isManual ? .manual : .paper,
+                                                                in: modelContext)
         let result = capture.apply(to: connection, in: modelContext, limits: limits)
         router.showToast(result.toastMessage(otherwise: String(localized: "Contact Saved")), systemImage: "checkmark.circle")
 

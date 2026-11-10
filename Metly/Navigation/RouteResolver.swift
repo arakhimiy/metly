@@ -21,6 +21,7 @@ enum RouteResolver {
         case .paperReview(let draft): PaperReviewView(draft: draft)
         case .widgetsGallery: WidgetsGalleryView()
         case .cardSettings(let id): CardSettingsView(cardID: id)
+        case .settings: SettingsView()
         case .settingsNotifications: NotificationSettingsView()
         case .settingsPrivacy: PrivacySettingsView()
         case .settingsSubscription: SubscriptionSettingsView()

@@ -3,7 +3,8 @@ import MetlyData
 import SwiftData
 import SwiftUI
 
-/// PROFILE tab root (SPEC §2.5.13) — an iOS Settings-style inset grouped form.
+/// PROFILE tab root (SPEC §2.5.13): you and your contact details, and your cards. Everything else
+/// (plan, sharing, appearance, notifications, privacy, help, sign out) is in Settings behind ⚙️.
 struct ProfileScreen: View {
     var body: some View {
         ProfileReader { profile in
@@ -11,6 +12,13 @@ struct ProfileScreen: View {
         }
         .navigationTitle("Profile")
         .toolbarTitleDisplayMode(.inlineLarge)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(value: PushDestination.settings) {
+                    Label("Settings", systemImage: "gearshape")
+                }
+            }
+        }
     }
 }
 
@@ -26,10 +34,6 @@ struct ProfileForm: View {
             ProfileHeaderSection(profile: profile, focusedField: $focusedField)
             ContactDetailsSection(profile: profile, focusedField: $focusedField)
             CardsSection(profile: profile, cards: cards)
-            SharingSection(profile: profile, cards: cards)
-            ProPlanSection()
-            SettingsLinksSection()
-            SignOutSection()
         }
         .contentMargins(.top, 8, for: .scrollContent)
         .scrollDismissesKeyboard(.interactively)

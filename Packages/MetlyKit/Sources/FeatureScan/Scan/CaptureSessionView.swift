@@ -23,8 +23,9 @@ struct CaptureSessionView: UIViewRepresentable {
 
     func updateUIView(_ view: CameraPreviewView, context: Context) {
         context.coordinator.camera = camera
-        // Paper mode ignores QR codes in frame.
-        context.coordinator.scanner.onCode = mode == .qr ? onCode : nil
+        // Both modes read codes; Paper mode acts only on cards (ScanScreen ignores other codes there,
+        // e.g. a website QR printed on a business card).
+        context.coordinator.scanner.onCode = onCode
     }
 
     static func dismantleUIView(_ view: CameraPreviewView, coordinator: Coordinator) {

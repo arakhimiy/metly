@@ -2341,6 +2341,22 @@
         }
       }
     },
+    "Add Manually": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить вручную"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qo‘lda qo‘shish"
+          }
+        }
+      }
+    },
     "Add Note": {
       "localizations": {
         "ru": {
@@ -7301,18 +7317,18 @@
         }
       }
     },
-    "Fit the business card inside the frame": {
+    "Fit a business card in the frame, or point at a Tanishly QR": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поместите визитку в рамку"
+            "value": "Поместите визитку в рамку или наведите на QR Tanishly"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitkani ramka ichiga joylang"
+            "value": "Vizitkani ramkaga joylang yoki Tanishly QR’iga qarating"
           }
         }
       }
@@ -9605,6 +9621,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yangi vizitka"
+          }
+        }
+      }
+    },
+    "New Contact": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новый контакт"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yangi kontakt"
           }
         }
       }
@@ -13501,6 +13533,22 @@
         }
       }
     },
+    "Scan Paper Card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сканировать визитку"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qog‘oz vizitkani skanerlash"
+          }
+        }
+      }
+    },
     "Scan a Card": {
       "localizations": {
         "ru": {
@@ -13833,6 +13881,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eslatmasi yo‘q har bir kishi uchun ertaga soat 10:00 ga eslatma qo‘yadi."
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sozlamalar"
           }
         }
       }

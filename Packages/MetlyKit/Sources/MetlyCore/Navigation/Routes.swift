@@ -28,6 +28,8 @@ public enum PushDestination: Hashable, Sendable {
     case paperReview(PaperCardDraft)
     case widgetsGallery
     case cardSettings(id: UUID)
+    /// Profile › ⚙️: plan, sharing, appearance, notifications, privacy, help, sign out.
+    case settings
     case settingsNotifications
     case settingsPrivacy
     case settingsSubscription

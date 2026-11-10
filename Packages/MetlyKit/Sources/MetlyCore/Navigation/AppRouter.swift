@@ -68,6 +68,12 @@ public final class AppRouter {
         toast = Toast(message: message, systemImage: systemImage, undo: undo)
     }
 
+    /// A toast with its own button ("Add", "Open"…) — a light nudge instead of a sheet that pops up.
+    public func showToast(_ message: String, systemImage: String? = nil, action title: String,
+                          perform action: @escaping @MainActor () -> Void) {
+        toast = Toast(message: message, systemImage: systemImage, action: ToastAction(title: title, perform: action))
+    }
+
     // MARK: Phase helpers
 
     public func enterMain(presenting cover: CoverDestination? = nil) {
@@ -92,6 +98,23 @@ public struct Toast: Identifiable, Equatable {
     public var systemImage: String?
     /// When set the HUD shows an "Undo" button and stays 4 s instead of 2 s.
     public var undo: (@MainActor () -> Void)?
+    /// Any other button (stays 4 s too).
+    public var action: ToastAction?
+
+    public init(message: String, systemImage: String? = nil, undo: (@MainActor () -> Void)? = nil, action: ToastAction? = nil) {
+        self.message = message
+        self.systemImage = systemImage
+        self.undo = undo
+        self.action = action
+    }
+
+    /// Has a button, so it stays longer.
+    public var isActionable: Bool { undo != nil || action != nil }
 
     public static func == (lhs: Toast, rhs: Toast) -> Bool { lhs.id == rhs.id }
+}
+
+public struct ToastAction {
+    public var title: String
+    public var perform: @MainActor () -> Void
 }

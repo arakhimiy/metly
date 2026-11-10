@@ -8,6 +8,7 @@ struct FieldPrivacyMenu: View {
     /// Spoken name of the field ("Email", "Work phone").
     let fieldName: String
     @Binding var privacy: FieldPrivacy
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(kind: ContactFieldKind, privacy: Binding<FieldPrivacy>) {
         self.init(title: String(localized: "Who Can See Your \(kind.title)"), fieldName: kind.title, privacy: privacy)
@@ -36,9 +37,14 @@ struct FieldPrivacyMenu: View {
                 .pickerStyle(.inline)
             }
         } label: {
-            ViewThatFits(in: .horizontal) {
-                PrivacyBadge(privacy: privacy, showsTitle: true)
+            // Large text: the icon alone, so the number or address beside it isn't cut off.
+            if dynamicTypeSize >= .xxLarge {
                 PrivacyBadge(privacy: privacy, showsTitle: false)
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    PrivacyBadge(privacy: privacy, showsTitle: true)
+                    PrivacyBadge(privacy: privacy, showsTitle: false)
+                }
             }
         }
         .sensoryFeedback(.selection, trigger: privacy)

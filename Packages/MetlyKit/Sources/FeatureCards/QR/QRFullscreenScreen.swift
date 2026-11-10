@@ -4,7 +4,7 @@ import SwiftData
 import SwiftUI
 
 /// QR_FULLSCREEN (cover, SPEC §2.5.28 / §3.7): full brightness, screen kept awake, card chooser,
-/// Offline QR. Done offers "Who did you just meet?" when the code was up for more than 2 s.
+/// Done nudges "Who did you just meet?" (a toast with Add) when the code was up for more than 2 s.
 struct QRFullscreenScreen: View {
     @Environment(AppRouter.self) private var router
     @Environment(AppServices.self) private var services
@@ -78,10 +78,12 @@ struct QRFullscreenScreen: View {
     private func done() {
         guard !isClosing else { return }
         isClosing = true
-        if let card = selectedCard, JustMetPrompter.claimAfterQR(shownAt: shownAt, preferences: services.preferences) {
-            followUp = .sheet(.justMet(cardID: card.id))
-        }
+        let card = selectedCard
         router.dismiss()
+        // A nudge, not a sheet that pops up: "Who did you just meet? Add".
+        if let card, JustMetPrompter.claimAfterQR(shownAt: shownAt, preferences: services.preferences) {
+            JustMetPrompter.nudge(cardID: card.id, router: router)
+        }
     }
 
     private func connect() {

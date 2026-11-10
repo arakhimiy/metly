@@ -12,7 +12,9 @@ struct ScanBottomBar: View {
 
     var body: some View {
         VStack(spacing: 18) {
-            ScanModePicker(mode: $mode)
+            if ScanMode.showsPicker {
+                ScanModePicker(mode: $mode)
+            }
             ScanHintPill(text: isReadingCard ? String(localized: "Reading the card…") : mode.hint, showsProgress: isReadingCard)
 
             // The side slots always take their share (Paste Link only shows with a link on the

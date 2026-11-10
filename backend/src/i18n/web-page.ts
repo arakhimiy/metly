@@ -50,7 +50,6 @@ export interface CardPageText {
   phoneCopied: string;
   emailCopied: string;
   saveToContacts: string;
-  messageOnTelegram: string;
   exchange: (first: string) => string;
   sent: (first: string) => string;
   removeMine: string;
@@ -109,7 +108,6 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     phoneCopied: 'Telefon nusxalandi',
     emailCopied: 'Email nusxalandi',
     saveToContacts: 'Kontaktlarga saqlash',
-    messageOnTelegram: 'Telegram’da yozish',
     exchange: (first) => `${first} bilan kontakt almashish`,
     sent: (first) => `Kontaktingiz ${uzDative(first)} yuborildi.`,
     removeMine: 'Kontaktimni o‘chirish',
@@ -179,7 +177,6 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     phoneCopied: 'Телефон скопирован',
     emailCopied: 'Email скопирован',
     saveToContacts: 'Сохранить в контакты',
-    messageOnTelegram: 'Написать в Telegram',
     exchange: () => 'Обменяться контактами',
     sent: () => 'Ваш контакт отправлен.',
     removeMine: 'Удалить мой контакт',
@@ -249,7 +246,6 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     phoneCopied: 'Phone Copied',
     emailCopied: 'Email Copied',
     saveToContacts: 'Save to Contacts',
-    messageOnTelegram: 'Message on Telegram',
     exchange: (first) => `Exchange Contacts with ${first}`,
     sent: (first) => `Your contact was sent to ${first}.`,
     removeMine: 'Remove my contact',

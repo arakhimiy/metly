@@ -45,38 +45,40 @@ private struct NotificationSettingsForm: View {
                 }
             }
 
-            Section {
-                Picker("Deliver Reminders Via", selection: editor.deliveryBinding { [alert = $isShowingTelegramAlert] in
-                    alert.wrappedValue = true
-                }) {
-                    Text("Push Notifications")
-                        .tag(ReminderDelivery.push)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Telegram Bot")
-                        Text(prefs.telegramLinked ? "Connected · \(TelegramLinking.botHandle)" : "Not connected")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+            if TelegramLinking.isAvailable || prefs.telegramLinked {
+                Section {
+                    Picker("Deliver Reminders Via", selection: editor.deliveryBinding { [alert = $isShowingTelegramAlert] in
+                        alert.wrappedValue = true
+                    }) {
+                        Text("Push Notifications")
+                            .tag(ReminderDelivery.push)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Telegram Bot")
+                            Text(prefs.telegramLinked ? "Connected · \(TelegramLinking.botHandle)" : "Not connected")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .tag(ReminderDelivery.telegramBot)
                     }
-                    .tag(ReminderDelivery.telegramBot)
-                }
-                .pickerStyle(.inline)
-                .labelsHidden()
+                    .pickerStyle(.inline)
+                    .labelsHidden()
 
-                if prefs.telegramLinked {
-                    Button("Disconnect Telegram", role: .destructive, action: disconnectTelegram)
-                } else {
-                    Button("Connect Telegram", systemImage: "paperplane", action: showTelegramAlert)
+                    if prefs.telegramLinked {
+                        Button("Disconnect Telegram", role: .destructive, action: disconnectTelegram)
+                    } else {
+                        Button("Connect Telegram", systemImage: "paperplane", action: showTelegramAlert)
+                    }
+                } header: {
+                    Text("Deliver Reminders Via")
+                } footer: {
+                    Text("The bot sends each reminder with a one-tap link to the chat.")
                 }
-            } header: {
-                Text("Deliver Reminders Via")
-            } footer: {
-                Text("The bot sends each reminder with a one-tap link to the chat.")
-            }
-            .alert("Connect Telegram Bot", isPresented: $isShowingTelegramAlert) {
-                Button("Cancel", role: .cancel) {}
-                Button("Open Telegram", action: connectTelegram)
-            } message: {
-                Text("Open \(TelegramLinking.botHandle) and tap Start. Reminders arrive in the chat with a link to reply.")
+                .alert("Connect Telegram Bot", isPresented: $isShowingTelegramAlert) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Open Telegram", action: connectTelegram)
+                } message: {
+                    Text("Open \(TelegramLinking.botHandle) and tap Start. Reminders arrive in the chat with a link to reply.")
+                }
             }
 
             Section {

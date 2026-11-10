@@ -33,7 +33,7 @@ struct ScanScreen: View {
     @State private var warningFeedback = 0
 
     /// Parameters exist for previews; the app uses the defaults.
-    init(mode: ScanMode = .qr, camera: ScanCamera = ScanCamera(),
+    init(mode: ScanMode = .paper, camera: ScanCamera = ScanCamera(),
          invalidCode: InvalidCodeAlert? = nil, paperNotRead: PaperNotReadAlert? = nil) {
         _mode = State(initialValue: mode)
         _camera = State(initialValue: camera)
@@ -154,7 +154,10 @@ struct ScanScreen: View {
     private func handleScanned(_ payload: String) {
         let isBlocked = !isCameraActive || showsInvalidCode || showsPaperNotRead || isReadingCard
         guard debouncer.shouldHandle(payload, isBlocked: isBlocked) else { return }
-        route(QRPayloadClassifier.classify(payload, ownSlugs: ownSlugs), source: .camera)
+        let classified = QRPayloadClassifier.classify(payload, ownSlugs: ownSlugs)
+        // Framing a paper card: a printed website QR isn't what they're after — keep reading the card.
+        if mode == .paper, !classified.isCard { return }
+        route(classified, source: .camera)
     }
 
     private func handlePasted(_ text: String) {

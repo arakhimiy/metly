@@ -509,7 +509,6 @@ export function renderCardPage(opts: CardPageOptions): string {
   const first = view.firstName.trim() || t.cardOwner;
   const role = [view.profile.jobTitle.trim(), view.profile.company.trim()].filter(Boolean).join(' · ');
   const { actions, labelPhones } = contactRows(view);
-  const telegram = actions.find((a) => a.kind === 'telegram' && a.href);
   const vcfHref = `/c/${view.slug}.vcf`;
   const getAppHref = `/c/${view.slug}/get-app`;
   const banner = appStoreId
@@ -538,7 +537,6 @@ ${face(view)}
 ${actions.length > 0 ? html`<ul class="fields" aria-label="${t.contactDetails}">${actions.map((a) => fieldRow(a, view.design.template === 'terminal', t, labelPhones))}</ul>` : ''}
 <div class="actions">
 <a class="btn primary" id="save" href="${vcfHref}">${t.saveToContacts}</a>
-${telegram ? html`<a class="btn" href="${telegram.href}" target="_blank" rel="noopener noreferrer" data-track="telegram_open">${ICONS.telegram}${t.messageOnTelegram}</a>` : ''}
 <button class="btn" type="button" id="exchange">${t.exchange(first)}</button>
 <p class="shared" id="shared" hidden>${ICONS.check}<span>${t.sent(first)}</span><button class="link" type="button" id="remove-inline">${t.removeMine}</button></p>
 </div>

@@ -27,7 +27,7 @@ enum OnboardingCoordinator {
         }
     }
 
-    /// End of SETUP_PERMISSIONS ("Create My First Card" or "Skip").
+    /// End of setup (SETUP_PROFILE "Continue"). `notificationsGranted` registers for pushes right away.
     static func finishSetup(context: ModelContext, notificationsGranted: Bool,
                             router: AppRouter, services: AppServices, store: OnboardingStore) {
         if let profile = context.currentProfile() {

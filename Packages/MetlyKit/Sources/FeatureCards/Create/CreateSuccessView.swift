@@ -71,6 +71,11 @@ struct CreateSuccessView: View {
         }
         .sensoryFeedback(.success, trigger: hasAppeared)
         .onAppear { hasAppeared = true }
+        .task {
+            // Let the "Your Card Is Live" moment land before the system prompt.
+            try? await Task.sleep(for: .seconds(1.2))
+            await NotificationPrompt.askIfNeeded()
+        }
         .alert("Couldn’t Publish Card", isPresented: $isShowingPublishFailed) {
             Button("OK", role: .cancel) {}
         } message: {

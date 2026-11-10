@@ -14,6 +14,8 @@ struct PaperDetailsSection: View {
     let hints: [PaperField: PaperFieldHint]
     var focus: FocusState<PaperFocus?>.Binding
     let onSwap: () -> Void
+    /// Read off a photo ("Detected Details"); false for a contact typed in by hand ("Details").
+    var wasRead = true
 
     var body: some View {
         Section {
@@ -26,7 +28,7 @@ struct PaperDetailsSection: View {
                 Button("Swap Name and Company", systemImage: "arrow.up.arrow.down", action: onSwap)
             }
         } header: {
-            Text("Detected Details")
+            Text(wasRead ? "Detected Details" : "Details")
         } footer: {
             VStack(alignment: .leading, spacing: 4) {
                 if PaperRoles.fields.contains(where: { hints[$0] == .guessed }) {

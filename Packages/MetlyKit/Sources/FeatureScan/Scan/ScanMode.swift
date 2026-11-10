@@ -1,8 +1,11 @@
 import CoreGraphics
 
-/// SCAN's segmented control: **QR Code | Paper Card**.
+/// SCAN's camera modes. The tab opens in `.paper`, which also picks up Tanishly / vCard QR codes, so
+/// the **QR Code | Paper Card** switch is hidden (`showsPicker`); `.qr` stays for previews and a return.
 enum ScanMode: String, CaseIterable, Identifiable, Hashable {
     case qr, paper
+
+    static let showsPicker = false
 
     var id: String { rawValue }
 
@@ -16,7 +19,7 @@ enum ScanMode: String, CaseIterable, Identifiable, Hashable {
     var hint: String {
         switch self {
         case .qr: String(localized: "Point at a Tanishly or vCard QR code")
-        case .paper: String(localized: "Fit the business card inside the frame")
+        case .paper: String(localized: "Fit a business card in the frame, or point at a Tanishly QR")
         }
     }
 

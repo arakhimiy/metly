@@ -52,6 +52,19 @@ struct PeopleIndexTests {
         #expect(PeopleIndex.search(people, query: "zebra").isEmpty)
     }
 
+    @Test func searchFindsWordsFromThePrivateNote() throws {
+        let context = try makeContext()
+        let people = seed(context).people
+        let kamila = try #require(people.first { $0.fullName == "Kamila Yusupova" })
+        kamila.note = "Wants the pitch deck by Friday"
+        #expect(PeopleIndex.search(people, query: "pitch deck").map(\.fullName) == ["Kamila Yusupova"])
+    }
+
+    @Test func placesFilterIsNotOffered() {
+        #expect(!PeopleFilter.offered.contains(.places))
+        #expect(PeopleFilter.offered.first == .all)
+    }
+
     @Test func sortedPutsMostRecentMeetingFirst() throws {
         let context = try makeContext()
         let people = seed(context).people

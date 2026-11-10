@@ -3,7 +3,9 @@ import MetlyData
 import SwiftData
 import SwiftUI
 
-/// HOME tab root (SPEC §2.5.7): offline banner · event row · My Cards · Follow Up Today · Recent.
+/// HOME tab root (SPEC §2.5.7): offline banner · active event · My Cards · Follow Up Today · Recent ·
+/// Start Event. The card leads (shown every day); starting an event is occasional, so it sits last
+/// until an event runs — then its banner goes on top.
 struct HomeScreen: View {
     @Environment(AppServices.self) private var services
 
@@ -27,13 +29,18 @@ struct HomeScreen: View {
             if !services.network.isOnline {
                 OfflineBannerSection()
             }
-            HomeEventSection(event: activeEvents.first)
+            if let event = activeEvents.first {
+                HomeEventSection(event: event)
+            }
             MyCardsSection(profile: profile, cards: cards)
             FollowUpTodaySection(followUps: Array(due.prefix(HomeSelection.followUpLimit)), state: todayState, now: now)
             if connections.isEmpty {
                 GetStartedSection(cardToShare: cardToShare(profile: profile))
             } else {
                 RecentSection(people: HomeSelection.recent(connections), now: now)
+            }
+            if activeEvents.isEmpty {
+                HomeEventSection(event: nil)
             }
         }
         .listStyle(.insetGrouped)

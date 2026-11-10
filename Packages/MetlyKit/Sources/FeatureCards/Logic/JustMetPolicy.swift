@@ -26,7 +26,7 @@ nonisolated enum JustMetPolicy {
 }
 
 /// Applies `JustMetPolicy` against the persisted timestamp. `AppPreferences.lastQRShownAt` is the
-/// anchor of the rate limit: it is recorded only when the sheet is actually offered.
+/// anchor of the rate limit: it is recorded only when the nudge is actually offered.
 @MainActor
 enum JustMetPrompter {
     static func claimAfterQR(shownAt: Date, preferences: AppPreferences, now: Date = .now) -> Bool {
@@ -41,5 +41,13 @@ enum JustMetPrompter {
         else { return false }
         preferences.lastQRShownAt = now
         return true
+    }
+
+    /// "Who did you just meet? · Add" toast; Add opens JUST_MET.
+    static func nudge(cardID: UUID, router: AppRouter) {
+        router.showToast(String(localized: "Who did you just meet?"), systemImage: "person.badge.plus",
+                         action: String(localized: "Add")) {
+            router.present(.justMet(cardID: cardID))
+        }
     }
 }

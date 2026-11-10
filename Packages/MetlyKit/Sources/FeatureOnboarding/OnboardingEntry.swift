@@ -21,19 +21,25 @@ public struct OnboardingFlowView: View {
     }
 }
 
-/// Root phase `.setup`: SETUP_PROFILE → SETUP_PERMISSIONS → main (CARD_CREATE or the pending invite).
+/// Root phase `.setup`: SETUP_PROFILE → main (CARD_CREATE or the pending invite).
+/// No permissions step: each one is asked when it's first needed — the camera on the first scan,
+/// Nearby when Connect opens, notifications once the first card is ready (CARD_CREATE success).
 public struct SetupFlowView: View {
-    @State private var path: [SetupRoute] = []
+    @Environment(AppRouter.self) private var router
+    @Environment(AppServices.self) private var services
+    @Environment(\.modelContext) private var modelContext
 
     public init() {}
 
     public var body: some View {
-        NavigationStack(path: $path) {
-            SetupProfileView { path.append(.permissions) }
-                .navigationDestination(for: SetupRoute.self) { _ in
-                    SetupPermissionsView()
-                }
+        NavigationStack {
+            SetupProfileView(onContinue: finish)
         }
+    }
+
+    private func finish() {
+        OnboardingCoordinator.finishSetup(context: modelContext, notificationsGranted: false,
+                                          router: router, services: services, store: OnboardingStore())
     }
 }
 

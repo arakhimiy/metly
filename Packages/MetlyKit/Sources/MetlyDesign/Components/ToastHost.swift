@@ -1,7 +1,7 @@
 import MetlyCore
 import SwiftUI
 
-/// Shows `router.toast` as a compact HUD above the tab bar (2 s, or 4 s with Undo).
+/// Shows `router.toast` as a compact HUD above the tab bar (2 s, or 4 s with Undo or another button).
 /// Attached once by the app root — features only call `router.showToast(...)`.
 public struct ToastHostModifier: ViewModifier {
     @Environment(AppRouter.self) private var router
@@ -23,7 +23,7 @@ public struct ToastHostModifier: ViewModifier {
                     .padding(.bottom, 112) // clears the floating tab bar (iOS 26) and the classic one
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .task(id: toast.id) {
-                        try? await Task.sleep(for: .seconds(toast.undo == nil ? 2 : 4))
+                        try? await Task.sleep(for: .seconds(toast.isActionable ? 4 : 2))
                         if router.toast?.id == toast.id { router.toast = nil }
                     }
             }
@@ -48,6 +48,12 @@ struct ToastView: View {
                 Button("Undo") {
                     undo()
                     dismiss()
+                }
+                .font(.subheadline.weight(.semibold))
+            } else if let action = toast.action {
+                Button(action.title) {
+                    dismiss()
+                    action.perform()
                 }
                 .font(.subheadline.weight(.semibold))
             }
