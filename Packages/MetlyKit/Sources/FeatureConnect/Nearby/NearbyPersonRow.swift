@@ -12,20 +12,27 @@ struct NearbyPersonRow: View {
     let onConnect: () -> Void
     let onCancel: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .headline) private var avatarSize: CGFloat = 44
 
-    /// One line when the name and the button fit side by side; otherwise the button goes under the
-    /// name (large text, long names, "Waiting… Cancel") instead of squeezing both.
+    /// The button keeps one place at the right of every row, so a list of people lines up; name and
+    /// role wrap instead. "Waiting…" sits under the name, leaving only Cancel on the right. Only
+    /// accessibility sizes put the button under the name.
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 12) {
-                identity
-                Spacer(minLength: 8)
-                trailing
-            }
-            VStack(alignment: .leading, spacing: 12) {
-                identity
-                trailing
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 12) {
+                    identity
+                    trailing
+                }
+            } else {
+                HStack(spacing: 12) {
+                    identity
+                        .layoutPriority(1)
+                    Spacer(minLength: 8)
+                    trailing
+                        .fixedSize()
+                }
             }
         }
         .padding(.vertical, 4)
@@ -37,10 +44,23 @@ struct NearbyPersonRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(person.fullName)
                     .font(.headline)
+                    .lineLimit(2)
                 if !person.role.isEmpty {
                     Text(person.role)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+                if status == .waiting {
+                    HStack(spacing: 6) {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("Waiting…")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(ConnectCopy.waitingAccessibility(person.firstName))
                 }
             }
         }
@@ -58,17 +78,10 @@ struct NearbyPersonRow: View {
                 .accessibilityLabel("Connect with \(person.firstName)")
                 .accessibilityHint("Sends your card and asks for theirs")
         case .waiting:
-            HStack(spacing: 10) {
-                ProgressView()
-                Text("Waiting…")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Button("Cancel", role: .cancel, action: onCancel)
-                    .buttonStyle(.borderless)
-                    .accessibilityLabel("Cancel Request to \(person.firstName)")
-            }
-            .accessibilityElement(children: .contain)
-            .accessibilityLabel(ConnectCopy.waitingAccessibility(person.firstName))
+            Button("Cancel", role: .cancel, action: onCancel)
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.capsule)
+                .accessibilityLabel("Cancel Request to \(person.firstName)")
         }
     }
 }
