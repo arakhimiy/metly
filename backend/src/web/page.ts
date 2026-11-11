@@ -65,135 +65,158 @@ const ICONS: Record<string, SafeHtml> = {
   ),
 };
 
+/** The card owner's palette, for the card face only (`--c-*`). The page around it is Tanishly's (BRAND_CSS). */
 function cssVariables(colors: PageColors): string {
   return [
-    `--bg:${colors.background}`,
-    `--fg:${colors.foreground}`,
-    `--accent:${colors.accent}`,
-    `--muted:${colors.muted}`,
-    `--panel:${colors.panelTint}`,
-    `--grad-end:${colors.gradientEnd}`,
-    `--fg-rgb:${colors.foregroundRgb}`,
-    `--on-accent:${colors.onAccent}`,
-    `color-scheme:${colors.dark ? 'dark' : 'light'}`,
+    `--c-bg:${colors.background}`,
+    `--c-fg:${colors.foreground}`,
+    `--c-accent:${colors.accent}`,
+    `--c-muted:${colors.muted}`,
+    `--c-panel:${colors.panelTint}`,
+    `--c-grad-end:${colors.gradientEnd}`,
+    `--c-fg-rgb:${colors.foregroundRgb}`,
   ].join(';');
 }
+
+/** Tanishly's colors (the app's teal), following the visitor's light/dark setting. */
+const BRAND_CSS = String.raw`
+:root{color-scheme:light dark;--bg:#f2f4f3;--surface:#ffffff;--fg:#0c1716;--muted:#5f6b69;--line:rgba(12,23,22,.09);--fill:rgba(12,23,22,.055);--accent:#0f766e;--accent-text:#0f766e;--accent-soft:rgba(15,118,110,.11);--on-accent:#ffffff;--warn:#b42318;--shadow:rgba(12,23,22,.16)}
+@media (prefers-color-scheme:dark){:root{--bg:#000000;--surface:#151a1a;--fg:#f1f5f4;--muted:#98a4a2;--line:rgba(241,245,244,.10);--fill:rgba(241,245,244,.07);--accent:#0f9f92;--accent-text:#3cc8ba;--accent-soft:rgba(60,200,186,.15);--warn:#ff8a7a;--shadow:rgba(0,0,0,.6)}}
+`;
 
 const BASE_CSS = String.raw`
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{margin:0;min-height:100vh;min-height:100dvh;color:var(--fg);background:var(--bg);background-image:linear-gradient(rgba(var(--fg-rgb),.035),rgba(var(--fg-rgb),.035));font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;min-height:100dvh;color:var(--fg);background:var(--bg);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 a{color:inherit}
 button{font:inherit;color:inherit}
 svg{width:20px;height:20px;fill:currentColor;flex:none}
 [hidden]{display:none!important}
 .wrap{max-width:460px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom))}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;padding:12px 18px;border:0;border-radius:14px;background:rgba(var(--fg-rgb),.08);color:var(--fg);font-weight:600;font-size:17px;text-decoration:none;cursor:pointer;transition:transform .12s ease,opacity .12s ease}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;padding:12px 18px;border:0;border-radius:14px;background:var(--fill);color:var(--fg);font-weight:600;font-size:17px;text-decoration:none;cursor:pointer;transition:transform .12s ease,opacity .12s ease}
 .btn:active{transform:scale(.98)}
-.btn:focus-visible,.copy:focus-visible,.field-link:focus-visible,.link:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn:focus-visible,.copy:focus-visible,.field-link:focus-visible,.link:focus-visible,input:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
 .btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.tinted{background:var(--accent-soft);color:var(--accent-text)}
 .btn.plain{background:transparent;color:var(--muted);min-height:44px}
 .btn[disabled]{opacity:.45;cursor:default;transform:none}
-.link{border:0;background:none;padding:0;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.link{border:0;background:none;padding:0;color:var(--accent-text);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .foot{margin:28px 0 0;text-align:center;font-size:13px;color:var(--muted)}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:15px;font-weight:600;transition:opacity .2s ease,transform .2s ease;z-index:10;max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-20px);opacity:0;pointer-events:none;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:15px;font-weight:600;transition:opacity .2s ease,transform .2s ease;z-index:10;max-width:calc(100% - 32px);text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .offscreen,.hp{position:absolute!important;left:-10000px!important;top:auto;width:1px;height:1px;overflow:hidden}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 `;
 
 const CARD_CSS = String.raw`
-.face{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:14px;aspect-ratio:1.586/1;width:100%;padding:22px 22px 20px;border-radius:20px;overflow:hidden;background:var(--bg);color:var(--fg);border:1px solid rgba(var(--fg-rgb),.10);box-shadow:0 1px 2px rgba(0,0,0,.06),0 16px 40px -12px rgba(0,0,0,.28)}
-.face.fill-gradient{background:linear-gradient(140deg,var(--bg) 22%,var(--grad-end))}
-.face-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;min-height:8px}
+.face{position:relative;display:flex;flex-direction:column;gap:14px;aspect-ratio:1.586/1;width:100%;padding:22px 22px 20px;border-radius:20px;background:var(--c-bg);color:var(--c-fg);border:1px solid rgba(var(--c-fg-rgb),.10);box-shadow:0 1px 2px rgba(0,0,0,.06),0 16px 40px -14px var(--shadow)}
+.face.fill-gradient{background:linear-gradient(140deg,var(--c-bg) 22%,var(--c-grad-end))}
+.face-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.face-top:empty{display:none}
 .face-text{min-width:0}
 .name{margin:0;font-size:clamp(22px,6.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.01em;overflow-wrap:anywhere}
-.role{margin:6px 0 0;color:var(--muted);font-size:15px;line-height:1.3;overflow-wrap:anywhere}
-.card-name{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--panel);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:var(--fg);flex:none}
+.role{margin:6px 0 0;color:var(--c-muted);font-size:15px;line-height:1.3;overflow-wrap:anywhere}
+.face-contacts{list-style:none;margin:auto 0 0;padding:0;display:grid;gap:5px;font-size:13px;line-height:1.25;min-width:0}
+.face-contacts li{display:flex;align-items:center;gap:8px;min-width:0}
+.face-contacts svg{width:15px;height:15px;color:var(--c-accent)}
+.face-contacts span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--c-panel);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:var(--c-fg);flex:none}
 .logo{max-height:32px;max-width:96px;object-fit:contain}
 .font-rounded .face-text,.font-rounded.face{font-family:ui-rounded,"SF Pro Rounded","Nunito",-apple-system,sans-serif}
 .font-serif .face-text,.font-serif.face{font-family:ui-serif,"New York",Georgia,"Times New Roman",serif}
 .font-mono .face-text,.font-mono.face{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
 .align-center .face-text{text-align:center}
-.align-center .face-top{justify-content:center}
-.tpl-professional .face-text{border-left:3px solid var(--accent);padding-left:12px}
+.align-center .face-top,.align-center .face-contacts li{justify-content:center}
+.tpl-professional .face-text{border-left:3px solid var(--c-accent);padding-left:12px}
 .tpl-professional .role{text-transform:uppercase;letter-spacing:.06em;font-size:12px;font-weight:600}
 .tpl-bold .name{font-size:clamp(28px,8.6vw,38px);font-weight:800;letter-spacing:-.025em}
-.tpl-bold .face-top::before{content:"";display:block;width:36px;height:6px;border-radius:3px;background:var(--accent)}
-.tpl-bold.align-center .face-top::before{margin:0 auto}
+.tpl-bold .face-text::before{content:"";display:block;width:36px;height:6px;border-radius:3px;background:var(--c-accent);margin-bottom:14px}
+.tpl-bold.align-center .face-text::before{margin:0 auto 14px}
 .tpl-modern .face-top,.tpl-stack .face-top{justify-content:flex-start}
 .tpl-stack .avatar{width:64px;height:64px}
-.tpl-split{display:grid;grid-template-columns:38% 1fr;padding:0;gap:0}
-.tpl-split .face-top{background:var(--panel);align-items:center;justify-content:center;height:100%}
-.tpl-split .face-text{align-self:end;padding:20px}
-.tpl-split .avatar{width:72px;height:72px;background:var(--bg)}
-.tpl-terminal .prompt{margin:0 0 6px;color:var(--accent);font-size:13px}
+.tpl-split{display:grid;grid-template-columns:38% 1fr;grid-template-rows:auto 1fr;padding:0;gap:0}
+.tpl-split .face-top{display:flex;grid-row:1/3;background:var(--c-panel);align-items:center;justify-content:center;height:100%;border-radius:19px 0 0 19px}
+.tpl-split .face-text{padding:20px 18px 0}
+.tpl-split .face-contacts{padding:12px 18px 18px}
+.tpl-split .avatar{width:72px;height:72px;background:var(--c-bg)}
+.tpl-terminal .prompt{margin:0 0 6px;color:var(--c-accent);font-size:13px}
 .tpl-terminal .name{font-size:clamp(20px,6vw,26px)}
 .tpl-editorial .name{font-weight:500;letter-spacing:0}
-.tpl-editorial .role{font-style:italic;border-top:1px solid rgba(var(--fg-rgb),.24);padding-top:8px;margin-top:10px}
-.notice{display:flex;gap:10px;align-items:center;margin:16px 0 0;padding:12px 14px;border-radius:14px;background:rgba(var(--fg-rgb),.07);font-size:14px}
+.tpl-editorial .role{font-style:italic;border-top:1px solid rgba(var(--c-fg-rgb),.24);padding-top:8px;margin-top:10px}
+.notice{display:flex;gap:10px;align-items:center;margin:16px 0 0;padding:12px 14px;border-radius:14px;background:var(--surface);font-size:14px}
 .notice span{flex:1}
 .notice .btn{width:auto;min-height:36px;padding:6px 12px;font-size:14px;white-space:nowrap}
 .p-inapp .notice.inapp{display:flex}
 .notice.inapp{display:none}
-.fields{list-style:none;margin:20px 0 0;padding:0;border-radius:16px;background:rgba(var(--fg-rgb),.06);overflow:hidden}
-.field{display:flex;align-items:center;min-height:58px}
-.field+.field{border-top:1px solid rgba(var(--fg-rgb),.08)}
+.fields{list-style:none;margin:20px 0 0;padding:0;border-radius:16px;background:var(--surface);overflow:hidden}
+.field{display:flex;align-items:center;min-height:60px}
+.field+.field{border-top:1px solid var(--line)}
 .field-link{display:flex;align-items:center;gap:14px;flex:1;min-width:0;padding:10px 14px;text-decoration:none}
-.field-link .icon{color:var(--accent);display:flex}
+.field-link .icon{color:var(--accent-text);display:flex}
 .field-text{display:flex;flex-direction:column;min-width:0}
-.label{font-size:12px;color:var(--muted)}
+.label{display:block;font-size:12px;color:var(--muted)}
+.label::first-letter{text-transform:uppercase}
 .value{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.copy{display:flex;align-items:center;gap:6px;margin-right:10px;padding:8px 10px;border:0;border-radius:10px;background:transparent;color:var(--accent);font-size:14px;font-weight:600;cursor:pointer}
-.copy svg{width:16px;height:16px}
-.actions{display:grid;gap:10px;margin-top:20px}
-.shared{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;min-height:44px;font-size:15px;color:var(--muted)}
-.shared svg{color:#16a34a}
-.cta{display:flex;flex-direction:column;gap:12px;margin-top:20px;padding:14px 16px;border-radius:16px;border:1px solid rgba(var(--fg-rgb),.12)}
+.copy{display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-right:6px;padding:0;border:0;border-radius:12px;background:transparent;color:var(--accent-text);cursor:pointer}
+.copy:active{background:var(--accent-soft)}
+.copy svg{width:18px;height:18px}
+.with-bar{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:18px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 72%,transparent)}
+.bar-in{display:flex;flex-direction:column;gap:8px;max-width:428px;margin:0 auto}
+.saved #exchange{order:-1;background:var(--accent);color:var(--on-accent)}
+.saved #save{background:var(--fill);color:var(--fg)}
+.shared .bar{display:none}
+.shared .with-bar{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+.shared-note{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;min-height:44px;margin:16px 0 0;font-size:15px;color:var(--muted)}
+.shared-note svg{color:var(--accent-text)}
+.cta{display:flex;flex-direction:column;gap:12px;margin-top:20px;padding:14px 16px;border-radius:16px;background:var(--surface)}
 .cta-text{display:flex;flex-direction:column;gap:2px}
 .cta strong{font-size:15px}
 .cta-text span{font-size:13px;color:var(--muted)}
-.cta .btn{min-height:44px;font-size:15px;color:var(--accent)}
-.acted .cta-footer{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;background:var(--bg);background-image:linear-gradient(rgba(var(--fg-rgb),.06),rgba(var(--fg-rgb),.06));box-shadow:0 10px 30px -8px rgba(0,0,0,.35)}
+.cta .btn{min-height:44px;font-size:15px;background:var(--accent-soft);color:var(--accent-text)}
+.acted .cta-footer{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;box-shadow:0 10px 30px -8px var(--shadow)}
 .acted .cta-footer .cta-text .get{display:none}
 .acted .cta-footer .btn.get,.acted .cta-footer .btn.android{background:var(--accent);color:var(--on-accent)}
 .cta .android,.os-android .cta .get{display:none}
 .os-android .cta-text .android{display:block}
 .os-android .cta .btn.android{display:flex}
-dialog{width:100%;max-width:460px;max-height:calc(100dvh - 24px);margin:auto auto 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom));border:0;border-radius:22px 22px 0 0;background:var(--bg);color:var(--fg);overflow:auto;box-shadow:0 -8px 40px rgba(0,0,0,.25)}
+dialog{width:100%;max-width:460px;max-height:calc(100dvh - 24px);margin:auto auto 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom));border:0;border-radius:22px 22px 0 0;background:var(--surface);color:var(--fg);overflow:auto;box-shadow:0 -8px 40px var(--shadow)}
 dialog::backdrop{background:rgba(0,0,0,.45)}
 dialog:not([open]){display:none}
 @media (min-width:600px){dialog{margin:auto;border-radius:22px;padding-bottom:22px}}
-.grabber{width:36px;height:5px;border-radius:3px;background:rgba(var(--fg-rgb),.2);margin:0 auto 14px}
+.grabber{width:36px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 14px}
 dialog h2{margin:0;font-size:22px;line-height:1.2}
+dialog h2:focus{outline:none}
 .sub{margin:6px 0 16px;color:var(--muted);font-size:15px}
-.input{display:block;margin-top:10px}
+.input{display:block;margin-top:12px}
 .input span{display:block;font-size:13px;color:var(--muted);margin:0 0 4px 2px}
-input{width:100%;min-height:48px;padding:12px 14px;border-radius:12px;border:1px solid rgba(var(--fg-rgb),.16);background:rgba(var(--fg-rgb),.04);color:var(--fg);font:inherit;font-size:17px}
+input{width:100%;min-height:48px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--fill);color:var(--fg);font:inherit;font-size:17px}
+input:focus{border-color:var(--accent-text);outline:none}
 input::placeholder{color:var(--muted);opacity:.8}
-.help{margin:6px 2px 0;font-size:13px;color:var(--muted)}
-.hint{min-height:20px;margin:14px 2px 0;font-size:14px;color:var(--accent)}
-.private{display:flex;align-items:center;gap:6px;margin:6px 2px 14px;font-size:14px;color:var(--muted)}
-.private svg{width:15px;height:15px}
+.swap{display:inline-block;margin:8px 2px 0;font-size:14px;text-decoration:none}
+.hint{min-height:20px;margin:14px 2px 0;font-size:14px;color:var(--muted)}
+.hint.err{color:var(--warn)}
+.private{display:flex;align-items:center;gap:6px;margin:4px 2px 14px;font-size:14px;color:var(--muted)}
+.private svg{width:15px;height:15px;color:var(--accent-text)}
 #sb-form .btn+.btn{margin-top:8px}
 .done{text-align:center}
 .done .btn{margin-top:10px}
 .done h2+.btn{margin-top:18px}
-.done .cta{margin-top:22px}
+.done .cta{margin-top:22px;background:var(--fill)}
 .done .cta-text .get{display:none}
 .done .cta .btn{margin-top:0}
 .done .cta .btn.get,.done .cta .btn.android{min-height:50px;font-size:17px;background:var(--accent);color:var(--on-accent)}
-.check{width:56px;height:56px;margin:8px auto 14px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center}
+.check{width:56px;height:56px;margin:8px auto 14px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center}
 .check svg{width:30px;height:30px}
 .saved-row{display:flex;align-items:center;justify-content:center;gap:6px;margin:14px 0 0;color:var(--muted)}
+.saved-row svg{color:var(--accent-text)}
 .mind{margin:18px 0 0;font-size:14px;color:var(--muted)}
 @media (min-width:768px){.wrap{padding-top:56px}}
 `;
 
 const UNAVAILABLE_CSS = String.raw`
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:calc(100dvh - 120px);gap:6px}
-.empty .mark{width:64px;height:64px;border-radius:50%;background:rgba(var(--fg-rgb),.07);display:flex;align-items:center;justify-content:center;color:var(--muted);margin-bottom:10px}
+.empty .mark{width:64px;height:64px;border-radius:50%;background:var(--fill);display:flex;align-items:center;justify-content:center;color:var(--muted);margin-bottom:10px}
 .empty .mark svg{width:30px;height:30px}
 .empty h1{margin:0;font-size:22px;line-height:1.25}
 .empty p{margin:0;color:var(--muted);max-width:320px}
@@ -265,17 +288,21 @@ const CARD_JS = String.raw`(function () {
 
   function refresh() {
     var shared = !!get('localStorage', KEY), saved = !!get('localStorage', SAVED);
-    if ($('exchange')) $('exchange').hidden = shared;
     if ($('shared')) $('shared').hidden = !shared;
     if ($('done-save')) $('done-save').hidden = saved;
     if ($('done-saved')) $('done-saved').hidden = !saved;
-    // Once they've saved or shared, "Want a card like this?" stays in view at the bottom.
-    document.body.classList.toggle('acted', shared || saved);
+    // Saved: "Exchange" becomes the main button. Shared: the bar goes and "Want a card like this?" stays in view.
+    b.classList.toggle('saved', saved);
+    b.classList.toggle('shared', shared);
+    b.classList.toggle('acted', shared);
   }
   function markSaved() { put('localStorage', SAVED, { at: Date.now() }); setTimeout(refresh, 500); }
+  var offerAfterSave = null;
   function onSave(e) {
     if (platform === 'inapp') { e.preventDefault(); toast(T.openInBrowser); return; }
     markSaved();
+    // Their contact is asked for only after they got what they came for — and only once per visit.
+    if (offerAfterSave && !get('localStorage', KEY) && !get('sessionStorage', SKIP)) setTimeout(offerAfterSave, 1200);
   }
   on('save', 'click', onSave);
   on('done-save', 'click', onSave);
@@ -295,25 +322,41 @@ const CARD_JS = String.raw`(function () {
   var sheet = $('sheet'), form = $('sb-form');
   if (!sheet || !form) { refresh(); return; }
   var done = $('sb-done'), send = $('sb-send'), hint = $('sb-hint');
+  var tried = false, viaTelegram = false;
   function field(n) { return form.querySelector('[name="' + n + '"]'); }
-  function openSheet(showDone) {
+  function openSheet(showDone, focusName) {
     form.hidden = !!showDone; done.hidden = !showDone;
     if (typeof sheet.showModal === 'function') { if (!sheet.open) sheet.showModal(); } else sheet.setAttribute('open', '');
+    if (focusName) field('name').focus();
   }
+  offerAfterSave = function () { if (!sheet.open) openSheet(false, false); };
+  function useTelegram(on) {
+    viaTelegram = on;
+    $('sb-phone').hidden = on; $('sb-telegram').hidden = !on;
+    $('sb-use-telegram').hidden = on; $('sb-use-phone').hidden = !on;
+    field(on ? 'telegram' : 'phone').focus();
+    if (tried) validate();
+  }
+  on('sb-use-telegram', 'click', function () { useTelegram(true); });
+  on('sb-use-phone', 'click', function () { useTelegram(false); });
   function closeSheet() { if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open'); }
   function values() {
     return {
-      name: field('name').value.trim(), phone: field('phone').value.trim(), telegram: field('telegram').value.trim(),
+      name: field('name').value.trim(),
+      phone: viaTelegram ? '' : field('phone').value.trim(), telegram: viaTelegram ? field('telegram').value.trim() : '',
       metAt: field('metAt').value.trim(), website: field('website').value
     };
   }
+  function say(text, isError) { hint.textContent = text; hint.classList.toggle('err', !!isError); }
+  // Nothing is flagged before they try to send; after that the message follows what they type.
   function validate() {
     var v = values();
     var msg = !v.name ? T.needName : (!v.phone && !v.telegram ? T.needContact : '');
-    hint.textContent = msg; send.disabled = !!msg; return !msg;
+    if (tried) say(msg, true);
+    return !msg;
   }
-  form.addEventListener('input', validate);
-  on('exchange', 'click', function () { openSheet(false); validate(); });
+  form.addEventListener('input', function () { if (tried) validate(); });
+  on('exchange', 'click', function () { openSheet(false, true); });
   on('sb-skip', 'click', function () { put('sessionStorage', SKIP, true); closeSheet(); });
   on('done-back', 'click', closeSheet);
   sheet.addEventListener('click', function (e) { if (e.target === sheet) closeSheet(); });
@@ -321,9 +364,15 @@ const CARD_JS = String.raw`(function () {
   var sending = false;
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (sending || !validate()) return;
+    if (sending) return;
+    tried = true;
+    if (!validate()) {
+      var v0 = values();
+      field(!v0.name ? 'name' : (viaTelegram ? 'telegram' : 'phone')).focus();
+      return;
+    }
     var v = values();
-    sending = true; send.disabled = true; hint.textContent = T.sending;
+    sending = true; send.disabled = true; say(T.sending, false);
     var key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
     fetch(api + '/shareback', {
       method: 'POST', credentials: 'omit',
@@ -335,7 +384,7 @@ const CARD_JS = String.raw`(function () {
       sending = false;
       if (res.status === 201) {
         put('localStorage', KEY, { id: res.body.shareBackId, token: res.body.removalToken, at: Date.now() });
-        form.reset(); hint.textContent = ''; refresh(); openSheet(true);
+        form.reset(); tried = false; say('', false); refresh(); openSheet(true);
         if (!get('localStorage', SAVED) && (platform === 'ios' || platform === 'android')) {
           markSaved(); location.href = $('save').getAttribute('href');
         }
@@ -343,14 +392,14 @@ const CARD_JS = String.raw`(function () {
       }
       // The API's validation messages are English: show the page's own text for the field instead.
       var details = (res.body && res.body.details) || {};
-      hint.textContent = res.status === 429 ? T.tooMany
+      say(res.status === 429 ? T.tooMany
         : details.name ? (v.name ? T.invalidName : T.needName)
         : details.phone ? (v.phone ? T.invalidPhone : T.needContact)
         : details.telegram ? T.invalidTelegram
         : details.metAt ? T.invalidMetAt
-        : T.failed;
+        : T.failed, true);
       send.disabled = false;
-    }, function () { sending = false; send.disabled = false; hint.textContent = T.offline; });
+    }, function () { sending = false; send.disabled = false; say(T.offline, true); });
   });
 
   function removeContact() {
@@ -369,9 +418,6 @@ const CARD_JS = String.raw`(function () {
   on('remove-inline', 'click', removeContact);
 
   refresh();
-  if (!get('localStorage', KEY) && !get('sessionStorage', SKIP)) {
-    setTimeout(function () { openSheet(false); validate(); }, 500);
-  }
 })();`;
 
 function head(opts: {
@@ -391,7 +437,8 @@ function head(opts: {
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="format-detection" content="telephone=no">
-<meta name="theme-color" content="${opts.colors.background}">
+<meta name="theme-color" content="#f2f4f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <title>${opts.title}</title>
 <meta name="description" content="${opts.description}">
 <meta property="og:type" content="profile">
@@ -403,7 +450,7 @@ ${opts.ogUrl ? html`<meta property="og:url" content="${opts.ogUrl}">` : ''}
 ${opts.ogImage ? html`<meta property="og:image" content="${opts.ogImage}">` : ''}
 <meta name="twitter:card" content="summary">
 ${opts.appBanner ?? ''}
-<style nonce="${opts.nonce}">:root{${trusted(cssVariables(opts.colors))}}${trusted(BASE_CSS)}${trusted(opts.extraCss)}</style>
+<style nonce="${opts.nonce}">${trusted(BRAND_CSS)}:root{${trusted(cssVariables(opts.colors))}}${trusted(BASE_CSS)}${trusted(opts.extraCss)}</style>
 </head>`;
 }
 
@@ -425,7 +472,10 @@ function effectiveFont(design: CardDesign): string {
   return design.font;
 }
 
-function face(view: PublicView): SafeHtml {
+/** Contacts printed on the face itself, like the app's card (the full list follows below it). */
+const FACE_CONTACTS = 3;
+
+function face(view: PublicView, actions: ContactAction[]): SafeHtml {
   const { design, profile } = view;
   const gradient = design.template === 'gradient' || design.background === 'gradient';
   const classes = [
@@ -453,6 +503,7 @@ ${design.template === 'terminal' ? html`<p class="prompt">$ whoami</p>` : ''}
 <h1 class="name">${view.fullName}</h1>
 ${role ? html`<p class="role">${role}</p>` : ''}
 </div>
+${actions.length > 0 ? html`<ul class="face-contacts" aria-hidden="true">${actions.slice(0, FACE_CONTACTS).map((a) => html`<li>${ICONS[a.kind] ?? ''}<span>${a.display}</span></li>`)}</ul>` : ''}
 </section>`;
 }
 
@@ -486,7 +537,7 @@ function fieldRow(action: ContactAction, terminal: boolean, t: CardPageText, lab
   const copyable = action.kind === 'phone' || action.kind === 'email';
   const copied = action.kind === 'phone' ? t.phoneCopied : t.emailCopied;
   const copy = copyable
-    ? html`<button class="copy" type="button" data-copy="${action.display}" data-kind="${action.kind}" data-copied="${copied}" aria-label="${t.copyAria(name)}">${ICONS.copy}<span>${t.copy}</span></button>`
+    ? html`<button class="copy" type="button" data-copy="${action.display}" data-kind="${action.kind}" data-copied="${copied}" aria-label="${t.copyAria(name)}" title="${t.copy}">${ICONS.copy}</button>`
     : '';
   return html`<li class="field">${link}${copy}</li>`;
 }
@@ -531,32 +582,32 @@ ${head({
   appBanner: banner,
 })}
 <body class="p-${platform}${opts.android ? ' os-android' : ''}" data-slug="${view.slug}" data-platform="${platform}" data-t="${JSON.stringify(t.script)}">
-<main class="wrap">
-${face(view)}
+<main class="wrap with-bar">
+${face(view, actions)}
 <div class="notice inapp" role="note"><span>${t.inAppNotice}</span><button class="btn" type="button" id="copy-link">${t.copyLink}</button></div>
 ${actions.length > 0 ? html`<ul class="fields" aria-label="${t.contactDetails}">${actions.map((a) => fieldRow(a, view.design.template === 'terminal', t, labelPhones))}</ul>` : ''}
-<div class="actions">
-<a class="btn primary" id="save" href="${vcfHref}">${t.saveToContacts}</a>
-<button class="btn" type="button" id="exchange">${t.exchange(first)}</button>
-<p class="shared" id="shared" hidden>${ICONS.check}<span>${t.sent(first)}</span><button class="link" type="button" id="remove-inline">${t.removeMine}</button></p>
-</div>
+<p class="shared-note" id="shared" hidden>${ICONS.check}<span>${t.sent(first)}</span><button class="link" type="button" id="remove-inline">${t.removeMine}</button></p>
 ${footerCta}
 <p class="foot">${t.foot}</p>
 </main>
+<div class="bar"><div class="bar-in">
+<a class="btn primary" id="save" href="${vcfHref}">${t.saveToContacts}</a>
+<button class="btn tinted" type="button" id="exchange">${t.exchange(first)}</button>
+</div></div>
 <dialog id="sheet" aria-labelledby="sheet-title">
 <form id="sb-form" novalidate autocomplete="on">
 <div class="grabber" aria-hidden="true"></div>
-<h2 id="sheet-title">${t.sheetTitle(first)}</h2>
+<h2 id="sheet-title" tabindex="-1" autofocus>${t.sheetTitle(first)}</h2>
 <p class="sub">${t.sheetSubtitle(first)}</p>
 <label class="input"><span>${t.name}</span><input name="name" autocomplete="name" maxlength="80" placeholder="${t.namePlaceholder}" required></label>
-<label class="input"><span>${t.phone}</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="+998"></label>
-<label class="input"><span>${t.telegram}</span><input name="telegram" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="64" placeholder="${t.telegramPlaceholder}"></label>
-<p class="help">${t.phoneOrTelegram}</p>
+<label class="input" id="sb-phone"><span>${t.phone}</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="+998"></label>
+<label class="input" id="sb-telegram" hidden><span>${t.telegram}</span><input name="telegram" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="64" placeholder="${t.telegramPlaceholder}"></label>
+<button class="link swap" type="button" id="sb-use-telegram">${t.useTelegram}</button><button class="link swap" type="button" id="sb-use-phone" hidden>${t.usePhone}</button>
 <label class="input"><span>${t.metAt}</span><input name="metAt" maxlength="120" placeholder="${t.metAtPlaceholder}"></label>
 <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
 <p class="hint" id="sb-hint" role="status" aria-live="polite"></p>
 <p class="private">${ICONS.lock}<span>${t.sendsTo(first)}</span></p>
-<button class="btn primary" id="sb-send" type="submit" disabled>${t.send}</button>
+<button class="btn primary" id="sb-send" type="submit">${t.send}</button>
 <button class="btn plain" id="sb-skip" type="button">${t.skip}</button>
 </form>
 <div class="done" id="sb-done" hidden>

@@ -41,7 +41,7 @@ export interface CardPageText {
   inAppNotice: string;
   copyLink: string;
   contactDetails: string;
-  /** Lowercase field labels, like the app's card. */
+  /** Field labels (the page capitalizes their first letter). */
   fieldLabel: Record<ContactKind, string>;
   /** Lowercase phone labels, used once a card shows more than one phone or a non-mobile one. */
   phoneLabel: Record<PhoneLabel, string>;
@@ -72,7 +72,9 @@ export interface CardPageText {
   telegramPlaceholder: string;
   metAt: string;
   metAtPlaceholder: string;
-  phoneOrTelegram: string;
+  /** Swap the contact field between phone and Telegram. */
+  useTelegram: string;
+  usePhone: string;
   /** Above the send button: who receives the contact. */
   sendsTo: (first: string) => string;
   send: string;
@@ -94,12 +96,12 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     contactDetails: 'Kontakt ma’lumotlari',
     fieldLabel: {
       phone: 'telefon',
-      whatsapp: 'whatsapp',
+      whatsapp: 'WhatsApp',
       telegram: 'telegram',
       instagram: 'instagram',
       email: 'email',
       website: 'veb-sayt',
-      linkedin: 'linkedin',
+      linkedin: 'LinkedIn',
       address: 'manzil',
     },
     phoneLabel: { mobile: 'mobil', work: 'ish telefoni', home: 'uy telefoni', other: 'boshqa telefon' },
@@ -127,8 +129,9 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     telegram: 'Telegram',
     telegramPlaceholder: '@username',
     metAt: 'Qayerda tanishdik',
-    metAtPlaceholder: 'Qayerda tanishdik? Ixtiyoriy',
-    phoneOrTelegram: 'Telefon yoki Telegram’dan kamida bittasini kiriting.',
+    metAtPlaceholder: 'Masalan: IT Park, Tech Week · ixtiyoriy',
+    useTelegram: 'Telefon o‘rniga Telegram yuborish',
+    usePhone: 'Telegram o‘rniga telefon yuborish',
     sendsTo: (first) => `Kontaktingiz ${uzDative(first)} yuboriladi. Faqat u ko‘radi.`,
     send: 'Kontaktimni yuborish',
     skip: 'O‘tkazib yuborish',
@@ -163,12 +166,12 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     contactDetails: 'Контактные данные',
     fieldLabel: {
       phone: 'телефон',
-      whatsapp: 'whatsapp',
+      whatsapp: 'WhatsApp',
       telegram: 'telegram',
       instagram: 'instagram',
       email: 'email',
       website: 'сайт',
-      linkedin: 'linkedin',
+      linkedin: 'LinkedIn',
       address: 'адрес',
     },
     phoneLabel: { mobile: 'мобильный', work: 'рабочий телефон', home: 'домашний телефон', other: 'другой телефон' },
@@ -196,8 +199,9 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     telegram: 'Telegram',
     telegramPlaceholder: '@username',
     metAt: 'Где познакомились',
-    metAtPlaceholder: 'Где мы познакомились? Необязательно',
-    phoneOrTelegram: 'Укажите телефон или Telegram — хотя бы что-то одно.',
+    metAtPlaceholder: 'Например: IT Park, Tech Week · необязательно',
+    useTelegram: 'Отправить Telegram вместо телефона',
+    usePhone: 'Отправить телефон вместо Telegram',
     sendsTo: (first) => `Ваш контакт получит ${first}. Больше его никто не увидит.`,
     send: 'Отправить мой контакт',
     skip: 'Пропустить',
@@ -232,12 +236,12 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     contactDetails: 'Contact details',
     fieldLabel: {
       phone: 'phone',
-      whatsapp: 'whatsapp',
+      whatsapp: 'WhatsApp',
       telegram: 'telegram',
       instagram: 'instagram',
       email: 'email',
       website: 'website',
-      linkedin: 'linkedin',
+      linkedin: 'LinkedIn',
       address: 'address',
     },
     phoneLabel: { mobile: 'mobile', work: 'work phone', home: 'home phone', other: 'other phone' },
@@ -265,8 +269,9 @@ export const CARD_PAGE_TEXT: Record<Lang, CardPageText> = {
     telegram: 'Telegram',
     telegramPlaceholder: '@username',
     metAt: 'Met at',
-    metAtPlaceholder: 'Where did we meet? Optional',
-    phoneOrTelegram: 'Add a phone or Telegram — at least one.',
+    metAtPlaceholder: 'e.g. IT Park, Tech Week · optional',
+    useTelegram: 'Send Telegram instead of a phone',
+    usePhone: 'Send a phone instead of Telegram',
     sendsTo: (first) => `Your contact will be sent to ${first}. Only they will see it.`,
     send: 'Send my contact',
     skip: 'Skip',

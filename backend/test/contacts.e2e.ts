@@ -246,14 +246,14 @@ describe('contact list', () => {
 
     const page = await http().get(`/c/${slug}?lang=en`).set('User-Agent', IPHONE).expect(200);
     expect(page.text).toContain('href="https://wa.me/998901234567"');
-    expect(page.text).toContain('<span class="label">whatsapp</span><span class="value">+998 90 123 45 67</span>');
+    expect(page.text).toContain('<span class="label">WhatsApp</span><span class="value">+998 90 123 45 67</span>');
     expect(page.text).toContain('href="https://instagram.com/kamola.y"');
     expect(page.text).toContain('<span class="label">instagram</span><span class="value">@kamola.y</span>');
     expect(page.text.indexOf('wa.me')).toBeLessThan(page.text.indexOf('instagram.com/kamola.y'));
     expect(page.text).not.toContain(work.value);
     expect(page.text).not.toContain(secret.value);
     const ru = await http().get(`/c/${slug}?lang=ru`).set('User-Agent', IPHONE).expect(200);
-    expect(ru.text).toContain('<span class="label">whatsapp</span>');
+    expect(ru.text).toContain('<span class="label">WhatsApp</span>');
 
     const vcf = await http().get(`/c/${slug}.vcf`).set('User-Agent', IPHONE).expect(200);
     expect(vcf.text).toContain('X-SOCIALPROFILE;TYPE=whatsapp:https://wa.me/998901234567\r\n');

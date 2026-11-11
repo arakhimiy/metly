@@ -96,3 +96,48 @@ describe('uzDative', () => {
     expect(uzDative('karta egasi')).toBe('karta egasiga');
   });
 });
+
+describe('card page: save first, exchange on their terms', () => {
+  const withContacts = {
+    ...view,
+    contacts: [
+      { id: 'p1', kind: 'phone', label: 'mobile', value: '+998 90 123 45 67', privacy: 'public' },
+      { id: 'e1', kind: 'email', label: null, value: 'kamola@tezkor.uz', privacy: 'public' },
+      { id: 't1', kind: 'telegram', label: null, value: 'kamola_k', privacy: 'public' },
+      { id: 'w1', kind: 'website', label: null, value: 'https://tezkor.uz', privacy: 'public' },
+    ],
+  } as unknown as PublicView;
+
+  it('never opens the exchange sheet by itself on load', () => {
+    const html = page();
+    expect(html).not.toMatch(/refresh\(\);\s*if \(!get\('localStorage', KEY\)/);
+    expect(html).toContain('id="sheet-title" tabindex="-1" autofocus');
+    expect(html).toContain('<button class="btn primary" id="sb-send" type="submit">');
+  });
+
+  it('keeps Save and Exchange in a bar at the bottom', () => {
+    expect(page()).toMatch(/<div class="bar"><div class="bar-in">\n<a class="btn primary" id="save" href="\/c\/kamola-k\.vcf">/);
+  });
+
+  it('prints the first three contacts on the card face, like the app', () => {
+    const html = page({ view: withContacts });
+    const faceList = html.slice(html.indexOf('class="face-contacts"'), html.indexOf('</ul>', html.indexOf('class="face-contacts"')));
+    expect(faceList).toContain('+998 90 123 45 67');
+    expect(faceList).toContain('@kamola_k');
+    expect(faceList).not.toContain('<span>tezkor.uz</span>');
+    expect(faceList.match(/<li>/g)).toHaveLength(3);
+  });
+
+  it('asks for one contact at a time: phone, or Telegram instead', () => {
+    const html = page();
+    expect(html).toContain('<label class="input" id="sb-telegram" hidden>');
+    expect(html).toContain('>Telefon o‘rniga Telegram yuborish</button>');
+  });
+
+  it('uses Tanishly’s colors for the page and the owner’s for the card face', () => {
+    const html = page();
+    expect(html).toContain('--accent:#0f766e');
+    expect(html).toContain('--c-bg:');
+    expect(html).toContain('<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">');
+  });
+});
