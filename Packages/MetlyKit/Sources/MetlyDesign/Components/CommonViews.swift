@@ -20,9 +20,15 @@ public struct InitialsAvatar: View {
             } else {
                 Text(initials)
                     .font(.system(size: size * 0.38, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(BrandPalette.tonalAvatars ? Color.avatarInk(for: name) : .white)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.avatarColor(for: name).gradient)
+                    .background {
+                        if BrandPalette.tonalAvatars {
+                            Color.avatarColor(for: name).opacity(0.2)
+                        } else {
+                            Rectangle().fill(Color.avatarColor(for: name).gradient)
+                        }
+                    }
             }
         }
         .frame(width: size, height: size)
@@ -93,7 +99,17 @@ public extension ContactFieldKind {
 public extension Color {
     /// Stable color per name for initials avatars.
     static func avatarColor(for name: String) -> Color {
-        let palette: [Color] = [.teal, .indigo, .orange, .pink, .purple, .blue, .green, .brown]
+        Color(uiColor: avatarHue(for: name))
+    }
+
+    /// Initials color for the soft-tint avatar: the hue itself, lifted in dark mode so it reads on black.
+    static func avatarInk(for name: String) -> Color {
+        let hue = avatarHue(for: name)
+        return Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? hue.lifted(by: 0.25) : hue })
+    }
+
+    private static func avatarHue(for name: String) -> UIColor {
+        let palette = BrandPalette.avatarHues
         let hash = name.unicodeScalars.reduce(0) { ($0 &* 31 &+ Int($1.value)) & 0x7FFF_FFFF }
         return palette[hash % palette.count]
     }

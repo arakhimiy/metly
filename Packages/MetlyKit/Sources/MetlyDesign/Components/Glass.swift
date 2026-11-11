@@ -19,9 +19,9 @@ public extension View {
     @ViewBuilder
     func prominentButtonStyle() -> some View {
         if #available(iOS 26, *) {
-            self.foregroundStyle(.white).buttonStyle(.glassProminent)
+            self.foregroundStyle(BrandPalette.onAccent).buttonStyle(.glassProminent)
         } else {
-            self.foregroundStyle(.white).buttonStyle(.borderedProminent)
+            self.foregroundStyle(BrandPalette.onAccent).buttonStyle(.borderedProminent)
         }
     }
 
