@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Four rounded corner brackets.
-struct ViewfinderCorners: Shape {
+nonisolated struct ViewfinderCorners: Shape {
     var cornerLength: CGFloat = 28
     var radius: CGFloat = 14
 

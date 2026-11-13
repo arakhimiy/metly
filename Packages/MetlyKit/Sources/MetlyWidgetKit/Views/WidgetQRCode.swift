@@ -55,7 +55,7 @@ public struct WidgetQRCode: View {
 }
 
 /// Square plate with continuous corners; radius is a fraction of the side.
-struct WidgetQRPlateShape: Shape {
+nonisolated struct WidgetQRPlateShape: Shape {
     var cornerFraction: CGFloat
 
     func path(in rect: CGRect) -> Path {
@@ -66,7 +66,7 @@ struct WidgetQRPlateShape: Shape {
 }
 
 /// The QR plate with every dark module as a hole (fill with `eoFill`).
-struct WidgetQRKnockoutShape: Shape {
+nonisolated struct WidgetQRKnockoutShape: Shape {
     let payload: String
     let quietZone: Int
     let cornerFraction: CGFloat

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The card face silhouette (corner radius = 4.2% of width, SPEC Appendix B).
-struct CardOutline: InsettableShape {
+nonisolated struct CardOutline: InsettableShape {
     var insetAmount = 0.0
 
     func path(in rect: CGRect) -> Path {

@@ -1,0 +1,67 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+    paths: ['Metly/**', 'MetlyWidgets/**', 'Metly.xcodeproj/**', 'Packages/**', 'scripts/**', '.github/workflows/ios.yml']
+  pull_request:
+    paths: ['Metly/**', 'MetlyWidgets/**', 'Metly.xcodeproj/**', 'Packages/**', 'scripts/**', '.github/workflows/ios.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The Xcode major the project is developed with. Bump together with the team's local Xcode.
+  XCODE_MAJOR: '27'
+
+jobs:
+  build-and-test:
+    # GitHub's image with Xcode 27 preinstalled (macOS + iOS 27 simulators).
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode ${{ env.XCODE_MAJOR }}
+        run: |
+          app=$(ls -d /Applications/Xcode_${XCODE_MAJOR}*.app 2>/dev/null | sort -V | tail -1)
+          if [ -z "$app" ]; then echo "::error::No Xcode ${XCODE_MAJOR} on this runner"; ls -d /Applications/Xcode*.app; exit 1; fi
+          sudo xcode-select -s "$app/Contents/Developer"
+          xcodebuild -version
+
+      - name: Pick a simulator
+        run: |
+          id=$(xcrun simctl list devices available -j | python3 -I -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          runtimes = sorted((r for r in devices if "iOS" in r), reverse=True)
+          for runtime in runtimes:
+              for d in devices[runtime]:
+                  if d["name"].startswith("iPhone") and d["isAvailable"]:
+                      print(d["name"]); sys.exit()
+          sys.exit("no iPhone simulator")')
+          echo "METLY_SIM=$id" >> "$GITHUB_ENV"
+          echo "Using simulator: $id"
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/metly-spm-cache
+          key: spm-${{ runner.os }}-${{ hashFiles('Packages/MetlyKit/Package.swift', 'Packages/MetlyKit/Package.resolved') }}
+
+      # Same script developers use locally, so CI and laptops fail the same way.
+      - name: Build app (app + widgets)
+        run: scripts/build.sh app
+
+      - name: Test MetlyKit (all modules)
+        run: scripts/build.sh all test
+
+      - name: Upload build log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: ~/Library/Developer/Xcode/DerivedData/metly-*/last-build.log
+          if-no-files-found: ignore
