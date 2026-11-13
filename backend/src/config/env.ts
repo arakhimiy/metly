@@ -46,6 +46,12 @@ const schema = z
         }
         return value.split(',').map((s) => s.trim()).filter(Boolean);
       }),
+    /**
+     * Shared secret of the edge proxy (Cloudflare Worker) that serves WEB_BASE_URL in front of this API.
+     * With it, the visitor IP the edge sends in `x-edge-client-ip` is used for rate limits and card stats.
+     * Empty → that header is ignored. `openssl rand -base64 48`
+     */
+    EDGE_PROXY_SECRET: optional.refine((v) => v === undefined || v.length >= 32, 'must be at least 32 characters'),
     /** Where rate-limit counters live: shared across instances (postgres) or per process (memory). */
     RATE_LIMIT_STORE: z.enum(['postgres', 'memory']).default('postgres'),
 
