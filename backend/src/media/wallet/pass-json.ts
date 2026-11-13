@@ -121,7 +121,7 @@ export function buildPassJson(input: PassInput): Record<string, unknown> {
     authenticationToken: card.passAuthToken,
     webServiceURL: input.webServiceURL,
     organizationName: 'Nameshake',
-    description: `${name} — Nameshake card`,
+    description: `Nameshake card for ${name}`,
     logoText: 'Nameshake',
     backgroundColor: rgb(colors.background),
     foregroundColor: rgb(colors.foreground),

@@ -91,5 +91,5 @@ export function renderHomePage(lang: LegalLang, download?: { url: string; beta: 
     ? html`<a class="cta" href="${download.url}">${download.beta ? ui.tryBeta : ui.getApp}</a>`
     : html`<span class="soon">${ui.soon}</span>`}
 </section>`;
-  return shell(lang, `Nameshake — ${ui.tagline}`, 'home', '/', body);
+  return shell(lang, `Nameshake: ${ui.tagline}`, 'home', '/', body);
 }

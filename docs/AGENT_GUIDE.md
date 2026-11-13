@@ -98,6 +98,7 @@ Every screen and every SPEC state you own gets a `#Preview` (Appendix A of SPEC 
 - `@Observable` view models only when a screen has real logic; otherwise plain `@State` in the view. No singletons except those in `AppServices`.
 - Small views: split anything over ~150 lines into subviews in the same file or a sibling file.
 - Use `FormatStyle` (`.formatted(date:time:)`, `Date.RelativeFormatStyle`) — no `DateFormatter` strings.
+- Copy (all three languages, app and backend pages): no long dashes (—). The owner reads them as machine-written. Use a full stop, comma or colon instead.
 - Strings: every `String(localized:)` / `AttributedString(localized:)` passes `bundle: .appStrings` (before `comment:`), and copy kept in a `static` is a computed `static var`, never a `static let`. The app switches language without a relaunch (`AppLanguage`, Settings › Language); Foundation resolves these calls through CoreFoundation, which fixes `Bundle.main`'s language at launch, so a call without the bundle — or a cached `let` — stays in the old language. `Text("Key")` / `LocalizedStringKey` needs nothing extra.
 - Tests: Swift Testing (`import Testing`, `@Test`, `#expect`). Test logic (grouping, parsing, limits, merges), not layout.
 

@@ -19,7 +19,7 @@ export interface LegalDoc {
 }
 
 export const LEGAL_UPDATED = '2026-10-27';
-export const SUPPORT_EMAIL = 'support@tanishly.app';
+export const SUPPORT_EMAIL = 'support@nameshake.app';
 
 export const UI: Record<LegalLang, { updated: string; privacy: string; terms: string; help: string; contact: string; tagline: string; getApp: string; tryBeta: string; soon: string }> = {
   uz: {
@@ -66,7 +66,7 @@ const privacyEn: LegalDoc = {
       heading: 'What we collect',
       body: [
         [
-          'Account: the identifier and email address Apple or Google gives us when you sign in (Apple may give us a private relay address). With Telegram we receive your Telegram account identifier and name — no phone number or email.',
+          'Account: the identifier and email address Apple or Google gives us when you sign in (Apple may give us a private relay address). With Telegram we receive your Telegram account identifier and name, but no phone number or email.',
           'Profile and cards: your name, job title, company, photo, logo and the contact details you add, each with the privacy level you choose (Public, Connections or Private).',
           'People you save: the details of people you meet, the event, place and city where you met, your private notes, tags and follow-up reminders.',
           'Connect requests: who you sent a request to or received one from, and the card each of you shared.',
@@ -154,8 +154,8 @@ const privacyUz: LegalDoc = {
       heading: 'Qanday ma’lumotlarni yig‘amiz',
       body: [
         [
-          'Akkaunt: Apple yoki Google orqali kirganingizda ular beradigan identifikator va email (Apple yashirin “relay” manzil berishi mumkin). Telegram orqali kirsangiz, Telegram akkauntingiz identifikatori va ismingizni olamiz — telefon raqami yoki email emas.',
-          'Profil va kartalar: ismingiz, lavozimingiz, kompaniya, rasm, logotip va qo‘shgan kontaktlaringiz — har biri siz tanlagan maxfiylik darajasi bilan (Hammaga, Ulanganlarga yoki Shaxsiy).',
+          'Akkaunt: Apple yoki Google orqali kirganingizda ular beradigan identifikator va email (Apple yashirin “relay” manzil berishi mumkin). Telegram orqali kirsangiz, Telegram akkauntingiz identifikatori va ismingizni olamiz. Telefon raqami yoki email olinmaydi.',
+          'Profil va kartalar: ismingiz, lavozimingiz, kompaniya, rasm, logotip va qo‘shgan kontaktlaringiz. Har biri siz tanlagan maxfiylik darajasi bilan saqlanadi (Hammaga, Ulanganlarga yoki Shaxsiy).',
           'Saqlagan odamlaringiz: tanishgan odamlaringiz ma’lumotlari, qayerda va qaysi tadbirda tanishganingiz, shaxsiy eslatmalaringiz, teglar va follow-up eslatmalari.',
           'Ulanish so‘rovlari: kimga so‘rov yuborganingiz yoki kimdan olganingiz va har biringiz ulashgan karta.',
           'Qurilma ma’lumotlari: push-bildirishnoma tokeni, ilova versiyasi, til va vaqt mintaqasi (eslatmalar mahalliy vaqtda kelishi uchun).',
@@ -207,7 +207,7 @@ const privacyUz: LegalDoc = {
     {
       heading: 'Qancha muddat saqlaymiz',
       body: [
-        'Akkauntingiz mavjud ekan, ma’lumotlaringizni saqlaymiz. Biror yozuvni o‘chirsangiz, u qurilmalaringizdan va serverlarimizdan o‘chadi; boshqa qurilmalaringiz bilishi uchun qisqa o‘chirish belgisi 90 kungacha saqlanadi. Akkauntni o‘chirsangiz, profilingiz, kartalaringiz, odamlaringiz, eslatmalaringiz va follow-up’laringiz serverlarimizdan darhol o‘chiriladi, karta havolalaringiz ishlamay qoladi. Siz bilan ulangan odamlarda siz ularga ulashgan karta qoladi — xuddi qog‘oz vizitka kabi.',
+        'Akkauntingiz mavjud ekan, ma’lumotlaringizni saqlaymiz. Biror yozuvni o‘chirsangiz, u qurilmalaringizdan va serverlarimizdan o‘chadi; boshqa qurilmalaringiz bilishi uchun qisqa o‘chirish belgisi 90 kungacha saqlanadi. Akkauntni o‘chirsangiz, profilingiz, kartalaringiz, odamlaringiz, eslatmalaringiz va follow-up’laringiz serverlarimizdan darhol o‘chiriladi, karta havolalaringiz ishlamay qoladi. Siz bilan ulangan odamlarda siz ularga ulashgan karta qoladi, xuddi qog‘oz vizitka kabi.',
       ],
     },
     {
@@ -242,8 +242,8 @@ const privacyRu: LegalDoc = {
       heading: 'Какие данные мы собираем',
       body: [
         [
-          'Аккаунт: идентификатор и email, которые передают Apple или Google при входе (Apple может передать скрытый relay-адрес). При входе через Telegram мы получаем идентификатор аккаунта Telegram и имя — без номера телефона и email.',
-          'Профиль и визитки: имя, должность, компания, фото, логотип и добавленные контакты — каждый с выбранным вами уровнем доступа (Всем, Контактам или Только мне).',
+          'Аккаунт: идентификатор и email, которые передают Apple или Google при входе (Apple может передать скрытый relay-адрес). При входе через Telegram мы получаем идентификатор аккаунта Telegram и имя. Номер телефона и email мы не получаем.',
+          'Профиль и визитки: имя, должность, компания, фото, логотип и добавленные контакты, каждый с выбранным вами уровнем доступа (Всем, Контактам или Только мне).',
           'Сохранённые люди: данные людей, с которыми вы познакомились, мероприятие, место и город знакомства, ваши личные заметки, теги и напоминания.',
           'Запросы на обмен: кому вы отправили запрос или от кого получили, и визитка, которой поделился каждый.',
           'Данные устройства: токен push-уведомлений, версия приложения, язык и часовой пояс (чтобы напоминания приходили по местному времени).',
@@ -295,7 +295,7 @@ const privacyRu: LegalDoc = {
     {
       heading: 'Сколько мы их храним',
       body: [
-        'Пока существует ваш аккаунт. Удалённая запись стирается с ваших устройств и наших серверов; короткая отметка об удалении хранится до 90 дней, чтобы о ней узнали другие ваши устройства. При удалении аккаунта профиль, визитки, люди, заметки и напоминания сразу удаляются с наших серверов, а ссылки визиток перестают работать. У людей, с которыми вы обменялись визитками, остаётся визитка, которой вы поделились, — как с бумажной.',
+        'Пока существует ваш аккаунт. Удалённая запись стирается с ваших устройств и наших серверов; короткая отметка об удалении хранится до 90 дней, чтобы о ней узнали другие ваши устройства. При удалении аккаунта профиль, визитки, люди, заметки и напоминания сразу удаляются с наших серверов, а ссылки визиток перестают работать. У людей, с которыми вы обменялись визитками, остаётся визитка, которой вы поделились, как и с бумажной визиткой.',
       ],
     },
     {
@@ -334,7 +334,7 @@ const termsEn: LegalDoc = {
     {
       heading: 'Your content',
       body: [
-        'Your cards, notes and contacts remain yours. You give us permission to store and show them only as needed to run the service — for example, to publish the fields you made Public on your card page. You can delete them at any time.',
+        'Your cards, notes and contacts remain yours. You give us permission to store and show them only as needed to run the service, for example to publish the fields you made Public on your card page. You can delete them at any time.',
       ],
     },
     {
@@ -385,13 +385,13 @@ const termsUz: LegalDoc = {
     {
       heading: 'Akkauntingiz',
       body: [
-        'Siz Apple, Google yoki Telegram orqali kirasiz va akkauntingizda sodir bo‘ladigan narsalar uchun javobgarsiz. Kartalaringizda to‘g‘ri ma’lumot bering, boshqalarning ma’lumotlarini esa faqat asosli sabab bo‘lganda qo‘shing — masalan, ular bilan tanishgan bo‘lsangiz.',
+        'Siz Apple, Google yoki Telegram orqali kirasiz va akkauntingizda sodir bo‘ladigan narsalar uchun javobgarsiz. Kartalaringizda to‘g‘ri ma’lumot bering, boshqalarning ma’lumotlarini esa faqat asosli sabab bo‘lganda qo‘shing, masalan, ular bilan tanishgan bo‘lsangiz.',
       ],
     },
     {
       heading: 'Sizning kontentingiz',
       body: [
-        'Kartalaringiz, eslatmalaringiz va kontaktlaringiz sizniki bo‘lib qoladi. Siz bizga ularni faqat xizmatni ishlatish uchun zarur bo‘lgan darajada saqlash va ko‘rsatishga ruxsat berasiz — masalan, “Hammaga” deb belgilagan maydonlarni karta sahifangizda ko‘rsatish. Ularni istalgan payt o‘chirishingiz mumkin.',
+        'Kartalaringiz, eslatmalaringiz va kontaktlaringiz sizniki bo‘lib qoladi. Siz bizga ularni faqat xizmatni ishlatish uchun zarur bo‘lgan darajada saqlash va ko‘rsatishga ruxsat berasiz, masalan, “Hammaga” deb belgilagan maydonlarni karta sahifangizda ko‘rsatish. Ularni istalgan payt o‘chirishingiz mumkin.',
       ],
     },
     {
@@ -409,7 +409,7 @@ const termsUz: LegalDoc = {
     {
       heading: 'Nameshake Pro',
       body: [
-        'Pro — App Store orqali sotiladigan avtomatik yangilanadigan obuna. To‘lov Apple akkauntingizdan olinadi va davr tugashidan kamida 24 soat oldin o‘chirmasangiz, avtomatik yangilanadi. Obunani Sozlamalar → Apple akkaunt → Obunalar bo‘limida boshqaring yoki bekor qiling. Ilovani yoki akkauntni o‘chirish obunani bekor qilmaydi. Pulni qaytarish masalasini Apple hal qiladi.',
+        'Pro bu App Store orqali sotiladigan avtomatik yangilanadigan obuna. To‘lov Apple akkauntingizdan olinadi va davr tugashidan kamida 24 soat oldin o‘chirmasangiz, avtomatik yangilanadi. Obunani Sozlamalar → Apple akkaunt → Obunalar bo‘limida boshqaring yoki bekor qiling. Ilovani yoki akkauntni o‘chirish obunani bekor qilmaydi. Pulni qaytarish masalasini Apple hal qiladi.',
       ],
     },
     {
@@ -442,13 +442,13 @@ const termsRu: LegalDoc = {
     {
       heading: 'Ваш аккаунт',
       body: [
-        'Вы входите через Apple, Google или Telegram и отвечаете за то, что происходит в вашем аккаунте. Указывайте на визитках достоверные данные, а данные других людей добавляйте только при законном основании — например, если вы с ними познакомились.',
+        'Вы входите через Apple, Google или Telegram и отвечаете за то, что происходит в вашем аккаунте. Указывайте на визитках достоверные данные, а данные других людей добавляйте только при законном основании, например если вы с ними познакомились.',
       ],
     },
     {
       heading: 'Ваш контент',
       body: [
-        'Ваши визитки, заметки и контакты остаются вашими. Вы разрешаете нам хранить и показывать их только в той мере, в какой это нужно для работы сервиса, — например, показывать поля «Всем» на странице визитки. Вы можете удалить их в любой момент.',
+        'Ваши визитки, заметки и контакты остаются вашими. Вы разрешаете нам хранить и показывать их только в той мере, в какой это нужно для работы сервиса, например чтобы показывать поля «Всем» на странице визитки. Вы можете удалить их в любой момент.',
       ],
     },
     {
@@ -466,7 +466,7 @@ const termsRu: LegalDoc = {
     {
       heading: 'Nameshake Pro',
       body: [
-        'Pro — автоматически продлеваемая подписка, продаваемая через App Store. Оплата списывается с вашего Apple-аккаунта и продлевается, если не отключить её не позднее чем за 24 часа до конца периода. Управлять подпиской или отменить её можно в Настройки → Apple-аккаунт → Подписки. Удаление приложения или аккаунта не отменяет подписку. Возвраты обрабатывает Apple.',
+        'Pro это автоматически продлеваемая подписка, которая продаётся через App Store. Оплата списывается с вашего Apple-аккаунта и продлевается, если не отключить её не позднее чем за 24 часа до конца периода. Управлять подпиской или отменить её можно в Настройки → Apple-аккаунт → Подписки. Удаление приложения или аккаунта не отменяет подписку. Возвраты обрабатывает Apple.',
       ],
     },
     {
@@ -498,15 +498,15 @@ const helpEn: LegalDoc = {
   sections: [
     {
       heading: 'How do I share my card?',
-      body: ['Open the app and tap Show QR — the other person scans it with their camera. You can also tap Share to send the link, add the card to Apple Wallet, or use Connect to swap cards with someone nearby who also has Nameshake.'],
+      body: ['Open the app and tap Show QR. The other person scans it with their camera. You can also tap Share to send the link, add the card to Apple Wallet, or use Connect to swap cards with someone nearby who also has Nameshake.'],
     },
     {
       heading: 'Who sees which details?',
       body: [
         [
-          'Public — anyone with your card link or QR code.',
-          'Connections — only people you have swapped cards with in the app.',
-          'Private — only you; never shown on a card.',
+          'Public: anyone with your card link or QR code.',
+          'Connections: only people you have swapped cards with in the app.',
+          'Private: only you; never shown on a card.',
         ],
         'Set this for each field in Profile → Contact Details. Each card can also hide fields it doesn’t need.',
       ],
@@ -532,15 +532,15 @@ const helpUz: LegalDoc = {
   sections: [
     {
       heading: 'Kartamni qanday ulashaman?',
-      body: ['Ilovani oching va “Show QR”ni bosing — qarshingizdagi odam uni kamerasi bilan skanerlaydi. “Share” orqali havolani yuborishingiz, kartani Apple Wallet’ga qo‘shishingiz yoki “Connect” bilan yoningizdagi Nameshake foydalanuvchisi bilan karta almashishingiz ham mumkin.'],
+      body: ['Ilovani oching va “Show QR”ni bosing, qarshingizdagi odam uni kamerasi bilan skanerlaydi. “Share” orqali havolani yuborishingiz, kartani Apple Wallet’ga qo‘shishingiz yoki “Connect” bilan yoningizdagi Nameshake foydalanuvchisi bilan karta almashishingiz ham mumkin.'],
     },
     {
       heading: 'Qaysi ma’lumotni kim ko‘radi?',
       body: [
         [
-          'Hammaga — karta havolangiz yoki QR kodingiz bor har kim.',
-          'Ulanganlarga — faqat ilovada siz bilan karta almashgan odamlar.',
-          'Shaxsiy — faqat siz; kartada hech qachon ko‘rinmaydi.',
+          'Hammaga: karta havolangiz yoki QR kodingiz bor har kim.',
+          'Ulanganlarga: faqat ilovada siz bilan karta almashgan odamlar.',
+          'Shaxsiy: faqat siz; kartada hech qachon ko‘rinmaydi.',
         ],
         'Buni har bir maydon uchun Profile → Contact Details bo‘limida belgilaysiz. Har bir karta kerak bo‘lmagan maydonlarni yashirishi ham mumkin.',
       ],
@@ -566,15 +566,15 @@ const helpRu: LegalDoc = {
   sections: [
     {
       heading: 'Как поделиться визиткой?',
-      body: ['Откройте приложение и нажмите Show QR — собеседник сканирует код камерой. Также можно нажать Share и отправить ссылку, добавить визитку в Apple Wallet или через Connect обменяться визитками с человеком рядом, у которого тоже есть Nameshake.'],
+      body: ['Откройте приложение и нажмите Show QR, и собеседник сканирует код камерой. Также можно нажать Share и отправить ссылку, добавить визитку в Apple Wallet или через Connect обменяться визитками с человеком рядом, у которого тоже есть Nameshake.'],
     },
     {
       heading: 'Кто видит какие данные?',
       body: [
         [
-          'Всем — любой, у кого есть ссылка или QR-код визитки.',
-          'Контактам — только люди, с которыми вы обменялись визитками в приложении.',
-          'Только мне — только вы; на визитке никогда не показывается.',
+          'Всем: любой, у кого есть ссылка или QR-код визитки.',
+          'Контактам: только люди, с которыми вы обменялись визитками в приложении.',
+          'Только мне: только вы; на визитке никогда не показывается.',
         ],
         'Это настраивается для каждого поля в Profile → Contact Details. Каждая визитка также может скрывать ненужные поля.',
       ],
@@ -585,7 +585,7 @@ const helpRu: LegalDoc = {
     },
     {
       heading: 'Как удалить визитку или аккаунт?',
-      body: ['Визитку удалите через её меню (…) на главном экране. Аккаунт — в Profile → Privacy & Data → Delete Account; данные будут удалены с наших серверов. Если вы оформили Pro, отмените подписку и в Настройках iOS.'],
+      body: ['Визитку удалите через её меню (…) на главном экране. Аккаунт удаляется в Profile → Privacy & Data → Delete Account; данные будут удалены с наших серверов. Если вы оформили Pro, отмените подписку и в Настройках iOS.'],
     },
     {
       heading: 'Как восстановить Pro на новом iPhone?',
