@@ -1,7 +1,7 @@
 # Cardy — session state
 
 ## Files
-- `Cardy App v4.dc.html` — current prototype (iOS-native, teal tint). v1–v3 kept as history.
+- `Cardy App v8.dc.html` — current prototype (see SPEC.md). v1–v7 live in `archive/` as history.
 - `CardFace.dc.html` — card renderer (9 templates), used via `<dc-import name="CardFace" vm="…">`.
 - `vendor/phosphor/*` — local Phosphor icon fonts (regular/fill/bold), linked in helmet (CDN broke publish).
 
