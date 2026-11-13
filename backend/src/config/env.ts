@@ -66,7 +66,7 @@ const schema = z
     APNS_KEY_ID: optional,
     APNS_TEAM_ID: optional,
     APNS_PRIVATE_KEY: pem,
-    APNS_TOPIC: z.string().default('app.tanishly.ios'),
+    APNS_TOPIC: z.string().default('app.nameshake.ios'),
 
     APP_STORE_ISSUER_ID: optional,
     APP_STORE_KEY_ID: optional,
@@ -74,7 +74,7 @@ const schema = z
     APP_STORE_APP_APPLE_ID: optional,
     APP_STORE_ENVIRONMENT: z.enum(['Production', 'Sandbox', 'Xcode', 'LocalTesting']).default('Sandbox'),
 
-    PASS_TYPE_IDENTIFIER: z.string().default('pass.app.tanishly.ios.card'),
+    PASS_TYPE_IDENTIFIER: z.string().default('pass.app.nameshake.ios.card'),
     PASS_TEAM_ID: optional,
     PASS_CERT_PEM: pem,
     PASS_KEY_PEM: pem,
@@ -98,7 +98,7 @@ const schema = z
     /** Telegram's OIDC issuer; tests point it at a local stand-in. */
     TELEGRAM_OIDC_ISSUER: z.url().default('https://oauth.telegram.org'),
     /** The app's URL scheme: the sign-in callback hands the authorization code back through it. */
-    APP_URL_SCHEME: z.string().regex(/^[a-z][a-z0-9+.-]*$/).default('tanishly'),
+    APP_URL_SCHEME: z.string().regex(/^[a-z][a-z0-9+.-]*$/).default('nameshake'),
     /** "Notify me" link for Android visitors on card pages (e.g. a waitlist form). Empty → hidden. */
     ANDROID_WAITLIST_URL: optional,
 

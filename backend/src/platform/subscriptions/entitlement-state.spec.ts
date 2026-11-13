@@ -12,7 +12,7 @@ function tx(overrides: Partial<JWSTransactionDecodedPayload> = {}): JWSTransacti
   return {
     originalTransactionId: '1000',
     transactionId: '2000',
-    productId: 'app.tanishly.ios.pro.yearly',
+    productId: 'app.nameshake.ios.pro.yearly',
     expiresDate: at(30).getTime(),
     environment: 'Sandbox',
     ...overrides,
@@ -55,8 +55,8 @@ describe('entitlement state', () => {
   it('never rolls the same subscription back to an earlier period', () => {
     const current = stored(snapshotFrom(tx({ expiresDate: at(30).getTime() }), undefined, undefined, NOW));
     expect(nextEntitlement(current, snapshotFrom(tx({ expiresDate: at(-5).getTime(), revocationDate: NOW.getTime() }), undefined, undefined, NOW), NOW)).toBeNull();
-    const renewed = nextEntitlement(current, snapshotFrom(tx({ expiresDate: at(60).getTime(), productId: 'app.tanishly.ios.pro.monthly' }), undefined, undefined, NOW), NOW);
-    expect(renewed).toMatchObject({ expiresAt: at(60), productId: 'app.tanishly.ios.pro.monthly' });
+    const renewed = nextEntitlement(current, snapshotFrom(tx({ expiresDate: at(60).getTime(), productId: 'app.nameshake.ios.pro.monthly' }), undefined, undefined, NOW), NOW);
+    expect(renewed).toMatchObject({ expiresAt: at(60), productId: 'app.nameshake.ios.pro.monthly' });
   });
 
   it('maps notifications: billing retry keeps Pro, expiry/refund/revoke end it', () => {

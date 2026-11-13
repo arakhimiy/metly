@@ -6,7 +6,7 @@ import { cardContactsView } from '../records/contacts';
 import { cardUrl, designToWire } from '../records/mappers';
 import { SLUG_PATTERN } from '../records/slug';
 import { firstName } from '../records/snapshot';
-import type { CardDesign, ContactEntry, ContactField, LabeledPhone, PhoneLabel } from '../records/wire';
+import { type CardDesign, type ContactEntry, type ContactField, type LabeledPhone, type PhoneLabel, cardIdentity } from '../records/wire';
 import { safeHttpUrl } from './html';
 
 export type ResolvedCard =
@@ -20,6 +20,7 @@ export interface PublicView {
   slug: string;
   url: string;
   card: Card;
+  /** The owner's profile with the card's switches applied (a hidden job title / company is blank). */
   profile: Profile;
   design: CardDesign;
   /** The card's selection ∩ Public, profile order — never Connections or Private. */
@@ -82,7 +83,7 @@ export class PublicCardService {
       slug,
       url: cardUrl(this.env.WEB_BASE_URL, slug),
       card,
-      profile,
+      profile: { ...profile, ...cardIdentity(profile, design) },
       design,
       contacts,
       fields,

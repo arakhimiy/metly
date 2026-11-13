@@ -1,7 +1,7 @@
 import type { Card, Profile } from '../generated/prisma/client';
 import { type Audience, cardContactsView, type ProfileContactColumns } from './contacts';
 import { cardUrl, designToWire } from './mappers';
-import type { CardDesign, ContactField } from './wire';
+import { type CardDesign, type ContactField, cardIdentity } from './wire';
 
 /**
  * What a viewer may see of an owner's contact entries:
@@ -27,8 +27,7 @@ export function cardSnapshot(card: Card, profile: Profile, audience: Audience, w
     cardName: card.name,
     design: designToWire(design),
     fullName: profile.fullName,
-    jobTitle: profile.jobTitle,
-    company: profile.company,
+    ...cardIdentity(profile, design),
     fields: visibleFields(profile, design, audience),
     ...(card.slug ? { url: cardUrl(webBaseUrl, card.slug) } : {}),
   };

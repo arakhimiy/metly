@@ -3,7 +3,7 @@ import { CARD_PAGE_TEXT, type CardPageText, UNAVAILABLE_PAGE_TEXT } from '../i18
 import type { CardDesign } from '../records/wire';
 import { type ContactAction, contactAction, PHONE_KEYS } from './contact-links';
 import { html, type SafeHtml, safeHttpUrl, trusted } from './html';
-import { type PageColors, pageColors } from './palette';
+import { auroraColors, holographicFoil, metalFoil, type PageColors, pageColors } from './palette';
 import type { PublicView } from './public-card.service';
 import type { WebPlatform } from './visitor';
 
@@ -114,40 +114,80 @@ svg{width:20px;height:20px;fill:currentColor;flex:none}
 `;
 
 const CARD_CSS = String.raw`
-.face{position:relative;display:flex;flex-direction:column;gap:14px;aspect-ratio:1.586/1;width:100%;padding:22px 22px 20px;border-radius:20px;background:var(--c-bg);color:var(--c-fg);border:1px solid rgba(var(--c-fg-rgb),.10);box-shadow:0 1px 2px rgba(0,0,0,.06),0 16px 40px -14px var(--shadow)}
+.face{position:relative;container-type:inline-size;aspect-ratio:85/55;width:100%;overflow:hidden;border-radius:4.4cqw;background:var(--c-bg);color:var(--c-fg);border:1px solid rgba(var(--c-fg-rgb),.10);box-shadow:0 1px 2px rgba(0,0,0,.06),0 16px 40px -14px var(--shadow);font-size:2.8cqw;line-height:1.3}
 .face.fill-gradient{background:linear-gradient(140deg,var(--c-bg) 22%,var(--c-grad-end))}
-.face-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.face-top:empty{display:none}
-.face-text{min-width:0}
-.name{margin:0;font-size:clamp(22px,6.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.01em;overflow-wrap:anywhere}
-.role{margin:6px 0 0;color:var(--c-muted);font-size:15px;line-height:1.3;overflow-wrap:anywhere}
-.face-contacts{list-style:none;margin:auto 0 0;padding:0;display:grid;gap:5px;font-size:13px;line-height:1.25;min-width:0}
-.face-contacts li{display:flex;align-items:center;gap:8px;min-width:0}
-.face-contacts svg{width:15px;height:15px;color:var(--c-accent)}
+.face *{margin:0}
+.face .in{position:absolute;inset:8cqw}
+.face .name{font-size:6cqw;line-height:1.08;font-weight:600;letter-spacing:-.015em;overflow-wrap:anywhere}
+.face .role{color:var(--c-muted);font-size:3cqw;margin-top:1.1cqw}
+.face .caps{text-transform:uppercase;letter-spacing:.2em;font-weight:600;font-size:2.5cqw}
+.face-contacts{list-style:none;padding:0;display:grid;gap:1cqw;font-size:2.7cqw;line-height:1.25;min-width:0;font-variant-numeric:tabular-nums}
+.face-contacts li{display:flex;align-items:baseline;gap:2.2cqw;min-width:0}
+.face-contacts i{font-style:normal;color:var(--c-muted);font-size:.86em;flex:none;min-width:4.6cqw}
+.face-contacts svg{width:2.9cqw;height:2.9cqw;color:var(--c-accent);align-self:center}
 .face-contacts span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--c-panel);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:var(--c-fg);flex:none}
-.logo{max-height:32px;max-width:96px;object-fit:contain}
-.font-rounded .face-text,.font-rounded.face{font-family:ui-rounded,"SF Pro Rounded","Nunito",-apple-system,sans-serif}
-.font-serif .face-text,.font-serif.face{font-family:ui-serif,"New York",Georgia,"Times New Roman",serif}
-.font-mono .face-text,.font-mono.face{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
-.align-center .face-text{text-align:center}
-.align-center .face-top,.align-center .face-contacts li{justify-content:center}
-.tpl-professional .face-text{border-left:3px solid var(--c-accent);padding-left:12px}
-.tpl-professional .role{text-transform:uppercase;letter-spacing:.06em;font-size:12px;font-weight:600}
-.tpl-bold .name{font-size:clamp(28px,8.6vw,38px);font-weight:800;letter-spacing:-.025em}
-.tpl-bold .face-text::before{content:"";display:block;width:36px;height:6px;border-radius:3px;background:var(--c-accent);margin-bottom:14px}
-.tpl-bold.align-center .face-text::before{margin:0 auto 14px}
-.tpl-modern .face-top,.tpl-stack .face-top{justify-content:flex-start}
-.tpl-stack .avatar{width:64px;height:64px}
-.tpl-split{display:grid;grid-template-columns:38% 1fr;grid-template-rows:auto 1fr;padding:0;gap:0}
-.tpl-split .face-top{display:flex;grid-row:1/3;background:var(--c-panel);align-items:center;justify-content:center;height:100%;border-radius:19px 0 0 19px}
-.tpl-split .face-text{padding:20px 18px 0}
-.tpl-split .face-contacts{padding:12px 18px 18px}
-.tpl-split .avatar{width:72px;height:72px;background:var(--c-bg)}
-.tpl-terminal .prompt{margin:0 0 6px;color:var(--c-accent);font-size:13px}
-.tpl-terminal .name{font-size:clamp(20px,6vw,26px)}
-.tpl-editorial .name{font-weight:500;letter-spacing:0}
-.tpl-editorial .role{font-style:italic;border-top:1px solid rgba(var(--c-fg-rgb),.24);padding-top:8px;margin-top:10px}
+.face .logo{display:block;max-height:6cqw;max-width:16cqw;object-fit:contain;object-position:left}
+.face .avatar{width:15cqw;height:15cqw;border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:5cqw}
+.font-rounded.face{font-family:ui-rounded,"SF Pro Rounded","Nunito",-apple-system,sans-serif}
+.font-serif.face{font-family:ui-serif,"New York",Georgia,"Times New Roman",serif}
+.font-mono.face{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.tpl-minimal .top{display:flex;align-items:center;gap:2.2cqw}
+.tpl-minimal .bottom{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;justify-content:space-between;gap:4cqw}
+.tpl-minimal .face-contacts{max-width:50cqw}
+.tpl-professional .deboss{position:absolute;left:0;top:0;bottom:0;width:44cqw;display:flex;align-items:center;justify-content:center;font-size:34cqw;font-weight:800;line-height:1;color:var(--c-bg);text-shadow:-.35cqw -.35cqw .3cqw rgba(0,0,0,.6),.35cqw .35cqw .3cqw rgba(255,255,255,.12)}
+.tpl-professional.light .deboss{text-shadow:-.35cqw -.35cqw .3cqw rgba(0,0,0,.18),.35cqw .35cqw .3cqw rgba(255,255,255,.9)}
+.tpl-professional .deboss img{max-width:26cqw;max-height:30cqw;filter:drop-shadow(-.3cqw -.3cqw .25cqw rgba(0,0,0,.5)) drop-shadow(.3cqw .3cqw .25cqw rgba(255,255,255,.1))}
+.tpl-professional .in{left:44cqw;display:flex;flex-direction:column;justify-content:center;inset-inline-end:7cqw}
+.tpl-professional .name{font-size:4.6cqw;color:var(--c-accent)}
+.tpl-professional .role{color:var(--c-fg);font-size:2.9cqw}
+.tpl-professional .co{color:var(--c-muted);font-size:2.3cqw;letter-spacing:.16em;text-transform:uppercase;margin-top:.9cqw}
+.tpl-professional .face-contacts{margin-top:4.5cqw}
+.tpl-modern .bar{position:absolute;left:8cqw;top:8cqw;width:6.5cqw;height:26cqw;border-radius:.4cqw;background:var(--foil)}
+.tpl-modern .in{left:19cqw;right:16cqw;display:flex;flex-direction:column}
+.tpl-modern .name{font-size:4.2cqw;text-transform:uppercase;letter-spacing:.06em}
+.tpl-modern .role{font-style:italic;color:var(--c-fg);opacity:.85}
+.tpl-modern .face-contacts{margin-top:auto;font-weight:500;font-size:2.8cqw}
+.tpl-modern .word{position:absolute;right:6cqw;top:8cqw;bottom:8cqw;writing-mode:vertical-rl;transform:rotate(180deg);font-size:6.2cqw;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:transparent;-webkit-text-stroke:.18cqw var(--c-fg);white-space:nowrap;overflow:hidden}
+.tpl-bold .word{font-size:12cqw;font-weight:800;letter-spacing:-.03em;line-height:.95;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.tpl-bold .tag{font-size:2.3cqw;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--c-muted);margin-top:2.2cqw}
+.tpl-bold .who{position:absolute;left:0;bottom:0;display:grid;gap:.7cqw}
+.tpl-bold .who b{font-size:3.1cqw}
+.tpl-bold .mark{position:absolute;right:0;bottom:0;max-width:9cqw;max-height:9cqw}
+.tpl-bold.align-center .in{text-align:center}
+.tpl-bold.align-center .who{left:0;right:0;justify-items:center}
+.tpl-gradient{background:linear-gradient(135deg,var(--a1),var(--a2) 55%,var(--a3))!important;color:var(--a-ink)}
+.tpl-gradient::before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(ellipse 140% 80% at 30% 120%,transparent 0 3.2cqw,rgba(255,255,255,.16) 3.2cqw calc(3.2cqw + 1px));mix-blend-mode:soft-light}
+.tpl-gradient .word{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:6.6cqw;font-weight:500;letter-spacing:.3em;text-transform:uppercase;padding:0 8cqw;text-align:center}
+.tpl-gradient .foot{position:absolute;left:8cqw;right:8cqw;bottom:7cqw;display:flex;justify-content:space-between;gap:4cqw;font-size:2.6cqw;letter-spacing:.06em;opacity:.92;white-space:nowrap}
+.tpl-gradient .foot span{overflow:hidden;text-overflow:ellipsis}
+.tpl-split .panel{position:absolute;left:0;top:0;bottom:0;width:36cqw;background:var(--c-accent);display:flex;align-items:center;justify-content:center;color:var(--c-on-panel)}
+.tpl-split .panel img.logo{max-width:20cqw;max-height:15cqw;object-position:center}
+.tpl-split .panel .avatar{background:rgba(255,255,255,.18)}
+.tpl-split .in{left:42.5cqw;right:6cqw;display:flex;flex-direction:column;justify-content:center}
+.tpl-split .name{font-size:5.2cqw}
+.tpl-split .role{font-size:2.9cqw}
+.tpl-split .rule{width:7cqw;height:.35cqw;background:var(--c-accent);margin:3.4cqw 0}
+.tpl-split .face-contacts li{align-items:center;gap:1.8cqw}
+.tpl-terminal .p{color:var(--c-muted);font-size:2.6cqw}
+.tpl-terminal .p b,.tpl-terminal .face-contacts i{color:var(--c-accent);font-weight:400}
+.tpl-terminal .name{font-size:5.2cqw;margin-top:1.2cqw}
+.tpl-terminal .name::after{content:"";display:inline-block;width:2.4cqw;height:4.2cqw;background:var(--c-accent);margin-left:1cqw;vertical-align:-.4cqw}
+.tpl-terminal .face-contacts{position:absolute;left:0;bottom:0;max-width:84cqw}
+.tpl-stack .in{inset:6cqw 8cqw;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.tpl-stack .logo{max-height:8.5cqw;max-width:24cqw;object-position:center;margin-bottom:2.6cqw}
+.tpl-stack .avatar{width:11cqw;height:11cqw;margin-bottom:2.6cqw;background:var(--c-panel);font-size:4cqw}
+.tpl-stack .name{font-size:5.4cqw}
+.tpl-stack .rule{width:8cqw;height:.35cqw;background:var(--c-accent);margin:3cqw 0}
+.tpl-stack .face-contacts{display:flex;flex-wrap:wrap;justify-content:center;gap:.9cqw 3.2cqw;font-size:2.6cqw}
+.tpl-editorial .art{position:absolute;left:-8cqw;top:50%;width:44cqw;height:44cqw;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;font:400 44cqw/1 ui-serif,"New York",Georgia,serif;background:var(--foil);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tpl-editorial .art.img{background:none}
+.tpl-editorial .art img{max-width:36cqw;max-height:36cqw}
+.tpl-editorial .in{left:44cqw;display:flex;flex-direction:column}
+.tpl-editorial .name{font-weight:500;font-size:5.8cqw;letter-spacing:.01em}
+.tpl-editorial .role{font-style:italic;font-size:3.1cqw}
+.tpl-editorial .hr{height:max(.3cqw,1px);background:var(--foil);margin:3cqw 0}
+.tpl-editorial .face-contacts{gap:.7cqw;font-size:2.8cqw}
+.tpl-editorial .co{margin-top:auto;font-size:2.9cqw;letter-spacing:.24em;text-transform:uppercase}
 .notice{display:flex;gap:10px;align-items:center;margin:16px 0 0;padding:12px 14px;border-radius:14px;background:var(--surface);font-size:14px}
 .notice span{flex:1}
 .notice .btn{width:auto;min-height:36px;padding:6px 12px;font-size:14px;white-space:nowrap}
@@ -468,7 +508,7 @@ function initials(fullName: string): string {
 }
 
 function effectiveAlignment(design: CardDesign): 'leading' | 'center' {
-  return ['minimal', 'bold', 'gradient'].includes(design.template) ? design.alignment : 'leading';
+  return design.template === 'bold' ? design.alignment : 'leading';
 }
 
 function effectiveFont(design: CardDesign): string {
@@ -480,36 +520,106 @@ function effectiveFont(design: CardDesign): string {
 /** Contacts printed on the face itself, like the app's card (the full list follows below it). */
 const FACE_CONTACTS = 3;
 
+/** Templates that print contacts with a text label (`tel`, `mail`) instead of an icon. */
+const LABELLED = new Set(['minimal', 'terminal']);
+/** Templates that print plain values. */
+const PLAIN = new Set(['professional', 'modern', 'bold', 'stack', 'editorial']);
+
+function faceContacts(template: string, actions: ContactAction[], limit = FACE_CONTACTS): SafeHtml | '' {
+  if (actions.length === 0) return '';
+  const row = (a: ContactAction) =>
+    LABELLED.has(template)
+      ? html`<li><i>${a.key}</i><span>${a.display}</span></li>`
+      : PLAIN.has(template)
+        ? html`<li><span>${a.display}</span></li>`
+        : html`<li>${ICONS[a.kind] ?? ''}<span>${a.display}</span></li>`;
+  return html`<ul class="face-contacts" aria-hidden="true">${actions.slice(0, limit).map(row)}</ul>`;
+}
+
+/**
+ * The card face — an HTML mirror of the app's nine templates (MetlyCardKit `Face/Templates`, card templates v2).
+ * Sizes are in `cqw` (percent of the card width), the same unit the app uses, so the layout matches at any width.
+ */
 function face(view: PublicView, actions: ContactAction[]): SafeHtml {
   const { design, profile } = view;
-  const gradient = design.template === 'gradient' || design.background === 'gradient';
+  const t = design.template;
   const classes = [
     'face',
-    `tpl-${design.template}`,
+    `tpl-${t}`,
     `font-${effectiveFont(design)}`,
     `align-${effectiveAlignment(design)}`,
-    gradient ? 'fill-gradient' : 'fill-solid',
+    design.appearance === 'light' ? 'light' : 'dark',
+    t !== 'gradient' && design.background === 'gradient' ? 'fill-gradient' : 'fill-solid',
   ].join(' ');
-  const showsAvatar = ['modern', 'split', 'stack'].includes(design.template);
-  const avatar = showsAvatar
-    ? view.photoUrl
-      ? html`<img class="avatar" src="${view.photoUrl}" alt="" width="56" height="56" referrerpolicy="no-referrer">`
-      : html`<span class="avatar" aria-hidden="true">${initials(view.fullName)}</span>`
-    : '';
-  const logo =
-    design.template === 'professional' && view.logoUrl
-      ? html`<img class="logo" src="${view.logoUrl}" alt="" referrerpolicy="no-referrer">`
-      : '';
-  const role = [profile.jobTitle.trim(), profile.company.trim()].filter(Boolean).join(' · ');
-  return html`<section class="${classes}" aria-label="${view.fullName}">
-<div class="face-top">${avatar}${logo}</div>
-<div class="face-text">
-${design.template === 'terminal' ? html`<p class="prompt">$ whoami</p>` : ''}
-<h1 class="name">${view.fullName}</h1>
-${role ? html`<p class="role">${role}</p>` : ''}
-</div>
-${actions.length > 0 ? html`<ul class="face-contacts" aria-hidden="true">${actions.slice(0, FACE_CONTACTS).map((a) => html`<li>${ICONS[a.kind] ?? ''}<span>${a.display}</span></li>`)}</ul>` : ''}
-</section>`;
+  const title = profile.jobTitle.trim();
+  const company = profile.company.trim();
+  const name = view.fullName;
+  const logo = view.logoUrl;
+  const img = (cls: string) => (logo ? html`<img class="${cls}" src="${logo}" alt="" referrerpolicy="no-referrer">` : '');
+  const avatar = view.photoUrl
+    ? html`<img class="avatar" src="${view.photoUrl}" alt="" referrerpolicy="no-referrer">`
+    : html`<span class="avatar" aria-hidden="true">${initials(name)}</span>`;
+  const monogram = ([...company][0] ?? [...name][0] ?? '?').toUpperCase();
+  const contacts = faceContacts(t, actions);
+  let body: SafeHtml;
+
+  switch (t) {
+    case 'professional':
+      body = html`<div class="deboss" aria-hidden="true">${logo ? img('') : monogram}</div>
+<div class="in"><h1 class="name">${name}</h1>${title ? html`<p class="role">${title}</p>` : ''}${company ? html`<p class="co">${company}</p>` : ''}${contacts}</div>`;
+      break;
+    case 'modern':
+      body = html`<div class="bar" aria-hidden="true"></div>
+<div class="in"><h1 class="name">${name}</h1>${title ? html`<p class="role">${title}</p>` : ''}${contacts}</div>
+${company ? html`<div class="word" aria-hidden="true">${company}</div>` : ''}`;
+      break;
+    case 'bold': {
+      const word = company || (name.trim().split(/\s+/)[0] ?? name);
+      body = html`<div class="in"><p class="word" aria-hidden="true">${word}</p>${title ? html`<p class="tag">${title}</p>` : ''}
+<div class="who"><h1 class="name"><b>${name}</b></h1>${faceContacts(t, actions, 2)}</div>${logo && effectiveAlignment(design) === 'leading' ? img('mark') : ''}</div>`;
+      break;
+    }
+    case 'gradient': {
+      const link = actions.find((a) => a.kind === 'website') ?? actions[0];
+      const caption = [title, company].filter(Boolean).join(' · ');
+      body = html`<h1 class="word">${name}</h1>
+<div class="foot" aria-hidden="true"><span>${link?.display ?? ''}</span><span>${caption}</span></div>`;
+      break;
+    }
+    case 'split':
+      body = html`<div class="panel" aria-hidden="true">${logo ? img('logo') : avatar}</div>
+<div class="in"><h1 class="name">${name}</h1>${title ? html`<p class="role">${title}</p>` : ''}${company ? html`<p class="role">${company}</p>` : ''}<div class="rule"></div>${contacts}</div>`;
+      break;
+    case 'terminal': {
+      const folder = company.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '') || 'nameshake';
+      const comment = [title.toLowerCase(), company ? `@ ${company.toLowerCase()}` : ''].filter(Boolean).join(' ');
+      body = html`<div class="in"><p class="p" aria-hidden="true">~/${folder} <b>$</b> whoami</p><h1 class="name">${name}</h1>${comment ? html`<p class="role"># ${comment}</p>` : ''}${contacts}</div>`;
+      break;
+    }
+    case 'stack':
+      body = html`<div class="in">${logo ? img('logo') : view.photoUrl ? avatar : ''}<h1 class="name">${name}</h1>${[title, company].filter(Boolean).length ? html`<p class="role">${[title, company].filter(Boolean).join(' · ')}</p>` : ''}${actions.length ? html`<div class="rule"></div>` : ''}${contacts}</div>`;
+      break;
+    case 'editorial':
+      body = html`<div class="art${logo ? ' img' : ''}" aria-hidden="true">${logo ? img('') : monogram}</div>
+<div class="in"><h1 class="name">${name}</h1>${title ? html`<p class="role">${title}</p>` : ''}<div class="hr"></div>${contacts}${company ? html`<p class="co">${company}</p>` : ''}</div>`;
+      break;
+    default:
+      body = html`<div class="in"><div class="top">${img('logo')}${company ? html`<span class="caps">${company}</span>` : ''}</div>
+<div class="bottom"><div><h1 class="name">${name}</h1>${title ? html`<p class="role">${title}</p>` : ''}</div>${contacts}</div></div>`;
+  }
+  return html`<section class="${classes}" aria-label="${name}">${body}</section>`;
+}
+
+/** Per-card finish colours (foil, Aurora stops, Duotone panel ink) for the nonce'd style block — the CSP
+ * allows no inline `style` attributes. */
+function faceVariables(design: CardDesign): string {
+  const [a1, a2, a3] = auroraColors(design);
+  return [
+    `--foil:${design.template === 'editorial' ? metalFoil(design) : holographicFoil(design)}`,
+    `--a1:${a1};--a2:${a2};--a3:${a3}`,
+    `--a-ink:${design.appearance === 'light' ? 'var(--c-fg)' : '#ffffff'}`,
+    `--c-on-panel:${pageColors(design).onAccent}`,
+  ].join(';');
 }
 
 /**
@@ -581,7 +691,7 @@ ${head({
   description: role || t.description,
   ogLocale: t.ogLocale,
   colors,
-  extraCss: CARD_CSS,
+  extraCss: `${CARD_CSS}.face{${faceVariables(view.design)}}`,
   ogUrl: view.url,
   ogImage: view.photoUrl ? safeHttpUrl(view.photoUrl) : null,
   appBanner: banner,

@@ -585,9 +585,9 @@ describe('public web with App Store and team ids', () => {
     for (const path of ['/.well-known/apple-app-site-association', '/apple-app-site-association']) {
       const res = await request(app.getHttpServer()).get(path).expect(200);
       expect(res.headers['content-type']).toMatch(/^application\/json/);
-      expect(res.body.applinks.details[0].appIDs).toEqual(['TEAM123456.app.tanishly.ios']);
+      expect(res.body.applinks.details[0].appIDs).toEqual(['TEAM123456.app.nameshake.ios']);
       expect(res.body.applinks.details[0].components).toContainEqual({ '/': '/c/*', comment: 'Card pages' });
-      expect(res.body.webcredentials.apps).toEqual(['TEAM123456.app.tanishly.ios']);
+      expect(res.body.webcredentials.apps).toEqual(['TEAM123456.app.nameshake.ios']);
     }
   });
 

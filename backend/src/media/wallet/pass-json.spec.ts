@@ -36,7 +36,7 @@ const input = (overrides: { deletedAt?: Date | null; slug?: string | null; jobTi
       { kind: 'linkedin', value: 'kamola', privacy: 'public' },
     ],
   },
-  passTypeIdentifier: 'pass.app.tanishly.ios.card',
+  passTypeIdentifier: 'pass.app.nameshake.ios.card',
   teamIdentifier: 'TEAM123456',
   webServiceURL: 'https://api.metly.test/passkit',
   webBaseUrl: 'https://metly.test',
@@ -68,7 +68,7 @@ describe('buildPassJson', () => {
     const pass = buildPassJson(input());
     expect(pass).toMatchObject({
       formatVersion: 1,
-      passTypeIdentifier: 'pass.app.tanishly.ios.card',
+      passTypeIdentifier: 'pass.app.nameshake.ios.card',
       teamIdentifier: 'TEAM123456',
       serialNumber: '7b0c2f3e-1d2a-4c5b-9e8f-0a1b2c3d4e5f',
       authenticationToken: 'token-token-token-token-1234',

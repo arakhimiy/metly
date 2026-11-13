@@ -13,7 +13,7 @@ export const FREE_LIMITS: PlanLimits = { maxCards: 2, maxOpenFollowUps: 5, maxAc
 export const PRO_LIMITS: PlanLimits = { maxCards: null, maxOpenFollowUps: null, maxActiveEvents: null };
 
 /** StoreKit product ids the app sells (`Metly/Metly.storekit`, `ProProduct.swift`). */
-export const PRO_PRODUCT_IDS = ['app.tanishly.ios.pro.yearly', 'app.tanishly.ios.pro.monthly'] as const;
+export const PRO_PRODUCT_IDS = ['app.nameshake.ios.pro.yearly', 'app.nameshake.ios.pro.monthly'] as const;
 export type ProProductId = (typeof PRO_PRODUCT_IDS)[number];
 export const isProProductId = (id: string | null | undefined): id is ProProductId =>
   (PRO_PRODUCT_IDS as readonly string[]).includes(id ?? '');

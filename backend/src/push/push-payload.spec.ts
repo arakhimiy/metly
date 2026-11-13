@@ -28,12 +28,12 @@ describe('push payload', () => {
       followUpId: ID,
       connectionId: ID,
       followUpID: ID.toUpperCase(),
-      link: `tanishly://reminder/${ID.toUpperCase()}`,
+      link: `nameshake://reminder/${ID.toUpperCase()}`,
     });
-    expect(deepLinkData({ connectionId: ID }).link).toBe(`tanishly://person/${ID.toUpperCase()}`);
-    expect(deepLinkData({ requestId: ID }).link).toBe('tanishly://people');
+    expect(deepLinkData({ connectionId: ID }).link).toBe(`nameshake://person/${ID.toUpperCase()}`);
+    expect(deepLinkData({ requestId: ID }).link).toBe('nameshake://people');
     expect(deepLinkData({ eventId: ID })).toEqual({ eventId: ID });
-    expect(deepLinkData({ connectionId: ID, link: 'tanishly://people' }).link).toBe('tanishly://people');
+    expect(deepLinkData({ connectionId: ID, link: 'nameshake://people' }).link).toBe('nameshake://people');
   });
 
   it('builds the aps dictionary; summaries are silent; data cannot override aps or type', () => {
@@ -43,7 +43,7 @@ describe('push payload', () => {
       aps: { alert: { title: 'Aziza wants to connect', body: 'ICT Week' }, sound: 'default', category: 'C', 'thread-id': 't' },
       type: 'connect_request',
       requestId: ID,
-      link: 'tanishly://people',
+      link: 'nameshake://people',
     });
     expect(apnsPayload({ type: 'weekly_summary', title: 'Week', body: '3 new' }).aps).toEqual({ alert: { title: 'Week', body: '3 new' } });
     const long = apnsPayload({ type: 'product_news', title: 't', body: 'x'.repeat(5000) });
@@ -51,8 +51,8 @@ describe('push payload', () => {
   });
 
   it('sets the APNs headers', () => {
-    expect(apnsHeaders('app.tanishly.ios', { collapseId: 'followup.X' })).toEqual({
-      'apns-topic': 'app.tanishly.ios',
+    expect(apnsHeaders('app.nameshake.ios', { collapseId: 'followup.X' })).toEqual({
+      'apns-topic': 'app.nameshake.ios',
       'apns-push-type': 'alert',
       'apns-priority': '10',
       'apns-collapse-id': 'followup.X',

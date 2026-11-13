@@ -1,5 +1,5 @@
 {
-  "name": "tanishly-api",
+  "name": "nameshake-api",
   "version": "1.0.0",
   "private": true,
   "description": "Nameshake API: auth, offline-first sync, connect, public card pages, Wallet, subscriptions.",

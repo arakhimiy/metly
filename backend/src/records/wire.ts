@@ -49,7 +49,8 @@ export const SyncRecordType = z.enum(['profile', 'card', 'event', 'connection', 
 export type SyncRecordType = z.infer<typeof SyncRecordType>;
 
 /** Templates and palettes only Pro may switch a card to. */
-export const PRO_TEMPLATES = new Set(['editorial']);
+/** The finish templates (Foil = `modern`, Aurora = `gradient`, Editorial); app mirror: `CardTemplate.isPro`. */
+export const PRO_TEMPLATES = new Set(['modern', 'gradient', 'editorial']);
 export const PRO_PALETTES = new Set(['ocean', 'ember']);
 
 export const ContactField = z.object({
@@ -181,12 +182,31 @@ const CardDesignObject = z.object({
   visibleFields: z.array(ContactFieldKind).transform((fields) => [...new Set(fields)]),
   /** Ids of the owner's profile contact entries this card shows; absent/null = a legacy card. */
   visibleContacts: z.array(uuid).max(MAX_VISIBLE_CONTACTS).nullish(),
+  /** Per-card switches (app 4.0.0). Sent only when off / non-default; absent = shown / original. */
+  showJobTitle: z.boolean().optional(),
+  showCompany: z.boolean().optional(),
+  logoStyle: z.enum(['original', 'mono']).optional(),
 });
 /** A null selection is not stored at all, so designs written before the contact list compare equal. */
 export type CardDesign = Omit<z.output<typeof CardDesignObject>, 'visibleContacts'> & { visibleContacts?: string[] };
-export const CardDesign = CardDesignObject.transform(
-  ({ visibleContacts, ...design }): CardDesign => (visibleContacts ? { ...design, visibleContacts: [...new Set(visibleContacts)] } : design),
-);
+export const CardDesign = CardDesignObject.transform(({ visibleContacts, showJobTitle, showCompany, logoStyle, ...rest }): CardDesign => {
+  // Defaults are not stored, so a design from an older app compares equal to the same design from a new one.
+  const design: CardDesign = {
+    ...rest,
+    ...(showJobTitle === false ? { showJobTitle } : {}),
+    ...(showCompany === false ? { showCompany } : {}),
+    ...(logoStyle === 'mono' ? { logoStyle } : {}),
+  };
+  return visibleContacts ? { ...design, visibleContacts: [...new Set(visibleContacts)] } : design;
+});
+
+/** The job title and company a card shows: blank when the owner switched them off for this card. */
+export function cardIdentity(profile: { jobTitle: string; company: string }, design: Partial<CardDesign> | null | undefined) {
+  return {
+    jobTitle: design?.showJobTitle === false ? '' : profile.jobTitle,
+    company: design?.showCompany === false ? '' : profile.company,
+  };
+}
 
 export const CardSnapshot = z.object({
   cardName: z.string(),
