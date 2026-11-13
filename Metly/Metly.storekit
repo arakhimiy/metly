@@ -14,7 +14,7 @@
     {
       "id" : "21500001",
       "localizations" : [],
-      "name" : "Tanishly Pro",
+      "name" : "Nameshake Pro",
       "subscriptions" : [
         {
           "adHocOffers" : [],
@@ -31,7 +31,7 @@
           "localizations" : [
             {
               "description" : "All Pro features, billed yearly.",
-              "displayName" : "Tanishly Pro Yearly",
+              "displayName" : "Nameshake Pro Yearly",
               "locale" : "en_US"
             }
           ],
@@ -66,7 +66,7 @@
           "localizations" : [
             {
               "description" : "All Pro features, billed monthly.",
-              "displayName" : "Tanishly Pro Monthly",
+              "displayName" : "Nameshake Pro Monthly",
               "locale" : "en_US"
             }
           ],

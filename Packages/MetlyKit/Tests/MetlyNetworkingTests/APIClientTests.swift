@@ -214,6 +214,19 @@ struct APIClientTests {
         #expect(recorder.list("/upload/up_1") == ["Authorization=nil", "Content-Type=image/jpeg", "Accept=nil", "X-Tanishly-Client=nil"])
     }
 
+    @Test("Log In with Telegram starts at the backend's authorize endpoint with PKCE parameters")
+    func telegramAuthorizationURL() throws {
+        let backend = StubBackend()
+        let api = LiveMetlyAPI(client: backend.client(store: InMemorySessionStore(.test())), urlSession: backend.session())
+        let url = try #require(api.telegramAuthorizationURL(codeChallenge: "CH_-1", state: "ST", nonce: "NO"))
+        let components = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false))
+        #expect(components.host == backend.host)
+        #expect(components.path == "/v1/auth/telegram/authorize")
+        #expect(components.queryItems == [URLQueryItem(name: "code_challenge", value: "CH_-1"),
+                                          URLQueryItem(name: "state", value: "ST"),
+                                          URLQueryItem(name: "nonce", value: "NO")])
+    }
+
     @Test("Offline fails fast as .offline")
     func offline() async {
         let backend = StubBackend()

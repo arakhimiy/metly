@@ -249,7 +249,7 @@ public final class MetlyClient {
         return outcome(for: latest, connection: nil) ?? .noResponse
     }
 
-    /// The live local connection to a Tanishly user: removed (tombstoned) records never count, and a
+    /// The live local connection to a Nameshake user: removed (tombstoned) records never count, and a
     /// non-blocked one is preferred.
     private func liveConnection(toPeer peer: UUID) -> Connection? {
         let descriptor = FetchDescriptor<Connection>(predicate: #Predicate { $0.remoteUserID == peer && $0.deletedAt == nil })

@@ -3,7 +3,7 @@ import MetlyData
 import SwiftData
 import SwiftUI
 
-/// SETTINGS (Profile › ⚙️): Tanishly Pro · Sharing (Pause All Links, Preview Public Page, Widgets) ·
+/// SETTINGS (Profile › ⚙️): Nameshake Pro · Sharing (Pause All Links, Preview Public Page, Widgets) ·
 /// Appearance, Notifications, Privacy & Data, Help & Support · Sign Out.
 struct SettingsScreen: View {
     @Query(Card.live) private var cards: [Card]

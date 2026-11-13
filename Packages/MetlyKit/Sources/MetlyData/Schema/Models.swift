@@ -207,7 +207,7 @@ extension MetlySchemaV3 {
     @Model
     public final class Connection: SyncedRecord {
         @Attribute(.unique) public var id: UUID
-        /// Set when the person is a Tanishly user (enables their card & connections-only fields).
+        /// Set when the person is a Nameshake user (enables their card & connections-only fields).
         public var remoteUserID: UUID?
         public var fullName: String
         public var jobTitle: String

@@ -85,20 +85,6 @@ struct ProfileEditorTests {
         withExtendedLifetime(container) {}
     }
 
-    @Test func choosingTelegramBeforeLinkingAsksToLink() throws {
-        let (container, profile) = try makeProfile()
-        let recorder = EditRecorder()
-        let delivery = profile.editor.deliveryBinding { recorder.values.append(true) }
-        delivery.wrappedValue = .telegramBot
-        #expect(recorder.values.count == 1)
-        #expect(profile.notificationPrefs.delivery == .push)
-
-        profile.editor.updateNotificationPrefs { $0.telegramLinked = true }
-        delivery.wrappedValue = .telegramBot
-        #expect(profile.notificationPrefs.delivery == .telegramBot)
-        #expect(recorder.values.count == 1)
-        withExtendedLifetime(container) {}
-    }
 }
 
 /// Collects callback invocations (a MainActor class so `@Sendable` callbacks can capture it).

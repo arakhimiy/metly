@@ -1,7 +1,7 @@
 import MetlyCore
 import SwiftUI
 
-/// "Tanishly Pro" row showing the current plan → SETTINGS_SUBSCRIPTION.
+/// "Nameshake Pro" row showing the current plan → SETTINGS_SUBSCRIPTION.
 struct ProPlanSection: View {
     @Environment(AppServices.self) private var services
 

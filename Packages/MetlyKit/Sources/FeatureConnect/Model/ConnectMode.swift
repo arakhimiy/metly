@@ -6,7 +6,7 @@ nonisolated enum ConnectMode: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// Modes shown in CONNECT. Tap Phones is off: it needs Tanishly open on both phones and adds little
+    /// Modes shown in CONNECT. Tap Phones is off: it needs Nameshake open on both phones and adds little
     /// over Nearby (AirDrop / NameDrop cover the system side). Its code stays for a later return.
     static let offered: [ConnectMode] = [.nearby]
 

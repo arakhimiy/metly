@@ -2,7 +2,7 @@ import Foundation
 
 /// What a scanned QR code (or pasted text) contains — decides where SCAN goes next.
 nonisolated enum QRPayload: Equatable, Sendable {
-    /// Someone's Tanishly card link → SCANNED_CARD.
+    /// Someone's Nameshake card link → SCANNED_CARD.
     case metlyCard(url: URL, slug: String)
     /// One of the owner's own cards → "That's your card" toast.
     case ownCard(slug: String)

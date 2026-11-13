@@ -2,14 +2,13 @@ import Foundation
 
 /// Product constants. Never hard-code the domain or app name elsewhere.
 public enum Brand {
-    public static let appName = "Tanishly"
-    public static let proName = "Tanishly Pro"
+    public static let appName = "Nameshake"
+    public static let proName = "Nameshake Pro"
     /// Host of card links and web pages, from `MetlyWebHost` (`METLY_WEB_HOST` build setting). Builds made
     /// before the domain exists point it at the API host; tests and previews get the release domain.
     public static let linkHost = (Bundle.main.object(forInfoDictionaryKey: "MetlyWebHost") as? String)
         .flatMap { $0.isEmpty ? nil : $0 } ?? "tanishly.app"
     public static let supportEmail = "support@tanishly.app"
-    public static let telegramBot = "TanishlyBot"
     /// From `MetlyAppGroup` in the app's and the widget's Info.plist (`METLY_APP_GROUP` build setting),
     /// so a personal-team Debug build can use its own group. Tests and previews get the release group.
     public static let appGroup = Bundle.main.object(forInfoDictionaryKey: "MetlyAppGroup") as? String

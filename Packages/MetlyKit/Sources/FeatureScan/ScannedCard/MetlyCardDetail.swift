@@ -5,7 +5,7 @@ import MetlyNetworking
 import SwiftData
 import SwiftUI
 
-/// SCANNED_CARD for someone's Tanishly card: card face, contact rows and
+/// SCANNED_CARD for someone's Nameshake card: card face, contact rows and
 /// Connect (request, PLAN Q8) · Add to People · Save to Contacts.
 struct MetlyCardDetail: View {
     let card: PublicCardDTO

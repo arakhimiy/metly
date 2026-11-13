@@ -35,10 +35,10 @@ nonisolated enum FollowUpNotificationPlanner {
             }
     }
 
-    /// Local pushes are on when the profile allows follow-up reminders and delivery is push (not the Telegram bot).
+    /// Local pushes are on when the profile allows follow-up reminders.
     static func isEnabled(prefs: NotificationPrefs?) -> Bool {
         guard let prefs else { return false }
-        return prefs.followUpReminders && prefs.delivery == .push
+        return prefs.followUpReminders
     }
 
     /// Pending identifiers that no longer match a desired payload (done, deleted, moved past, turned off).

@@ -4,7 +4,7 @@ import MetlyNetworking
 import Observation
 
 /// DEFERRED_WELCOME: resolves "who shared their card before this install" once, on first launch.
-/// The server matches a fingerprint (or an explicit token) against recent web "Get Tanishly" taps.
+/// The server matches a fingerprint (or an explicit token) against recent web "Get Nameshake" taps.
 /// With `MockMetlyServer` an invite is returned only when launched with `-MetlyDeferredInvite`.
 @MainActor
 public final class DeferredLinkService: DeferredLinkServicing {

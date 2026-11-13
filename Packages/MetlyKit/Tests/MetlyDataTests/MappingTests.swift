@@ -86,7 +86,7 @@ struct MappingTests {
         withExtendedLifetime((container, emptyContainer)) {}
     }
 
-    @Test("A server connection re-keys the optimistic local one for the same Tanishly user")
+    @Test("A server connection re-keys the optimistic local one for the same Nameshake user")
     func optimisticConnectionIsRekeyed() throws {
         let container = try MetlyModelContainer.make(inMemory: true)
         let context = container.mainContext

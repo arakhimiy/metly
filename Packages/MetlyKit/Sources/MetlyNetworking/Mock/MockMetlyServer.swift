@@ -138,7 +138,7 @@ public actor MockMetlyServer: MetlyAPI {
         return notice
     }
 
-    /// The connected Tanishly user changed their profile photo: sets the server-owned `avatarUrl` of
+    /// The connected Nameshake user changed their profile photo: sets the server-owned `avatarUrl` of
     /// connection `id` (nil `data` removes it) and emits `.syncAvailable`. Returns the asset URL.
     @discardableResult
     public func simulateAvatar(connectionID id: UUID, data: Data?) -> URL? {
@@ -223,6 +223,15 @@ extension MockMetlyServer: AuthAPI, AccountAPI {
         guard !request.idToken.isEmpty else { throw APIError.mock(400, .invalidRequest, "idToken is required.") }
         return backend.signIn(provider: .google, email: nil, suggestedName: nil, now: .now)
     }
+
+    public func signInWithTelegram(_ request: TelegramSignInRequest) async throws -> AuthResponse {
+        try await serve()
+        guard !request.code.isEmpty else { throw APIError.mock(400, .invalidRequest, "code is required.") }
+        return backend.signIn(provider: .telegram, email: nil, suggestedName: nil, now: .now)
+    }
+
+    /// No backend to send the browser to: the app's DEBUG path signs in with a mock code instead.
+    public nonisolated func telegramAuthorizationURL(codeChallenge: String, state: String, nonce: String) -> URL? { nil }
 
     public func logout(_ request: LogoutRequest) async throws { try await serve() }
 
@@ -328,29 +337,6 @@ extension MockMetlyServer: ProfileAPI {
         try await serve()
         guard let data = backend.assets[url] else { throw APIError.notFound("Asset") }
         return data
-    }
-
-    /// The mock behaves as if the user tapped Start in Telegram right away.
-    public func requestTelegramLink() async throws -> TelegramLinkDTO {
-        try await serve()
-        setTelegramLinked(true)
-        return TelegramLinkDTO(botURL: URL(string: "https://t.me/\(Brand.telegramBot)?start=mock-\(UUID().uuidString.prefix(8).lowercased())")!,
-                               expiresAt: .now.addingTimeInterval(900))
-    }
-
-    public func unlinkTelegram() async throws {
-        try await serve()
-        setTelegramLinked(false)
-    }
-
-    private func setTelegramLinked(_ linked: Bool) {
-        guard var profile = backend.profile else { return }
-        profile.notificationPrefs.telegramLinked = linked
-        if !linked, profile.notificationPrefs.delivery == .telegramBot { profile.notificationPrefs.delivery = .push }
-        profile.updatedAt = .now
-        backend.profile = profile
-        backend.touch(.profile, profile.id)
-        broadcast(.syncAvailable)
     }
 }
 
@@ -461,7 +447,7 @@ extension MockMetlyServer: ConnectionsAPI, BlocksAPI {
         }
         try await serve()
         guard let userID = request.userID else { throw APIError.mock(422, .validationFailed, "userId or connectionId is required.") }
-        let block = BlockDTO(userID: userID, connectionID: nil, fullName: MockSeed.peer(userID: userID)?.fullName ?? "Tanishly user",
+        let block = BlockDTO(userID: userID, connectionID: nil, fullName: MockSeed.peer(userID: userID)?.fullName ?? "Nameshake user",
                              blockedAt: .now)
         backend.blocks[userID] = block
         return block

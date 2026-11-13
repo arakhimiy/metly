@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Nearby mode (SPEC §2.5.26): searching hero → live "Nearby on Tanishly" list with Connect /
+/// Nearby mode (SPEC §2.5.26): searching hero → live "Nearby on Nameshake" list with Connect /
 /// Waiting… → "No One Nearby Yet" after ~10 s. Emits list `Section`s.
 struct NearbySections: View {
     let model: ConnectModel

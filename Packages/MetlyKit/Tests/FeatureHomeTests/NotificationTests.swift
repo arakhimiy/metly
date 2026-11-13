@@ -187,14 +187,15 @@ struct NotificationPlannerTests {
         #expect(payloads.first?.fireDate == candidates.first?.dueAt)
     }
 
-    @Test func enabledOnlyForPushDeliveryWithRemindersOn() {
+    @Test func enabledWhenRemindersAreOn() {
         var prefs = NotificationPrefs()
         #expect(FollowUpNotificationPlanner.isEnabled(prefs: prefs))
         prefs.followUpReminders = false
         #expect(!FollowUpNotificationPlanner.isEnabled(prefs: prefs))
+        // A profile stored while the Telegram bot existed still gets local reminders.
         prefs.followUpReminders = true
         prefs.delivery = .telegramBot
-        #expect(!FollowUpNotificationPlanner.isEnabled(prefs: prefs))
+        #expect(FollowUpNotificationPlanner.isEnabled(prefs: prefs))
         #expect(!FollowUpNotificationPlanner.isEnabled(prefs: nil))
     }
 

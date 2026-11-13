@@ -6,19 +6,42 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly"
+            "value": "Nameshake"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly"
+            "value": "Nameshake"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly"
+            "value": "Nameshake"
+          }
+        }
+      }
+    },
+    "CFBundleName": {
+      "comment": "Bundle name",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nameshake"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nameshake"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nameshake"
           }
         }
       }
@@ -28,19 +51,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly suggests events from your calendar so new contacts are tagged automatically."
+            "value": "Nameshake suggests events from your calendar so new contacts are tagged automatically."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly предлагает мероприятия из вашего календаря, чтобы новые контакты отмечались автоматически."
+            "value": "Nameshake предлагает мероприятия из вашего календаря, чтобы новые контакты отмечались автоматически."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly yangi kontaktlarga avtomatik teg qo‘yish uchun taqvimingizdagi tadbirlarni taklif qiladi."
+            "value": "Nameshake yangi kontaktlarga avtomatik teg qo‘yish uchun taqvimingizdagi tadbirlarni taklif qiladi."
           }
         }
       }
@@ -50,19 +73,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly uses the camera to scan QR codes and paper business cards."
+            "value": "Nameshake uses the camera to scan QR codes and paper business cards."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly использует камеру для сканирования QR-кодов и бумажных визиток."
+            "value": "Nameshake использует камеру для сканирования QR-кодов и бумажных визиток."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly QR kodlar va qog‘oz vizitkalarni skanerlash uchun kameradan foydalanadi."
+            "value": "Nameshake QR kodlar va qog‘oz vizitkalarni skanerlash uchun kameradan foydalanadi."
           }
         }
       }
@@ -72,19 +95,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly saves the people you meet to your Contacts when you ask it to."
+            "value": "Nameshake saves the people you meet to your Contacts when you ask it to."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly сохраняет людей, с которыми вы познакомились, в Контакты, когда вы об этом просите."
+            "value": "Nameshake сохраняет людей, с которыми вы познакомились, в Контакты, когда вы об этом просите."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly siz so‘raganingizda tanishgan odamlaringizni Kontaktlarga saqlaydi."
+            "value": "Nameshake siz so‘raganingizda tanishgan odamlaringizni Kontaktlarga saqlaydi."
           }
         }
       }
@@ -94,19 +117,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly finds people nearby who also use Tanishly so you can swap cards."
+            "value": "Nameshake finds people nearby who also use Nameshake so you can swap cards."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly находит людей поблизости, которые тоже пользуются Tanishly, чтобы вы могли обменяться визитками."
+            "value": "Nameshake находит людей поблизости, которые тоже пользуются Nameshake, чтобы вы могли обменяться визитками."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly vizitka almashish uchun yaqin atrofdagi Tanishly foydalanuvchilarini topadi."
+            "value": "Nameshake vizitka almashish uchun yaqin atrofdagi Nameshake foydalanuvchilarini topadi."
           }
         }
       }
@@ -116,19 +139,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly fills in where you met someone. Your location is never shared."
+            "value": "Nameshake fills in where you met someone. Your location is never shared."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly указывает, где вы с кем-то познакомились. Ваша геопозиция никому не передаётся."
+            "value": "Nameshake указывает, где вы с кем-то познакомились. Ваша геопозиция никому не передаётся."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly kim bilan qayerda tanishganingizni to‘ldiradi. Joylashuvingiz hech kimga ulashilmaydi."
+            "value": "Nameshake kim bilan qayerda tanishganingizni to‘ldiradi. Joylashuvingiz hech kimga ulashilmaydi."
           }
         }
       }
@@ -138,19 +161,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly uses the microphone to dictate private notes. Audio isn't stored."
+            "value": "Nameshake uses the microphone to dictate private notes. Audio isn't stored."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly использует микрофон, чтобы надиктовывать личные заметки. Аудио не сохраняется."
+            "value": "Nameshake использует микрофон, чтобы надиктовывать личные заметки. Аудио не сохраняется."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly shaxsiy izohlarni aytib yozish uchun mikrofondan foydalanadi. Audio saqlanmaydi."
+            "value": "Nameshake shaxsiy izohlarni aytib yozish uchun mikrofondan foydalanadi. Audio saqlanmaydi."
           }
         }
       }
@@ -160,19 +183,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly detects when you hold your iPhone near someone else's to swap cards."
+            "value": "Nameshake detects when you hold your iPhone near someone else's to swap cards."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly определяет, когда вы подносите свой iPhone к телефону другого человека, чтобы обменяться визитками."
+            "value": "Nameshake определяет, когда вы подносите свой iPhone к телефону другого человека, чтобы обменяться визитками."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly vizitka almashish uchun iPhone’ingizni boshqa odamnikiga yaqin tutganingizni aniqlaydi."
+            "value": "Nameshake vizitka almashish uchun iPhone’ingizni boshqa odamnikiga yaqin tutganingizni aniqlaydi."
           }
         }
       }
@@ -182,19 +205,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly saves card images and Lock Screen wallpapers to your Photos."
+            "value": "Nameshake saves card images and Lock Screen wallpapers to your Photos."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly сохраняет изображения визиток и обои для экрана блокировки в «Фото»."
+            "value": "Nameshake сохраняет изображения визиток и обои для экрана блокировки в «Фото»."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly vizitka rasmlari va Qulf ekrani fon rasmlarini Rasmlar ilovasiga saqlaydi."
+            "value": "Nameshake vizitka rasmlari va Qulf ekrani fon rasmlarini Rasmlar ilovasiga saqlaydi."
           }
         }
       }
@@ -204,19 +227,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly turns your voice into a private note on your iPhone."
+            "value": "Nameshake turns your voice into a private note on your iPhone."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly превращает ваш голос в личную заметку прямо на iPhone."
+            "value": "Nameshake превращает ваш голос в личную заметку прямо на iPhone."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly iPhone’ingizda ovozingizni shaxsiy izohga aylantiradi."
+            "value": "Nameshake iPhone’ingizda ovozingizni shaxsiy izohga aylantiradi."
           }
         }
       }

@@ -198,7 +198,7 @@ struct SyncRegressionTests {
                                  note: "Met at the Uzum booth", createdAt: .now.addingTimeInterval(-600),
                                  updatedAt: .now.addingTimeInterval(-600))
         await harness.server.simulateRemoteChanges(SyncChanges(connections: [twin]))
-        // Before pulling it, the app creates its own record for the same Tanishly user (offline accept).
+        // Before pulling it, the app creates its own record for the same Nameshake user (offline accept).
         let local = Connection(fullName: "Bobur Aliev", source: .nearby)
         local.remoteUserID = peer
         harness.context.insert(local)

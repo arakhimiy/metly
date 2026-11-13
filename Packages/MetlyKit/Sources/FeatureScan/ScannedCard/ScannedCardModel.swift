@@ -11,7 +11,7 @@ import SwiftData
 final class ScannedCardModel {
     enum Phase: Equatable {
         case loading
-        /// Someone's Tanishly card (public profile).
+        /// Someone's Nameshake card (public profile).
         case metly(PublicCardDTO)
         /// A foreign vCard (SPEC §9 Q41).
         case contact(PaperCardDraft)

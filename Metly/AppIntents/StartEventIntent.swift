@@ -1,7 +1,7 @@
 import AppIntents
 import MetlyWidgetKit
 
-/// "Start an event in Tanishly" — opens START_EVENT (`tanishly://event/start`).
+/// "Start an event in Nameshake" — opens START_EVENT (`tanishly://event/start`).
 ///
 /// Requires the `event` host in `DeepLinkHandler` (see the Widgets & Intents report); START_EVENT itself
 /// enforces the Free plan's one-active-event limit.

@@ -6,7 +6,7 @@ import MetlyCore
 nonisolated enum ExportFileNaming {
     static let maximumBaseLength = 80
 
-    /// "{Full Name} - {Card} Card", falling back to whichever part exists, then "Tanishly Card".
+    /// "{Full Name} - {Card} Card", falling back to whichever part exists, then "Nameshake Card".
     static func baseName(fullName: String, cardName: String) -> String {
         let person = sanitize(fullName)
         var card = sanitize(cardName)

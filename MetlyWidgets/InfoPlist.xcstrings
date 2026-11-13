@@ -6,19 +6,42 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly"
+            "value": "Nameshake"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly"
+            "value": "Nameshake"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly"
+            "value": "Nameshake"
+          }
+        }
+      }
+    },
+    "CFBundleName": {
+      "comment": "Bundle name",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nameshake"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nameshake"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nameshake"
           }
         }
       }

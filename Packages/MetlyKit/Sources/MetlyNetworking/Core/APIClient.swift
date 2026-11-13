@@ -1,6 +1,6 @@
 import Foundation
 
-/// URLSession-based HTTP client for the Tanishly API.
+/// URLSession-based HTTP client for the Nameshake API.
 ///
 /// - Bearer auth from a `SessionStore`, proactive refresh shortly before expiry.
 /// - Single-flight token refresh on `401` (concurrent requests share one `POST /v1/auth/refresh`),

@@ -1,7 +1,7 @@
 import MetlyCore
 import SwiftUI
 
-/// 7 · Terminal — forced SF Mono; `~/metly $ whoami`, name with an accent cursor, `# role`,
+/// 7 · Terminal — forced SF Mono; `~/nameshake $ whoami`, name with an accent cursor, `# role`,
 /// contacts as `key value` with accent keys; QR bottom-right 22 %.
 struct TerminalTemplate: View {
     let model: CardFaceModel

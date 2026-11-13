@@ -47,7 +47,7 @@ struct ReminderForm: Equatable {
         return min(today, calendar.startOfDay(for: existingDue))
     }
 
-    /// Footer: "Tanishly will remind you tomorrow at 10:00." / "… on Tue, Sep 29 at 10:00."
+    /// Footer: "Nameshake will remind you tomorrow at 10:00." / "… on Tue, Sep 29 at 10:00."
     func summary(now: Date = .now, calendar: Calendar = .current, locale: Locale = .autoupdatingCurrent) -> String {
         let due = dueDate(calendar: calendar)
         guard due > now else {

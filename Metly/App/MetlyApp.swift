@@ -24,7 +24,7 @@ struct MetlyApp: App {
         do {
             container = try MetlyModelContainer.make()
         } catch {
-            fatalError("Could not open the Tanishly store: \(error)")
+            fatalError("Could not open the Nameshake store: \(error)")
         }
         #if DEBUG
         // `-MetlyDemoData` launch argument: start signed in with the prototype's demo account.

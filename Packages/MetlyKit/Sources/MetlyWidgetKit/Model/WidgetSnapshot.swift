@@ -21,7 +21,7 @@ nonisolated public struct WidgetSnapshot: Codable, Hashable, Sendable {
 
     public var schemaVersion: Int
     public var generatedAt: Date
-    /// nil = signed out (or setup not finished): widgets show "Open Tanishly".
+    /// nil = signed out (or setup not finished): widgets show "Open Nameshake".
     public var owner: WidgetOwner?
     /// Every live card, in the user's order.
     public var cards: [WidgetCard]

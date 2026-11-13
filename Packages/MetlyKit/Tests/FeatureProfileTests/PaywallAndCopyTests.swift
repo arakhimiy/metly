@@ -70,12 +70,4 @@ struct PaywallAndCopyTests {
         #expect(body.contains("iOS 18.2 · iPhone17,1"))
         #expect(!url.absoluteString.contains(" "))
     }
-
-    @Test func telegramLinkStartsTheReminderBot() throws {
-        let token = TelegramLinking.placeholderToken()
-        #expect(token.count == 32)
-        #expect(token.allSatisfy { $0.isLetter || $0.isNumber })
-        let url = try #require(TelegramLinking.startURL(token: token))
-        #expect(url.absoluteString == "https://t.me/\(Brand.telegramBot)?start=\(token)")
-    }
 }

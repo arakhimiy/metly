@@ -90,7 +90,7 @@ enum PreviewStore {
     /// A profile photo so Modern / Split / Stack show it.
     static func addPhoto(in context: ModelContext) {
         let renderer = ImageRenderer(content: Image(systemName: "person.crop.circle.fill")
-            .resizable().foregroundStyle(.teal).frame(width: 120, height: 120).background(.white))
+            .resizable().foregroundStyle(.blue).frame(width: 120, height: 120).background(.white))
         context.currentProfile()?.photoData = renderer.uiImage?.pngData()
     }
 }

@@ -139,6 +139,8 @@ final class PreviewServiceStub: AuthServicing, SyncServicing, DeferredLinkServic
 
     func signIn(apple: AppleSignInCredential) async throws -> AuthResult { AuthResult(needsSetup: true, suggestedName: "Aziza Karimova", email: accountEmail) }
     func signIn(google: GoogleSignInCredential) async throws -> AuthResult { AuthResult(needsSetup: true, suggestedName: google.fullName, email: google.email) }
+    func telegramAuthorizationURL(codeChallenge: String, state: String, nonce: String) -> URL? { nil }
+    func signIn(telegram: TelegramSignInCredential) async throws -> AuthResult { AuthResult(needsSetup: true, suggestedName: "Aziza Karimova", email: nil) }
     func signOut() async { isSignedIn = false }
     func deleteAccount() async throws { isSignedIn = false }
     func requestDataExport() async throws {}

@@ -4438,38 +4438,6 @@
         }
       }
     },
-    "Connect Telegram": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Подключить Telegram"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telegram’ni ulash"
-          }
-        }
-      }
-    },
-    "Connect Telegram Bot": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Подключить Telegram-бота"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telegram botni ulash"
-          }
-        }
-      }
-    },
     "Connect needs the internet to swap cards. Your QR code still works offline.": {
       "localizations": {
         "ru": {
@@ -4887,6 +4855,22 @@
         }
       }
     },
+    "Continue with Apple": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продолжить с Apple"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple orqali davom etish"
+          }
+        }
+      }
+    },
     "Continue with Google": {
       "localizations": {
         "ru": {
@@ -4899,6 +4883,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Google orqali davom etish"
+          }
+        }
+      }
+    },
+    "Continue with Telegram": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продолжить с Telegram"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram orqali davom etish"
           }
         }
       }
@@ -5099,22 +5099,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vizitkani yuklab bo‘lmadi"
-          }
-        }
-      }
-    },
-    "Couldn’t Open Telegram": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не удалось открыть Telegram"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telegram’ni ochib bo‘lmadi"
           }
         }
       }
@@ -5552,18 +5536,18 @@
         }
       }
     },
-    "Debug builds only. Signs in on the local Tanishly backend; the same name returns to the same account.": {
+    "Debug builds only. Signs in on the local Nameshake backend; the same name returns to the same account.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Только для отладочных сборок. Вход на локальный сервер Tanishly; одно и то же имя возвращает в тот же аккаунт."
+            "value": "Только для отладочных сборок. Вход на локальный сервер Nameshake; одно и то же имя возвращает в тот же аккаунт."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faqat debug yig‘malari uchun. Mahalliy Tanishly serveriga kiradi; bir xil ism bir xil akkauntga qaytaradi."
+            "value": "Faqat debug yig‘malari uchun. Mahalliy Nameshake serveriga kiradi; bir xil ism bir xil akkauntga qaytaradi."
           }
         }
       }
@@ -5842,22 +5826,6 @@
         }
       }
     },
-    "Deliver Reminders Via": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Способ доставки напоминаний"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eslatmalarni yetkazish usuli"
-          }
-        }
-      }
-    },
     "Density": {
       "localizations": {
         "ru": {
@@ -6048,22 +6016,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "O‘zgarishlar bekor qilinsinmi?"
-          }
-        }
-      }
-    },
-    "Disconnect Telegram": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Отключить Telegram"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telegram’ni uzish"
           }
         }
       }
@@ -7317,18 +7269,18 @@
         }
       }
     },
-    "Fit a business card in the frame, or point at a Tanishly QR": {
+    "Fit a business card in the frame, or point at a Nameshake QR": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поместите визитку в рамку или наведите на QR Tanishly"
+            "value": "Поместите визитку в рамку или наведите на QR Nameshake"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitkani ramkaga joylang yoki Tanishly QR’iga qarating"
+            "value": "Vizitkani ramkaga joylang yoki Nameshake QR’iga qarating"
           }
         }
       }
@@ -10227,22 +10179,6 @@
         }
       }
     },
-    "Not connected": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не подключено"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ulanmagan"
-          }
-        }
-      }
-    },
     "Not published": {
       "localizations": {
         "ru": {
@@ -11037,18 +10973,18 @@
         }
       }
     },
-    "Opens a Tanishly card link from the clipboard": {
+    "Opens a Nameshake card link from the clipboard": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Открывает ссылку на визитку Tanishly из буфера обмена"
+            "value": "Открывает ссылку на визитку Nameshake из буфера обмена"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Buferdagi Tanishly vizitka havolasini ochadi"
+            "value": "Buferdagi Nameshake vizitka havolasini ochadi"
           }
         }
       }
@@ -11895,18 +11831,18 @@
         }
       }
     },
-    "Point at a Tanishly or vCard QR code": {
+    "Point at a Nameshake or vCard QR code": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Наведите на QR-код Tanishly или vCard"
+            "value": "Наведите на QR-код Nameshake или vCard"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tanishly yoki vCard QR kodiga qarating"
+            "value": "Nameshake yoki vCard QR kodiga qarating"
           }
         }
       }
@@ -12454,22 +12390,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xaridlar tiklandi"
-          }
-        }
-      }
-    },
-    "Push Notifications": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Push-уведомления"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Push-bildirishnomalar"
           }
         }
       }
@@ -14471,6 +14391,22 @@
         }
       }
     },
+    "Sign In with Apple": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войти через Apple"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple orqali kirish"
+          }
+        }
+      }
+    },
     "Sign In with Google": {
       "localizations": {
         "ru": {
@@ -14483,6 +14419,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Google orqali kirish"
+          }
+        }
+      }
+    },
+    "Sign In with Telegram": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Войти через Telegram"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram orqali kirish"
           }
         }
       }
@@ -15568,38 +15520,6 @@
         }
       }
     },
-    "Telegram Bot": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telegram-бот"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telegram bot"
-          }
-        }
-      }
-    },
-    "Telegram Connected": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telegram подключён"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telegram ulandi"
-          }
-        }
-      }
-    },
     "Telegram Username": {
       "localizations": {
         "ru": {
@@ -15612,6 +15532,70 @@
           "stringUnit": {
             "state": "translated",
             "value": "Telegram foydalanuvchi nomi"
+          }
+        }
+      }
+    },
+    "Telegram couldn’t confirm your account. Try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram не смог подтвердить ваш аккаунт. Попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram akkauntingizni tasdiqlay olmadi. Qayta urinib ko‘ring."
+          }
+        }
+      }
+    },
+    "Telegram sign-in didn’t finish securely. Try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вход через Telegram не завершился безопасно. Попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram orqali kirish xavfsiz yakunlanmadi. Qayta urinib ko‘ring."
+          }
+        }
+      }
+    },
+    "Telegram sign-in didn’t finish. Try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вход через Telegram не завершён. Попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram orqali kirish yakunlanmadi. Qayta urinib ko‘ring."
+          }
+        }
+      }
+    },
+    "Telegram sign-in isn’t available right now. Continue with Apple instead.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вход через Telegram сейчас недоступен. Продолжите через Apple."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telegram orqali kirish hozircha mavjud emas. Apple orqali davom eting."
           }
         }
       }
@@ -15968,22 +15952,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "QR har bir formatda 4 modulli bo‘sh hoshiya va M darajali xatolarni tuzatishni saqlaydi."
-          }
-        }
-      }
-    },
-    "The bot sends each reminder with a one-tap link to the chat.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Бот присылает каждое напоминание со ссылкой на чат в одно касание."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bot har bir eslatmani chatga bir bosishda o‘tish havolasi bilan yuboradi."
           }
         }
       }
@@ -17783,7 +17751,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ga xush kelibsiz"
+            "value": "%@’ga xush kelibsiz"
           }
         }
       }
@@ -18784,6 +18752,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Havolalaringiz to‘xtatilgan, shuning uchun ularni qayta yoqmaguningizcha bu sahifa mavjud emas deb ko‘rinadi."
+          }
+        }
+      }
+    },
+    "Your name came from Telegram. Each card decides what it shows.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Имя взято из Telegram. Каждая визитка сама определяет, что показывать."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ismingiz Telegram’dan olindi. Har bir vizitka nimani ko‘rsatishni o‘zi belgilaydi."
           }
         }
       }

@@ -36,5 +36,5 @@ nonisolated struct MetlyAppShortcuts: AppShortcutsProvider {
         )
     }
 
-    static let shortcutTileColor: ShortcutTileColor = .teal
+    static let shortcutTileColor: ShortcutTileColor = .blue
 }

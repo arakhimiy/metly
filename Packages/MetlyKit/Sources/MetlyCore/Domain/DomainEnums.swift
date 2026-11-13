@@ -220,6 +220,7 @@ public enum EventStatus: String, Codable, Sendable { case active, ended }
 
 public enum Plan: String, Codable, Sendable { case free, pro }
 
+/// Retired (Telegram reminders bot removed); kept for the stored `NotificationPrefs` shape only.
 public enum ReminderDelivery: String, Codable, CaseIterable, Sendable { case push, telegramBot }
 
 public enum AppAppearance: String, Codable, CaseIterable, Sendable, Identifiable {

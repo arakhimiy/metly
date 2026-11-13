@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Native `PasteButton` for Tanishly links (SCAN "Paste Link") — reads the clipboard without
+/// Native `PasteButton` for Nameshake links (SCAN "Paste Link") — reads the clipboard without
 /// the "Allow Paste" prompt because the user tapped the system button.
 ///
 /// Shown only while something was copied (a card link sent in Telegram, say): an always-disabled
@@ -21,7 +21,7 @@ struct PasteLinkButton: View {
                 .buttonBorderShape(.capsule)
                 .controlSize(.large)
                 .labelStyle(.titleAndIcon)
-                .accessibilityHint("Opens a Tanishly card link from the clipboard")
+                .accessibilityHint("Opens a Nameshake card link from the clipboard")
                 .transition(.opacity)
             }
         }

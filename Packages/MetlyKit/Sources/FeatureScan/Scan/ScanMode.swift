@@ -1,6 +1,6 @@
 import CoreGraphics
 
-/// SCAN's camera modes. The tab opens in `.paper`, which also picks up Tanishly / vCard QR codes, so
+/// SCAN's camera modes. The tab opens in `.paper`, which also picks up Nameshake / vCard QR codes, so
 /// the **QR Code | Paper Card** switch is hidden (`showsPicker`); `.qr` stays for previews and a return.
 enum ScanMode: String, CaseIterable, Identifiable, Hashable {
     case qr, paper
@@ -18,8 +18,8 @@ enum ScanMode: String, CaseIterable, Identifiable, Hashable {
 
     var hint: String {
         switch self {
-        case .qr: String(localized: "Point at a Tanishly or vCard QR code")
-        case .paper: String(localized: "Fit a business card in the frame, or point at a Tanishly QR")
+        case .qr: String(localized: "Point at a Nameshake or vCard QR code")
+        case .paper: String(localized: "Fit a business card in the frame, or point at a Nameshake QR")
         }
     }
 

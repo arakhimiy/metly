@@ -63,6 +63,16 @@ final class SignInModel {
         }
     }
 
+    // MARK: Telegram
+
+    func signInWithTelegram(client: TelegramSignInClient, auth: any AuthServicing) async -> SignInOutcome? {
+        await perform(.telegram) {
+            let credential = try await client.signIn()
+            let result = try await auth.signIn(telegram: credential)
+            return SignInOutcome(result: result, provider: .telegram, suggestedName: result.suggestedName, email: result.email)
+        }
+    }
+
     #if DEBUG
     // MARK: Test sign-in (local backend)
 
@@ -83,6 +93,8 @@ final class SignInModel {
         do {
             return try await work()
         } catch GoogleSignInError.cancelled {
+            return nil
+        } catch TelegramSignInError.cancelled {
             return nil
         } catch {
             present(SignInFailure.from(error, provider: provider))

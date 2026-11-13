@@ -7,10 +7,14 @@ struct SignInFailure: Equatable {
 
     static let appleDidNotFinish = SignInFailure(message: String(localized: "Sign in with Apple didn’t finish. Try again."))
     static let googleDidNotFinish = SignInFailure(message: String(localized: "Google sign-in didn’t finish. Try again."))
+    static let telegramDidNotFinish = SignInFailure(message: String(localized: "Telegram sign-in didn’t finish. Try again."))
 
     static func from(_ error: any Error, provider: AuthProvider) -> SignInFailure {
         if let google = error as? GoogleSignInError {
             return SignInFailure(message: message(for: google))
+        }
+        if let telegram = error as? TelegramSignInError {
+            return SignInFailure(message: message(for: telegram))
         }
         if error is URLError {
             return SignInFailure(message: String(localized: "Check your connection and try again."))
@@ -24,6 +28,20 @@ struct SignInFailure: Equatable {
         return switch provider {
         case .apple: .appleDidNotFinish
         case .google: .googleDidNotFinish
+        case .telegram: .telegramDidNotFinish
+        }
+    }
+
+    private static func message(for error: TelegramSignInError) -> String {
+        switch error {
+        case .notConfigured:
+            String(localized: "Telegram sign-in isn’t available right now. Continue with Apple instead.")
+        case .stateMismatch, .missingCode:
+            String(localized: "Telegram sign-in didn’t finish securely. Try again.")
+        case .providerError:
+            String(localized: "Telegram couldn’t confirm your account. Try again.")
+        case .cancelled:
+            ""
         }
     }
 

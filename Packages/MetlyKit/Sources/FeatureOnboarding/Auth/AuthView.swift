@@ -4,7 +4,7 @@ import MetlyData
 import MetlyDesign
 import SwiftUI
 
-/// AUTH_SIGNUP — "Create your Tanishly" (or "Welcome Back" in sign-in mode).
+/// AUTH_SIGNUP — "Create your Nameshake" (or "Welcome Back" in sign-in mode).
 struct AuthView: View {
     let mode: AuthMode
 
@@ -32,7 +32,8 @@ struct AuthView: View {
                     AuthProviderButtons(mode: mode,
                                         onAppleRequest: model.configure,
                                         onAppleCompletion: completeApple,
-                                        onGoogle: signInWithGoogle)
+                                        onGoogle: signInWithGoogle,
+                                        onTelegram: signInWithTelegram)
                     #if DEBUG
                     if services.auth.supportsTestSignIn {
                         Button("Sign in as a test user") { isAskingTestName = true }
@@ -69,7 +70,7 @@ struct AuthView: View {
                 .disabled(testName.trimmingCharacters(in: .whitespaces).isEmpty)
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Debug builds only. Signs in on the local Tanishly backend; the same name returns to the same account.")
+            Text("Debug builds only. Signs in on the local Nameshake backend; the same name returns to the same account.")
         }
         #endif
     }
@@ -101,6 +102,22 @@ struct AuthView: View {
         }
         Task {
             if let outcome = await model.signInWithGoogle(client: client, auth: services.auth) {
+                finish(outcome)
+            }
+        }
+    }
+
+    private func signInWithTelegram() {
+        let session = webAuthenticationSession
+        let auth = services.auth
+        let client = TelegramSignInClient(authorizationURL: { challenge, state, nonce in
+            auth.telegramAuthorizationURL(codeChallenge: challenge, state: state, nonce: nonce)
+        }) { url, scheme in
+            try await session.authenticate(using: url, callback: .customScheme(scheme),
+                                           preferredBrowserSession: .shared, additionalHeaderFields: [:])
+        }
+        Task {
+            if let outcome = await model.signInWithTelegram(client: client, auth: services.auth) {
                 finish(outcome)
             }
         }

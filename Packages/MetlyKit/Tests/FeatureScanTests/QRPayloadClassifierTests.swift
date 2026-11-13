@@ -8,7 +8,7 @@ import Testing
 struct QRPayloadClassifierTests {
     private let kamila = QRPayload.metlyCard(url: URL(string: "https://tanishly.app/c/kamila-x1y2")!, slug: "kamila-x1y2")
 
-    @Test("Tanishly card links in every spelling", arguments: [
+    @Test("Nameshake card links in every spelling", arguments: [
         "https://tanishly.app/c/kamila-x1y2",
         "http://tanishly.app/c/kamila-x1y2",
         "tanishly.app/c/kamila-x1y2",

@@ -258,7 +258,7 @@ struct MockMetlyServerTests {
         #expect(applied.records.connections.first?.note == "New edit")
     }
 
-    @Test("A second connection for the same Tanishly user merges into the first")
+    @Test("A second connection for the same Nameshake user merges into the first")
     func connectionUniquePerRemoteUser() async throws {
         let server = server()
         let kamilaID = MockSeed.peers[0].userID

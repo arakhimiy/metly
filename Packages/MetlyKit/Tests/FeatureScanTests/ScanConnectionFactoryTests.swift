@@ -71,7 +71,7 @@ struct ScanConnectionFactoryTests {
         #expect(ScanConnectionFactory.insertConnection(from: companyOnly, source: .scanQR, in: context).fullName == "Humo Payments")
     }
 
-    @Test("Already in People: same Tanishly user, or same phone / email / Telegram")
+    @Test("Already in People: same Nameshake user, or same phone / email / Telegram")
     func matching() {
         let userID = UUID()
         let known = Connection(fullName: "Kamila Yusupova", source: .nearby)

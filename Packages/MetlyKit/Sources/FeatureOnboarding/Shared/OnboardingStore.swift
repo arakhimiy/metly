@@ -2,7 +2,7 @@ import Foundation
 
 /// Identity provider an account was created with (drives the "From your Apple ID" footer).
 nonisolated enum AuthProvider: String, Codable, Sendable {
-    case apple, google
+    case apple, google, telegram
 }
 
 /// Name and email suggested by the identity provider. Kept until SETUP_PROFILE is completed,

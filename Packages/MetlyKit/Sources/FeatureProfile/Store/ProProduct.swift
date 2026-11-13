@@ -1,6 +1,6 @@
 import Foundation
 
-/// Tanishly Pro auto-renewable subscriptions (subscription group "Tanishly Pro", see `Metly/Metly.storekit`).
+/// Nameshake Pro auto-renewable subscriptions (subscription group "Nameshake Pro", see `Metly/Metly.storekit`).
 nonisolated public enum ProProduct: String, CaseIterable, Sendable {
     case yearly = "app.tanishly.ios.pro.yearly"
     case monthly = "app.tanishly.ios.pro.monthly"

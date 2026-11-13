@@ -408,7 +408,10 @@ public struct CardStats: Codable, Hashable, Sendable {
 public struct NotificationPrefs: Codable, Hashable, Sendable {
     public var followUpReminders = true
     public var eventSummary = true
+    /// Retired with the Telegram reminders bot: reminders are always push. Kept only because this struct
+    /// is stored in the frozen SwiftData schema versions; nothing reads it and the server ignores it.
     public var delivery: ReminderDelivery = .push
+    /// Retired with the Telegram reminders bot (see `delivery`).
     public var telegramLinked = false
     public var connectRequests = true
     public var cardSaved = true

@@ -48,7 +48,7 @@ public enum MockSeed {
         }
     }
 
-    /// Another Tanishly user the mock world knows about (public profile, Nearby, connect behaviour).
+    /// Another Nameshake user the mock world knows about (public profile, Nearby, connect behaviour).
     public struct Peer: Sendable, Hashable {
         public enum Behavior: Sendable, Hashable {
             /// Accepts connect requests after the server's accept delay.

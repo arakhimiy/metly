@@ -10,7 +10,7 @@ nonisolated enum PaperLabel: Equatable, Sendable {
     case website
     case telegram
     case linkedin
-    /// Networks Tanishly doesn't store (Instagram, Facebook…): the value is ignored.
+    /// Networks Nameshake doesn't store (Instagram, Facebook…): the value is ignored.
     case ignored
 
     /// Splits a leading label off `segment`. Labels end with ":" ("Tel: …"), or are short

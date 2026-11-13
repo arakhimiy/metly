@@ -178,6 +178,13 @@ private struct HookedAuth: AuthAPI {
         return try await server.signInWithGoogle(request)
     }
 
+    func signInWithTelegram(_ request: TelegramSignInRequest) async throws -> AuthResponse {
+        hooks.logIn()
+        return try await server.signInWithTelegram(request)
+    }
+
+    func telegramAuthorizationURL(codeChallenge: String, state: String, nonce: String) -> URL? { nil }
+
     func logout(_ request: LogoutRequest) async throws {
         try await hooks.willLogOut()
         try hooks.requireSession()

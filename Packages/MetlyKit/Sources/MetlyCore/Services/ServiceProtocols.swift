@@ -59,6 +59,9 @@ public protocol AuthServicing: AnyObject {
     var accountEmail: String? { get }
     func signIn(apple: AppleSignInCredential) async throws -> AuthResult
     func signIn(google: GoogleSignInCredential) async throws -> AuthResult
+    /// Log In with Telegram: the URL that starts it in a browser session (nil without a backend).
+    func telegramAuthorizationURL(codeChallenge: String, state: String, nonce: String) -> URL?
+    func signIn(telegram: TelegramSignInCredential) async throws -> AuthResult
     /// Wipes Keychain + local store.
     func signOut() async
     func deleteAccount() async throws

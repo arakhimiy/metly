@@ -3,7 +3,7 @@ import MetlyCore
 
 // Wire types for /v1/auth/* and /v1/me (account). Field docs live in docs/api/openapi.yaml.
 
-public enum AuthProvider: String, Codable, Sendable, CaseIterable { case apple, google }
+public enum AuthProvider: String, Codable, Sendable, CaseIterable { case apple, google, telegram }
 
 public struct PersonNameDTO: Codable, Sendable, Hashable {
     public var givenName: String?
@@ -42,6 +42,20 @@ public struct AppleSignInRequest: Codable, Sendable, Hashable {
 }
 
 /// `POST /v1/auth/google` — the OpenID Connect `id_token` from the PKCE flow.
+/// `POST /v1/auth/telegram` — Log In with Telegram: the code from the callback plus the PKCE verifier
+/// and nonce behind `/v1/auth/telegram/authorize`. The backend redeems it with its client secret.
+public struct TelegramSignInRequest: Codable, Sendable, Hashable {
+    public var code: String
+    public var codeVerifier: String
+    public var nonce: String
+
+    public init(code: String, codeVerifier: String, nonce: String) {
+        self.code = code
+        self.codeVerifier = codeVerifier
+        self.nonce = nonce
+    }
+}
+
 public struct GoogleSignInRequest: Codable, Sendable, Hashable {
     public var idToken: String
     public var nonce: String?

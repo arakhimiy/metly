@@ -220,7 +220,7 @@ struct MockBackend: Sendable {
         if let invalid = invalidContacts(incoming, incoming.contacts) { return invalid }
         let existing = connections[incoming.id]
         if let stale = staleResult(incoming, existing: existing, into: \.connections, canonical: &canonical) { return stale }
-        // One connection per Tanishly user: a second record for the same remoteUserID (e.g. created
+        // One connection per Nameshake user: a second record for the same remoteUserID (e.g. created
         // optimistically offline while the server already made one on accept) merges into the
         // existing record; the pushed id is tombstoned.
         if existing == nil, let remoteID = incoming.remoteUserID,

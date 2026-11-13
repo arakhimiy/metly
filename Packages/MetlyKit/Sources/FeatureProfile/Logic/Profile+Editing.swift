@@ -71,19 +71,6 @@ final class ProfileEditor {
         }
     }
 
-    /// Reminder delivery; picking Telegram before the bot is linked asks to link it instead.
-    func deliveryBinding(requestTelegramLink: @escaping @MainActor @Sendable () -> Void) -> Binding<ReminderDelivery> {
-        Binding {
-            self.profile.notificationPrefs.delivery
-        } set: { newValue in
-            if newValue == .telegramBot, !self.profile.notificationPrefs.telegramLinked {
-                requestTelegramLink()
-                return
-            }
-            self.updateNotificationPrefs { $0.delivery = newValue }
-        }
-    }
-
     func updateNotificationPrefs(_ change: (inout NotificationPrefs) -> Void) {
         var prefs = profile.notificationPrefs
         change(&prefs)

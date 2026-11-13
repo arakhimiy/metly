@@ -152,6 +152,7 @@ private struct SetupContactFooter: View {
             switch prefill.provider {
             case .apple: Text("Name and email came from your Apple ID. Each card decides what it shows.")
             case .google: Text("Name and email came from your Google account. Each card decides what it shows.")
+            case .telegram: Text("Your name came from Telegram. Each card decides what it shows.")
             }
         } else {
             Text("Each card decides what it shows.")

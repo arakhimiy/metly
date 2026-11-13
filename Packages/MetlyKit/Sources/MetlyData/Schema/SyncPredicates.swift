@@ -3,7 +3,7 @@ import SwiftData
 
 // Concrete #Predicates for SyncedRecord. Each model needs its own copy: SwiftData resolves a key path
 // written against a generic `Model: SyncedRecord` through the protocol witness, which works in Debug
-// but traps in Release ("Tanishly crashes 2–3 s after sign-in", TestFlight 1.0 (1)).
+// but traps in Release ("Nameshake crashes 2–3 s after sign-in", TestFlight 1.0 (1)).
 
 extension Profile {
     public static func syncStatePredicate(_ raw: String, equal: Bool) -> Predicate<Profile> {

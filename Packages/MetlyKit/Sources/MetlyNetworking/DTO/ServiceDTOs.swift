@@ -39,18 +39,6 @@ public struct CommitUploadRequest: Codable, Sendable, Hashable {
     public init(uploadID: String) { self.uploadID = uploadID }
 }
 
-/// `POST /v1/integrations/telegram/link` — open `botURL` (t.me deep link); the bot confirms the
-/// link server-side and `notificationPrefs.telegramLinked` turns true on the next sync.
-public struct TelegramLinkDTO: Codable, Sendable, Hashable {
-    public var botURL: URL
-    public var expiresAt: Date
-
-    public init(botURL: URL, expiresAt: Date) {
-        self.botURL = botURL
-        self.expiresAt = expiresAt
-    }
-}
-
 // MARK: Cards
 
 public struct DuplicateCardRequest: Codable, Sendable, Hashable {

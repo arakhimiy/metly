@@ -53,6 +53,20 @@ extension LiveMetlyAPI: AuthAPI {
         try await send(.post, "/v1/auth/google", body: request, auth: false, idempotent: true)
     }
 
+    public func signInWithTelegram(_ request: TelegramSignInRequest) async throws -> AuthResponse {
+        try await send(.post, "/v1/auth/telegram", body: request, auth: false, idempotent: true)
+    }
+
+    public func telegramAuthorizationURL(codeChallenge: String, state: String, nonce: String) -> URL? {
+        var components = URLComponents(url: client.baseURL.appending(path: "/v1/auth/telegram/authorize"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [
+            URLQueryItem(name: "code_challenge", value: codeChallenge),
+            URLQueryItem(name: "state", value: state),
+            URLQueryItem(name: "nonce", value: nonce),
+        ]
+        return components?.url
+    }
+
     public func logout(_ request: LogoutRequest) async throws {
         let _: EmptyResponse = try await send(.post, "/v1/auth/logout", body: request, auth: true, idempotent: true)
     }
@@ -113,14 +127,6 @@ extension LiveMetlyAPI: ProfileAPI {
 
     public func downloadAsset(_ url: URL) async throws -> Data {
         try await client.send(.raw(absoluteURL: url, accept: "image/*", requiresAuth: false))
-    }
-
-    public func requestTelegramLink() async throws -> TelegramLinkDTO {
-        try await send(.post, "/v1/integrations/telegram/link", idempotent: true)
-    }
-
-    public func unlinkTelegram() async throws {
-        let _: EmptyResponse = try await send(.delete, "/v1/integrations/telegram/link")
     }
 }
 

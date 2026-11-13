@@ -234,7 +234,7 @@ public extension ConnectRequest {
 public extension ModelContext {
     /// Inserts or overwrites records from server DTOs and marks them synced (no LWW — use for
     /// server-authoritative results such as connect accept responses and realtime events).
-    /// The local record for a server connection: same `id`, or — for a Tanishly user — the unsynced
+    /// The local record for a server connection: same `id`, or — for a Nameshake user — the unsynced
     /// connection a feature created optimistically for the same `remoteUserID` (e.g. People
     /// accepting a request offline). That record is re-keyed to the server id instead of being
     /// duplicated; its follow-ups follow along through the relationship.

@@ -2,15 +2,16 @@ import SwiftUI
 import UIKit
 
 /// The app's colors beyond the AccentColor asset: what sits on top of the accent, and the
-/// initials-avatar palette. Avatar hues are muted so a list of people doesn't out-shout the brand teal.
+/// initials-avatar palette. Avatar hues are muted so a list of people doesn’t out-shout the brand blue
+/// (the AccentColor asset is the HIG system Blue).
 public enum BrandPalette {
     /// Text/icons drawn on an accent-filled control.
     public static let onAccent = Color(uiColor: UIColor { _ in .white })
 
-    /// Avatar hues, picked to sit next to the teal accent (no neon pinks or purples).
+    /// Avatar hues, picked to sit next to the system-blue accent (no neon pinks or purples).
     static let avatarHues: [UIColor] = [
-        UIColor(hex: 0x0E8A7E), // teal
-        UIColor(hex: 0x2B7BB9), // ocean
+        UIColor(hex: 0x2F6BC4), // blue (brand)
+        UIColor(hex: 0x3D8B5E), // pine
         UIColor(hex: 0x5B6BBF), // slate indigo
         UIColor(hex: 0x8E5BA8), // plum
         UIColor(hex: 0xC2536B), // rose
