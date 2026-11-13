@@ -71,7 +71,7 @@ paths:
       summary: Sign in with Apple → session
       description: |
         Verify `identityToken` against Apple's JWKS (`iss=https://appleid.apple.com`,
-        `aud=app.tanishly.ios`, `exp`, and `nonce` = SHA-256 of the raw `nonce` when present). Exchange
+        `aud=app.nameshake.ios`, `exp`, and `nonce` = SHA-256 of the raw `nonce` when present). Exchange
         `authorizationCode` for a refresh token and **store it** — it is needed to revoke on account
         deletion (Apple requirement). Apple sends `fullName`/`email` only on the first authorization;
         persist them. Creates the user on first sign-in (`isNewUser: true`).
@@ -413,7 +413,7 @@ paths:
       description: |
         There are no server-side drafts: every accepted card is published (`publishState: published`)
         and gets a slug `{firstname}-{4 chars}` (see README § Slugs). Enforces the Free card limit (2)
-        on create and Pro-only templates/palettes (`editorial`, `ocean`, `ember`) when the design
+        on create and Pro-only templates/palettes (`modern`, `gradient`, `editorial`, `ocean`, `ember`) when the design
         changes. Republishes the web page and pushes a Wallet pass update when visible content changed.
       requestBody:
         required: true
@@ -471,7 +471,7 @@ paths:
       operationId: getWalletPass
       summary: Signed Apple Wallet pass (`.pkpass`)
       description: |
-        Generic pass (`passTypeIdentifier` e.g. `pass.app.tanishly.ios.card`, serial = card id) signed
+        Generic pass (`passTypeIdentifier` e.g. `pass.app.nameshake.ios.card`, serial = card id) signed
         server-side with the Pass Type ID certificate + Apple WWDR intermediate. Front: name,
         title · company, **Public** fields only (never Connections/Private — it can leave the device);
         QR (`PKBarcodeFormatQR`, message = `https://tanishly.app/c/{slug}`, ISO-8859-1). Colors from the
@@ -958,9 +958,9 @@ paths:
       operationId: verifyTransaction
       summary: StoreKit 2 signed transaction → entitlement
       description: |
-        Verify the JWS (x5c chain to Apple Root CA G3, bundleId `app.tanishly.ios`, environment), then
+        Verify the JWS (x5c chain to Apple Root CA G3, bundleId `app.nameshake.ios`, environment), then
         confirm with the App Store Server API (`/inApps/v1/subscriptions/{originalTransactionId}`).
-        Products: `app.tanishly.ios.pro.yearly`, `app.tanishly.ios.pro.monthly`. Link `originalTransactionId` ↔ user
+        Products: `app.nameshake.ios.pro.yearly`, `app.nameshake.ios.pro.monthly`. Link `originalTransactionId` ↔ user
         (`appAccountToken` = user id when the app sets it); one transaction cannot unlock two accounts.
       parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
       requestBody:
@@ -1286,6 +1286,20 @@ components:
             entry whose kind is in `visibleFields` (all phones when `phone` is in it), never WhatsApp/Instagram.
             Omitted by the server when null.
           items: { type: string, format: uuid }
+        showJobTitle:
+          type: boolean
+          description: |
+            App 4.0.0. False = this card hides the owner's job title (web page, vCard, snapshots blank it).
+            Absent = shown; the server stores and returns it only when false.
+        showCompany:
+          type: boolean
+          description: Like `showJobTitle`, for the company.
+        logoStyle:
+          type: string
+          enum: [original, mono]
+          description: |
+            App 4.0.0. How the logo is drawn: as uploaded, or one-colour in the template's ink (foil, deboss).
+            Absent = original; stored only when `mono`.
     CardSnapshot:
       type: object
       description: Frozen copy of someone's card as shared with the owner.
@@ -1741,7 +1755,7 @@ components:
       required: [plan, willRenew, isInBillingRetry, limits]
       properties:
         plan: { $ref: '#/components/schemas/Plan' }
-        productId: { type: [string, 'null'], enum: [app.tanishly.ios.pro.yearly, app.tanishly.ios.pro.monthly, null] }
+        productId: { type: [string, 'null'], enum: [app.nameshake.ios.pro.yearly, app.nameshake.ios.pro.monthly, null] }
         expiresAt: { $ref: '#/components/schemas/NullableTimestamp' }
         willRenew: { type: boolean }
         renewsAt: { $ref: '#/components/schemas/NullableTimestamp' }

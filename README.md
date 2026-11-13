@@ -17,10 +17,12 @@ The product is **Nameshake**. Two older names remain on purpose:
 
 - **Metly** is the codebase name: the Xcode project and scheme, the `Metly*` / `Feature*` Swift
   modules, Info.plist keys (`MetlyAPIBaseURL`…). Renaming them is churn with no user-visible effect.
-- **tanishly** is in identifiers tied to outside systems: bundle id `app.tanishly.ios`, App Group,
-  Pass Type ID, the `tanishly://` URL scheme, the `tanishly.app` domain that printed QR codes encode,
-  and the npm package name. Changing them needs Apple Developer, DNS and hosting changes and must be
-  planned (see `docs/DEPLOYMENT.md`).
+- **nameshake** is in the app identifiers: bundle id `app.nameshake.ios` (widgets `.widgets`), App Group
+  `group.app.nameshake.ios`, Pass Type ID `pass.app.nameshake.ios.card`, in-app purchase ids, the
+  `nameshake://` URL scheme and the npm package name (renamed from `tanishly` on 2026-11-13).
+- **tanishly.app** is still the web/API domain placeholder (`WEB_BASE_URL`, `API_BASE_URL`, support email)
+  until the Nameshake domain is bought; it must be final before the first public build, because printed
+  QR codes encode it (see `docs/DEPLOYMENT.md`).
 
 ## Quick start
 

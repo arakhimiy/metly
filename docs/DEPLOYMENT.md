@@ -49,12 +49,12 @@ Copy `backend/.env.example`; production refuses to boot when `JWT_SECRET` is the
 | `JWT_SECRET` | `openssl rand -base64 48` |
 | `TRUST_PROXY` | proxy hops in front of the API (`1` behind one load balancer); never `true` |
 | `RATE_LIMIT_STORE` | `postgres` (default; shared by all instances) |
-| `APPLE_BUNDLE_IDS` | `app.tanishly.ios` |
+| `APPLE_BUNDLE_IDS` | `app.nameshake.ios` |
 | `APPLE_TEAM_ID`, `APPLE_SIGNIN_KEY_ID`, `APPLE_SIGNIN_PRIVATE_KEY` | Sign in with Apple key (.p8) — needed to revoke tokens on account deletion (App Store rule) |
 | `GOOGLE_CLIENT_IDS` | iOS OAuth client id from Google Cloud Console (see § 6) |
 | `TELEGRAM_LOGIN_CLIENT_ID`, `TELEGRAM_LOGIN_CLIENT_SECRET` | Log In with Telegram (see § 7) |
-| `APP_URL_SCHEME` | the app's URL scheme (`tanishly`); Telegram sign-in returns to the app through it |
-| `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_PRIVATE_KEY`, `APNS_TOPIC` | APNs auth key (.p8); topic `app.tanishly.ios` |
+| `APP_URL_SCHEME` | the app's URL scheme (`nameshake`); Telegram sign-in returns to the app through it |
+| `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_PRIVATE_KEY`, `APNS_TOPIC` | APNs auth key (.p8); topic `app.nameshake.ios` |
 | `APP_STORE_ISSUER_ID`, `APP_STORE_KEY_ID`, `APP_STORE_PRIVATE_KEY`, `APP_STORE_APP_APPLE_ID`, `APP_STORE_ENVIRONMENT` | App Store Server API key; `Production` after release |
 | `PASS_TYPE_IDENTIFIER`, `PASS_TEAM_ID`, `PASS_CERT_PEM`, `PASS_KEY_PEM`, `PASS_KEY_PASSPHRASE`, `PASS_WWDR_PEM` | Wallet pass certificate + Apple WWDR G4 |
 | `S3_*` | Cloudflare R2 (or S3) bucket for photos/logos; `S3_PUBLIC_BASE_URL` = the public bucket/CDN URL |
@@ -78,12 +78,12 @@ Migrations are additive; roll back by deploying the previous image (do not roll 
 
 ## 5. Apple configuration checklist
 
-1. Identifiers: App ID `app.tanishly.ios` (Sign in with Apple, Push, Associated Domains, App Groups,
-   Wallet), `app.tanishly.ios.widgets`, App Group `group.app.tanishly.ios`, Pass Type ID
-   `pass.app.tanishly.ios.card`.
+1. Identifiers: App ID `app.nameshake.ios` (Sign in with Apple, Push, Associated Domains, App Groups,
+   Wallet), `app.nameshake.ios.widgets`, App Group `group.app.nameshake.ios`, Pass Type ID
+   `pass.app.nameshake.ios.card`.
 2. Keys: Sign in with Apple key, APNs key (can be one key with both), App Store Server API key.
-3. App Store Connect: app record, subscriptions `app.tanishly.ios.pro.monthly` and
-   `app.tanishly.ios.pro.yearly` in one group, App Store Server Notifications V2 URL
+3. App Store Connect: app record, subscriptions `app.nameshake.ios.pro.monthly` and
+   `app.nameshake.ios.pro.yearly` in one group, App Store Server Notifications V2 URL
    `https://api.tanishly.app/v1/webhooks/app-store` (production and sandbox).
 4. Xcode Release configuration: `DEVELOPMENT_TEAM`, `METLY_API_BASE_URL=https://api.tanishly.app`
    (the Release build fails without it, by design), `GOOGLE_CLIENT_ID`.
@@ -92,7 +92,7 @@ Migrations are additive; roll back by deploying the previous image (do not roll 
 
 1. Google Cloud Console → APIs & Services → OAuth consent screen: app name **Nameshake**, support
    email, privacy policy `https://tanishly.app/privacy`, scopes `openid`, `email`, `profile`.
-2. Credentials → Create OAuth client ID → **iOS**, bundle ID `app.tanishly.ios`. Copy the client ID
+2. Credentials → Create OAuth client ID → **iOS**, bundle ID `app.nameshake.ios`. Copy the client ID
    (`…apps.googleusercontent.com`; not a secret).
 3. Xcode build setting `GOOGLE_CLIENT_ID` (both configurations) = that client ID. The app derives the
    reversed-client-ID callback scheme from it; no SDK and no Info.plist URL type are needed because
@@ -107,8 +107,8 @@ Migrations are additive; roll back by deploying the previous image (do not roll 
    `https://api.tanishly.app/v1/auth/telegram/callback` (and your staging API's callback). Copy the
    **Client ID** and **Client Secret**.
 3. Backend: `TELEGRAM_LOGIN_CLIENT_ID`, `TELEGRAM_LOGIN_CLIENT_SECRET`. Keep `APP_URL_SCHEME` equal to
-   the app's URL scheme (`tanishly`). The app needs no Telegram settings: it starts at the API.
+   the app's URL scheme (`nameshake`). The app needs no Telegram settings: it starts at the API.
 4. Check: `curl -I "https://api.tanishly.app/v1/auth/telegram/authorize?code_challenge=$(printf %043d 0)&state=0123456789abcdef&nonce=0123456789abcdef"`
-   answers `302` to `oauth.telegram.org` (a redirect to `tanishly://auth/telegram?error=temporarily_unavailable`
+   answers `302` to `oauth.telegram.org` (a redirect to `nameshake://auth/telegram?error=temporarily_unavailable`
    means the client id/secret are missing).
 

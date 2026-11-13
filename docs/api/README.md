@@ -264,7 +264,7 @@ Full contract: `docs/api/CONTACTS.md`. Server side:
 | Cards | 2 (create/duplicate rejected beyond) | unlimited |
 | Open follow-ups (`isDone == false`) | 5 (a write that would open a 6th is rejected) | unlimited |
 | Active events | 1 | unlimited |
-| Pro templates/palettes (`editorial`, `ocean`, `ember`) | rejected when a write changes the design to one | allowed |
+| Pro templates/palettes (`modern` = Foil, `gradient` = Aurora, `editorial`, `ocean`, `ember`) | rejected when a write changes the design to one | allowed |
 
 Rejections: REST `403 plan_limit_reached` / `pro_required` (`details.limit`); sync push `status:
 rejected` with the same error. The device does not retry a rejected record until it is edited again.
@@ -323,7 +323,7 @@ share-back; consider Cloudflare Turnstile (`captchaToken`) if spam appears.
 ### Open backend questions
 - Email-change / provider linking (Apple + Google + Telegram on one account) — out of v1.
 - Analytics opt-in endpoint (`shareAnalytics`) — not specified yet.
-- Exact pass design and Pass Type ID (`pass.app.tanishly.ios.card` proposed).
+- Exact pass design and Pass Type ID (`pass.app.nameshake.ios.card` proposed).
 
 
 ### Privacy rule: who counts as "connected" (public profiles)

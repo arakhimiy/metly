@@ -1,0 +1,365 @@
+<title>Nameshake Card Templates v2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a quiet review sheet — controls on top, a 2-up grid of 85:55 faces sized in cqw like the app (style.u). */
+:root{
+  --bg:#f3f4f6; --surface:#ffffff; --fg:#111318; --muted:#5d6370; --line:#dfe2e7; --accent:#0a84ff;
+  --sans:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",Arial,sans-serif;
+  --serif:"New York","Newsreader",Georgia,serif;
+  --mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e0f12;--surface:#17191d;--fg:#eef0f3;--muted:#9aa1ad;--line:#2a2d33;--accent:#0a84ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e0f12;--surface:#17191d;--fg:#eef0f3;--muted:#9aa1ad;--line:#2a2d33;--accent:#0a84ff;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+header h1{font-size:28px;letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+header p{margin:0;color:var(--muted);max-width:66ch;line-height:1.5}
+.controls{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.controls label{display:flex;gap:7px;align-items:center;font-size:13px;cursor:pointer;user-select:none}
+.controls input{accent-color:var(--accent);width:16px;height:16px}
+.controls .sep{width:1px;height:20px;background:var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--fg);padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:28px 24px}
+figure{margin:0;display:grid;gap:10px;min-width:0}
+figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px}
+figcaption b{font-weight:600}
+figcaption span{color:var(--muted);font-size:12px;font-family:var(--mono)}
+.pro{font-size:10px;font-weight:700;letter-spacing:.08em;color:#fff;background:linear-gradient(90deg,#8b5cf6,#ec4899);border-radius:4px;padding:2px 5px;margin-left:6px;vertical-align:2px}
+.note{font-size:12.5px;color:var(--muted);line-height:1.45;margin:0}
+
+/* ───── card base: every length in cqw (= % of card width, like style.u) ───── */
+.card{container-type:inline-size;aspect-ratio:85/55;max-width:100%;position:relative;border-radius:3.2cqw;overflow:hidden;
+  box-shadow:0 1px 2px rgba(0,0,0,.12),0 10px 30px -10px rgba(0,0,0,.35);isolation:isolate}
+.card *{box-sizing:border-box}
+.c{position:absolute;inset:0;padding:8cqw;font-family:var(--sans)}
+.grain::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.qr{position:absolute;width:18cqw;aspect-ratio:1;background:#fff;border-radius:1.6cqw;padding:1.6cqw}
+.qr i{display:grid;width:100%;height:100%;grid-template-columns:repeat(21,1fr)}
+.qr i b{background:#000}
+.lbl{color:var(--m);font-size:.82em}
+.logo{display:block}
+.hide-title .t-title,.hide-company .t-company,.hide-logo .t-logo,.hide-qr .qr{display:none!important}
+.hide-logo .t-mono{display:block!important}
+
+/* 1 · Classic (minimal) */
+.classic{--b:#fbfaf8;--f:#15171a;--m:#7a7e86;--a:#0a84ff;background:var(--b);color:var(--f)}
+.dark .classic{--b:#121316;--f:#f2f2f0;--m:#8d929b}
+.classic .top{display:flex;align-items:center;gap:2cqw;font-size:2.6cqw;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+.classic .top svg{width:5.4cqw;height:5.4cqw}
+.classic .who{position:absolute;left:8cqw;bottom:8cqw}
+.classic .name{font-size:6.2cqw;font-weight:600;letter-spacing:-.015em;line-height:1.05}
+.classic .t-title{font-size:3cqw;color:var(--m);margin-top:1.2cqw}
+.classic .contacts{position:absolute;right:8cqw;bottom:8cqw;display:grid;grid-template-columns:auto auto;gap:1cqw 2.4cqw;font-size:2.7cqw;font-variant-numeric:tabular-nums;text-align:left}
+.classic .qr{top:8cqw;right:8cqw;width:15cqw;border:.25cqw solid rgba(0,0,0,.08)}
+.classic.hasqr .contacts{bottom:8cqw}
+
+/* 2 · Monogram (professional) — deboss */
+.mono{--b:#18191b;--f:#f4f4f2;--m:#8e9198;--a:#2ec8f0;background:var(--b);color:var(--f)}
+.light .mono{--b:#e9e7e2;--f:#1b1c1f;--m:#6b6e75;--a:#0a7fbf}
+.mono .deboss{position:absolute;left:6cqw;top:50%;transform:translateY(-50%);font-size:36cqw;font-weight:800;line-height:.8;letter-spacing:-.06em;color:var(--b);
+  text-shadow:-.25cqw -.25cqw .3cqw rgba(0,0,0,.55),.25cqw .25cqw .3cqw rgba(255,255,255,.07)}
+.light .mono .deboss{text-shadow:-.25cqw -.25cqw .3cqw rgba(0,0,0,.18),.25cqw .25cqw .3cqw rgba(255,255,255,.85)}
+.mono .deboss svg{width:30cqw;height:30cqw;display:block;filter:drop-shadow(-.25cqw -.25cqw .25cqw rgba(0,0,0,.6)) drop-shadow(.25cqw .25cqw .25cqw rgba(255,255,255,.08))}
+.mono .deboss svg path{fill:var(--b)}
+.mono .t-mono{display:none}
+.mono .info{position:absolute;left:52cqw;top:50%;transform:translateY(-55%)}
+.mono .name{font-size:4.6cqw;font-weight:600;color:var(--a);letter-spacing:-.01em}
+.mono .t-title{font-size:3cqw;margin-top:.6cqw}
+.mono .contacts{margin-top:6cqw;display:grid;gap:.8cqw;font-size:2.7cqw;font-variant-numeric:tabular-nums}
+.mono .contacts div:last-child{color:var(--a)}
+.mono .qr{right:7cqw;bottom:7cqw;width:13cqw}
+
+/* 3 · Foil (modern) — holographic bar + vertical wordmark */
+.foil{--b:#141416;--f:#f1f1ef;--m:#9a9ca3;background:var(--b);color:var(--f)}
+.light .foil{--b:#f2f1ee;--f:#141416;--m:#6c6e74}
+.holo{background:linear-gradient(160deg,#f7d58b 0%,#f39bc3 28%,#c39bff 50%,#7fe3ff 72%,#b9ffd8 100%);position:relative;overflow:hidden}
+.holo::after{content:"";position:absolute;inset:-20%;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.55) 48%,transparent 60%)}
+.foil .bar{position:absolute;left:8cqw;top:8cqw;width:7cqw;height:46%;border-radius:.4cqw}
+.foil .info{position:absolute;left:21cqw;top:8cqw;right:20cqw}
+.foil .name{font-size:4.4cqw;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.foil .t-title{font-family:var(--sans);font-style:italic;font-size:3cqw;margin-top:1cqw;color:var(--f);opacity:.85}
+.foil .contacts{position:absolute;left:21cqw;bottom:8cqw;display:grid;gap:1.1cqw;font-size:2.8cqw;font-weight:500;font-variant-numeric:tabular-nums}
+.foil .word{position:absolute;right:5.5cqw;top:8cqw;bottom:8cqw;writing-mode:vertical-rl;font-size:6.4cqw;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:transparent;-webkit-text-stroke:.22cqw var(--f);text-align:end}
+.foil.hasqr .word{bottom:30cqw}
+.foil .qr{right:6cqw;bottom:6cqw;width:15cqw}
+
+/* 4 · Wordmark (bold) */
+.wm{--b:#f6f6f4;--f:#121214;--m:#6f7177;background:var(--b);color:var(--f)}
+.dark .wm{--b:#101012;--f:#f5f5f3;--m:#8e9097}
+.wm .word{font-size:10.5cqw;font-weight:800;letter-spacing:-.045em;line-height:.9;text-transform:uppercase;white-space:nowrap}
+.wm .tag{font-size:2.3cqw;letter-spacing:.24em;text-transform:uppercase;margin-top:2.2cqw;font-weight:600}
+.wm .who{position:absolute;left:8cqw;bottom:8cqw;font-size:2.8cqw;display:grid;gap:.7cqw;font-variant-numeric:tabular-nums}
+.wm .who b{font-weight:700;font-size:3.1cqw}
+.wm .mark{position:absolute;right:8cqw;bottom:8cqw;width:8cqw;height:8cqw}
+.wm .mark svg{width:100%;height:100%}
+.wm .qr{right:8cqw;bottom:8cqw;width:15cqw}
+.wm.hasqr .mark{display:none}
+
+/* 5 · Aurora (gradient) — vivid gradient + contour lines */
+.aur{--f:#fff;color:#fff;background:radial-gradient(120% 140% at 0% 0%,#7c3aed 0%,transparent 55%),radial-gradient(110% 120% at 100% 100%,#fb923c 0%,transparent 55%),linear-gradient(135deg,#8b2cf5,#ec4899 55%,#f97316)}
+.light .aur{background:radial-gradient(120% 140% at 0% 0%,#c4a1ff 0%,transparent 55%),radial-gradient(110% 120% at 100% 100%,#ffc58f 0%,transparent 55%),linear-gradient(135deg,#b78cff,#ff8cc6 55%,#ffb27a);color:#1a0f24}
+.aur canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5;mix-blend-mode:soft-light}
+.aur .word{position:absolute;inset:0;display:grid;place-items:center;font-size:8.6cqw;font-weight:500;letter-spacing:.32em;text-transform:uppercase;padding-left:.32em}
+.aur .foot{position:absolute;left:8cqw;bottom:7cqw;font-size:2.6cqw;letter-spacing:.06em;opacity:.92}
+.aur .t-title{position:absolute;right:8cqw;bottom:7cqw;font-size:2.6cqw;letter-spacing:.06em;opacity:.92}
+.aur .qr{right:7cqw;top:7cqw;width:14cqw}
+
+/* 6 · Duotone (split) */
+.duo{--b:#101318;--f:#f3f4f6;--m:#8e96a3;--a:#0a84ff;background:var(--b);color:var(--f)}
+.light .duo{--b:#fbfbfc;--f:#121417;--m:#6b717c}
+.duo .panel{position:absolute;left:0;top:0;bottom:0;width:36%;background:var(--a);display:grid;place-items:center}
+.duo .panel svg{width:13cqw;height:13cqw}
+.duo .panel svg path{fill:#fff}
+.duo .panel .t-mono{display:none;font-size:11cqw;font-weight:700;color:#fff}
+.duo .info{position:absolute;left:43cqw;top:8cqw;right:6cqw}
+.duo .name{font-size:5.4cqw;font-weight:600;letter-spacing:-.015em}
+.duo .t-title{font-size:2.9cqw;color:var(--m);margin-top:.8cqw}
+.duo .t-company{font-size:2.9cqw;color:var(--m)}
+.duo .rule{width:7cqw;height:.3cqw;background:var(--a);margin:3.4cqw 0}
+.duo .contacts{display:grid;gap:1cqw;font-size:2.7cqw;font-variant-numeric:tabular-nums}
+.duo .contacts div{display:flex;gap:1.8cqw;align-items:center}
+.duo .contacts svg{width:2.8cqw;height:2.8cqw;flex:none;stroke:var(--a);fill:none;stroke-width:2}
+.duo .qr{right:6cqw;bottom:6cqw;width:14cqw}
+
+/* 7 · Terminal */
+.term{--b:#0c0d0f;--f:#e8eaed;--m:#6f7680;--a:#4ade80;background:var(--b);color:var(--f);font-family:var(--mono)}
+.light .term{--b:#f7f7f5;--f:#16181b;--m:#7a7f87;--a:#16a34a}
+.term .c{font-family:var(--mono)}
+.term .p{font-size:2.5cqw;color:var(--m)}
+.term .p em{color:var(--a);font-style:normal}
+.term .name{font-size:5.4cqw;font-weight:600;margin-top:1.4cqw}
+.term .name::after{content:"";display:inline-block;width:2.6cqw;height:4.6cqw;background:var(--a);margin-left:1cqw;vertical-align:-.6cqw;animation:blink 1.1s steps(1) infinite}
+@media (prefers-reduced-motion:reduce){.term .name::after{animation:none}}
+@keyframes blink{50%{opacity:0}}
+.term .t-title{font-size:2.6cqw;color:var(--m);margin-top:.8cqw}
+.term .kv{position:absolute;left:8cqw;bottom:8cqw;display:grid;grid-template-columns:auto auto;gap:.9cqw 3cqw;font-size:2.6cqw}
+.term .kv span:nth-child(odd){color:var(--a)}
+.term .qr{right:7cqw;bottom:7cqw;width:15cqw}
+
+/* 8 · Centered (stack) */
+.cen{--b:#0d0f13;--f:#f1f3f6;--m:#8c93a0;--a:#0a84ff;background:var(--b);color:var(--f);text-align:center}
+.light .cen{--b:#ffffff;--f:#14161a;--m:#6b717c}
+.cen .c{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7cqw 8cqw}
+.cen .lg svg{width:9cqw;height:9cqw}
+.cen .lg svg path{fill:var(--a)}
+.cen .t-mono{display:none;width:9cqw;height:9cqw;border-radius:50%;background:var(--a);color:#fff;font-weight:700;font-size:4cqw;line-height:9cqw}
+.cen .name{font-size:5.6cqw;font-weight:600;letter-spacing:-.01em;margin-top:3cqw}
+.cen .t-title{font-size:2.9cqw;color:var(--m);margin-top:.8cqw}
+.cen .rule{width:8cqw;height:.3cqw;background:var(--a);margin:3cqw auto}
+.cen .line{font-size:2.6cqw;color:var(--f);font-variant-numeric:tabular-nums}
+.cen .line i{color:var(--m);font-style:normal;margin:0 1.6cqw}
+.cen .qr{right:6cqw;top:6cqw;width:13cqw}
+
+/* 9 · Editorial (Pro) — serif + metal foil */
+.ed{--b:#8d9096;--f:#ffffff;--m:rgba(255,255,255,.8);background:linear-gradient(180deg,#9a9da3,#83868c);color:#fff}
+.light .ed{--b:#f4f1ea;--f:#1d1b18;--m:#6d675d;background:#f4f1ea;color:#1d1b18}
+.ed .silver{background:linear-gradient(120deg,#e9ecef 0%,#ffffff 22%,#b8bec6 45%,#f5f7f9 62%,#a9b0b8 82%,#eef1f4 100%)}
+.light .ed .silver{background:linear-gradient(120deg,#b08a3c 0%,#f3dc9a 25%,#a77b2c 48%,#f6e3a8 66%,#9c7429 85%,#e8cd84 100%)}
+.ed .art{position:absolute;left:-10cqw;top:50%;width:46cqw;height:46cqw;transform:translateY(-50%);-webkit-mask:var(--mask) center/contain no-repeat;mask:var(--mask) center/contain no-repeat}
+.ed .info{position:absolute;left:44cqw;top:9cqw;right:8cqw}
+.ed .name{font-family:var(--serif);font-size:6cqw;font-weight:500;letter-spacing:.01em;line-height:1.05}
+.ed .t-title{font-family:var(--serif);font-style:italic;font-size:3.2cqw;color:var(--m);margin-top:1cqw}
+.ed .hr{height:.25cqw;margin:3.2cqw 0}
+.ed .contacts{font-family:var(--serif);font-size:2.9cqw;line-height:1.55;font-variant-numeric:tabular-nums}
+.ed .t-company{position:absolute;left:44cqw;bottom:8cqw;font-family:var(--serif);font-size:3.2cqw;letter-spacing:.24em;text-transform:uppercase}
+.ed .qr{right:7cqw;bottom:7cqw;width:13cqw}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Card templates v2</h1>
+    <p>Mockups of the nine redesigned faces for owner review. They follow the printed-card references: one focal element, 8% margins, a real name → title → contacts hierarchy, and tactile finishes such as foil, deboss, gradient and grain. In the app these are drawn natively in SwiftUI; this page only previews them. The switches work like the planned per-card toggles.</p>
+  </header>
+
+  <div class="controls" role="group" aria-label="Preview options">
+    <div class="seg" role="group" aria-label="Card appearance">
+      <button type="button" id="ap-dark" aria-pressed="true">Dark</button>
+      <button type="button" id="ap-light" aria-pressed="false">Light</button>
+    </div>
+    <span class="sep" aria-hidden="true"></span>
+    <label><input type="checkbox" id="t-title" checked> Job title</label>
+    <label><input type="checkbox" id="t-company" checked> Company</label>
+    <label><input type="checkbox" id="t-logo" checked> Logo</label>
+    <label><input type="checkbox" id="t-qr"> QR code</label>
+  </div>
+
+  <div class="grid dark" id="grid">
+    <figure>
+      <div class="card"><div class="c classic grain">
+        <div class="top"><svg class="t-logo" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32V8h6l12 15V8h6v24h-6L14 17v15z" fill="currentColor"/></svg><span class="t-company">Nameshake</span></div>
+        <div class="who"><div class="name">Asr Karimov</div><div class="t-title">Founder &amp; CEO</div></div>
+        <div class="contacts"><span class="lbl">tel</span><span>+998 90 123 45 67</span><span class="lbl">mail</span><span>asr@nameshake.app</span><span class="lbl">web</span><span>nameshake.app</span></div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Classic</b><span>minimal</span></figcaption>
+      <p class="note">Uncoated stock with a quiet grain. The company wordmark or logo sits top-left, with a labelled contact column bottom-right.</p>
+    </figure>
+
+    <figure>
+      <div class="card"><div class="c mono">
+        <div class="deboss"><svg class="t-logo" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 34V6h7l14 17V6h7v28h-7L13 17v17z"/></svg><span class="t-mono">A</span></div>
+        <div class="info"><div class="name">Asr Karimov</div><div class="t-title">Founder &amp; CEO</div>
+          <div class="contacts"><div>+998 90 123 45 67</div><div>asr@nameshake.app</div><div>nameshake.app</div></div></div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Monogram</b><span>professional</span></figcaption>
+      <p class="note">The logo, or the initial when there is no logo, is pressed into the stock as a deboss. The accent appears in one place only: the name.</p>
+    </figure>
+
+    <figure>
+      <div class="card"><div class="c foil grain">
+        <div class="bar holo"></div>
+        <div class="info"><div class="name">Asr Karimov</div><div class="t-title">Founder &amp; CEO</div></div>
+        <div class="contacts"><div>asr@nameshake.app</div><div>+998 90 123 45 67</div><div>nameshake.app</div></div>
+        <div class="word t-company">Nameshake</div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Foil<span class="pro">PRO</span></b><span>modern</span></figcaption>
+      <p class="note">Matte black with an iridescent foil bar, and the company as an outlined vertical wordmark.</p>
+    </figure>
+
+    <figure>
+      <div class="card"><div class="c wm">
+        <div class="word"><span class="t-company">Nameshake</span><span class="t-mono">Asr</span></div>
+        <div class="tag t-title">Founder &amp; CEO</div>
+        <div class="who"><b>Asr Karimov</b><span>asr@nameshake.app</span><span>+998 90 123 45 67</span></div>
+        <div class="mark t-logo"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32V8h6l12 15V8h6v24h-6L14 17v15z" fill="currentColor"/></svg></div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Wordmark</b><span>bold</span></figcaption>
+      <p class="note">Pure type: the company (or first name) is set huge and fitted to one line, with the logo as a corner mark.</p>
+    </figure>
+
+    <figure>
+      <div class="card"><div class="c aur">
+        <canvas aria-hidden="true"></canvas>
+        <div class="word">Asr Karimov</div>
+        <div class="foot">nameshake.app</div>
+        <div class="t-title">Founder &amp; CEO</div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Aurora<span class="pro">PRO</span></b><span>gradient</span></figcaption>
+      <p class="note">A vivid three-stop gradient with fine contour lines, built from the palette. Exports pair it with a black back.</p>
+    </figure>
+
+    <figure>
+      <div class="card"><div class="c duo">
+        <div class="panel"><svg class="t-logo" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32V8h6l12 15V8h6v24h-6L14 17v15z"/></svg><span class="t-mono">A</span></div>
+        <div class="info"><div class="name">Asr Karimov</div><div class="t-title">Founder &amp; CEO</div><div class="t-company">Nameshake</div>
+          <div class="rule"></div>
+          <div class="contacts">
+            <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>+998 90 123 45 67</div>
+            <div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>asr@nameshake.app</div>
+            <div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>nameshake.app</div>
+          </div></div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Duotone</b><span>split</span></figcaption>
+      <p class="note">A flat accent panel holds the logo or photo. Small line icons appear only here and in Centered.</p>
+    </figure>
+
+    <figure>
+      <div class="card"><div class="c term">
+        <div class="p">~/nameshake <em>$</em> whoami</div>
+        <div class="name">asr.karimov</div>
+        <div class="t-title"># founder &amp; ceo<span class="t-company"> @ nameshake</span></div>
+        <div class="kv"><span>tel</span><span>+998 90 123 45 67</span><span>mail</span><span>asr@nameshake.app</span><span>web</span><span>nameshake.app</span></div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Terminal</b><span>terminal</span></figcaption>
+      <p class="note">Kept for developers, now with aligned key/value columns and a cursor.</p>
+    </figure>
+
+    <figure>
+      <div class="card"><div class="c cen">
+        <div class="lg"><svg class="t-logo" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 37 20 20 37 3 20Zm0 9-8 8 8 8 8-8Z"/></svg><span class="t-mono">A</span></div>
+        <div class="name">Asr Karimov</div>
+        <div class="t-title">Founder &amp; CEO<span class="t-company"> · Nameshake</span></div>
+        <div class="rule"></div>
+        <div class="line">+998 90 123 45 67<i>·</i>asr@nameshake.app<i>·</i>nameshake.app</div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Centered</b><span>stack</span></figcaption>
+      <p class="note">A formal centred card. The logo or photo sits on top, with contacts on one line below a short rule.</p>
+    </figure>
+
+    <figure>
+      <div class="card"><div class="c ed grain">
+        <div class="art silver t-logo"></div>
+        <div class="info"><div class="name">Asr Karimov</div><div class="t-title">Founder &amp; CEO</div>
+          <div class="hr silver"></div>
+          <div class="contacts">+998 90 123 45 67<br>asr@nameshake.app<br>nameshake.app</div></div>
+        <div class="t-company">Nameshake</div>
+        <div class="qr"><i></i></div>
+      </div></div>
+      <figcaption><b>Editorial<span class="pro">PRO</span></b><span>editorial</span></figcaption>
+      <p class="note">Serif type with metal foil (silver on dark, gold on light) on the rule and a large cropped logo.</p>
+    </figure>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Deterministic QR-like pattern with three finder squares.
+  let s = 7; const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  const finder = (x, y, ox, oy) => { const dx = x - ox, dy = y - oy; if (dx < 0 || dy < 0 || dx > 6 || dy > 6) return null; return dx === 0 || dy === 0 || dx === 6 || dy === 6 || (dx > 1 && dx < 5 && dy > 1 && dy < 5); };
+  document.querySelectorAll('.qr i').forEach(el => {
+    let h = '';
+    for (let y = 0; y < 21; y++) for (let x = 0; x < 21; x++) {
+      let f = finder(x, y, 0, 0); if (f === null) f = finder(x, y, 14, 0); if (f === null) f = finder(x, y, 0, 14);
+      const on = f === null ? rnd() > .52 : f;
+      h += on ? '<b></b>' : '<span></span>';
+    }
+    el.innerHTML = h;
+  });
+
+  // Editorial gear mask (silver foil logo stand-in).
+  const gear = (() => {
+    const n = 14, R = 46, r = 38, pts = [];
+    for (let i = 0; i < n * 2; i++) { const a = i / (n * 2) * Math.PI * 2, rad = i % 2 ? r : R; pts.push(`${50 + rad * Math.cos(a)},${50 + rad * Math.sin(a)}`); }
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill-rule='evenodd' d='M${pts.join('L')}Z M50 26a24 24 0 1 0 .01 0Z'/></svg>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  })();
+  document.querySelectorAll('.ed .art').forEach(el => el.style.setProperty('--mask', gear));
+
+  // Aurora contour lines.
+  const drawContours = () => document.querySelectorAll('.aur canvas').forEach(cv => {
+    const w = cv.clientWidth, h = cv.clientHeight; if (!w) return;
+    const d = devicePixelRatio || 1; cv.width = w * d; cv.height = h * d;
+    const g = cv.getContext('2d'); g.scale(d, d); g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = Math.max(w / 340, .5);
+    for (let k = 0; k < 18; k++) {
+      g.beginPath();
+      for (let x = 0; x <= w; x += 2) {
+        const t = x / w, y = h * (k / 17) + Math.sin(t * 5.2 + k * .35) * h * .07 + Math.cos(t * 2.1 - k * .2) * h * .05;
+        x === 0 ? g.moveTo(x, y) : g.lineTo(x, y);
+      }
+      g.stroke();
+    }
+  });
+  drawContours(); addEventListener('resize', drawContours);
+
+  // Toggles.
+  const grid = document.getElementById('grid');
+  const sync = () => {
+    grid.classList.toggle('hide-title', !document.getElementById('t-title').checked);
+    grid.classList.toggle('hide-company', !document.getElementById('t-company').checked);
+    grid.classList.toggle('hide-logo', !document.getElementById('t-logo').checked);
+    const qr = document.getElementById('t-qr').checked;
+    grid.classList.toggle('hide-qr', !qr);
+    grid.querySelectorAll('.c').forEach(c => c.classList.toggle('hasqr', qr));
+  };
+  ['t-title', 't-company', 't-logo', 't-qr'].forEach(id => document.getElementById(id).addEventListener('change', sync));
+  const setAp = dark => {
+    grid.classList.toggle('dark', dark); grid.classList.toggle('light', !dark);
+    document.getElementById('ap-dark').setAttribute('aria-pressed', dark); document.getElementById('ap-light').setAttribute('aria-pressed', !dark);
+  };
+  document.getElementById('ap-dark').addEventListener('click', () => setAp(true));
+  document.getElementById('ap-light').addEventListener('click', () => setAp(false));
+  sync();
+})();
+</script>
