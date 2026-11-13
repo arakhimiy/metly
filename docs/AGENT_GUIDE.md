@@ -1,4 +1,4 @@
-# Metly — Engineering Guide for Feature Agents
+# Nameshake — Engineering Guide for Feature Agents
 
 Read this fully, then `docs/PLAN.md`, then the SPEC sections for your screens (`prd/SPEC.md`).
 The HTML prototype in `prd/` is for **behaviour only** — never copy its visuals, colors, fonts or custom controls.
@@ -19,7 +19,11 @@ The HTML prototype in `prd/` is for **behaviour only** — never copy its visual
 scripts/build.sh <Module>          # e.g. scripts/build.sh FeaturePeople   (fast, module only)
 scripts/build.sh <Module> test     # runs Tests/<Module>Tests on the simulator
 scripts/build.sh app               # whole app incl. widgets — run before you finish
+scripts/build.sh all test          # every MetlyKit test target (what CI runs)
+scripts/run.sh --local             # signed simulator build, launched against localhost:3000 (--mock, --demo)
 ```
+`build.sh` builds unsigned (fast, no team) — fine for compiling and tests, but an unsigned app has no
+App Group, so SwiftData can't open its store and the app shows a blank screen. Use `run.sh` to run it.
 The script waits for a global lock, so a "waiting for another build" message is normal. Never call `xcodebuild` directly, never delete DerivedData of other checkouts, never boot extra simulators. Build after each meaningful chunk, not after every edit.
 
 ## 3. Architecture cheat-sheet
@@ -84,7 +88,7 @@ Every screen and every SPEC state you own gets a `#Preview` (Appendix A of SPEC 
 - **Feedback**: `.sensoryFeedback(.success, trigger:)` on success moments (connected, saved), `.selection` on picks. Toasts only via `router.showToast`.
 - **Accessibility**: meaningful labels/values/hints, `.accessibilityElement(children: .combine)` for rows, Reduce Motion respected for custom animations, VoiceOver order sensible.
 - **Permissions**: request in context, right before use, with a pre-explanation only when SPEC shows one. Handle denied state with a "Open Settings" button (`UIApplication.openSettingsURLString`).
-- **Copy**: Title Case for buttons/titles, sentence case for footers/descriptions; use SPEC §7 copy, replacing "Cardy" with `Brand.appName` / `Brand.proName` / `Brand.linkHost`.
+- **Copy**: Title Case for buttons/titles, sentence case for footers/descriptions; use SPEC §7 copy, replacing the prototype name "Cardy" with `Brand.appName` / `Brand.proName` / `Brand.linkHost`.
 - **Out of scope v1**: AI features, CRM integrations (CSV only), email sign-in. Do not show their entry points.
 
 ## 5. Swift rules

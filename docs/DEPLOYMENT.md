@@ -1,7 +1,7 @@
-# Deploying Tanishly
+# Deploying Nameshake
 
 The API is one Docker image (`backend/Dockerfile`) plus a PostgreSQL database. It runs on any host
-that runs containers. Everything optional (push, Wallet, uploads, subscriptions, Telegram, mail) is
+that runs containers. Everything optional (push, Wallet, uploads, subscriptions, Google/Telegram sign-in, mail) is
 switched on by setting its environment variables; until then those endpoints answer
 `503 service_unavailable` and the rest works.
 
@@ -26,13 +26,14 @@ Requirements: containers, managed PostgreSQL 16+ with daily backups, HTTPS, WebS
 - **Production:** a small always-on instance (1 vCPU, 1 GB) and managed PostgreSQL with backups is
   plenty for the first tens of thousands of users.
 - **Uzbekistan data localisation:** the Law on Personal Data requires personal data of citizens of
-  Uzbekistan to be stored on servers located in Uzbekistan. If Tanishly targets users there, host the
+  Uzbekistan to be stored on servers located in Uzbekistan. If Nameshake targets users there, host the
   database (and the API) in a local data centre or get legal advice before launch. The image is
   host-agnostic, so this is a deployment choice, not a code change.
 
-One instance is enough to start. Before running several instances, move the in-memory rate-limit
-counters to Redis or Postgres (`src/common/rate-limit.ts`); realtime fan-out and scheduled jobs are
-already safe across instances (Postgres LISTEN/NOTIFY and advisory locks).
+The API scales horizontally: rate-limit counters live in Postgres (`RATE_LIMIT_STORE=postgres`, the
+default), realtime fan-out uses Postgres LISTEN/NOTIFY and scheduled jobs take advisory locks. Set
+`TRUST_PROXY` to the number of proxies in front of the API (1 on Render/Railway/Fly) so rate limits see
+the real client IP.
 
 ## 3. Environment
 
@@ -46,14 +47,18 @@ Copy `backend/.env.example`; production refuses to boot when `JWT_SECRET` is the
 | `WEB_BASE_URL` | `https://tanishly.app` (never change after launch) |
 | `API_BASE_URL` | `https://api.tanishly.app` |
 | `JWT_SECRET` | `openssl rand -base64 48` |
+| `TRUST_PROXY` | proxy hops in front of the API (`1` behind one load balancer); never `true` |
+| `RATE_LIMIT_STORE` | `postgres` (default; shared by all instances) |
 | `APPLE_BUNDLE_IDS` | `app.tanishly.ios` |
 | `APPLE_TEAM_ID`, `APPLE_SIGNIN_KEY_ID`, `APPLE_SIGNIN_PRIVATE_KEY` | Sign in with Apple key (.p8) — needed to revoke tokens on account deletion (App Store rule) |
-| `GOOGLE_CLIENT_IDS` | iOS OAuth client id from Google Cloud Console |
+| `GOOGLE_CLIENT_IDS` | iOS OAuth client id from Google Cloud Console (see § 6) |
+| `TELEGRAM_LOGIN_CLIENT_ID`, `TELEGRAM_LOGIN_CLIENT_SECRET` | Log In with Telegram (see § 7) |
+| `APP_URL_SCHEME` | the app's URL scheme (`tanishly`); Telegram sign-in returns to the app through it |
 | `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_PRIVATE_KEY`, `APNS_TOPIC` | APNs auth key (.p8); topic `app.tanishly.ios` |
 | `APP_STORE_ISSUER_ID`, `APP_STORE_KEY_ID`, `APP_STORE_PRIVATE_KEY`, `APP_STORE_APP_APPLE_ID`, `APP_STORE_ENVIRONMENT` | App Store Server API key; `Production` after release |
 | `PASS_TYPE_IDENTIFIER`, `PASS_TEAM_ID`, `PASS_CERT_PEM`, `PASS_KEY_PEM`, `PASS_KEY_PASSPHRASE`, `PASS_WWDR_PEM` | Wallet pass certificate + Apple WWDR G4 |
 | `S3_*` | Cloudflare R2 (or S3) bucket for photos/logos; `S3_PUBLIC_BASE_URL` = the public bucket/CDN URL |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` | @TanishlyBot; set the bot webhook to `https://api.tanishly.app/v1/integrations/telegram/webhook` with that secret |
+| `ANDROID_WAITLIST_URL` | optional "Notify me" link for Android visitors on card pages |
 | `RESEND_API_KEY`, `MAIL_FROM` | data-export emails |
 | `APP_STORE_ID` | numeric App Store id, after the listing exists (Smart App Banner, "Get the app") |
 | `APP_DOWNLOAD_URL` | before the listing exists: TestFlight public link for "Get the app" (hidden on Android, no Smart App Banner) |
@@ -82,3 +87,28 @@ Migrations are additive; roll back by deploying the previous image (do not roll 
    `https://api.tanishly.app/v1/webhooks/app-store` (production and sandbox).
 4. Xcode Release configuration: `DEVELOPMENT_TEAM`, `METLY_API_BASE_URL=https://api.tanishly.app`
    (the Release build fails without it, by design), `GOOGLE_CLIENT_ID`.
+
+## 6. Sign in with Google
+
+1. Google Cloud Console → APIs & Services → OAuth consent screen: app name **Nameshake**, support
+   email, privacy policy `https://tanishly.app/privacy`, scopes `openid`, `email`, `profile`.
+2. Credentials → Create OAuth client ID → **iOS**, bundle ID `app.tanishly.ios`. Copy the client ID
+   (`…apps.googleusercontent.com`; not a secret).
+3. Xcode build setting `GOOGLE_CLIENT_ID` (both configurations) = that client ID. The app derives the
+   reversed-client-ID callback scheme from it; no SDK and no Info.plist URL type are needed because
+   `ASWebAuthenticationSession` receives the redirect.
+4. Backend `GOOGLE_CLIENT_IDS` = the same client ID (comma-separate a second one for a debug bundle).
+
+## 7. Log In with Telegram
+
+1. In @BotFather create (or pick) the bot users will see on the consent screen — name and photo should
+   be Nameshake's.
+2. @BotFather → the bot → **Login Widget**: add the Allowed URL
+   `https://api.tanishly.app/v1/auth/telegram/callback` (and your staging API's callback). Copy the
+   **Client ID** and **Client Secret**.
+3. Backend: `TELEGRAM_LOGIN_CLIENT_ID`, `TELEGRAM_LOGIN_CLIENT_SECRET`. Keep `APP_URL_SCHEME` equal to
+   the app's URL scheme (`tanishly`). The app needs no Telegram settings: it starts at the API.
+4. Check: `curl -I "https://api.tanishly.app/v1/auth/telegram/authorize?code_challenge=$(printf %043d 0)&state=0123456789abcdef&nonce=0123456789abcdef"`
+   answers `302` to `oauth.telegram.org` (a redirect to `tanishly://auth/telegram?error=temporarily_unavailable`
+   means the client id/secret are missing).
+

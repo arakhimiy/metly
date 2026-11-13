@@ -1,4 +1,4 @@
-# Tanishly API & Sync
+# Nameshake API & Sync
 
 Two audiences: **feature agents** (how to talk to the server from SwiftUI) and the **backend team**
 (what the server must do). The wire contract is `openapi.yaml` next to this file; `MockMetlyServer`
@@ -41,7 +41,7 @@ import MetlyNetworking
 | Need | Call | Notes |
 |---|---|---|
 | Publish now (CARD_CREATE "Publish", Editor "Done") | `try await client.publish(card)` | Writes the server slug back to `card`. On error show ALERT_PUBLISH_FAILED — the card stays a draft and sync publishes it later. |
-| Scanned Tanishly QR (SCANNED_CARD) | `try await client.publicProfile(slug:)` | `status != .available` → unavailable state. `.snapshot` feeds `CardFaceView` (or `.faceContent`, which adds `phoneLabel` + `additionalPhones`). `Brand.slug(from: url)` extracts the slug. "Add to People": after building the connection from the snapshot call `connection.mergePhones(from: card)` — `CardSnapshot` carries no extra phones. |
+| Scanned Nameshake QR (SCANNED_CARD) | `try await client.publicProfile(slug:)` | `status != .available` → unavailable state. `.snapshot` feeds `CardFaceView` (or `.faceContent`, which adds `phoneLabel` + `additionalPhones`). `Brand.slug(from: url)` extracts the slug. "Add to People": after building the connection from the snapshot call `connection.mergePhones(from: card)` — `CardSnapshot` carries no extra phones. |
 | Wallet pass | `try await client.walletPass(for: card)` | `.pkpass` `Data` for `PKAddPassesViewController`. The mock throws `APIError.serverRequired("Wallet passes need the server.")` — show its `localizedDescription`. |
 | Card stats | `try await client.refreshStats(for: card)` | Also stored on `card.stats`. |
 | Connect: session & peers | `client.startConnectSession(cardID:eventID:method:)` → advertise `discoveryToken`; `client.resolvePeers(tokens:)` | In the simulator use `client.demoNearbyTokens` (mock people) since there are no MPC peers. |
@@ -49,7 +49,7 @@ import MetlyNetworking
 | Accept / decline incoming | `try await client.accept(request, sharing: cardID)` → `Connection?` · `try await client.decline(request)` | Offline: queued (status set locally + `markChanged()`), `accept` returns `nil` and the connection arrives with the next sync. Setting `request.status = .accepted/.declined` + `markChanged()` yourself is equivalent — the sync engine turns it into `POST …/accept|decline`. |
 | DEFERRED_WELCOME "Connect" | `try await client.connect(with: invite, sharing: cardID)` | Pre-approved; the connection arrives via realtime/sync. |
 | People "Requests" refresh | `try await client.refreshIncomingRequests()` | Also happens on every sync. |
-| Anything else | `client.api.<group>.<call>` | e.g. `client.api.events.eventSummary(id:)`, `client.api.profile.requestTelegramLink()`. |
+| Anything else | `client.api.<group>.<call>` | e.g. `client.api.events.eventSummary(id:)`, `client.api.profile.fetchSettings()`. |
 
 ### Labelled phones (schema 2.0.0)
 `Profile.phoneLabel` / `Connection.phoneLabel` label the primary phone (Mobile by default);
@@ -117,7 +117,7 @@ per configuration once the backend exists.
 ## For the backend team
 
 ### Accounts & sessions
-- Sign in with Apple / Google only (no email/password, no magic link in v1). See `/v1/auth/*`.
+- Sign in with Apple, Google or Telegram (OIDC + PKCE) only (no email/password, no magic link in v1). See `/v1/auth/*`.
 - Access token: JWT (15–60 min). Refresh token: opaque, single-use, rotated on every refresh,
   60-day sliding expiry. A rotated token used again returns its child while the child is unused (a
   lost response); once the child was used, reuse outside a 30 s grace window revokes the family. The client refreshes
@@ -133,8 +133,9 @@ per configuration once the backend exists.
   `profile` for the same user keeps the stored profile's id (returned as canonical; the app adopts it).
 - `updatedAt` is set by the device on every user edit. `deletedAt` marks a tombstone.
 - Server-owned fields are ignored on write and always returned: `profile.photoUrl/logoUrl`,
-  `card.slug/url/publishState/isReadOnly/isPaused/stats`, `connection.avatarUrl`,
-  `notificationPrefs.telegramLinked`.
+  `card.slug/url/publishState/isReadOnly/isPaused/stats`, `connection.avatarUrl`. Retired keys
+  (`notificationPrefs.delivery`, `notificationPrefs.telegramLinked` from the removed Telegram bot) are
+  accepted from older apps and dropped.
 - Store `updatedAt` with at least millisecond precision; return it unchanged.
 
 ### Sync protocol
@@ -181,7 +182,7 @@ connections (their `updatedAt` = max(own, event's)).
 
 ### Uniqueness
 - One live connection per (owner, `remoteUserId`). A pushed connection that duplicates another live
-  one for the same Tanishly user is merged into the existing record (newer `updatedAt` wins, empty
+  one for the same Nameshake user is merged into the existing record (newer `updatedAt` wins, empty
   fields are filled), returned as canonical, and the pushed id is tombstoned (both in `records`).
   Follow-ups that reference the pushed id — in the same push (they are usually created together) or
   later — are stored against the surviving connection and returned with its id; never cascade-delete them.
@@ -309,7 +310,7 @@ Lock-screen privacy: no note text in pushes.
 
 ### Other server jobs
 - Auto-end active events after `endDate` (owner's time zone) + PUSH_EVENT_SUMMARY.
-- Reminder scheduler (APNs or Telegram bot per `notificationPrefs.delivery`).
+- Reminder scheduler (APNs at `dueAt`).
 - Wallet pass updates via the PassKit web service whenever a card's public content changes.
 - Stats aggregation (views dedupe 30 min, `?src=qr` = scan).
 - App Store Server Notifications V2 → entitlements, read-only cards, `sync.available`.
@@ -320,7 +321,7 @@ See openapi `info.description`. Public endpoints need IP limits, bot filtering a
 share-back; consider Cloudflare Turnstile (`captchaToken`) if spam appears.
 
 ### Open backend questions
-- Email-change / provider linking (Apple + Google on one account) — out of v1.
+- Email-change / provider linking (Apple + Google + Telegram on one account) — out of v1.
 - Analytics opt-in endpoint (`shareAnalytics`) — not specified yet.
 - Exact pass design and Pass Type ID (`pass.app.tanishly.ios.card` proposed).
 

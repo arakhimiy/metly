@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  title: Tanishly API
+  title: Nameshake API
   version: 1.2.0
-  summary: Backend contract for the Tanishly iOS app (digital business card + personal CRM).
+  summary: Backend contract for the Nameshake iOS app (digital business card + personal CRM).
   description: |
     Contract authored by the iOS team; the app ships against `MockMetlyServer` (an in-memory
     implementation of this document) until the backend exists. **Read `docs/api/README.md` first** —
@@ -61,7 +61,6 @@ tags:
   - name: Subscriptions
   - name: Devices
   - name: Sync
-  - name: Integrations
 
 paths:
   # ───────────────────────────── Auth ─────────────────────────────
@@ -113,6 +112,67 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '429': { $ref: '#/components/responses/RateLimited' }
+  /v1/auth/telegram/authorize:
+    get:
+      tags: [Auth]
+      operationId: startTelegramSignIn
+      summary: Start Log In with Telegram (opened by the app in ASWebAuthenticationSession)
+      description: |
+        Log In with Telegram, OpenID Connect Authorization Code flow with PKCE
+        (https://core.telegram.org/bots/telegram-login). The app generates a PKCE verifier, `state` and
+        `nonce`, and opens this URL in `ASWebAuthenticationSession` with its URL scheme as the callback
+        scheme. The server answers `302` to `https://oauth.telegram.org/auth` with its bot `client_id`,
+        the registered redirect URI (`/v1/auth/telegram/callback`) and scope `openid profile`, so the
+        app needs no Telegram configuration of its own. When Telegram login is not configured it
+        redirects straight back into the app with `error=temporarily_unavailable`.
+      security: []
+      parameters:
+        - { name: code_challenge, in: query, required: true, schema: { type: string, pattern: '^[A-Za-z0-9_-]{43}$' }, description: 'BASE64URL(SHA256(verifier)), method S256.' }
+        - { name: state, in: query, required: true, schema: { type: string, minLength: 16, maxLength: 128 } }
+        - { name: nonce, in: query, required: true, schema: { type: string, minLength: 16, maxLength: 128 } }
+      responses:
+        '302': { description: 'Redirect to Telegram''s consent page (or back into the app with an error).' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /v1/auth/telegram/callback:
+    get:
+      tags: [Auth]
+      operationId: telegramSignInCallback
+      summary: Telegram's redirect URI → back into the app
+      description: |
+        Registered with @BotFather (Login Widget → Allowed URLs). Answers `302` to
+        `{APP_URL_SCHEME}://auth/telegram?code=…&state=…`, or `?error=…&state=…` when the user declined.
+        The code is useless without the PKCE verifier, which never left the app.
+      security: []
+      parameters:
+        - { name: code, in: query, schema: { type: string } }
+        - { name: state, in: query, schema: { type: string } }
+        - { name: error, in: query, schema: { type: string } }
+      responses:
+        '302': { description: 'Redirect into the app.' }
+  /v1/auth/telegram:
+    post:
+      tags: [Auth]
+      operationId: signInWithTelegram
+      summary: Sign in with Telegram → session
+      description: |
+        Redeems the authorization code at Telegram's token endpoint (client secret + PKCE verifier,
+        server-side only) and verifies the `id_token`: signature (Telegram JWKS), `iss` =
+        https://oauth.telegram.org, `aud` = the bot client id, `exp`, `nonce`. Accounts are keyed by
+        the token's `sub`; Telegram shares no email. `suggestedName` comes from the Telegram profile.
+      security: []
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TelegramSignInRequest' }
+      responses:
+        '200': { description: Signed in, content: { application/json: { schema: { $ref: '#/components/schemas/AuthResponse' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
   /v1/auth/refresh:
     post:
       tags: [Auth]
@@ -280,7 +340,7 @@ paths:
     post:
       tags: [Profile]
       operationId: block
-      summary: Block a Tanishly user (by userId or via one of my connections)
+      summary: Block a Nameshake user (by userId or via one of my connections)
       description: |
         Blocked users: my public pages return `404` to their authenticated public-profile lookups,
         I disappear from their Nearby results, their connect requests are dropped silently, and their
@@ -415,7 +475,7 @@ paths:
         server-side with the Pass Type ID certificate + Apple WWDR intermediate. Front: name,
         title · company, **Public** fields only (never Connections/Private — it can leave the device);
         QR (`PKBarcodeFormatQR`, message = `https://tanishly.app/c/{slug}`, ISO-8859-1). Colors from the
-        card palette, logo = Tanishly mark. Include `webServiceURL = https://api.tanishly.app/passkit` and a
+        card palette, logo = Nameshake mark. Include `webServiceURL = https://api.tanishly.app/passkit` and a
         per-pass `authenticationToken` so passes update when the card changes (PassKit web service below).
       parameters: [{ $ref: '#/components/parameters/CardId' }]
       responses:
@@ -581,7 +641,7 @@ paths:
     get:
       tags: [Public profiles]
       operationId: getPublicProfile
-      summary: A scanned Tanishly QR as visible to the signed-in viewer (SCANNED_CARD)
+      summary: A scanned Nameshake QR as visible to the signed-in viewer (SCANNED_CARD)
       description: |
         Like `/api/public/cards/{slug}` plus `owner.userId` and `viewer`. If the viewer is a live
         connection of the owner (owner has a connection with `remoteUserId = viewer`), also include the
@@ -655,8 +715,7 @@ paths:
       summary: 'Create-or-update (Free: max 5 open — enforced when a write would open a 6th)'
       description: |
         Reminder delivery is server-scheduled at `dueAt` in the device `timeZone` via APNs
-        (PUSH_FOLLOWUP, category with "Open Telegram" / "Snooze 1 Day") or the Telegram bot when
-        `notificationPrefs.delivery == telegramBot`. The app also schedules a local notification as an
+        (PUSH_FOLLOWUP, category with "Open Telegram" / "Snooze 1 Day"). The app also schedules a local notification as an
         offline fallback (the server push carries `apns-collapse-id = followup.{FOLLOWUPID-UPPERCASE}` (the app's local notification id) so they don't double).
       requestBody:
         required: true
@@ -935,27 +994,6 @@ paths:
       responses:
         '200': { description: 'Stored' }
 
-  # ───────────────────────────── Integrations ─────────────────────────────
-  /v1/integrations/telegram/link:
-    post:
-      tags: [Integrations]
-      operationId: requestTelegramLink
-      summary: Reminder delivery via @TanishlyBot — get a one-time bot deep link
-      description: |
-        Returns `https://t.me/TanishlyBot?start=<one-time token>` (TTL 15 min). When the user taps
-        Start, the bot webhook binds the Telegram chat to the user and sets
-        `notificationPrefs.telegramLinked = true` (+ `sync.available`). Reminders then arrive in the chat
-        with a reply link when `delivery == telegramBot`.
-      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
-      responses:
-        '200': { description: Link, content: { application/json: { schema: { $ref: '#/components/schemas/TelegramLink' } } } }
-    delete:
-      tags: [Integrations]
-      operationId: unlinkTelegram
-      summary: Unlink the bot (delivery falls back to push)
-      responses:
-        '204': { description: 'Unlinked' }
-
   # ───────────────────────────── Sync ─────────────────────────────
   /v1/sync/push:
     post:
@@ -1083,6 +1121,9 @@ components:
     ValidationFailed:
       description: '`validation_failed` (details: field → reason)'
       content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Unavailable:
+      description: '`service_unavailable` (the feature is not configured on this server, or a dependency is down)'
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
     RateLimited:
       description: '`rate_limited`'
       headers:
@@ -1142,8 +1183,7 @@ components:
     ConnectMethod: { type: string, enum: [nearby, tapPhones, scan, emailLookup, deferred] }
     EventStatus: { type: string, enum: [active, ended] }
     Plan: { type: string, enum: [free, pro] }
-    ReminderDelivery: { type: string, enum: [push, telegramBot] }
-    AuthProvider: { type: string, enum: [apple, google] }
+    AuthProvider: { type: string, enum: [apple, google, telegram] }
     ProfileImageKind: { type: string, enum: [photo, logo] }
     SyncRecordType: { type: string, enum: [profile, card, event, connection, followUp, connectRequest] }
     SyncResultStatus: { type: string, enum: [applied, stale, rejected] }
@@ -1277,12 +1317,10 @@ components:
         scans: { type: integer }
     NotificationPrefs:
       type: object
-      required: [followUpReminders, eventSummary, delivery, telegramLinked, connectRequests, cardSaved, weeklySummary, productNews]
+      required: [followUpReminders, eventSummary, connectRequests, cardSaved, weeklySummary, productNews]
       properties:
         followUpReminders: { type: boolean, default: true }
         eventSummary: { type: boolean, default: true }
-        delivery: { $ref: '#/components/schemas/ReminderDelivery' }
-        telegramLinked: { type: boolean, description: 'Server-owned (set by the bot link flow).' }
         connectRequests: { type: boolean, default: true }
         cardSaved: { type: boolean, default: true }
         weeklySummary: { type: boolean, default: false }
@@ -1317,6 +1355,13 @@ components:
       properties:
         idToken: { type: string }
         nonce: { type: [string, 'null'] }
+    TelegramSignInRequest:
+      type: object
+      required: [code, codeVerifier, nonce]
+      properties:
+        code: { type: string, description: 'From the app callback URL.' }
+        codeVerifier: { type: string, minLength: 43, maxLength: 128, description: 'The PKCE verifier behind code_challenge.' }
+        nonce: { type: string, minLength: 16, maxLength: 128, description: 'The nonce passed to /v1/auth/telegram/authorize.' }
     RefreshRequest:
       type: object
       required: [refreshToken]
@@ -1465,7 +1510,7 @@ components:
           required: [fullName, jobTitle, company, phone, email, telegram, website, linkedin, source, context,
                      previousMeetings, note, tags, isMerged, isPendingMerge, isBlocked]
           properties:
-            remoteUserId: { type: [string, 'null'], format: uuid, description: 'Set when the person is a Tanishly user.' }
+            remoteUserId: { type: [string, 'null'], format: uuid, description: 'Set when the person is a Nameshake user.' }
             fullName: { type: string }
             jobTitle: { type: string }
             company: { type: string }
@@ -1722,12 +1767,6 @@ components:
         osVersion: { type: string }
         locale: { type: string }
         timeZone: { type: string, description: 'IANA, e.g. Asia/Tashkent.' }
-    TelegramLink:
-      type: object
-      required: [botUrl, expiresAt]
-      properties:
-        botUrl: { type: string, format: uri }
-        expiresAt: { $ref: '#/components/schemas/Timestamp' }
 
     # ── Deferred links ──
     DeviceFingerprint:
