@@ -27,6 +27,28 @@ const schema = z
     WEB_BASE_URL: z.url(),
     API_BASE_URL: z.url(),
 
+    /**
+     * Express `trust proxy`: how far to trust X-Forwarded-For when reading the client IP (rate limits,
+     * analytics). A hop count ("1" = one load balancer in front, e.g. Render/Fly/Railway), a comma list
+     * of trusted proxy subnets ("loopback, 10.0.0.0/8"), or "false" when clients connect directly.
+     * Never "true": that trusts any client-supplied header and lets anyone pick their own IP.
+     */
+    TRUST_PROXY: z
+      .string()
+      .default('1')
+      .transform((v, ctx) => {
+        const value = v.trim();
+        if (value === 'false') return false;
+        if (/^\d+$/.test(value)) return Number(value);
+        if (value === 'true') {
+          ctx.addIssue({ code: 'custom', message: 'must be a hop count or a subnet list, not "true"' });
+          return z.NEVER;
+        }
+        return value.split(',').map((s) => s.trim()).filter(Boolean);
+      }),
+    /** Where rate-limit counters live: shared across instances (postgres) or per process (memory). */
+    RATE_LIMIT_STORE: z.enum(['postgres', 'memory']).default('postgres'),
+
     JWT_SECRET: z.string().min(32),
     ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().min(300).max(3600).default(1800),
     REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).max(365).default(60),
@@ -66,9 +88,19 @@ const schema = z
     S3_SECRET_ACCESS_KEY: optional,
     S3_PUBLIC_BASE_URL: optional,
 
-    TELEGRAM_BOT_USERNAME: z.string().default('TanishlyBot'),
-    TELEGRAM_BOT_TOKEN: optional,
-    TELEGRAM_WEBHOOK_SECRET: optional,
+    /**
+     * Log In with Telegram (OpenID Connect, https://core.telegram.org/bots/telegram-login): the bot's
+     * Client ID and Secret from @BotFather → Login Widget. Register
+     * `${API_BASE_URL}/v1/auth/telegram/callback` there as an Allowed URL. Empty → sign-in answers 503.
+     */
+    TELEGRAM_LOGIN_CLIENT_ID: optional,
+    TELEGRAM_LOGIN_CLIENT_SECRET: optional,
+    /** Telegram's OIDC issuer; tests point it at a local stand-in. */
+    TELEGRAM_OIDC_ISSUER: z.url().default('https://oauth.telegram.org'),
+    /** The app's URL scheme: the sign-in callback hands the authorization code back through it. */
+    APP_URL_SCHEME: z.string().regex(/^[a-z][a-z0-9+.-]*$/).default('tanishly'),
+    /** "Notify me" link for Android visitors on card pages (e.g. a waitlist form). Empty → hidden. */
+    ANDROID_WAITLIST_URL: optional,
 
     APP_STORE_ID: optional,
     /** "Get the app" link before the App Store listing exists, e.g. the TestFlight public link. */
@@ -76,7 +108,7 @@ const schema = z
 
     /** Transactional mail (data export links). Empty → exports stay queued. */
     RESEND_API_KEY: optional,
-    MAIL_FROM: z.string().default('Tanishly <no-reply@tanishly.app>'),
+    MAIL_FROM: z.string().default('Nameshake <no-reply@tanishly.app>'),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV !== 'production') return;

@@ -4,6 +4,9 @@ import { BlocksService } from './blocks.service';
 import { BlocksController, ConnectController, ConnectionBlockController, PublicProfilesController } from './connect.controller';
 import { ConnectExpiryService } from './connect-expiry.service';
 import { ConnectViewModule } from './connect-view.module';
+import { ConnectAcceptService } from './connect-accept.service';
+import { ConnectRequestsService } from './connect-requests.service';
+import { ConnectSessionsService } from './connect-sessions.service';
 import { ConnectService } from './connect.service';
 import { PublicProfilesService } from './public-profiles.service';
 
@@ -11,7 +14,7 @@ import { PublicProfilesService } from './public-profiles.service';
 @Module({
   imports: [RecordsModule, ConnectViewModule],
   controllers: [ConnectController, BlocksController, ConnectionBlockController, PublicProfilesController],
-  providers: [ConnectService, ConnectExpiryService, BlocksService, PublicProfilesService],
+  providers: [ConnectService, ConnectSessionsService, ConnectRequestsService, ConnectAcceptService, ConnectExpiryService, BlocksService, PublicProfilesService],
   exports: [ConnectService, ConnectExpiryService, BlocksService],
 })
 export class ConnectModule {}

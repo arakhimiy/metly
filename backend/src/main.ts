@@ -13,10 +13,10 @@ async function bootstrap() {
   const env = loadEnv();
   const app = await NestFactory.create<NestExpressApplication>(AppModule.forRoot(env), { bufferLogs: true, bodyParser: false });
   app.useLogger(app.get(Logger));
-  configureApp(app);
+  configureApp(app, env);
   await app.listen(env.PORT, '0.0.0.0');
   await app.get(RealtimeService).attach(app.getHttpServer() as Server);
-  app.get(Logger).log(`Tanishly API listening on :${env.PORT}`);
+  app.get(Logger).log(`Nameshake API listening on :${env.PORT}`);
 }
 
 void bootstrap();

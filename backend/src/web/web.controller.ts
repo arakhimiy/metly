@@ -48,8 +48,7 @@ export class WebController {
           appStoreId: this.env.APP_STORE_ID,
           appAvailable: appDownloadUrl(this.env) !== undefined,
           android: isAndroidUserAgent(userAgent),
-          // The waitlist lives in the Telegram bot, so it shows only once the bot is connected.
-          androidWaitlistUrl: this.env.TELEGRAM_BOT_TOKEN ? `https://t.me/${this.env.TELEGRAM_BOT_USERNAME}?start=android` : undefined,
+          androidWaitlistUrl: this.env.ANDROID_WAITLIST_URL,
         }),
       );
       return;

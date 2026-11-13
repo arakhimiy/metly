@@ -7,7 +7,7 @@ import {
   DEFAULT_NOTIFICATION_PREFS,
   DEFAULT_PRIVACY,
   type MeetingContext,
-  type NotificationPrefs,
+  NotificationPrefs,
   type PrivacySettings,
 } from './wire';
 
@@ -78,7 +78,8 @@ export function profileToWire(p: Profile): WireRecord {
     contacts,
     defaultCardId: p.defaultCardId,
     linksPaused: p.linksPaused,
-    notificationPrefs: { ...DEFAULT_NOTIFICATION_PREFS, ...(p.notificationPrefs as NotificationPrefs) },
+    // Parse, not spread: stored JSON may still carry retired keys (the Telegram bot's `delivery`).
+    notificationPrefs: NotificationPrefs.parse({ ...DEFAULT_NOTIFICATION_PREFS, ...(p.notificationPrefs as object) }),
     privacySettings: { ...DEFAULT_PRIVACY, ...(p.privacySettings as PrivacySettings) },
     isSetupComplete: p.isSetupComplete,
     createdAt: iso(p.createdAt),

@@ -84,7 +84,7 @@ export class ConnectRequestView {
       direction: isRequester ? 'outgoing' : 'incoming',
       peer: {
         userId: peerId,
-        fullName: peerProfile?.fullName ?? 'Tanishly user',
+        fullName: peerProfile?.fullName ?? 'Nameshake user',
         jobTitle: peerProfile?.jobTitle ?? '',
         company: peerProfile?.company ?? '',
         ...(peerProfile?.photoUrl ? { avatarUrl: peerProfile.photoUrl } : {}),

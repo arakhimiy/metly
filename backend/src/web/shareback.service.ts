@@ -87,7 +87,7 @@ export class ShareBackService {
     if (Object.keys(details).length > 0) throw ApiError.validation(details);
     if (!profile) return this.discarded();
 
-    if (!this.rateLimits.check(`shareBackPerCard:${card.id}`, PER_CARD_DAILY)) {
+    if (!(await this.rateLimits.check(`shareBackPerCard:${card.id}`, PER_CARD_DAILY))) {
       throw new ApiError(429, 'rate_limited', 'This card received too many contacts today. Try again tomorrow.', undefined, {
         'Retry-After': '3600',
       });

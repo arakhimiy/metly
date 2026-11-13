@@ -65,7 +65,7 @@ const ICONS: Record<string, SafeHtml> = {
   ),
 };
 
-/** The card owner's palette, for the card face only (`--c-*`). The page around it is Tanishly's (BRAND_CSS). */
+/** The card owner's palette, for the card face only (`--c-*`). The page around it is Nameshake's (BRAND_CSS). */
 function cssVariables(colors: PageColors): string {
   return [
     `--c-bg:${colors.background}`,
@@ -78,10 +78,15 @@ function cssVariables(colors: PageColors): string {
   ].join(';');
 }
 
-/** Tanishly's colors (the app's teal), following the visitor's light/dark setting. */
+/**
+ * Nameshake's colors: HIG system Blue (#007AFF light / #0A84FF dark, #0040DD / #409CFF with Increase
+ * Contrast) on iOS grouped-background greys, following the visitor's light/dark setting.
+ */
 const BRAND_CSS = String.raw`
-:root{color-scheme:light dark;--bg:#f2f4f3;--surface:#ffffff;--fg:#0c1716;--muted:#5f6b69;--line:rgba(12,23,22,.09);--fill:rgba(12,23,22,.055);--accent:#0f766e;--accent-text:#0f766e;--accent-soft:rgba(15,118,110,.11);--on-accent:#ffffff;--warn:#b42318;--shadow:rgba(12,23,22,.16)}
-@media (prefers-color-scheme:dark){:root{--bg:#000000;--surface:#151a1a;--fg:#f1f5f4;--muted:#98a4a2;--line:rgba(241,245,244,.10);--fill:rgba(241,245,244,.07);--accent:#0f9f92;--accent-text:#3cc8ba;--accent-soft:rgba(60,200,186,.15);--warn:#ff8a7a;--shadow:rgba(0,0,0,.6)}}
+:root{color-scheme:light dark;--bg:#f2f2f7;--surface:#ffffff;--fg:#000000;--muted:#6c6c70;--line:rgba(60,60,67,.12);--fill:rgba(118,118,128,.12);--accent:#007aff;--accent-text:#007aff;--accent-soft:rgba(0,122,255,.12);--on-accent:#ffffff;--warn:#b42318;--shadow:rgba(0,0,0,.16)}
+@media (prefers-color-scheme:dark){:root{--bg:#000000;--surface:#1c1c1e;--fg:#ffffff;--muted:#98989f;--line:rgba(235,235,245,.12);--fill:rgba(118,118,128,.24);--accent:#0a84ff;--accent-text:#0a84ff;--accent-soft:rgba(10,132,255,.18);--warn:#ff8a7a;--shadow:rgba(0,0,0,.6)}}
+@media (prefers-contrast:more){:root{--accent:#0040dd;--accent-text:#0040dd}}
+@media (prefers-contrast:more) and (prefers-color-scheme:dark){:root{--accent:#409cff;--accent-text:#409cff;--on-accent:#000000}}
 `;
 
 const BASE_CSS = String.raw`
@@ -437,12 +442,12 @@ function head(opts: {
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="format-detection" content="telephone=no">
-<meta name="theme-color" content="#f2f4f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <title>${opts.title}</title>
 <meta name="description" content="${opts.description}">
 <meta property="og:type" content="profile">
-<meta property="og:site_name" content="Tanishly">
+<meta property="og:site_name" content="Nameshake">
 <meta property="og:title" content="${opts.title}">
 <meta property="og:description" content="${opts.description}">
 <meta property="og:locale" content="${opts.ogLocale}">
@@ -572,7 +577,7 @@ export function renderCardPage(opts: CardPageOptions): string {
 <html lang="${lang}">
 ${head({
   nonce,
-  title: `${view.fullName} · Tanishly`,
+  title: `${view.fullName} · Nameshake`,
   description: role || t.description,
   ogLocale: t.ogLocale,
   colors,
@@ -636,7 +641,7 @@ export function renderUnavailablePage(opts: { nonce: string; kind: UnavailableKi
   const copy = t[opts.kind];
   return html`<!doctype html>
 <html lang="${opts.lang}">
-${head({ nonce: opts.nonce, title: 'Tanishly', description: copy.title, ogLocale: CARD_PAGE_TEXT[opts.lang].ogLocale, colors, extraCss: UNAVAILABLE_CSS })}
+${head({ nonce: opts.nonce, title: 'Nameshake', description: copy.title, ogLocale: CARD_PAGE_TEXT[opts.lang].ogLocale, colors, extraCss: UNAVAILABLE_CSS })}
 <body>
 <main class="wrap">
 <div class="empty">

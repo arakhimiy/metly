@@ -48,7 +48,7 @@ export interface VCardInput {
   company: string;
   /** The card's visible entries (already filtered by selection and audience), owner's order. */
   contacts: ContactEntry[];
-  /** The card page (labelled "Tanishly"). */
+  /** The card page (labelled "Nameshake"). */
   url?: string | null;
   photoUrl?: string | null;
 }
@@ -117,7 +117,7 @@ export function buildVCard(input: VCardInput): string {
         break;
     }
   }
-  if (input.url) labelled(input.url, 'Tanishly');
+  if (input.url) labelled(input.url, 'Nameshake');
   const photo = safeHttpUrl(input.photoUrl);
   if (photo) lines.push(`PHOTO;VALUE=URI:${uri(photo)}`);
   lines.push('END:VCARD');

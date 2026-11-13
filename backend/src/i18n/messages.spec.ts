@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LANGS, langFromLocale, pickLang, plural } from './lang';
-import { PUSH_MESSAGES, type PushTextRef, renderPush, SHAREBACK_CONNECTION_TEXT, TELEGRAM_TEXT } from './messages';
+import { PUSH_MESSAGES, type PushTextRef, renderPush, SHAREBACK_CONNECTION_TEXT } from './messages';
 import { CARD_PAGE_TEXT, UNAVAILABLE_PAGE_TEXT } from './web-page';
 
 describe('i18n', () => {
@@ -92,10 +92,9 @@ describe('i18n', () => {
     expect(renderPush({ id: 'eventSummary', params: { eventName: '', people: 0 } }, 'ru').title).toBe('Мероприятие завершено');
   });
 
-  it('has the bot, record and page texts in every language', () => {
+  it('has the record and page texts in every language', () => {
     const shapes = (record: object) => JSON.stringify(Object.keys(record).sort());
     for (const lang of LANGS) {
-      for (const value of Object.values(TELEGRAM_TEXT[lang])) expect(value.trim()).not.toBe('');
       expect(SHAREBACK_CONNECTION_TEXT[lang].jobTitle).not.toBe('');
       expect(shapes(CARD_PAGE_TEXT[lang])).toBe(shapes(CARD_PAGE_TEXT.en));
       expect(shapes(CARD_PAGE_TEXT[lang].script)).toBe(shapes(CARD_PAGE_TEXT.en.script));
@@ -106,7 +105,6 @@ describe('i18n', () => {
 
   it('writes Uzbek with the typographic o‘ / g‘ and ’ — never ASCII quotes or backticks', () => {
     const uz = JSON.stringify([
-      TELEGRAM_TEXT.uz,
       CARD_PAGE_TEXT.uz.script,
       UNAVAILABLE_PAGE_TEXT.uz,
       Object.values(CARD_PAGE_TEXT.uz).filter((v) => typeof v === 'string'),

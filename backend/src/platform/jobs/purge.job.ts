@@ -17,7 +17,7 @@ const SYNCED_TABLES = ['follow_ups', 'connections', 'events', 'cards', 'profiles
  * Tombstone and housekeeping purge (daily, 03:30 UTC). Hard-deletes synced rows tombstoned more than
  * 90 days ago and raises each affected user's `tombstone_floor_seq` to the highest purged seq, so a
  * cursor that could have missed one of them gets `410 cursor_expired` and re-snapshots. Then drops
- * expired operational rows (idempotency records, visits, deferred clicks, link tokens, sessions,
+ * expired operational rows (rate-limit windows, idempotency records, visits, deferred clicks, link tokens, sessions,
  * refresh tokens, aliases, settled connect requests, processed App Store notifications).
  */
 @Injectable()
@@ -55,10 +55,10 @@ export class PurgeJob {
           },
         })
       ).count,
+      rateLimitWindows: (await p.rateLimitWindow.deleteMany({ where: { resetAt: { lt: now } } })).count,
       idempotencyRecords: (await p.idempotencyRecord.deleteMany({ where: { createdAt: { lt: before(hours(24)) } } })).count,
       cardVisits: (await p.cardVisit.deleteMany({ where: { createdAt: { lt: before(days(30)) } } })).count,
       deferredClicks: (await p.deferredClick.deleteMany({ where: { createdAt: { lt: before(days(2)) } } })).count,
-      telegramLinkTokens: (await p.telegramLinkToken.deleteMany({ where: { expiresAt: { lt: now } } })).count,
       connectSessions: (await p.connectSession.deleteMany({ where: { expiresAt: { lt: before(days(1)) } } })).count,
       refreshTokens: (
         await p.refreshToken.deleteMany({

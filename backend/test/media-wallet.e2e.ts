@@ -57,8 +57,8 @@ describe.skipIf(!certificate)('Apple Wallet', () => {
     await app.close();
     for (const key of ['PASS_TEAM_ID', 'PASS_CERT_PEM', 'PASS_KEY_PEM', 'PASS_WWDR_PEM']) delete process.env[key];
   });
-  beforeEach(() => {
-    resetRateLimits(app);
+  beforeEach(async () => {
+    await resetRateLimits(app);
     TestPassPushSink.clear();
   });
 
@@ -97,7 +97,7 @@ describe.skipIf(!certificate)('Apple Wallet', () => {
       serialNumber: cardId,
       authenticationToken: token,
       webServiceURL: 'https://api.metly.test/passkit',
-      organizationName: 'Tanishly',
+      organizationName: 'Nameshake',
       backgroundColor: 'rgb(8, 17, 31)',
     });
     expect(pass.barcodes[0]).toMatchObject({ format: 'PKBarcodeFormatQR', message: `https://metly.test/c/${stored.slug}`, messageEncoding: 'iso-8859-1' });

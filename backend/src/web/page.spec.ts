@@ -36,13 +36,13 @@ describe('card page: "Want a card like this?"', () => {
     expect(html).toContain('href="/c/kamola-k/get-app?from=footer" data-get-app>Bepul yaratish</a>');
     expect(html).toContain('href="/c/kamola-k/get-app?from=shareback" data-get-app>Bepul yaratish</a>');
     expect(html).toContain('Sizga ham shunday karta kerakmi?');
-    expect(html).toContain('Tanishly bilan 1 daqiqada yarating. Tanishganlaringiz hech qachon yo‘qolmaydi.');
+    expect(html).toContain('Nameshake bilan 1 daqiqada yarating. Tanishganlaringiz hech qachon yo‘qolmaydi.');
   });
 
   it('speaks the page language', () => {
     expect(page({ lang: 'ru' })).toContain('Хотите такую же визитку?');
     expect(page({ lang: 'ru' })).toContain('>Создать бесплатно</a>');
-    expect(page({ lang: 'en' })).toContain('Create yours with Tanishly in 1 minute. Never lose a new contact again.');
+    expect(page({ lang: 'en' })).toContain('Create yours with Nameshake in 1 minute. Never lose a new contact again.');
     expect(page({ lang: 'en' })).toContain('>Create for free</a>');
   });
 
@@ -57,9 +57,9 @@ describe('card page: "Want a card like this?"', () => {
     expect(noBot).toContain('<span class="android">Hozircha faqat iPhone uchun.</span>');
     expect(noBot).not.toContain('Xabar olish');
 
-    const withBot = page({ platform: 'android', android: true, androidWaitlistUrl: 'https://t.me/TanishlyBot?start=android' });
-    expect(withBot).toContain('<span class="android">Hozircha faqat iPhone uchun. Android chiqqanda xabar beramiz.</span>');
-    expect(withBot).toContain('<a class="btn android" href="https://t.me/TanishlyBot?start=android" target="_blank" rel="noopener noreferrer">Xabar olish</a>');
+    const withWaitlist = page({ platform: 'android', android: true, androidWaitlistUrl: 'https://forms.example.com/android-waitlist' });
+    expect(withWaitlist).toContain('<span class="android">Hozircha faqat iPhone uchun. Android chiqqanda xabar beramiz.</span>');
+    expect(withWaitlist).toContain('<a class="btn android" href="https://forms.example.com/android-waitlist" target="_blank" rel="noopener noreferrer">Xabar olish</a>');
   });
 
   it('adds the Smart App Banner only with an App Store id', () => {
@@ -134,9 +134,10 @@ describe('card page: save first, exchange on their terms', () => {
     expect(html).toContain('>Telefon o‘rniga Telegram yuborish</button>');
   });
 
-  it('uses Tanishly’s colors for the page and the owner’s for the card face', () => {
+  it('uses Nameshake’s colors for the page and the owner’s for the card face', () => {
     const html = page();
-    expect(html).toContain('--accent:#0f766e');
+    expect(html).toContain('--accent:#007aff');
+    expect(html).toContain('--accent:#0a84ff');
     expect(html).toContain('--c-bg:');
     expect(html).toContain('<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">');
   });

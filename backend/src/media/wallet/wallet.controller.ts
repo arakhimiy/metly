@@ -25,7 +25,7 @@ export class WalletController {
     const body = await this.wallet.render(card, profile);
     res.status(200);
     res.setHeader('Content-Type', PKPASS_CONTENT_TYPE);
-    res.setHeader('Content-Disposition', `attachment; filename="metly-${card.slug ?? 'card'}.pkpass"`);
+    res.setHeader('Content-Disposition', `attachment; filename="nameshake-${card.slug ?? 'card'}.pkpass"`);
     res.setHeader('Last-Modified', card.contentUpdatedAt.toUTCString());
     res.setHeader('Cache-Control', 'no-store');
     res.send(body);

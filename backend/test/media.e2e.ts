@@ -261,7 +261,7 @@ describe('media with storage', () => {
     expect((mail.init.headers as Record<string, string>).Authorization).toBe('Bearer re_test_key');
     const payload = JSON.parse(String(mail.init.body));
     expect(payload.to).toEqual([user.email]);
-    expect(payload.from).toBe('Tanishly <no-reply@tanishly.app>');
+    expect(payload.from).toBe('Nameshake <no-reply@tanishly.app>');
     const link = /https:\/\/storage\.metly\.test\/\S+/.exec(payload.text)![0];
     const key = storage.keyFromPresignedUrl(link);
     expect(key).toMatch(new RegExp(`^exports/${s.userId}/[\\w-]+\\.zip$`));

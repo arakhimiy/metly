@@ -2,13 +2,13 @@ import sharp from 'sharp';
 import { hexString } from './pass-json';
 
 /**
- * The Tanishly mark drawn as vector shapes (no fonts needed — slim container images have none):
- * a rounded square with an "M" in a 100×100 box.
+ * The Nameshake mark drawn as vector shapes (no fonts needed — slim container images have none):
+ * a rounded square with an "N" in a 100×100 box.
  */
 function markSvg(size: number, fill: string, ink: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 100 100">
   <rect x="0" y="0" width="100" height="100" rx="22" ry="22" fill="${fill}"/>
-  <path d="M24 74V26h11l15 22 15-22h11v48H65V45L50 66 35 45v29z" fill="${ink}"/>
+  <path d="M26 74V26h11l26 32V26h11v48H63L37 42v32z" fill="${ink}"/>
 </svg>`;
 }
 

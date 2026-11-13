@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# Tanishly API image. Build context: backend/  →  docker build -t metly-api backend
+# Nameshake API image. Build context: backend/  →  docker build -t metly-api backend
 
 FROM node:24-bookworm-slim AS deps
 WORKDIR /app

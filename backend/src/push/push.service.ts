@@ -85,13 +85,9 @@ export class PushService implements OnApplicationShutdown {
 
   /** The user's effective notification preferences (defaults until a profile exists). */
   async prefs(userId: string): Promise<NotificationPrefs> {
-    const [profile, user] = await Promise.all([
-      this.prisma.profile.findUnique({ where: { userId }, select: { notificationPrefs: true, deletedAt: true } }),
-      this.prisma.user.findUnique({ where: { id: userId }, select: { telegramChatId: true } }),
-    ]);
+    const profile = await this.prisma.profile.findUnique({ where: { userId }, select: { notificationPrefs: true, deletedAt: true } });
     const parsed = profile && !profile.deletedAt ? NotificationPrefs.safeParse(profile.notificationPrefs) : undefined;
-    const prefs = parsed?.success ? parsed.data : DEFAULT_NOTIFICATION_PREFS;
-    return { ...prefs, telegramLinked: Boolean(user?.telegramChatId) };
+    return parsed?.success ? parsed.data : DEFAULT_NOTIFICATION_PREFS;
   }
 
   private async deliver(userId: string, message: PushMessage): Promise<void> {

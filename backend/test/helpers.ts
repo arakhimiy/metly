@@ -9,16 +9,17 @@ import { RateLimitStore } from '../src/common/rate-limit';
 import { loadEnv } from '../src/config/env';
 
 export async function createApp(): Promise<NestExpressApplication> {
-  const moduleRef = await Test.createTestingModule({ imports: [AppModule.forRoot(loadEnv())] }).compile();
+  const env = loadEnv();
+  const moduleRef = await Test.createTestingModule({ imports: [AppModule.forRoot(env)] }).compile();
   const app = moduleRef.createNestApplication<NestExpressApplication>({ bodyParser: false, logger: false });
-  configureApp(app);
+  configureApp(app, env);
   await app.init();
   return app;
 }
 
 /** Rate limits would trip across a whole test file; reset between tests. */
-export function resetRateLimits(app: INestApplication) {
-  app.get(RateLimitStore).reset();
+export function resetRateLimits(app: INestApplication): Promise<void> {
+  return app.get(RateLimitStore).reset();
 }
 
 export interface Session {
@@ -43,8 +44,6 @@ export const now = (offsetMs = 0) => new Date(Date.now() + offsetMs).toISOString
 export const notificationPrefs = {
   followUpReminders: true,
   eventSummary: true,
-  delivery: 'push',
-  telegramLinked: false,
   connectRequests: true,
   cardSaved: true,
   weeklySummary: false,
@@ -57,7 +56,7 @@ export function profile(overrides: Record<string, unknown> = {}) {
     id: randomUUID(),
     fullName: 'Kamola Yusupova',
     jobTitle: 'Product Manager',
-    company: 'Tanishly',
+    company: 'Nameshake',
     contactFields: [
       { kind: 'phone', value: '+998901234567', privacy: 'public' },
       { kind: 'email', value: 'kamola@metly.test', privacy: 'connections' },

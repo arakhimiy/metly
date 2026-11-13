@@ -3,7 +3,6 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { hours } from '../../common/time';
 import { PrismaService } from '../../prisma/prisma.service';
 import { PushService } from '../../push/push.service';
-import { TelegramService } from '../telegram/telegram.service';
 import { JOBS_DISABLED } from './jobs-config';
 import { JobRunner } from './job-lock';
 
@@ -28,8 +27,7 @@ export function followUpCategory(channel: string, person: { telegram: string; em
 
 /**
  * Follow-up reminders (every minute): every open follow-up whose dueAt has passed (within the last
- * 24 h) and was not reminded for this dueAt gets one reminder — APNs (PUSH_FOLLOWUP) or the Telegram
- * bot when `notificationPrefs.delivery == telegramBot` and a chat is linked. `remindedForDueAt` is
+ * 24 h) and was not reminded for this dueAt gets one push (PUSH_FOLLOWUP). `remindedForDueAt` is
  * claimed before sending (at most once per dueAt; moving the due date re-arms it). It is
  * server-internal and not part of the wire record, so it does not bump the owner's seq.
  */
@@ -38,7 +36,6 @@ export class RemindersJob {
   constructor(
     private readonly prisma: PrismaService,
     private readonly push: PushService,
-    private readonly telegram: TelegramService,
     private readonly jobs: JobRunner,
   ) {}
 
@@ -55,7 +52,6 @@ export class RemindersJob {
   private async process(now: Date) {
     const since = new Date(now.getTime() - MAX_LATENESS_MS);
     let pushed = 0;
-    let telegram = 0;
     let skipped = 0;
     // Bounded so a pathological batch can never spin forever; the next tick continues.
     for (let page = 0; page < 100; page++) {
@@ -70,15 +66,14 @@ export class RemindersJob {
       for (const row of due) {
         const outcome = await this.remind(row);
         if (outcome === 'push') pushed++;
-        else if (outcome === 'telegram') telegram++;
         else skipped++;
       }
       if (due.length < BATCH) break;
     }
-    return { pushed, telegram, skipped };
+    return { pushed, skipped };
   }
 
-  private async remind(row: DueRow): Promise<'push' | 'telegram' | 'skipped'> {
+  private async remind(row: DueRow): Promise<'push' | 'skipped'> {
     // Claim first: a concurrent edit that moved dueAt or closed the follow-up wins.
     const claimed = await this.prisma.$executeRaw`
       UPDATE follow_ups SET reminded_for_due_at = due_at
@@ -96,21 +91,6 @@ export class RemindersJob {
         })
       : null;
     const personName = person?.fullName.trim() || null;
-
-    if (prefs.delivery === 'telegramBot') {
-      const user = await this.prisma.user.findUnique({ where: { id: row.user_id }, select: { telegramChatId: true } });
-      if (user?.telegramChatId) {
-        const sent = await this.telegram.sendReminder(user.telegramChatId, {
-          personName,
-          title: row.title,
-          channel: row.channel,
-          telegramHandle: person?.telegram,
-        });
-        if (sent) return 'telegram';
-        // A dead chat was just unlinked (delivery is back to push), so the push below goes out. A
-        // transient bot failure is not retried: the app's local notification covers that case.
-      }
-    }
 
     await this.push.notify(row.user_id, {
       type: 'followup_due',

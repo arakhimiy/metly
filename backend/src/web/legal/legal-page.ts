@@ -20,8 +20,10 @@ export const STATIC_PAGE_CSP =
   "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
 
 const STYLE = `
-:root{color-scheme:light dark;--bg:#fff;--fg:#111114;--muted:#5f6368;--line:#e6e6ea;--accent:#0d9488}
-@media (prefers-color-scheme:dark){:root{--bg:#0b0b0c;--fg:#f5f5f7;--muted:#a1a1aa;--line:#26262b;--accent:#2dd4bf}}
+:root{color-scheme:light dark;--bg:#fff;--fg:#111114;--muted:#5f6368;--line:#e6e6ea;--accent:#007aff}
+@media (prefers-color-scheme:dark){:root{--bg:#0b0b0c;--fg:#f5f5f7;--muted:#a1a1aa;--line:#26262b;--accent:#0a84ff}}
+@media (prefers-contrast:more){:root{--accent:#0040dd}}
+@media (prefers-contrast:more) and (prefers-color-scheme:dark){:root{--accent:#409cff}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 main{max-width:720px;margin:0 auto;padding:32px 20px 64px}
 header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:28px}
@@ -52,7 +54,7 @@ function shell(lang: LegalLang, title: string, current: LegalDocKind | 'home', p
 <body>
 <main>
 <header>
-  <a class="brand" href="/?lang=${lang}">Tanish<span>ly</span></a>
+  <a class="brand" href="/?lang=${lang}">Name<span>shake</span></a>
   <nav>${nav.map(([kind, label]) => html`<a href="/${kind}?lang=${lang}"${current === kind ? html` aria-current="page"` : ''}>${label}</a>`)}</nav>
 </header>
 ${content}
@@ -75,7 +77,7 @@ ${doc.sections.map(
   (section) => html`<h2>${section.heading}</h2>
 ${section.body.map((part) => (Array.isArray(part) ? html`<ul>${part.map((item) => html`<li>${item}</li>`)}</ul>` : html`<p>${part}</p>`))}`,
 )}`;
-  return shell(lang, `${doc.title} · Tanishly`, kind, `/${kind}`, body);
+  return shell(lang, `${doc.title} · Nameshake`, kind, `/${kind}`, body);
 }
 
 /** `download`: the App Store listing, or before it exists the beta (TestFlight) link. */
@@ -83,11 +85,11 @@ export function renderHomePage(lang: LegalLang, download?: { url: string; beta: 
   const ui = UI[lang];
   const body = html`
 <section class="hero">
-  <h1>Tanishly</h1>
+  <h1>Nameshake</h1>
   <p>${ui.tagline}</p>
   ${download
     ? html`<a class="cta" href="${download.url}">${download.beta ? ui.tryBeta : ui.getApp}</a>`
     : html`<span class="soon">${ui.soon}</span>`}
 </section>`;
-  return shell(lang, `Tanishly — ${ui.tagline}`, 'home', '/', body);
+  return shell(lang, `Nameshake — ${ui.tagline}`, 'home', '/', body);
 }

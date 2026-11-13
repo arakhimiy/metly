@@ -86,7 +86,7 @@ describe('public web', () => {
         status: 'available',
         url: `https://metly.test/c/${o.slug}`,
         cardName: 'Work',
-        owner: { fullName: 'Kamola Yusupova', firstName: 'Kamola', jobTitle: 'Product Manager', company: 'Tanishly' },
+        owner: { fullName: 'Kamola Yusupova', firstName: 'Kamola', jobTitle: 'Product Manager', company: 'Nameshake' },
       });
       expect(res.body.owner.userId).toBeUndefined();
       expect(res.body.viewer).toBeUndefined();
@@ -137,7 +137,7 @@ describe('public web', () => {
       expect(res.text).toContain(`<script nonce="${nonce}">`);
       expect(res.text).toContain(`<style nonce="${nonce}">`);
       expect(res.text).toContain('<meta name="robots" content="noindex, nofollow">');
-      expect(res.text).toContain('property="og:title" content="Kamola Yusupova · Tanishly"');
+      expect(res.text).toContain('property="og:title" content="Kamola Yusupova · Nameshake"');
       expect(res.text).toContain('href="tel:+998901234567"');
       expect(res.text).toContain('href="https://tanishly.app/"');
       expect(res.text).toContain(`href="/c/${o.slug}.vcf"`);
@@ -232,7 +232,7 @@ describe('public web', () => {
 
   describe('GET /c/{slug}.vcf', () => {
     it('serves a vCard 3.0 of the public fields and counts one save per visitor', async () => {
-      const o = await owner({ profile: { company: 'Tanishly, Inc.', jobTitle: 'PM; Growth' } });
+      const o = await owner({ profile: { company: 'Nameshake, Inc.', jobTitle: 'PM; Growth' } });
       const ip = nextIp();
       const res = await http().get(`/c/${o.slug}.vcf`).set('User-Agent', IPHONE).set('X-Forwarded-For', ip).expect(200);
       expect(res.headers['content-type']).toBe('text/vcard; charset=utf-8');
@@ -241,7 +241,7 @@ describe('public web', () => {
       expect(text.startsWith('BEGIN:VCARD\r\nVERSION:3.0\r\n')).toBe(true);
       expect(text).toContain('N:Yusupova;Kamola;;;\r\n');
       expect(text).toContain('FN:Kamola Yusupova\r\n');
-      expect(text).toContain('ORG:Tanishly\\, Inc.\r\n');
+      expect(text).toContain('ORG:Nameshake\\, Inc.\r\n');
       expect(text).toContain('TITLE:PM\\; Growth\r\n');
       expect(text).toContain('TEL;TYPE=CELL:+998 90 123 45 67\r\n');
       expect(text).toContain('URL:https://tanishly.app/\r\n');
@@ -444,7 +444,7 @@ describe('public web', () => {
 
       const store = app.get(RateLimitStore);
       const other = await owner();
-      for (let i = 0; i < 50; i++) store.check(`shareBackPerCard:${other.cardId}`, { limit: 50, windowSeconds: 86_400, by: 'ip' });
+      for (let i = 0; i < 50; i++) await store.check(`shareBackPerCard:${other.cardId}`, { limit: 50, windowSeconds: 86_400, by: 'ip' });
       await shareBack(other, { name: 'Late', phone: '+998907654321' }).expect(429);
     });
 
@@ -511,7 +511,7 @@ describe('public web', () => {
       expect(res.body.invite).toMatchObject({
         inviteId: click.id,
         cardSlug: o.slug,
-        owner: { userId: o.session.userId, fullName: 'Kamola Yusupova', jobTitle: 'Product Manager', company: 'Tanishly' },
+        owner: { userId: o.session.userId, fullName: 'Kamola Yusupova', jobTitle: 'Product Manager', company: 'Nameshake' },
         card: { cardName: 'Work', fullName: 'Kamola Yusupova' },
       });
       expect(res.body.invite.card.fields.map((f: { kind: string }) => f.kind)).toEqual(['phone', 'website']);
@@ -591,7 +591,7 @@ describe('public web with App Store and team ids', () => {
     }
   });
 
-  it('adds the Smart App Banner and a "Get Tanishly" button that redirects to the App Store', async () => {
+  it('adds the Smart App Banner and a "Get Nameshake" button that redirects to the App Store', async () => {
     const session = await signIn(app);
     const c = card({ design: allFields });
     const pushed = await request(app.getHttpServer())
@@ -626,7 +626,7 @@ describe('public web with a pre-release download link', () => {
     else process.env.APP_DOWNLOAD_URL = saved;
   });
 
-  it('shows "Get Tanishly" without a Smart App Banner and redirects to the beta link', async () => {
+  it('shows "Get Nameshake" without a Smart App Banner and redirects to the beta link', async () => {
     const session = await signIn(app);
     const pushed = await request(app.getHttpServer())
       .post('/v1/sync/push')

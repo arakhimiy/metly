@@ -8,15 +8,14 @@ export type RenderedPush = Omit<PushMessage, 'text'> & PushText;
 /**
  * Which `notificationPrefs` toggle gates each push type (docs/api/README.md § Push notifications).
  *
- * - `followup_due` needs `followUpReminders`, and is sent through APNs only when reminders are not
- *   delivered by the Telegram bot (`delivery == telegramBot` with a linked chat goes to Telegram).
+ * - `followup_due` needs `followUpReminders`.
  * - `shareback_received` has no toggle of its own: it is activity on the user's card page, like a
  *   save, so it follows `cardSaved` ("When someone adds you to Contacts").
  */
 export function allowedByPrefs(type: PushType, prefs: NotificationPrefs): boolean {
   switch (type) {
     case 'followup_due':
-      return prefs.followUpReminders && !(prefs.delivery === 'telegramBot' && prefs.telegramLinked === true);
+      return prefs.followUpReminders;
     case 'event_summary':
       return prefs.eventSummary;
     case 'connect_request':

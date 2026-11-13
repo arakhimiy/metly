@@ -1,6 +1,6 @@
 import { type Lang, plural } from './lang';
 
-// Message catalog for push notifications and the Telegram bot, in Uzbek (Latin), Russian and English.
+// Message catalog for push notifications, in Uzbek (Latin), Russian and English.
 // Terminology follows the app's glossary: card = vizitka / визитка, connection = tanish / контакт,
 // follow-up = eslatma / напоминание. Russian texts never put a person's name in an oblique case or
 // next to a gendered verb (names are typed in Latin or Cyrillic; neither declines reliably), so names
@@ -118,39 +118,6 @@ export function renderPush(ref: PushTextRef, lang: Lang): PushText {
   const render = PUSH_MESSAGES[ref.id][lang] as (params: PushTextRef['params']) => PushText;
   return render(ref.params);
 }
-
-// ───────────────────────────── Telegram bot ─────────────────────────────
-
-export interface TelegramText {
-  /** `/start` without a link token. */
-  startHelp: string;
-  linked: string;
-  linkExpired: string;
-  /** `/stop`. */
-  stopped: string;
-}
-
-export const TELEGRAM_TEXT: Record<Lang, TelegramText> = {
-  uz: {
-    startHelp:
-      'Eslatmalarni shu yerda olish uchun Tanishly → Profil → Sozlamalar → Bildirishnomalar bo‘limini oching va «Telegram’ni ulash» tugmasini bosing.',
-    linked: 'Ulandi. Tanishly eslatmalaringizni shu yerga yuboradi.',
-    linkExpired: 'Bu havolaning muddati tugagan. Tanishly → Sozlamalar → Bildirishnomalar bo‘limini oching va Telegram’ni qayta ulang.',
-    stopped: 'Telegram uzildi. Eslatmalar endi Tanishly ilovasidan bildirishnoma bo‘lib keladi.',
-  },
-  ru: {
-    startHelp: 'Чтобы получать напоминания здесь, откройте Tanishly → Профиль → Настройки → Уведомления и нажмите «Подключить Telegram».',
-    linked: 'Готово! Tanishly будет присылать напоминания сюда.',
-    linkExpired: 'Срок действия ссылки истёк. Откройте Tanishly → Настройки → Уведомления и подключите Telegram снова.',
-    stopped: 'Telegram отключён. Напоминания будут приходить уведомлениями из приложения Tanishly.',
-  },
-  en: {
-    startHelp: 'Open Tanishly → Profile → Settings → Notifications and tap “Connect Telegram” to get reminders here.',
-    linked: 'You’re connected. Tanishly will send your follow-up reminders here.',
-    linkExpired: 'This link has expired. Open Tanishly → Settings → Notifications and connect Telegram again.',
-    stopped: 'Disconnected. Reminders will arrive as notifications from the Tanishly app.',
-  },
-};
 
 // ───────────────────────────── Synced record text ─────────────────────────────
 

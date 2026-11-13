@@ -96,7 +96,7 @@ export class ExportService implements OnModuleInit, OnModuleDestroy {
     const archive = await this.buildArchive(storage, user.id);
     const key = `exports/${user.id}/${randomToken(16)}.zip`;
     await storage.putObject(key, archive, { contentType: 'application/zip' });
-    const url = await storage.presignGet(key, { expiresInSeconds: EXPORT_LINK_TTL_SECONDS, downloadName: 'metly-data.zip' });
+    const url = await storage.presignGet(key, { expiresInSeconds: EXPORT_LINK_TTL_SECONDS, downloadName: 'nameshake-data.zip' });
     await this.sendEmail(email, url);
     await this.prisma.dataExportRequest.update({ where: { id: request.id }, data: { completedAt: new Date() } });
     this.logger.log({ requestId: request.id, bytes: archive.length }, 'data export delivered');
@@ -141,18 +141,18 @@ export class ExportService implements OnModuleInit, OnModuleDestroy {
 
   private async sendEmail(to: string, url: string): Promise<void> {
     const text = [
-      'Your Tanishly data export is ready.',
+      'Your Nameshake data export is ready.',
       '',
       `Download it within 7 days: ${url}`,
       '',
       'The ZIP contains your profile, cards, connections (JSON and CSV), events, follow-ups and images.',
       'If you didn’t ask for this, you can ignore this email.',
     ].join('\n');
-    const html = `<p>Your Tanishly data export is ready.</p><p><a href="${escapeHtml(url)}">Download your data</a> (the link works for 7 days).</p><p>The ZIP contains your profile, cards, connections (JSON and CSV), events, follow-ups and images.</p><p>If you didn’t ask for this, you can ignore this email.</p>`;
+    const html = `<p>Your Nameshake data export is ready.</p><p><a href="${escapeHtml(url)}">Download your data</a> (the link works for 7 days).</p><p>The ZIP contains your profile, cards, connections (JSON and CSV), events, follow-ups and images.</p><p>If you didn’t ask for this, you can ignore this email.</p>`;
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${this.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: this.env.MAIL_FROM, to: [to], subject: 'Your Tanishly data export', text, html }),
+      body: JSON.stringify({ from: this.env.MAIL_FROM, to: [to], subject: 'Your Nameshake data export', text, html }),
       signal: AbortSignal.timeout(15_000),
     });
     if (!response.ok) throw new Error(`Resend answered ${response.status}`);

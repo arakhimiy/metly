@@ -47,7 +47,7 @@ describe('buildVCard', () => {
     const card = buildVCard({
       fullName: 'Kamola  Yusupova',
       jobTitle: 'PM; Growth',
-      company: 'Tanishly, Inc.',
+      company: 'Nameshake, Inc.',
       contacts: [
         entry('phone', '+998 90 123 45 67'),
         entry('email', 'kamola@metly.uz'),
@@ -62,7 +62,7 @@ describe('buildVCard', () => {
     expect(card.endsWith('END:VCARD\r\n')).toBe(true);
     expect(card).toContain('N:Yusupova;Kamola;;;\r\n');
     expect(card).toContain('FN:Kamola Yusupova\r\n');
-    expect(card).toContain('ORG:Tanishly\\, Inc.\r\n');
+    expect(card).toContain('ORG:Nameshake\\, Inc.\r\n');
     expect(card).toContain('TITLE:PM\\; Growth\r\n');
     expect(card).toContain('TEL;TYPE=CELL:+998 90 123 45 67\r\n');
     expect(card).toContain('EMAIL;TYPE=INTERNET:kamola@metly.uz\r\n');

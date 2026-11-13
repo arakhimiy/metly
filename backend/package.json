@@ -2,7 +2,7 @@
   "name": "tanishly-api",
   "version": "1.0.0",
   "private": true,
-  "description": "Tanishly API: auth, offline-first sync, connect, public card pages, Wallet, subscriptions.",
+  "description": "Nameshake API: auth, offline-first sync, connect, public card pages, Wallet, subscriptions.",
   "license": "UNLICENSED",
   "type": "commonjs",
   "engines": {
@@ -19,7 +19,8 @@
     "db:start": "node scripts/dev-db.mjs",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "postinstall": "node -e \"if(require('fs').existsSync('prisma/schema.prisma'))require('child_process').execSync('prisma generate',{stdio:'inherit'})\""
   },
   "dependencies": {
     "@apple/app-store-server-library": "^3.1.0",

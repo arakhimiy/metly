@@ -27,7 +27,7 @@ const input = (overrides: { deletedAt?: Date | null; slug?: string | null; jobTi
   profile: {
     fullName: 'Kamola Yusupova',
     jobTitle: overrides.jobTitle ?? 'Product Manager',
-    company: overrides.company ?? 'Tanishly',
+    company: overrides.company ?? 'Nameshake',
     contactFields: [
       { kind: 'phone', value: '+998901234567', privacy: 'public' },
       { kind: 'email', value: 'kamola@metly.test', privacy: 'connections' },
@@ -73,11 +73,11 @@ describe('buildPassJson', () => {
       serialNumber: '7b0c2f3e-1d2a-4c5b-9e8f-0a1b2c3d4e5f',
       authenticationToken: 'token-token-token-token-1234',
       webServiceURL: 'https://api.metly.test/passkit',
-      organizationName: 'Tanishly',
+      organizationName: 'Nameshake',
     });
     const generic = pass.generic as Record<string, { key: string; value: string }[]>;
     expect(generic.primaryFields![0]!.value).toBe('Kamola Yusupova');
-    expect(generic.secondaryFields![0]!.value).toBe('Product Manager · Tanishly');
+    expect(generic.secondaryFields![0]!.value).toBe('Product Manager · Nameshake');
     expect(pass.voided).toBeUndefined();
   });
 

@@ -1,4 +1,4 @@
-// Languages of server-made texts (push notifications, Telegram bot, tanishly.app pages). API error
+// Languages of server-made texts (push notifications, card web pages). API error
 // messages are developer-facing and stay English: the app shows its own texts.
 
 export type Lang = 'uz' | 'ru' | 'en';
@@ -9,7 +9,7 @@ export const LANGS: readonly Lang[] = ['uz', 'ru', 'en'];
 export const DEFAULT_LANG: Lang = 'uz';
 
 /**
- * Tanishly language for a device locale (`devices.locale`: `uz_UZ`, `ru_RU`, `en_US`, `uz-Cyrl_UZ`,
+ * Nameshake language for a device locale (`devices.locale`: `uz_UZ`, `ru_RU`, `en_US`, `uz-Cyrl_UZ`,
  * `en`…): `uz*` → uz (Latin; there is no Cyrillic catalog), `ru*` → ru, every other language → en.
  *
  * Why English and not Uzbek for other languages: iOS always sends a locale, so `de_DE` or `tr_TR` is

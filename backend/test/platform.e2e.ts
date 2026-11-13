@@ -33,8 +33,8 @@ describe('platform: devices, push and jobs', () => {
     prisma = app.get(PrismaService);
   });
   afterAll(() => app.close());
-  beforeEach(() => {
-    resetRateLimits(app);
+  beforeEach(async () => {
+    await resetRateLimits(app);
     pushTestSink.clear();
   });
 
@@ -237,12 +237,15 @@ describe('platform: devices, push and jobs', () => {
       expect(await prisma.device.count({ where: { userId: s.userId } })).toBe(0);
     });
 
-    it('sends nothing to Telegram-delivery users without a linked chat but falls back to push', async () => {
-      // delivery = telegramBot while no chat is linked (telegramLinked is server-owned → false).
-      const { s } = await user({ delivery: 'telegramBot' });
+    it('pushes reminders to users whose stored prefs still name the retired Telegram bot', async () => {
+      // Older app builds send `delivery: telegramBot` / `telegramLinked`; both keys are now ignored.
+      const { s } = await user({ delivery: 'telegramBot', telegramLinked: true });
       await push(s, { followUps: [followUp({ dueAt: now(-1000) })] });
       await app.get(RemindersJob).runOnce();
       expect(pushTestSink.forUser(s.userId)).toHaveLength(1);
+      const me = await request(app.getHttpServer()).get('/v1/me/profile').set(s.auth).expect(200);
+      expect(me.body.notificationPrefs).not.toHaveProperty('delivery');
+      expect(me.body.notificationPrefs).not.toHaveProperty('telegramLinked');
     });
   });
 
@@ -347,18 +350,6 @@ describe('platform: devices, push and jobs', () => {
       await app.get(PurgeJob).runOnce();
       expect(await prisma.card.findUnique({ where: { id: c.id } })).not.toBeNull();
       expect((await prisma.user.findUniqueOrThrow({ where: { id: s.userId } })).tombstoneFloorSeq).toBe(0n);
-    });
-  });
-
-  // ───────────────────────────── Telegram without configuration ─────────────────────────────
-
-  describe('telegram (not configured)', () => {
-    it('answers 503', async () => {
-      const s = await signIn(app);
-      const res = await http().post('/v1/integrations/telegram/link').set(s.auth).expect(503);
-      expectSchema('Error', res.body);
-      expect(res.body.code).toBe('service_unavailable');
-      await http().post('/v1/integrations/telegram/webhook').send({ update_id: 1 }).expect(503);
     });
   });
 });

@@ -21,9 +21,6 @@ describe('push payload', () => {
       expect(allowedByPrefs(type, all)).toBe(true);
       expect(allowedByPrefs(type, none)).toBe(false);
     }
-    // Reminders go to the bot instead when it is linked and chosen.
-    expect(allowedByPrefs('followup_due', { ...all, delivery: 'telegramBot', telegramLinked: true })).toBe(false);
-    expect(allowedByPrefs('followup_due', { ...all, delivery: 'telegramBot', telegramLinked: false })).toBe(true);
   });
 
   it('adds the deep-link keys the app reads', () => {

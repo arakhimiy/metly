@@ -211,8 +211,6 @@ export type MeetingContext = z.infer<typeof MeetingContext>;
 export const NotificationPrefs = z.object({
   followUpReminders: z.boolean(),
   eventSummary: z.boolean(),
-  delivery: z.enum(['push', 'telegramBot']),
-  telegramLinked: z.boolean().optional(),
   connectRequests: z.boolean(),
   cardSaved: z.boolean(),
   weeklySummary: z.boolean(),
@@ -230,8 +228,6 @@ export type PrivacySettings = z.infer<typeof PrivacySettings>;
 export const DEFAULT_NOTIFICATION_PREFS: NotificationPrefs = {
   followUpReminders: true,
   eventSummary: true,
-  delivery: 'push',
-  telegramLinked: false,
   connectRequests: true,
   cardSaved: true,
   weeklySummary: false,

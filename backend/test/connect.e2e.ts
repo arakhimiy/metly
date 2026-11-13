@@ -27,8 +27,8 @@ describe('connect', () => {
     prisma = app.get(PrismaService);
   });
   afterAll(() => app.close());
-  beforeEach(() => {
-    resetRateLimits(app);
+  beforeEach(async () => {
+    await resetRateLimits(app);
     vi.restoreAllMocks();
     realtime = vi.spyOn(app.get(RealtimeService), 'publish');
     push = vi.spyOn(app.get(PushService), 'notify');

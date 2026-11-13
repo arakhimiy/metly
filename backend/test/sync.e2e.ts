@@ -165,7 +165,7 @@ describe('sync', () => {
     expect(res.body.records.tombstones.map((t: { type: string }) => t.type).sort()).toEqual(['connection', 'followUp']);
   });
 
-  it('merges a second connection to the same Tanishly user and re-points its follow-ups', async () => {
+  it('merges a second connection to the same Nameshake user and re-points its follow-ups', async () => {
     const s = await signIn(app);
     const remoteUserId = randomUUID();
     const original = connection({ remoteUserId, note: 'Met at the booth' });

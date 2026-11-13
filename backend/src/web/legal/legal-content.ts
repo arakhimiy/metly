@@ -60,19 +60,18 @@ export const UI: Record<LegalLang, { updated: string; privacy: string; terms: st
 const privacyEn: LegalDoc = {
   title: 'Privacy Policy',
   intro:
-    'Tanishly helps you share a digital business card and remember the people you meet. This policy explains what we collect, why, who we share it with and how you control it. We do not sell your data, show ads or track you across other apps and websites.',
+    'Nameshake helps you share a digital business card and remember the people you meet. This policy explains what we collect, why, who we share it with and how you control it. We do not sell your data, show ads or track you across other apps and websites.',
   sections: [
     {
       heading: 'What we collect',
       body: [
         [
-          'Account: the identifier and email address Apple or Google gives us when you sign in (Apple may give us a private relay address).',
+          'Account: the identifier and email address Apple or Google gives us when you sign in (Apple may give us a private relay address). With Telegram we receive your Telegram account identifier and name — no phone number or email.',
           'Profile and cards: your name, job title, company, photo, logo and the contact details you add, each with the privacy level you choose (Public, Connections or Private).',
           'People you save: the details of people you meet, the event, place and city where you met, your private notes, tags and follow-up reminders.',
           'Connect requests: who you sent a request to or received one from, and the card each of you shared.',
           'Device information: a push notification token, the app version, language and time zone (so reminders arrive at the right local time).',
           'Purchases: your subscription status from Apple. Apple processes the payment; we never see your card details.',
-          'Telegram reminders (optional): the Telegram chat that you link to our bot.',
         ],
       ],
     },
@@ -101,19 +100,18 @@ const privacyEn: LegalDoc = {
         [
           'To run the service: sync your data between your devices, publish your card pages, deliver connect requests and reminders.',
           'To keep the service safe: prevent abuse and fix errors (server logs never contain your notes or tokens).',
-          'To provide Tanishly Pro when you subscribe.',
+          'To provide Nameshake Pro when you subscribe.',
         ],
       ],
     },
     {
       heading: 'Who we share it with',
       body: [
-        'Only with the service providers that run Tanishly for us, under contracts that limit them to that purpose:',
+        'Only with the service providers that run Nameshake for us, under contracts that limit them to that purpose:',
         [
           'our hosting and database provider and file storage (for photos and logos);',
-          'Apple (Sign in with Apple, push notifications, the App Store and Apple Wallet) and Google (Sign in with Google);',
-          'an email delivery provider (only to send you your data export);',
-          'Telegram, only if you link the reminders bot.',
+          'Apple (Sign in with Apple, push notifications, the App Store and Apple Wallet), Google (Sign in with Google) and Telegram (Log In with Telegram);',
+          'an email delivery provider (only to send you your data export).',
         ],
         'People you connect with see the card you chose to share with them. We disclose data to authorities only when the law requires it.',
       ],
@@ -138,7 +136,7 @@ const privacyEn: LegalDoc = {
     },
     {
       heading: 'Children',
-      body: ['Tanishly is not meant for children under 13, and we do not knowingly collect their data.'],
+      body: ['Nameshake is not meant for children under 13, and we do not knowingly collect their data.'],
     },
     {
       heading: 'Changes',
@@ -150,19 +148,18 @@ const privacyEn: LegalDoc = {
 const privacyUz: LegalDoc = {
   title: 'Maxfiylik siyosati',
   intro:
-    'Tanishly raqamli vizitkangizni ulashishga va tanishgan odamlaringizni eslab qolishga yordam beradi. Bu sahifada qaysi ma’lumotlarni yig‘ishimiz, nima uchun, kimga uzatishimiz va ularni qanday boshqarishingiz tushuntirilgan. Biz ma’lumotlaringizni sotmaymiz, reklama ko‘rsatmaymiz va sizni boshqa ilova va saytlarda kuzatmaymiz.',
+    'Nameshake raqamli vizitkangizni ulashishga va tanishgan odamlaringizni eslab qolishga yordam beradi. Bu sahifada qaysi ma’lumotlarni yig‘ishimiz, nima uchun, kimga uzatishimiz va ularni qanday boshqarishingiz tushuntirilgan. Biz ma’lumotlaringizni sotmaymiz, reklama ko‘rsatmaymiz va sizni boshqa ilova va saytlarda kuzatmaymiz.',
   sections: [
     {
       heading: 'Qanday ma’lumotlarni yig‘amiz',
       body: [
         [
-          'Akkaunt: Apple yoki Google orqali kirganingizda ular beradigan identifikator va email (Apple yashirin “relay” manzil berishi mumkin).',
+          'Akkaunt: Apple yoki Google orqali kirganingizda ular beradigan identifikator va email (Apple yashirin “relay” manzil berishi mumkin). Telegram orqali kirsangiz, Telegram akkauntingiz identifikatori va ismingizni olamiz — telefon raqami yoki email emas.',
           'Profil va kartalar: ismingiz, lavozimingiz, kompaniya, rasm, logotip va qo‘shgan kontaktlaringiz — har biri siz tanlagan maxfiylik darajasi bilan (Hammaga, Ulanganlarga yoki Shaxsiy).',
           'Saqlagan odamlaringiz: tanishgan odamlaringiz ma’lumotlari, qayerda va qaysi tadbirda tanishganingiz, shaxsiy eslatmalaringiz, teglar va follow-up eslatmalari.',
           'Ulanish so‘rovlari: kimga so‘rov yuborganingiz yoki kimdan olganingiz va har biringiz ulashgan karta.',
           'Qurilma ma’lumotlari: push-bildirishnoma tokeni, ilova versiyasi, til va vaqt mintaqasi (eslatmalar mahalliy vaqtda kelishi uchun).',
           'Xaridlar: Apple’dan obuna holati. To‘lovni Apple qayta ishlaydi, biz karta ma’lumotlaringizni ko‘rmaymiz.',
-          'Telegram eslatmalari (ixtiyoriy): botimizga ulagan Telegram chatingiz.',
         ],
       ],
     },
@@ -191,19 +188,18 @@ const privacyUz: LegalDoc = {
         [
           'Xizmatni ishlatish uchun: ma’lumotlarni qurilmalaringiz orasida sinxronlash, karta sahifalarini chop etish, ulanish so‘rovlari va eslatmalarni yetkazish.',
           'Xizmat xavfsizligi uchun: suiiste’molning oldini olish va xatolarni tuzatish (server loglarida eslatmalaringiz va tokenlar saqlanmaydi).',
-          'Obuna bo‘lsangiz, Tanishly Pro’ni taqdim etish uchun.',
+          'Obuna bo‘lsangiz, Nameshake Pro’ni taqdim etish uchun.',
         ],
       ],
     },
     {
       heading: 'Kimga uzatamiz',
       body: [
-        'Faqat Tanishly’ni biz uchun ishlatadigan xizmat ko‘rsatuvchilarga, ularni shu maqsad bilan cheklaydigan shartnomalar asosida:',
+        'Faqat Nameshake’ni biz uchun ishlatadigan xizmat ko‘rsatuvchilarga, ularni shu maqsad bilan cheklaydigan shartnomalar asosida:',
         [
           'hosting va ma’lumotlar bazasi provayderi hamda fayl ombori (rasm va logotiplar uchun);',
-          'Apple (Apple bilan kirish, push-bildirishnomalar, App Store va Apple Wallet) va Google (Google bilan kirish);',
-          'email yetkazish xizmati (faqat ma’lumotlaringiz arxivini yuborish uchun);',
-          'Telegram — faqat eslatmalar botini ulasangiz.',
+          'Apple (Apple bilan kirish, push-bildirishnomalar, App Store va Apple Wallet), Google (Google bilan kirish) va Telegram (Telegram bilan kirish);',
+          'email yetkazish xizmati (faqat ma’lumotlaringiz arxivini yuborish uchun).',
         ],
         'Siz bilan ulangan odamlar siz ulashishni tanlagan kartani ko‘radi. Ma’lumotlarni davlat organlariga faqat qonun talab qilganda beramiz.',
       ],
@@ -228,7 +224,7 @@ const privacyUz: LegalDoc = {
     },
     {
       heading: 'Bolalar',
-      body: ['Tanishly 13 yoshgacha bo‘lgan bolalar uchun mo‘ljallanmagan va biz ularning ma’lumotlarini ataylab yig‘maymiz.'],
+      body: ['Nameshake 13 yoshgacha bo‘lgan bolalar uchun mo‘ljallanmagan va biz ularning ma’lumotlarini ataylab yig‘maymiz.'],
     },
     {
       heading: 'O‘zgarishlar',
@@ -240,19 +236,18 @@ const privacyUz: LegalDoc = {
 const privacyRu: LegalDoc = {
   title: 'Политика конфиденциальности',
   intro:
-    'Tanishly помогает делиться цифровой визиткой и помнить людей, с которыми вы познакомились. Здесь объясняется, какие данные мы собираем, зачем, кому передаём и как вы ими управляете. Мы не продаём ваши данные, не показываем рекламу и не отслеживаем вас в других приложениях и на сайтах.',
+    'Nameshake помогает делиться цифровой визиткой и помнить людей, с которыми вы познакомились. Здесь объясняется, какие данные мы собираем, зачем, кому передаём и как вы ими управляете. Мы не продаём ваши данные, не показываем рекламу и не отслеживаем вас в других приложениях и на сайтах.',
   sections: [
     {
       heading: 'Какие данные мы собираем',
       body: [
         [
-          'Аккаунт: идентификатор и email, которые передают Apple или Google при входе (Apple может передать скрытый relay-адрес).',
+          'Аккаунт: идентификатор и email, которые передают Apple или Google при входе (Apple может передать скрытый relay-адрес). При входе через Telegram мы получаем идентификатор аккаунта Telegram и имя — без номера телефона и email.',
           'Профиль и визитки: имя, должность, компания, фото, логотип и добавленные контакты — каждый с выбранным вами уровнем доступа (Всем, Контактам или Только мне).',
           'Сохранённые люди: данные людей, с которыми вы познакомились, мероприятие, место и город знакомства, ваши личные заметки, теги и напоминания.',
           'Запросы на обмен: кому вы отправили запрос или от кого получили, и визитка, которой поделился каждый.',
           'Данные устройства: токен push-уведомлений, версия приложения, язык и часовой пояс (чтобы напоминания приходили по местному времени).',
           'Покупки: статус подписки от Apple. Оплату обрабатывает Apple, данные вашей карты мы не видим.',
-          'Напоминания в Telegram (по желанию): чат Telegram, который вы подключили к нашему боту.',
         ],
       ],
     },
@@ -281,19 +276,18 @@ const privacyRu: LegalDoc = {
         [
           'Для работы сервиса: синхронизация между устройствами, публикация страниц визиток, доставка запросов и напоминаний.',
           'Для безопасности: защита от злоупотреблений и исправление ошибок (в логах сервера нет ваших заметок и токенов).',
-          'Для Tanishly Pro, если вы оформили подписку.',
+          'Для Nameshake Pro, если вы оформили подписку.',
         ],
       ],
     },
     {
       heading: 'Кому мы их передаём',
       body: [
-        'Только поставщикам услуг, которые обеспечивают работу Tanishly, по договорам, ограничивающим их этой целью:',
+        'Только поставщикам услуг, которые обеспечивают работу Nameshake, по договорам, ограничивающим их этой целью:',
         [
           'хостинг и база данных, файловое хранилище (для фото и логотипов);',
-          'Apple (вход через Apple, push-уведомления, App Store и Apple Wallet) и Google (вход через Google);',
-          'сервис доставки email (только чтобы отправить архив ваших данных);',
-          'Telegram — только если вы подключили бота напоминаний.',
+          'Apple (вход через Apple, push-уведомления, App Store и Apple Wallet), Google (вход через Google) и Telegram (вход через Telegram);',
+          'сервис доставки email (только чтобы отправить архив ваших данных).',
         ],
         'Люди, с которыми вы обменялись визитками, видят визитку, которой вы решили поделиться. Государственным органам данные передаются только по требованию закона.',
       ],
@@ -318,7 +312,7 @@ const privacyRu: LegalDoc = {
     },
     {
       heading: 'Дети',
-      body: ['Tanishly не предназначен для детей младше 13 лет, и мы сознательно не собираем их данные.'],
+      body: ['Nameshake не предназначен для детей младше 13 лет, и мы сознательно не собираем их данные.'],
     },
     {
       heading: 'Изменения',
@@ -329,12 +323,12 @@ const privacyRu: LegalDoc = {
 
 const termsEn: LegalDoc = {
   title: 'Terms of Use',
-  intro: 'These terms apply when you use the Tanishly app and the tanishly.app website. By using Tanishly you agree to them.',
+  intro: 'These terms apply when you use the Nameshake app and the tanishly.app website. By using Nameshake you agree to them.',
   sections: [
     {
       heading: 'Your account',
       body: [
-        'You sign in with Apple or Google and are responsible for what happens in your account. Give accurate information on your cards, and only add other people’s details when you have a legitimate reason, such as having met them.',
+        'You sign in with Apple, Google or Telegram and are responsible for what happens in your account. Give accurate information on your cards, and only add other people’s details when you have a legitimate reason, such as having met them.',
       ],
     },
     {
@@ -346,7 +340,7 @@ const termsEn: LegalDoc = {
     {
       heading: 'Acceptable use',
       body: [
-        'Do not use Tanishly to send spam, impersonate someone, collect data about people without their knowledge, publish illegal or offensive content, or attempt to break or overload the service. We may suspend accounts that do.',
+        'Do not use Nameshake to send spam, impersonate someone, collect data about people without their knowledge, publish illegal or offensive content, or attempt to break or overload the service. We may suspend accounts that do.',
       ],
     },
     {
@@ -356,7 +350,7 @@ const termsEn: LegalDoc = {
       ],
     },
     {
-      heading: 'Tanishly Pro',
+      heading: 'Nameshake Pro',
       body: [
         'Pro is an auto-renewing subscription sold through the App Store. Payment is charged to your Apple Account and renews unless you turn it off at least 24 hours before the end of the period. Manage or cancel it in Settings → Apple Account → Subscriptions. Deleting the app or your account does not cancel a subscription. Refunds are handled by Apple.',
       ],
@@ -364,18 +358,18 @@ const termsEn: LegalDoc = {
     {
       heading: 'Availability and changes',
       body: [
-        'We work to keep Tanishly available and your data safe, but the service is provided “as is”, without guarantees that it will always be uninterrupted or error-free. We may change or discontinue features; if we shut the service down we will give you notice and a way to export your data.',
+        'We work to keep Nameshake available and your data safe, but the service is provided “as is”, without guarantees that it will always be uninterrupted or error-free. We may change or discontinue features; if we shut the service down we will give you notice and a way to export your data.',
       ],
     },
     {
       heading: 'Liability',
       body: [
-        'To the extent the law allows, Tanishly is not liable for indirect losses, or for losses caused by information that users put on their cards. Nothing in these terms limits rights you have under consumer law.',
+        'To the extent the law allows, Nameshake is not liable for indirect losses, or for losses caused by information that users put on their cards. Nothing in these terms limits rights you have under consumer law.',
       ],
     },
     {
       heading: 'Ending',
-      body: ['You can stop using Tanishly and delete your account at any time from the app.'],
+      body: ['You can stop using Nameshake and delete your account at any time from the app.'],
     },
     {
       heading: 'Law and contact',
@@ -386,12 +380,12 @@ const termsEn: LegalDoc = {
 
 const termsUz: LegalDoc = {
   title: 'Foydalanish shartlari',
-  intro: 'Bu shartlar Tanishly ilovasi va tanishly.app saytidan foydalanganingizda amal qiladi. Tanishly’dan foydalanish orqali ularga rozilik bildirasiz.',
+  intro: 'Bu shartlar Nameshake ilovasi va tanishly.app saytidan foydalanganingizda amal qiladi. Nameshake’dan foydalanish orqali ularga rozilik bildirasiz.',
   sections: [
     {
       heading: 'Akkauntingiz',
       body: [
-        'Siz Apple yoki Google orqali kirasiz va akkauntingizda sodir bo‘ladigan narsalar uchun javobgarsiz. Kartalaringizda to‘g‘ri ma’lumot bering, boshqalarning ma’lumotlarini esa faqat asosli sabab bo‘lganda qo‘shing — masalan, ular bilan tanishgan bo‘lsangiz.',
+        'Siz Apple, Google yoki Telegram orqali kirasiz va akkauntingizda sodir bo‘ladigan narsalar uchun javobgarsiz. Kartalaringizda to‘g‘ri ma’lumot bering, boshqalarning ma’lumotlarini esa faqat asosli sabab bo‘lganda qo‘shing — masalan, ular bilan tanishgan bo‘lsangiz.',
       ],
     },
     {
@@ -403,7 +397,7 @@ const termsUz: LegalDoc = {
     {
       heading: 'Ruxsat etilgan foydalanish',
       body: [
-        'Tanishly’dan spam yuborish, boshqa odam nomidan harakat qilish, odamlar haqida ularning bilmasdan ma’lumot to‘plash, noqonuniy yoki haqoratli kontent joylash yoki xizmatni buzishga yoki ortiqcha yuklashga urinish uchun foydalanmang. Bunday akkauntlarni to‘xtatib qo‘yishimiz mumkin.',
+        'Nameshake’dan spam yuborish, boshqa odam nomidan harakat qilish, odamlar haqida ularning bilmasdan ma’lumot to‘plash, noqonuniy yoki haqoratli kontent joylash yoki xizmatni buzishga yoki ortiqcha yuklashga urinish uchun foydalanmang. Bunday akkauntlarni to‘xtatib qo‘yishimiz mumkin.',
       ],
     },
     {
@@ -413,7 +407,7 @@ const termsUz: LegalDoc = {
       ],
     },
     {
-      heading: 'Tanishly Pro',
+      heading: 'Nameshake Pro',
       body: [
         'Pro — App Store orqali sotiladigan avtomatik yangilanadigan obuna. To‘lov Apple akkauntingizdan olinadi va davr tugashidan kamida 24 soat oldin o‘chirmasangiz, avtomatik yangilanadi. Obunani Sozlamalar → Apple akkaunt → Obunalar bo‘limida boshqaring yoki bekor qiling. Ilovani yoki akkauntni o‘chirish obunani bekor qilmaydi. Pulni qaytarish masalasini Apple hal qiladi.',
       ],
@@ -421,18 +415,18 @@ const termsUz: LegalDoc = {
     {
       heading: 'Xizmat mavjudligi va o‘zgarishlar',
       body: [
-        'Tanishly’ning ishlashi va ma’lumotlaringiz xavfsizligi uchun harakat qilamiz, lekin xizmat “boricha” taqdim etiladi va uning doim uzluksiz yoki xatosiz ishlashiga kafolat berilmaydi. Funksiyalarni o‘zgartirishimiz yoki to‘xtatishimiz mumkin; xizmatni yopsak, oldindan xabar beramiz va ma’lumotlaringizni eksport qilish imkonini qoldiramiz.',
+        'Nameshake’ning ishlashi va ma’lumotlaringiz xavfsizligi uchun harakat qilamiz, lekin xizmat “boricha” taqdim etiladi va uning doim uzluksiz yoki xatosiz ishlashiga kafolat berilmaydi. Funksiyalarni o‘zgartirishimiz yoki to‘xtatishimiz mumkin; xizmatni yopsak, oldindan xabar beramiz va ma’lumotlaringizni eksport qilish imkonini qoldiramiz.',
       ],
     },
     {
       heading: 'Javobgarlik',
       body: [
-        'Qonun ruxsat bergan darajada Tanishly bilvosita zararlar yoki foydalanuvchilar o‘z kartalariga joylagan ma’lumotlar tufayli yetgan zararlar uchun javobgar emas. Bu shartlar iste’molchilar huquqlarini himoya qilish qonunchiligi bo‘yicha huquqlaringizni cheklamaydi.',
+        'Qonun ruxsat bergan darajada Nameshake bilvosita zararlar yoki foydalanuvchilar o‘z kartalariga joylagan ma’lumotlar tufayli yetgan zararlar uchun javobgar emas. Bu shartlar iste’molchilar huquqlarini himoya qilish qonunchiligi bo‘yicha huquqlaringizni cheklamaydi.',
       ],
     },
     {
       heading: 'Foydalanishni tugatish',
-      body: ['Tanishly’dan foydalanishni istalgan payt to‘xtatib, akkauntingizni ilovaning o‘zidan o‘chirishingiz mumkin.'],
+      body: ['Nameshake’dan foydalanishni istalgan payt to‘xtatib, akkauntingizni ilovaning o‘zidan o‘chirishingiz mumkin.'],
     },
     {
       heading: 'Qonun va aloqa',
@@ -443,12 +437,12 @@ const termsUz: LegalDoc = {
 
 const termsRu: LegalDoc = {
   title: 'Условия использования',
-  intro: 'Эти условия действуют при использовании приложения Tanishly и сайта tanishly.app. Пользуясь Tanishly, вы соглашаетесь с ними.',
+  intro: 'Эти условия действуют при использовании приложения Nameshake и сайта tanishly.app. Пользуясь Nameshake, вы соглашаетесь с ними.',
   sections: [
     {
       heading: 'Ваш аккаунт',
       body: [
-        'Вы входите через Apple или Google и отвечаете за то, что происходит в вашем аккаунте. Указывайте на визитках достоверные данные, а данные других людей добавляйте только при законном основании — например, если вы с ними познакомились.',
+        'Вы входите через Apple, Google или Telegram и отвечаете за то, что происходит в вашем аккаунте. Указывайте на визитках достоверные данные, а данные других людей добавляйте только при законном основании — например, если вы с ними познакомились.',
       ],
     },
     {
@@ -460,7 +454,7 @@ const termsRu: LegalDoc = {
     {
       heading: 'Допустимое использование',
       body: [
-        'Не используйте Tanishly для спама, выдачи себя за другого человека, сбора данных о людях без их ведома, публикации незаконного или оскорбительного контента или попыток нарушить работу сервиса. Такие аккаунты мы можем заблокировать.',
+        'Не используйте Nameshake для спама, выдачи себя за другого человека, сбора данных о людях без их ведома, публикации незаконного или оскорбительного контента или попыток нарушить работу сервиса. Такие аккаунты мы можем заблокировать.',
       ],
     },
     {
@@ -470,7 +464,7 @@ const termsRu: LegalDoc = {
       ],
     },
     {
-      heading: 'Tanishly Pro',
+      heading: 'Nameshake Pro',
       body: [
         'Pro — автоматически продлеваемая подписка, продаваемая через App Store. Оплата списывается с вашего Apple-аккаунта и продлевается, если не отключить её не позднее чем за 24 часа до конца периода. Управлять подпиской или отменить её можно в Настройки → Apple-аккаунт → Подписки. Удаление приложения или аккаунта не отменяет подписку. Возвраты обрабатывает Apple.',
       ],
@@ -478,18 +472,18 @@ const termsRu: LegalDoc = {
     {
       heading: 'Доступность и изменения',
       body: [
-        'Мы стараемся, чтобы Tanishly работал стабильно и ваши данные были в безопасности, но сервис предоставляется «как есть», без гарантий бесперебойной и безошибочной работы. Мы можем менять или отключать функции; если сервис будет закрыт, мы предупредим заранее и дадим возможность выгрузить данные.',
+        'Мы стараемся, чтобы Nameshake работал стабильно и ваши данные были в безопасности, но сервис предоставляется «как есть», без гарантий бесперебойной и безошибочной работы. Мы можем менять или отключать функции; если сервис будет закрыт, мы предупредим заранее и дадим возможность выгрузить данные.',
       ],
     },
     {
       heading: 'Ответственность',
       body: [
-        'В пределах, допустимых законом, Tanishly не отвечает за косвенные убытки и за убытки, вызванные информацией, которую пользователи размещают на своих визитках. Эти условия не ограничивают ваши права по законодательству о защите прав потребителей.',
+        'В пределах, допустимых законом, Nameshake не отвечает за косвенные убытки и за убытки, вызванные информацией, которую пользователи размещают на своих визитках. Эти условия не ограничивают ваши права по законодательству о защите прав потребителей.',
       ],
     },
     {
       heading: 'Прекращение',
-      body: ['Вы можете в любой момент перестать пользоваться Tanishly и удалить аккаунт прямо в приложении.'],
+      body: ['Вы можете в любой момент перестать пользоваться Nameshake и удалить аккаунт прямо в приложении.'],
     },
     {
       heading: 'Право и контакты',
@@ -500,11 +494,11 @@ const termsRu: LegalDoc = {
 
 const helpEn: LegalDoc = {
   title: 'Help',
-  intro: 'Answers to the most common questions about Tanishly.',
+  intro: 'Answers to the most common questions about Nameshake.',
   sections: [
     {
       heading: 'How do I share my card?',
-      body: ['Open the app and tap Show QR — the other person scans it with their camera. You can also tap Share to send the link, add the card to Apple Wallet, or use Connect to swap cards with someone nearby who also has Tanishly.'],
+      body: ['Open the app and tap Show QR — the other person scans it with their camera. You can also tap Share to send the link, add the card to Apple Wallet, or use Connect to swap cards with someone nearby who also has Nameshake.'],
     },
     {
       heading: 'Who sees which details?',
@@ -527,22 +521,18 @@ const helpEn: LegalDoc = {
     },
     {
       heading: 'How do I restore Pro on a new iPhone?',
-      body: ['Sign in with the same Apple or Google account, then open Profile → Tanishly Pro → Restore Purchases.'],
-    },
-    {
-      heading: 'Can I get reminders in Telegram?',
-      body: ['Yes. In Profile → Notifications, choose Telegram and follow the link to our bot. You can switch back to push notifications at any time.'],
+      body: ['Sign in with the same Apple, Google or Telegram account, then open Profile → Nameshake Pro → Restore Purchases.'],
     },
   ],
 };
 
 const helpUz: LegalDoc = {
   title: 'Yordam',
-  intro: 'Tanishly haqidagi eng ko‘p beriladigan savollarga javoblar.',
+  intro: 'Nameshake haqidagi eng ko‘p beriladigan savollarga javoblar.',
   sections: [
     {
       heading: 'Kartamni qanday ulashaman?',
-      body: ['Ilovani oching va “Show QR”ni bosing — qarshingizdagi odam uni kamerasi bilan skanerlaydi. “Share” orqali havolani yuborishingiz, kartani Apple Wallet’ga qo‘shishingiz yoki “Connect” bilan yoningizdagi Tanishly foydalanuvchisi bilan karta almashishingiz ham mumkin.'],
+      body: ['Ilovani oching va “Show QR”ni bosing — qarshingizdagi odam uni kamerasi bilan skanerlaydi. “Share” orqali havolani yuborishingiz, kartani Apple Wallet’ga qo‘shishingiz yoki “Connect” bilan yoningizdagi Nameshake foydalanuvchisi bilan karta almashishingiz ham mumkin.'],
     },
     {
       heading: 'Qaysi ma’lumotni kim ko‘radi?',
@@ -565,22 +555,18 @@ const helpUz: LegalDoc = {
     },
     {
       heading: 'Yangi iPhone’da Pro’ni qanday tiklayman?',
-      body: ['Xuddi o‘sha Apple yoki Google akkaunti bilan kiring, keyin Profile → Tanishly Pro → Restore Purchases’ni oching.'],
-    },
-    {
-      heading: 'Eslatmalarni Telegram’da olsam bo‘ladimi?',
-      body: ['Ha. Profile → Notifications bo‘limida Telegram’ni tanlang va botimizga havola orqali o‘ting. Istalgan payt push-bildirishnomalarga qaytishingiz mumkin.'],
+      body: ['Xuddi o‘sha Apple, Google yoki Telegram akkaunti bilan kiring, keyin Profile → Nameshake Pro → Restore Purchases’ni oching.'],
     },
   ],
 };
 
 const helpRu: LegalDoc = {
   title: 'Помощь',
-  intro: 'Ответы на самые частые вопросы о Tanishly.',
+  intro: 'Ответы на самые частые вопросы о Nameshake.',
   sections: [
     {
       heading: 'Как поделиться визиткой?',
-      body: ['Откройте приложение и нажмите Show QR — собеседник сканирует код камерой. Также можно нажать Share и отправить ссылку, добавить визитку в Apple Wallet или через Connect обменяться визитками с человеком рядом, у которого тоже есть Tanishly.'],
+      body: ['Откройте приложение и нажмите Show QR — собеседник сканирует код камерой. Также можно нажать Share и отправить ссылку, добавить визитку в Apple Wallet или через Connect обменяться визитками с человеком рядом, у которого тоже есть Nameshake.'],
     },
     {
       heading: 'Кто видит какие данные?',
@@ -603,11 +589,7 @@ const helpRu: LegalDoc = {
     },
     {
       heading: 'Как восстановить Pro на новом iPhone?',
-      body: ['Войдите с тем же аккаунтом Apple или Google и откройте Profile → Tanishly Pro → Restore Purchases.'],
-    },
-    {
-      heading: 'Можно получать напоминания в Telegram?',
-      body: ['Да. В Profile → Notifications выберите Telegram и перейдите по ссылке к нашему боту. Вернуться к push-уведомлениям можно в любой момент.'],
+      body: ['Войдите с тем же аккаунтом Apple, Google или Telegram и откройте Profile → Nameshake Pro → Restore Purchases.'],
     },
   ],
 };

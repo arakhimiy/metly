@@ -65,7 +65,7 @@ export class ApiError extends Error {
   static planLimit(limit: 'cards' | 'openFollowUps' | 'activeEvents', message: string) {
     return new ApiError(403, 'plan_limit_reached', message, { limit });
   }
-  static proRequired(message = 'This needs Tanishly Pro.') {
+  static proRequired(message = 'This needs Nameshake Pro.') {
     return new ApiError(403, 'pro_required', message);
   }
   static unavailable(message: string) {

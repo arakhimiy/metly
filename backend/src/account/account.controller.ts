@@ -51,7 +51,6 @@ export class AccountController {
       await tx.deferredClick.deleteMany({ where: { ownerId: user.id } });
       await tx.connectionAlias.deleteMany({ where: { userId: user.id } });
       await tx.upload.deleteMany({ where: { userId: user.id } });
-      await tx.telegramLinkToken.deleteMany({ where: { userId: user.id } });
       await tx.dataExportRequest.deleteMany({ where: { userId: user.id } });
       await tx.idempotencyRecord.deleteMany({ where: { scope: `u:${user.id}` } });
       await tx.block.deleteMany({ where: { blockedUserId: user.id } });

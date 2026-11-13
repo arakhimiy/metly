@@ -10,7 +10,7 @@ import { hasBlocked } from './blocks';
 const SLUG = /^[a-z0-9-]{1,100}$/;
 
 /**
- * GET /v1/public-profiles/{slug} — a scanned Tanishly QR as the signed-in viewer sees it (SCANNED_CARD).
+ * GET /v1/public-profiles/{slug} — a scanned Nameshake QR as the signed-in viewer sees it (SCANNED_CARD).
  * Connections-level fields only for an accepted, mutual connect: the owner holds a live, unblocked
  * connection to the viewer with `isMutual` (README § Privacy rule). A one-sided "Add to People" never
  * unlocks them.

@@ -110,7 +110,7 @@ export function buildPassJson(input: PassInput): Record<string, unknown> {
     dataDetectorTypes: detectors(entry.kind),
   }));
   if (url) backFields.push({ key: 'card-url', label: 'Card', value: url, dataDetectorTypes: ['PKDataDetectorTypeLink'] });
-  backFields.push({ key: 'about', label: 'Tanishly', value: 'This pass updates automatically when the card changes.' });
+  backFields.push({ key: 'about', label: 'Nameshake', value: 'This pass updates automatically when the card changes.' });
 
   const name = profile.fullName.trim() || card.name;
   return {
@@ -120,9 +120,9 @@ export function buildPassJson(input: PassInput): Record<string, unknown> {
     serialNumber: card.id,
     authenticationToken: card.passAuthToken,
     webServiceURL: input.webServiceURL,
-    organizationName: 'Tanishly',
-    description: `${name} — Tanishly card`,
-    logoText: 'Tanishly',
+    organizationName: 'Nameshake',
+    description: `${name} — Nameshake card`,
+    logoText: 'Nameshake',
     backgroundColor: rgb(colors.background),
     foregroundColor: rgb(colors.foreground),
     labelColor: rgb(colors.accent),
