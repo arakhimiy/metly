@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Nameshake App Store screenshot</title>
+<!--
+  One App Store screenshot, 1320 × 2868 (iPhone 6.9"). Pick it with the query string:
+    screenshot.html?lang=uz&slide=1      lang: uz | ru | en, slide: 1–5
+  ?grid=1 shows every slide of the language side by side for review (scaled down).
+  export.sh renders each one to PNG with headless Chrome.
+-->
+<style>
+  :root {
+    --w: 1320px; --h: 2868px;
+    --blue: #0a84ff; --blue-deep: #0050c8; --ink: #0b1b33;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #e9edf3; }
+  body { font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .slide {
+    position: relative; width: var(--w); height: var(--h); overflow: hidden;
+    display: flex; flex-direction: column; align-items: center;
+    background: radial-gradient(120% 70% at 50% 0%, #3d9bff 0%, var(--blue) 38%, var(--blue-deep) 100%);
+    color: #fff;
+  }
+  .slide.light {
+    background: radial-gradient(120% 70% at 50% 0%, #ffffff 0%, #eef4ff 45%, #d9e7ff 100%);
+    color: var(--ink);
+  }
+  .copy { padding: 150px 110px 0; text-align: center; }
+  .headline {
+    font-size: 108px; font-weight: 800; line-height: 1.04; letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .sub {
+    margin-top: 34px; font-size: 54px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+    opacity: .82; text-wrap: balance;
+  }
+
+  /* Apple's iPhone 17 Pro frame (frames/, 1350 × 2760) over the raw 1206 × 2622 capture.
+     The frame's screen opening is x 72, y 69, so the capture sits at 5.333% / 2.5% of the frame. */
+  /* Whole phone on the canvas, with the same 128 px gap left, right and below. */
+  .phone {
+    position: absolute; left: 128px; bottom: 128px;
+    width: 1064px; aspect-ratio: 1350 / 2760;
+    filter: drop-shadow(0 70px 90px rgba(0, 20, 60, .35));
+  }
+  .screen {
+    position: absolute; left: 5.3333%; top: 2.5%; width: 89.3333%; height: 95%;
+    border-radius: 9% / 4.2%;   /* hidden by the frame; avoids corner bleed */
+  }
+  .frame { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .grid { display: flex; gap: 40px; padding: 40px; flex-wrap: wrap; }
+  .grid .cell { width: calc(var(--w) * .25); height: calc(var(--h) * .25); overflow: hidden; border-radius: 24px; }
+  .grid .slide { transform: scale(.25); transform-origin: 0 0; }
+</style>
+</head>
+<body>
+<script>
+const COPY = {
+  en: [
+    { img: 'home',      head: 'Your business card, always with you', sub: 'Share it in seconds, wherever you meet people.' },
+    { img: 'qr',        head: 'Share with one scan',                 sub: 'They point their camera. No app needed.', light: true },
+    { img: 'people',    head: 'Everyone you meet, in one place',     sub: 'Search by name, event or tag.' },
+    { img: 'person',    head: 'Remember where you met',              sub: 'Event, place and time are saved for you.', light: true },
+    { img: 'followups', head: 'Never miss a follow-up',              sub: 'A reminder with your note, on the right day.' },
+  ],
+  uz: [
+    { img: 'home',      head: 'Vizitkangiz doim yoningizda',          sub: 'Qayerda tanishsangiz ham, bir necha soniyada ulashing.' },
+    { img: 'qr',        head: 'Bir skanerlashda ulashing',            sub: 'Kamerani to‘g‘rilashadi, xolos. Ilova shart emas.', light: true },
+    { img: 'people',    head: 'Barcha tanishlaringiz bir joyda',      sub: 'Ism, tadbir yoki teg bo‘yicha toping.' },
+    { img: 'person',    head: 'Qayerda tanishganingizni eslang',      sub: 'Tadbir, joy va vaqt o‘zi saqlanadi.', light: true },
+    { img: 'followups', head: 'Qayta bog‘lanishni unutmang',          sub: 'Kerakli kuni eslatma keladi, izohingiz bilan.' },
+  ],
+  ru: [
+    { img: 'home',      head: 'Ваша визитка всегда с вами',           sub: 'Делитесь за секунды, где бы вы ни знакомились.' },
+    { img: 'qr',        head: 'Одно сканирование, и готово',          sub: 'Достаточно камеры. Приложение не нужно.', light: true },
+    { img: 'people',    head: 'Все знакомства в одном месте',         sub: 'Ищите по имени, мероприятию или тегу.' },
+    { img: 'person',    head: 'Помните, где вы познакомились',        sub: 'Мероприятие, место и время сохраняются сами.', light: true },
+    { img: 'followups', head: 'Не забывайте написать снова',          sub: 'Напоминание с вашей заметкой в нужный день.' },
+  ],
+};
+
+const params = new URLSearchParams(location.search);
+const lang = COPY[params.get('lang')] ? params.get('lang') : 'en';
+document.documentElement.lang = lang;
+
+function slide(item) {
+  const el = document.createElement('section');
+  el.className = 'slide' + (item.light ? ' light' : '');
+  el.innerHTML = `
+    <div class="copy">
+      <h1 class="headline"></h1>
+      <p class="sub"></p>
+    </div>
+    <div class="phone"><img class="screen" alt=""><img class="frame" src="frames/iphone-17-pro-silver.png" alt=""></div>`;
+  el.querySelector('.headline').textContent = item.head;
+  el.querySelector('.sub').textContent = item.sub;
+  el.querySelector('.screen').src = `raw/${lang}/${item.img}.png`;
+  return el;
+}
+
+if (params.get('grid')) {
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  COPY[lang].forEach(item => {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.appendChild(slide(item));
+    grid.appendChild(cell);
+  });
+  document.body.appendChild(grid);
+} else {
+  const n = Math.min(Math.max(parseInt(params.get('slide') || '1', 10), 1), COPY[lang].length);
+  document.body.appendChild(slide(COPY[lang][n - 1]));
+}
+</script>
+</body>
+</html>
