@@ -1,0 +1,11 @@
+{
+  "name": "nameshake-web-proxy",
+  "private": true,
+  "description": "Cloudflare Worker serving nameshake.app from the Nameshake API.",
+  "scripts": {
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.162.0"
+  }
+}

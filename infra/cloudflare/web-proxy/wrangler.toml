@@ -1,0 +1,15 @@
+# Cloudflare Worker that serves nameshake.app by proxying to the API on Railway.
+# Deploy: npm install && npx wrangler deploy   (secret: npx wrangler secret put EDGE_PROXY_SECRET)
+name = "nameshake-web"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+# Custom domains: Cloudflare creates the DNS records and certificates itself.
+routes = [
+  { pattern = "nameshake.app", custom_domain = true },
+  { pattern = "www.nameshake.app", custom_domain = true },
+]
+
+[vars]
+ORIGIN = "https://api.nameshake.app"
