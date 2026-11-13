@@ -363,6 +363,7 @@
 				DEVELOPMENT_TEAM = ZD6CX964M9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				GOOGLE_CLIENT_ID = "492609563259-04fhun0862iiunllqncnll4dvab9dq7e.apps.googleusercontent.com";
 				INFOPLIST_FILE = Metly/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Nameshake;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
@@ -374,10 +375,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				METLY_APP_GROUP = group.app.tanishly.ios;
+				METLY_APP_GROUP = group.app.nameshake.ios;
 				METLY_WEB_HOST = tanishly.app;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.tanishly.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = app.nameshake.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -397,6 +398,7 @@
 				DEVELOPMENT_TEAM = ZD6CX964M9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				GOOGLE_CLIENT_ID = "492609563259-04fhun0862iiunllqncnll4dvab9dq7e.apps.googleusercontent.com";
 				INFOPLIST_FILE = Metly/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Nameshake;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
@@ -408,11 +410,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				METLY_APP_GROUP = group.app.tanishly.ios;
+				METLY_APP_GROUP = group.app.nameshake.ios;
 				METLY_API_BASE_URL = "https://tanishly.onrender.com";
 				METLY_WEB_HOST = tanishly.onrender.com;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.tanishly.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = app.nameshake.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -438,10 +440,10 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				METLY_APP_GROUP = group.app.tanishly.ios;
+				METLY_APP_GROUP = group.app.nameshake.ios;
 				METLY_WEB_HOST = tanishly.app;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.tanishly.ios.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = app.nameshake.ios.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -467,10 +469,10 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				METLY_APP_GROUP = group.app.tanishly.ios;
+				METLY_APP_GROUP = group.app.nameshake.ios;
 				METLY_WEB_HOST = tanishly.onrender.com;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = app.tanishly.ios.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = app.nameshake.ios.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

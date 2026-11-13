@@ -281,6 +281,30 @@ public struct CardDesign: Codable, Hashable, Sendable {
     public var usesProFeatures: Bool { template.isPro || palette.isPro }
 }
 
+/// Per-card switches that are not part of `CardDesign` (which is frozen inside the stored schemas):
+/// whether the job title and company show, and how the logo is drawn. On the wire they travel inside
+/// `design` (`showJobTitle`, `showCompany`, `logoStyle`; absent = shown / original).
+public struct CardFaceOptions: Codable, Hashable, Sendable {
+    public var showJobTitle: Bool
+    public var showCompany: Bool
+    public var logoStyle: CardLogoStyle
+
+    public init(showJobTitle: Bool = true, showCompany: Bool = true, logoStyle: CardLogoStyle = .original) {
+        self.showJobTitle = showJobTitle
+        self.showCompany = showCompany
+        self.logoStyle = logoStyle
+    }
+
+    private enum CodingKeys: String, CodingKey { case showJobTitle, showCompany, logoStyle }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        showJobTitle = try container.decodeIfPresent(Bool.self, forKey: .showJobTitle) ?? true
+        showCompany = try container.decodeIfPresent(Bool.self, forKey: .showCompany) ?? true
+        logoStyle = (try? container.decodeIfPresent(CardLogoStyle.self, forKey: .logoStyle)) ?? .original
+    }
+}
+
 /// The values rendered on a card face, already filtered for the audience.
 /// Built by MetlyData (`Card.faceContent(profile:audience:)`) and consumed by MetlyCardKit.
 public struct CardFaceContent: Hashable, Sendable {
@@ -298,6 +322,8 @@ public struct CardFaceContent: Hashable, Sendable {
     public var isSelection: Bool
     /// What the QR encodes (card URL, or a vCard string for offline QR).
     public var qrPayload: String
+    /// How the logo is drawn (the card's `CardFaceOptions.logoStyle`).
+    public var logoStyle: CardLogoStyle = .original
 
     public init(fullName: String, jobTitle: String = "", company: String = "", photoData: Data? = nil,
                 logoData: Data? = nil, fields: [ContactField] = [], qrPayload: String = "",
@@ -464,5 +490,17 @@ public struct DeferredInvite: Hashable, Sendable {
         self.eventName = eventName
         self.card = card
         self.cardSlug = cardSlug
+    }
+}
+
+public extension CardFaceContent {
+    /// The content with the card's face options applied: a hidden job title or company is blanked, so every
+    /// renderer (app, widgets, exports, vCard) leaves it out without knowing about the switches.
+    func applying(_ options: CardFaceOptions) -> CardFaceContent {
+        var content = self
+        if !options.showJobTitle { content.jobTitle = "" }
+        if !options.showCompany { content.company = "" }
+        content.logoStyle = options.logoStyle
+        return content
     }
 }

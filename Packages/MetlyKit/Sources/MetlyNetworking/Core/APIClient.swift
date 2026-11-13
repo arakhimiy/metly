@@ -1,4 +1,5 @@
 import Foundation
+import MetlyCore
 
 /// URLSession-based HTTP client for the Nameshake API.
 ///
@@ -23,7 +24,7 @@ public final class APIClient: Sendable {
                                       defaultHeaders: [
                                           "Accept": "application/json",
                                           "X-Tanishly-Client": "ios/\(appVersion)",
-                                          "Accept-Language": Locale.preferredLanguages.prefix(3).joined(separator: ", "),
+                                          "Accept-Language": AppLanguage.preferredLanguages.prefix(3).joined(separator: ", "),
                                       ])
         self.transport = transport
         refresher = TokenRefresher(store: sessionStore, onInvalidated: onSessionInvalidated) { refreshToken in

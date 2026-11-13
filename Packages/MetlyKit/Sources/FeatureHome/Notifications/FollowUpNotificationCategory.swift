@@ -26,9 +26,9 @@ nonisolated enum FollowUpNotificationCategory {
 
     static func openActionTitle(_ channel: FollowUpChannel) -> String {
         switch channel {
-        case .telegram: String(localized: "Open Telegram")
-        case .email: String(localized: "Open Mail")
-        case .call: String(localized: "Call")
+        case .telegram: String(localized: "Open Telegram", bundle: .appStrings)
+        case .email: String(localized: "Open Mail", bundle: .appStrings)
+        case .call: String(localized: "Call", bundle: .appStrings)
         }
     }
 
@@ -37,7 +37,7 @@ nonisolated enum FollowUpNotificationCategory {
     }
 
     static func makeCategories() -> Set<UNNotificationCategory> {
-        let snooze = UNNotificationAction(identifier: snoozeAction, title: String(localized: "Snooze 1 Day"),
+        let snooze = UNNotificationAction(identifier: snoozeAction, title: String(localized: "Snooze 1 Day", bundle: .appStrings),
                                           options: [], icon: UNNotificationActionIcon(systemImageName: "clock.arrow.circlepath"))
         var categories: Set<UNNotificationCategory> = [
             UNNotificationCategory(identifier: identifier(for: nil), actions: [snooze], intentIdentifiers: [], options: []),

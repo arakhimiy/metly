@@ -67,11 +67,11 @@ private struct RecognizedLineRow: View {
             .contentShape(.rect)
         }
         .accessibilityLabel(line)
-        .accessibilityValue(uses.isEmpty ? String(localized: "Not Used") : usesTitle)
+        .accessibilityValue(uses.isEmpty ? String(localized: "Not Used", bundle: .appStrings) : usesTitle)
         .accessibilityHint("Choose which field this text fills.")
     }
 
     private var usesTitle: String {
-        uses.isEmpty ? String(localized: "Not Used") : uses.map(\.title).formatted(.list(type: .and))
+        uses.isEmpty ? String(localized: "Not Used", bundle: .appStrings) : uses.map(\.title).formatted(.list(type: .and))
     }
 }

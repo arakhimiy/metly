@@ -94,6 +94,11 @@ public final class AppPreferences {
     public var appearance: AppAppearance {
         didSet { store.set(appearance.rawValue, forKey: Keys.appearance) }
     }
+    /// The app's language: nil until picked on the first screen (then Settings › Language).
+    /// Setting it switches the app at once (`AppLanguage.choose`); the root view re-renders.
+    public var language: AppLanguage? {
+        didSet { if let language, language != oldValue { AppLanguage.choose(language) } }
+    }
     public var hasCompletedOnboarding: Bool {
         didSet { store.set(hasCompletedOnboarding, forKey: Keys.onboarding) }
     }
@@ -109,6 +114,7 @@ public final class AppPreferences {
     public init(store: UserDefaults = .standard) {
         self.store = store
         appearance = AppAppearance(rawValue: store.string(forKey: Keys.appearance) ?? "") ?? .system
+        language = AppLanguage.chosen
         hasCompletedOnboarding = store.bool(forKey: Keys.onboarding)
         activeCardID = store.string(forKey: Keys.activeCard).flatMap(UUID.init(uuidString:))
         lastQRShownAt = store.object(forKey: Keys.lastQR) as? Date

@@ -7,21 +7,21 @@ import SwiftData
 // and `markDeleted()` instead of `modelContext.delete(_:)` so the sync engine sees it.
 // Enum-typed properties are stored as raw strings so they work in #Predicate.
 
-/// 3.0.0 — contact lists (docs/api/CONTACTS.md): `contacts` on Profile and Connection is the source of
-/// truth; the 2.0.0 columns survive as `legacy…` (read once by the migration). `visibleContactIDs` on Card.
-public enum MetlySchemaV3: VersionedSchema {
-    public static let versionIdentifier = Schema.Version(3, 0, 0)
+/// 4.0.0 — card face options (docs/design/card-templates-v2.md): `hidesJobTitle`, `hidesCompany` and
+/// `logoStyleRaw` on Card. 3.0.0 (contact lists) is frozen in ModelsV3.swift.
+public enum MetlySchemaV4: VersionedSchema {
+    public static let versionIdentifier = Schema.Version(4, 0, 0)
     public static var models: [any PersistentModel.Type] {
         [Profile.self, Card.self, Connection.self, FollowUp.self, Event.self, ConnectRequest.self]
     }
 }
 
-public typealias Profile = MetlySchemaV3.Profile
-public typealias Card = MetlySchemaV3.Card
-public typealias Connection = MetlySchemaV3.Connection
-public typealias FollowUp = MetlySchemaV3.FollowUp
-public typealias Event = MetlySchemaV3.Event
-public typealias ConnectRequest = MetlySchemaV3.ConnectRequest
+public typealias Profile = MetlySchemaV4.Profile
+public typealias Card = MetlySchemaV4.Card
+public typealias Connection = MetlySchemaV4.Connection
+public typealias FollowUp = MetlySchemaV4.FollowUp
+public typealias Event = MetlySchemaV4.Event
+public typealias ConnectRequest = MetlySchemaV4.ConnectRequest
 
 /// Shared sync bookkeeping. Every model conforms.
 public protocol SyncedRecord: PersistentModel {
@@ -64,7 +64,7 @@ public extension SyncedRecord {
     var isDeleted: Bool { deletedAt != nil }
 }
 
-extension MetlySchemaV3 {
+extension MetlySchemaV4 {
 
     // MARK: Profile (singleton per signed-in user)
 
@@ -170,6 +170,11 @@ extension MetlySchemaV3 {
         /// Profile contact entries this card shows (`ContactEntry.id`); nil = a card from before 3.0.0,
         /// which shows the entries whose kind is in `design.visibleFields`. Added in 3.0.0.
         public var visibleContactIDs: [UUID]? = nil
+        /// Per-card "Show on This Card" switches for the job title and company. Added in 4.0.0.
+        public var hidesJobTitle: Bool = false
+        public var hidesCompany: Bool = false
+        /// `CardLogoStyle` raw value. Added in 4.0.0.
+        public var logoStyleRaw: String = CardLogoStyle.original.rawValue
         public var publishStateRaw: String
         /// Pro downgrade beyond the Free card limit.
         public var isReadOnly: Bool
@@ -196,6 +201,19 @@ extension MetlySchemaV3 {
         public var publishState: CardPublishState {
             get { CardPublishState(rawValue: publishStateRaw) ?? .draft }
             set { publishStateRaw = newValue.rawValue }
+        }
+
+        /// The card's face options (title/company switches, logo style).
+        public var faceOptions: CardFaceOptions {
+            get {
+                CardFaceOptions(showJobTitle: !hidesJobTitle, showCompany: !hidesCompany,
+                                logoStyle: CardLogoStyle(rawValue: logoStyleRaw) ?? .original)
+            }
+            set {
+                hidesJobTitle = !newValue.showJobTitle
+                hidesCompany = !newValue.showCompany
+                logoStyleRaw = newValue.logoStyle.rawValue
+            }
         }
 
         /// nil until the server assigned a slug.
@@ -476,8 +494,13 @@ extension MetlySchemaV3 {
 }
 
 public enum MetlyMigrationPlan: SchemaMigrationPlan {
-    public static var schemas: [any VersionedSchema.Type] { [MetlySchemaV1.self, MetlySchemaV2.self, MetlySchemaV3.self] }
-    public static var stages: [MigrationStage] { [v1ToV2, v2ToV3] }
+    public static var schemas: [any VersionedSchema.Type] {
+        [MetlySchemaV1.self, MetlySchemaV2.self, MetlySchemaV3.self, MetlySchemaV4.self]
+    }
+    public static var stages: [MigrationStage] { [v1ToV2, v2ToV3, v3ToV4] }
+
+    /// 3 → 4 only adds Card attributes with defaults.
+    static let v3ToV4 = MigrationStage.lightweight(fromVersion: MetlySchemaV3.self, toVersion: MetlySchemaV4.self)
 
     /// 1 → 2 only adds attributes with defaults, so SwiftData migrates it in place.
     static let v1ToV2 = MigrationStage.lightweight(fromVersion: MetlySchemaV1.self, toVersion: MetlySchemaV2.self)

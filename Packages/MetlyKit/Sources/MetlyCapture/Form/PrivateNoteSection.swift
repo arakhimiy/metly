@@ -23,7 +23,7 @@ struct PrivateNoteSection: View {
         } header: {
             Text("Private Note")
         } footer: {
-            Label("Only you can see this. Audio isn't stored.", systemImage: "lock.fill")
+            Label("Only you can see this. Audio isn’t stored.", systemImage: "lock.fill")
         }
         .toolbar {
             if isEditingNote {
@@ -111,7 +111,7 @@ struct DictationProblem: Equatable {
     }
 
     init(failure message: String) {
-        title = String(localized: "Voice Notes Unavailable")
+        title = String(localized: "Voice Notes Unavailable", bundle: .appStrings)
         self.message = message
         canRetry = true
     }

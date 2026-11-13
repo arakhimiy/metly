@@ -29,8 +29,7 @@ struct EventPeopleSection: View {
     }
 }
 
-/// Compact empty state for a list row (ContentUnavailableView stretches inside a List).
-/// Each button keeps its own style so the row never fires both.
+/// "Nobody yet" inside the section. While the event runs, the ways to meet someone; afterwards, just the fact.
 private struct EventPeopleEmptyState: View {
     let isActive: Bool
     let canShowQR: Bool
@@ -38,35 +37,22 @@ private struct EventPeopleEmptyState: View {
     let onJustMet: () -> Void
 
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "person.2")
-                .font(.largeTitle)
-                .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
-            VStack(spacing: 4) {
-                Text(isActive ? "No One Yet" : "No One Added")
-                    .font(.headline)
-                    .accessibilityAddTraits(.isHeader)
-                Text(isActive
-                     ? "People you connect with while this event is active are added here automatically."
-                     : "Nobody was added to this event.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .multilineTextAlignment(.center)
-            if isActive {
-                VStack(spacing: 8) {
-                    if canShowQR {
-                        Button("Show QR Code", systemImage: "qrcode", action: onShowQR)
-                            .prominentButtonStyle()
-                    }
-                    Button("Who Did You Just Meet?", action: onJustMet)
-                        .buttonStyle(.bordered)
+        if isActive {
+            EmptyStateView(.events, title: "No One Yet",
+                           message: "People you connect with while this event is active are added here automatically.",
+                           style: .inline) {
+                // Each button keeps its own style so the row never fires both.
+                if canShowQR {
+                    Button("Show QR Code", systemImage: "qrcode", action: onShowQR)
+                        .subtleButtonStyle()
                 }
+                Button("Who Did You Just Meet?", systemImage: "person.badge.plus", action: onJustMet)
+                    .subtleButtonStyle()
+            }
+        } else {
+            EmptyStateView(.events, title: "No One Added", message: "Nobody was added to this event.", style: .inline) {
+                EmptyView()
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
     }
 }

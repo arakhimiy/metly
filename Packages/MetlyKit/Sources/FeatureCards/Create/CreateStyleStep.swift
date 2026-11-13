@@ -2,7 +2,7 @@ import MetlyCore
 import MetlyDesign
 import SwiftUI
 
-/// Step 3 — "Style": palette (Ocean / Ember are Pro) and Light / Dark, with a live preview.
+/// Step 2 — "Style": palette (Ocean / Ember are Pro) and Light / Dark, with a live preview.
 struct CreateStyleStep: View {
     @Binding var design: CardDesign
     let content: CardFaceContent

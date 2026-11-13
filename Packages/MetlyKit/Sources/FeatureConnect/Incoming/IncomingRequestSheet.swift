@@ -80,7 +80,7 @@ struct IncomingRequestSheet: View {
         .presentationDragIndicator(.visible)
         .interactiveDismissDisabled(isAccepting)
         .onAppear {
-            AccessibilityNotification.Announcement(String(localized: "\(request.peerName) wants to connect with you")).post()
+            AccessibilityNotification.Announcement(String(localized: "\(request.peerName) wants to connect with you", bundle: .appStrings)).post()
         }
     }
 

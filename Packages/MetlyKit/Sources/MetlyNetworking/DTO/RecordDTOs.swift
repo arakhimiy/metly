@@ -186,6 +186,8 @@ public struct CardDTO: SyncRecordDTO {
     /// Profile contact entries the card shows; nil = a card from before 3.0.0 (`design.visibleFields`).
     /// Travels inside `design` on the wire (`design.visibleContacts`).
     public var visibleContacts: [UUID]?
+    /// Title/company switches and logo style; travel inside `design` on the wire (4.0.0).
+    public var faceOptions: CardFaceOptions
     /// Server-owned: `published` once the server accepted the card (there are no server-side drafts).
     public var publishState: CardPublishState
     /// Server-owned: true for cards beyond the Free limit after a Pro downgrade.
@@ -199,7 +201,7 @@ public struct CardDTO: SyncRecordDTO {
     public var deletedAt: Date?
 
     public init(id: UUID, name: String, slug: String? = nil, url: URL? = nil, sortOrder: Int, design: CardDesign,
-                visibleContacts: [UUID]? = nil, publishState: CardPublishState = .draft, isReadOnly: Bool = false, isPaused: Bool = false,
+                visibleContacts: [UUID]? = nil, faceOptions: CardFaceOptions = CardFaceOptions(), publishState: CardPublishState = .draft, isReadOnly: Bool = false, isPaused: Bool = false,
                 stats: CardStats? = nil, createdAt: Date, updatedAt: Date, deletedAt: Date? = nil) {
         self.id = id
         self.name = name
@@ -208,6 +210,7 @@ public struct CardDTO: SyncRecordDTO {
         self.sortOrder = sortOrder
         self.design = design
         self.visibleContacts = visibleContacts
+        self.faceOptions = faceOptions
         self.publishState = publishState
         self.isReadOnly = isReadOnly
         self.isPaused = isPaused
@@ -228,7 +231,7 @@ public struct CardDTO: SyncRecordDTO {
         slug = try container.decodeIfPresent(String.self, forKey: .slug)
         url = try container.decodeIfPresent(URL.self, forKey: .url)
         sortOrder = try container.decode(Int.self, forKey: .sortOrder)
-        (design, visibleContacts) = try WireCardDesign.decode(from: container, forKey: .design)
+        (design, visibleContacts, faceOptions) = try WireCardDesign.decodeAll(from: container, forKey: .design)
         publishState = try container.decode(CardPublishState.self, forKey: .publishState)
         isReadOnly = try container.decode(Bool.self, forKey: .isReadOnly)
         isPaused = try container.decode(Bool.self, forKey: .isPaused)
@@ -245,7 +248,7 @@ public struct CardDTO: SyncRecordDTO {
         try container.encodeIfPresent(slug, forKey: .slug)
         try container.encodeIfPresent(url, forKey: .url)
         try container.encode(sortOrder, forKey: .sortOrder)
-        try WireCardDesign.encode(design, visibleContacts: visibleContacts, to: &container, forKey: .design)
+        try WireCardDesign.encode(design, visibleContacts: visibleContacts, options: faceOptions, to: &container, forKey: .design)
         try container.encode(publishState, forKey: .publishState)
         try container.encode(isReadOnly, forKey: .isReadOnly)
         try container.encode(isPaused, forKey: .isPaused)

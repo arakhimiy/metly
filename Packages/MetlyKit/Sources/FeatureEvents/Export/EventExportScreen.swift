@@ -1,5 +1,6 @@
 import MetlyCore
 import MetlyData
+import MetlyDesign
 import SwiftData
 import SwiftUI
 
@@ -23,7 +24,7 @@ struct EventExportScreen: View {
                                            description: Text("This event may have been removed."))
                 }
             }
-            .navigationTitle(matches.first?.name ?? String(localized: "Export"))
+            .navigationTitle(matches.first?.name ?? String(localized: "Export", bundle: .appStrings))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -55,8 +56,13 @@ private struct EventExportContent: View {
         Form {
             ExportSummarySection(peopleCount: rows.count)
             if rows.isEmpty {
-                ContentUnavailableView("No One to Export", systemImage: "person.2",
-                                       description: Text("People you meet at this event will appear here."))
+                EmptyStateView(.export, title: "No One to Export",
+                               message: "People you meet at this event will appear here.", style: .inline) {
+                    if let cardID = event.cardID {
+                        Button("Show QR Code", systemImage: "qrcode") { router.present(.qr(cardID: cardID)) }
+                            .subtleButtonStyle()
+                    }
+                }
             } else {
                 CSVPreviewSection(rows: rows, columns: columns)
             }

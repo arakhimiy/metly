@@ -39,10 +39,10 @@ struct CameraAccessView<Extra: View>: View {
 
     private var title: String {
         switch access {
-        case .undetermined: String(localized: "Scan Business Cards")
-        case .denied, .authorized: String(localized: "Camera Access Needed")
-        case .restricted: String(localized: "Camera Is Restricted")
-        case .noCamera: String(localized: "Camera Unavailable")
+        case .undetermined: String(localized: "Scan Business Cards", bundle: .appStrings)
+        case .denied, .authorized: String(localized: "Camera Access Needed", bundle: .appStrings)
+        case .restricted: String(localized: "Camera Is Restricted", bundle: .appStrings)
+        case .noCamera: String(localized: "Camera Unavailable", bundle: .appStrings)
         }
     }
 
@@ -56,10 +56,10 @@ struct CameraAccessView<Extra: View>: View {
 
     private var message: String {
         switch access {
-        case .undetermined: String(localized: "Allow camera access to scan QR codes and paper business cards.")
-        case .denied, .authorized: String(localized: "Allow camera access in Settings to scan cards. You can still paste a link.")
-        case .restricted: String(localized: "Camera access is restricted on this iPhone. You can still paste a link.")
-        case .noCamera: String(localized: "This device can't scan with a camera. You can still paste a link.")
+        case .undetermined: String(localized: "Allow camera access to scan QR codes and paper business cards.", bundle: .appStrings)
+        case .denied, .authorized: String(localized: "Allow camera access in Settings to scan cards. You can still paste a link.", bundle: .appStrings)
+        case .restricted: String(localized: "Camera access is restricted on this iPhone. You can still paste a link.", bundle: .appStrings)
+        case .noCamera: String(localized: "This device can’t scan with a camera. You can still paste a link.", bundle: .appStrings)
         }
     }
 

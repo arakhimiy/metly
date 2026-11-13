@@ -12,7 +12,7 @@ import SwiftData
 /// queued connect-request actions → pull deltas (`GET /v1/sync?since=`) → photo/logo and
 /// connection avatar downloads.
 /// Triggered (debounced) by local saves, app activation, connectivity returning, realtime
-/// `sync.available`, the `app.tanishly.ios.sync` background task and `requestSync()` calls.
+/// `sync.available`, the `app.nameshake.ios.sync` background task and `requestSync()` calls.
 /// Pauses while offline; failures back off exponentially (2 s … 5 min).
 ///
 /// Local deletes are held for `tombstoneGracePeriod` before their tombstone is pushed: the server's
@@ -20,7 +20,7 @@ import SwiftData
 @MainActor
 @Observable
 public final class SyncEngine: SyncServicing {
-    public static let backgroundTaskIdentifier = "app.tanishly.ios.sync"
+    public static let backgroundTaskIdentifier = "app.nameshake.ios.sync"
 
     public internal(set) var status: SyncStatus = .idle
     public private(set) var lastSyncedAt: Date?
@@ -169,7 +169,7 @@ public final class SyncEngine: SyncServicing {
         case .cancelled:
             status = .idle
         case .unauthorized:
-            status = .failed(String(localized: "Sign in again to sync your changes."))
+            status = .failed(String(localized: "Sign in again to sync your changes.", bundle: .appStrings))
         case .offline:
             status = .offline
             if network.isOnline { scheduleRetry() }   // server unreachable while the device is online

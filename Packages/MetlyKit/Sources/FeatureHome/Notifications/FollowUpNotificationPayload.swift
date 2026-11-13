@@ -22,7 +22,7 @@ nonisolated struct FollowUpNotificationPayload: Equatable, Sendable {
     let body: String
     let categoryIdentifier: String
     let fireDate: Date
-    /// `tanishly://reminder/{id}` — the same link widgets use.
+    /// `nameshake://reminder/{id}` — the same link widgets use.
     let link: URL
     /// Changes whenever anything visible, the fire date or the time zone changes (skip re-adding
     /// unchanged requests). The trigger is wall-clock time in the zone it was built in, so a request
@@ -37,9 +37,9 @@ nonisolated struct FollowUpNotificationPayload: Equatable, Sendable {
         self.followUpID = followUpID
         identifier = Self.identifier(for: followUpID)
         let name = personName.trimmingCharacters(in: .whitespacesAndNewlines)
-        title = name.isEmpty ? String(localized: "Follow up") : name
+        title = name.isEmpty ? String(localized: "Follow up", bundle: .appStrings) : name
         let task = what.trimmingCharacters(in: .whitespacesAndNewlines)
-        body = String(localized: "\(task.isEmpty ? String(localized: "Follow up") : task) · via \(channel.title)")
+        body = String(localized: "\(task.isEmpty ? String(localized: "Follow up") : task) · via \(channel.title)", bundle: .appStrings)
         categoryIdentifier = FollowUpNotificationCategory.identifier(for: hasChannelValue ? channel : nil)
         fireDate = dueAt
         link = URL(string: "\(Brand.urlScheme)://reminder/\(followUpID.uuidString)")!

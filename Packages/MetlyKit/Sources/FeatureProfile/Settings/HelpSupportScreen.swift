@@ -32,7 +32,7 @@ struct HelpSupportScreen: View {
                     SettingsRowLabel("Rate \(Brand.appName)", systemImage: "star.fill", color: .yellow)
                 }
                 Button(action: openTerms) {
-                    SettingsRowLabel("Terms of Service", systemImage: "doc.text.fill", color: .gray)
+                    SettingsRowLabel("Terms of Use", systemImage: "doc.text.fill", color: .gray)
                 }
                 Button(action: openPrivacyPolicy) {
                     SettingsRowLabel("Privacy Policy", systemImage: "hand.raised.fill", color: .blue)
@@ -69,7 +69,7 @@ struct HelpSupportScreen: View {
         openURL(url) { accepted in
             guard !accepted else { return }
             UIPasteboard.general.string = Brand.supportEmail
-            router.showToast(String(localized: "Email Address Copied"), systemImage: "doc.on.doc")
+            router.showToast(String(localized: "Email Address Copied", bundle: .appStrings), systemImage: "doc.on.doc")
         }
     }
 

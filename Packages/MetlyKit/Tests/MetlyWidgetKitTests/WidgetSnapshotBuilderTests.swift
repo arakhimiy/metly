@@ -80,9 +80,20 @@ struct WidgetSnapshotBuilderTests {
         let minimal = build(makeInput(photo: photo))
         #expect(minimal.owner?.photoThumbnail == nil)
 
-        let modern = WidgetSnapshotInput.Card(id: workCardID, name: "Work", slug: "w", design: CardDesign(template: .modern, showPhoto: true))
-        let withPhoto = build(makeInput(cards: [modern], photo: photo))
+        // Duotone (`split`) and Centered (`stack`) show the photo since templates v2.
+        let duotone = WidgetSnapshotInput.Card(id: workCardID, name: "Work", slug: "w", design: CardDesign(template: .split, showPhoto: true))
+        let withPhoto = build(makeInput(cards: [duotone], photo: photo))
         #expect(withPhoto.owner?.photoThumbnail == photo)
+    }
+
+    @Test("A card's hidden job title and company stay off its widget face")
+    func faceOptionsReachTheWidget() throws {
+        let card = WidgetSnapshotInput.Card(id: workCardID, name: "Work", slug: "w", design: CardDesign(),
+                                            faceOptions: CardFaceOptions(showJobTitle: false, showCompany: false))
+        let snapshot = build(makeInput(cards: [card]))
+        let owner = try #require(snapshot.owner)
+        let content = try #require(snapshot.cards.first).faceContent(owner: owner)
+        #expect(content.jobTitle.isEmpty && content.company.isEmpty)
     }
 
     @Test("Owner values are trimmed and the pause state carried over")

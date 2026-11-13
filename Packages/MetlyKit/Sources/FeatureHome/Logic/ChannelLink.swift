@@ -16,9 +16,9 @@ enum ChannelLink {
     /// Button label on Home rows (PLAN Q40: "Telegram", "Mail", "Call").
     static func actionTitle(_ channel: FollowUpChannel) -> String {
         switch channel {
-        case .telegram: String(localized: "Telegram")
-        case .email: String(localized: "Mail")
-        case .call: String(localized: "Call")
+        case .telegram: String(localized: "Telegram", bundle: .appStrings)
+        case .email: String(localized: "Mail", bundle: .appStrings)
+        case .call: String(localized: "Call", bundle: .appStrings)
         }
     }
 
@@ -57,9 +57,9 @@ enum ChannelLink {
     /// "Kamila has no phone number saved." for a channel without a value.
     static func missingValueNote(_ channel: FollowUpChannel, firstName: String) -> String {
         switch channel {
-        case .telegram: String(localized: "\(firstName) has no Telegram username or mobile number saved.")
-        case .email: String(localized: "\(firstName) has no email address saved.")
-        case .call: String(localized: "\(firstName) has no phone number saved.")
+        case .telegram: String(localized: "\(firstName) has no Telegram username or mobile number saved.", bundle: .appStrings)
+        case .email: String(localized: "\(firstName) has no email address saved.", bundle: .appStrings)
+        case .call: String(localized: "\(firstName) has no phone number saved.", bundle: .appStrings)
         }
     }
 }

@@ -52,13 +52,15 @@ public struct CardFaceModel: Hashable, Sendable {
     public let boldContacts: [Contact]
     public let photoData: Data?
     public let logoData: Data?
+    /// One-colour (template ink) or as uploaded.
+    public let logoStyle: CardLogoStyle
     public let showsQR: Bool
     public let qrPayload: String
 
     public init(design: CardDesign, content: CardFaceContent) {
         let name = content.fullName.trimmingCharacters(in: .whitespacesAndNewlines)
         let words = name.split(whereSeparator: \.isWhitespace).map(String.init)
-        fullName = name.isEmpty ? String(localized: "Your Name") : name
+        fullName = name.isEmpty ? String(localized: "Your Name", bundle: .appStrings) : name
         firstName = words.first ?? fullName
         lastName = words.dropFirst().joined(separator: " ")
         jobTitle = content.jobTitle.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -75,6 +77,7 @@ public struct CardFaceModel: Hashable, Sendable {
         boldContacts = Self.allocate(candidates, limit: min(2, design.density.maxContacts)).shown
         photoData = design.showPhoto ? content.photoData : nil
         logoData = design.showLogo ? content.logoData : nil
+        logoStyle = content.logoStyle
         showsQR = design.showQR
         let payload = content.qrPayload.trimmingCharacters(in: .whitespacesAndNewlines)
         qrPayload = payload.isEmpty ? "https://\(Brand.linkHost)" : payload
@@ -136,6 +139,9 @@ public struct CardFaceModel: Hashable, Sendable {
     private static func singleLine(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines).replacing("\n", with: " ")
     }
+
+    /// The big type of the Wordmark template: the company, else the first name.
+    public var wordmark: String { company.isEmpty ? firstName : company }
 
     /// Spoken description: name, role and every visible contact.
     public var accessibilityDescription: String {

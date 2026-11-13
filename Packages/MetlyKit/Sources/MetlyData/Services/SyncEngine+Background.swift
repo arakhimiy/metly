@@ -3,7 +3,7 @@ import BackgroundTasks
 import Foundation
 
 extension SyncEngine {
-    // MARK: Background task (BGAppRefreshTask `app.tanishly.ios.sync`)
+    // MARK: Background task (BGAppRefreshTask `app.nameshake.ios.sync`)
 
     /// Call once from the app target before launch finishes (e.g. `MetlyApp.init`).
     public func registerBackgroundTasks() {

@@ -170,10 +170,12 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
     public var phoneLabel: PhoneLabel
     /// The card's Public entries in the owner's order (3.0.0); nil in snapshots written before.
     public var contacts: [ContactEntry]?
+    /// Title / company switches and logo style (4.0.0); defaults in snapshots written before.
+    public var faceOptions: CardFaceOptions
 
     public init(id: UUID, name: String, design: CardDesign, url: URL?, fields: [ContactField], qrPayload: String,
                 isDefault: Bool = false, additionalPhones: [LabeledPhone] = [], phoneLabel: PhoneLabel = .mobile,
-                contacts: [ContactEntry]? = nil) {
+                contacts: [ContactEntry]? = nil, faceOptions: CardFaceOptions = CardFaceOptions()) {
         self.id = id
         self.name = name
         self.design = design
@@ -184,10 +186,11 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
         self.additionalPhones = additionalPhones
         self.phoneLabel = phoneLabel
         self.contacts = contacts
+        self.faceOptions = faceOptions
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, design, url, fields, qrPayload, isDefault, additionalPhones, phoneLabel, contacts
+        case id, name, design, url, fields, qrPayload, isDefault, additionalPhones, phoneLabel, contacts, faceOptions
     }
 
     /// Snapshots written before labelled phones (no `additionalPhones` / `phoneLabel`) still decode.
@@ -203,13 +206,14 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
         additionalPhones = try container.decodeIfPresent([LabeledPhone].self, forKey: .additionalPhones) ?? []
         phoneLabel = try container.decodeIfPresent(PhoneLabel.self, forKey: .phoneLabel) ?? .mobile
         contacts = try? container.decodeIfPresent([ContactEntry].self, forKey: .contacts)
+        faceOptions = (try? container.decodeIfPresent(CardFaceOptions.self, forKey: .faceOptions)) ?? CardFaceOptions()
     }
 
     /// "{Card} Card" (SPEC §2.5.16), without doubling a name that already ends in "Card".
     public var displayName: String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.isEmpty { return String(localized: "Card") }
-        return trimmed.lowercased().hasSuffix("card") ? trimmed : String(localized: "\(trimmed) Card")
+        if trimmed.isEmpty { return String(localized: "Card", bundle: .appStrings) }
+        return trimmed.lowercased().hasSuffix("card") ? trimmed : String(localized: "\(trimmed) Card", bundle: .appStrings)
     }
 
     /// The QR encodes contact details instead of a link (card not published yet).
@@ -221,6 +225,7 @@ nonisolated public struct WidgetCard: Codable, Hashable, Sendable, Identifiable 
                         photoData: owner.photoThumbnail, logoData: owner.logoThumbnail,
                         fields: fields, qrPayload: qrPayload, additionalPhones: additionalPhones, phoneLabel: phoneLabel,
                         contacts: contacts)
+            .applying(faceOptions)
     }
 
     /// The design the widget renders: always with its QR (the widget exists to be scanned).

@@ -10,7 +10,7 @@ struct SigningInOverlay: View {
             .glassOrMaterial(in: .rect(cornerRadius: 20))
             .accessibilityElement(children: .combine)
             .onAppear {
-                AccessibilityNotification.Announcement(String(localized: "Signing In")).post()
+                AccessibilityNotification.Announcement(String(localized: "Signing In", bundle: .appStrings)).post()
             }
     }
 }

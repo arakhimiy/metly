@@ -10,7 +10,7 @@ enum WelcomePage: Int, CaseIterable, Identifiable, Hashable {
     var title: LocalizedStringKey {
         switch self {
         case .share: "Never Forget Someone You Meet"
-        case .context: "Context Saves Itself"
+        case .context: "Context Is Saved Automatically"
         case .followUp: "Follow Up on Time"
         }
     }

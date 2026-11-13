@@ -44,8 +44,8 @@ public final class DeferredLinkService: DeferredLinkServicing {
         }
         let version = ProcessInfo.processInfo.operatingSystemVersion
         return DeviceFingerprint(model: model, osVersion: "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)",
-                                 locale: Locale.current.identifier, timeZone: TimeZone.current.identifier,
-                                 preferredLanguages: Array(Locale.preferredLanguages.prefix(3)))
+                                 locale: AppLanguage.localeIdentifier, timeZone: TimeZone.current.identifier,
+                                 preferredLanguages: Array(AppLanguage.preferredLanguages.prefix(3)))
     }
 }
 
@@ -109,17 +109,19 @@ public final class PushRegistrar: PushRegistering {
         await registerPendingToken()
     }
 
-    /// Sends the stored token if it changed since the last successful registration.
+    /// Sends the stored token if it, or the app's language, changed since the last successful
+    /// registration (the server writes pushes in the device's language).
     public func registerPendingToken() async {
-        guard isSignedIn(), let token = defaults.string(forKey: Keys.token),
-              defaults.string(forKey: Keys.registered) != token else { return }
+        guard isSignedIn(), let token = defaults.string(forKey: Keys.token) else { return }
+        let registration = "\(token)|\(AppLanguage.localeIdentifier)"
+        guard defaults.string(forKey: Keys.registered) != registration else { return }
         let request = DeviceRegistrationRequest(deviceID: state.installID, apnsToken: token, apnsEnvironment: Self.apnsEnvironment,
                                                 appVersion: APIClient.bundleVersion,
                                                 osVersion: DeferredLinkService.fingerprint().osVersion,
-                                                locale: Locale.current.identifier, timeZone: TimeZone.current.identifier)
+                                                locale: AppLanguage.localeIdentifier, timeZone: TimeZone.current.identifier)
         do {
             try await api.devices.registerDevice(request)
-            defaults.set(token, forKey: Keys.registered)
+            defaults.set(registration, forKey: Keys.registered)
         } catch {
             // Retried on the next launch / sign-in.
         }

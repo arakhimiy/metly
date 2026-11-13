@@ -74,6 +74,6 @@ private struct ConnectionDetailContent: View {
     private func contactSaveFinished(_ saved: Bool) {
         guard saved else { return }
         savedToContacts += 1
-        router.showToast(String(localized: "Added to Contacts"), systemImage: "person.crop.circle.badge.checkmark")
+        router.showToast(String(localized: "Added to Contacts", bundle: .appStrings), systemImage: "person.crop.circle.badge.checkmark")
     }
 }

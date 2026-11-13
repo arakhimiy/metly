@@ -81,27 +81,27 @@ enum FollowUpSummary {
             let time = due.formatted(date: .omitted, time: .shortened)
             // Whole sentences per day, so translations never glue fragments together.
             if calendar.isDate(due, inSameDayAs: now) {
-                return String(localized: "\(app) will remind you today at \(time). Only you see it.")
+                return String(localized: "\(app) will remind you today at \(time). Only you see it.", bundle: .appStrings)
             }
             if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(due, inSameDayAs: tomorrow) {
-                return String(localized: "\(app) will remind you tomorrow at \(time). Only you see it.")
+                return String(localized: "\(app) will remind you tomorrow at \(time). Only you see it.", bundle: .appStrings)
             }
             let day = due.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
-            return String(localized: "\(app) will remind you on \(day) at \(time). Only you see it.")
+            return String(localized: "\(app) will remind you on \(day) at \(time). Only you see it.", bundle: .appStrings)
         }
         if let existing = draft.existingReminder {
-            return String(localized: "Reminder set for \(existing.dueAt.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())) at \(existing.dueAt.formatted(date: .omitted, time: .shortened)). Pick a day to reschedule.")
+            return String(localized: "Reminder set for \(existing.dueAt.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())) at \(existing.dueAt.formatted(date: .omitted, time: .shortened)). Pick a day to reschedule.", bundle: .appStrings)
         }
-        return String(localized: "Pick a day. \(Brand.appName) reminds you with your note.")
+        return String(localized: "Pick a day. \(Brand.appName) reminds you with your note.", bundle: .appStrings)
     }
 
     /// "today", "tomorrow" or "on Tue, Sep 29".
     static func dayPhrase(for due: Date, now: Date = .now, calendar: Calendar = .current) -> String {
-        if calendar.isDate(due, inSameDayAs: now) { return String(localized: "today", comment: "Fragment: “… will remind you today”") }
+        if calendar.isDate(due, inSameDayAs: now) { return String(localized: "today", bundle: .appStrings, comment: "Fragment: “… will remind you today”") }
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(due, inSameDayAs: tomorrow) {
-            return String(localized: "tomorrow", comment: "Fragment: “… will remind you tomorrow”")
+            return String(localized: "tomorrow", bundle: .appStrings, comment: "Fragment: “… will remind you tomorrow”")
         }
         let day = due.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
-        return String(localized: "on \(day)", comment: "Fragment: “… will remind you on Tue, Sep 29”")
+        return String(localized: "on \(day)", bundle: .appStrings, comment: "Fragment: “… will remind you on Tue, Sep 29”")
     }
 }

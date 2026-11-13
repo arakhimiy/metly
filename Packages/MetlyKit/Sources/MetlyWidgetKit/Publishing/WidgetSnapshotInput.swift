@@ -52,15 +52,18 @@ nonisolated public struct WidgetSnapshotInput: Sendable {
         public var design: CardDesign
         /// Entries the card shows (`Card.visibleContactIDs`); nil = a card from before 3.0.0 (`design.visibleFields`).
         public var visibleContactIDs: [UUID]?
+        /// `Card.faceOptions`.
+        public var faceOptions: CardFaceOptions
 
         public init(id: UUID, name: String, slug: String = "", sortOrder: Int = 0, design: CardDesign = CardDesign(),
-                    visibleContactIDs: [UUID]? = nil) {
+                    visibleContactIDs: [UUID]? = nil, faceOptions: CardFaceOptions = CardFaceOptions()) {
             self.id = id
             self.name = name
             self.slug = slug
             self.sortOrder = sortOrder
             self.design = design
             self.visibleContactIDs = visibleContactIDs
+            self.faceOptions = faceOptions
         }
     }
 

@@ -43,7 +43,7 @@ struct MergedBannerSection: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Merged")
                         .font(.headline)
-                    Text("Your QR note + their web share-back")
+                    Text("Your QR note and the details they shared from your page")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

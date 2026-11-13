@@ -113,14 +113,14 @@ struct PaywallScreen: View {
                 await SubscriptionManager.refreshEntitlements(services: services, verifyWithServer: true)
                 if services.entitlements.isPro {
                     router.dismiss()
-                    router.showToast(String(localized: "Purchases Restored"), systemImage: "checkmark.circle")
+                    router.showToast(String(localized: "Purchases Restored", bundle: .appStrings), systemImage: "checkmark.circle")
                 } else {
-                    router.showToast(String(localized: "No purchases to restore"), systemImage: "info.circle")
+                    router.showToast(String(localized: "No purchases to restore", bundle: .appStrings), systemImage: "info.circle")
                 }
             } catch StoreKitError.userCancelled {
                 // The user dismissed the App Store sign-in.
             } catch {
-                show(Failure(title: String(localized: "Couldn’t Restore Purchases"), message: error.localizedDescription))
+                show(Failure(title: String(localized: "Couldn’t Restore Purchases", bundle: .appStrings), message: error.localizedDescription))
             }
         }
     }
@@ -133,12 +133,12 @@ struct PaywallScreen: View {
                 if await SubscriptionManager.processPurchase(verification, services: services) {
                     purchaseCount += 1
                     router.dismiss()
-                    router.showToast(String(localized: "Welcome to \(Brand.proName)"), systemImage: "crown.fill")
+                    router.showToast(String(localized: "Welcome to \(Brand.proName)", bundle: .appStrings), systemImage: "crown.fill")
                 } else {
-                    show(.purchase(String(localized: "The App Store couldn’t verify this purchase. Try Restore Purchases, or contact support if this keeps happening.")))
+                    show(.purchase(String(localized: "The App Store couldn’t verify this purchase. Try Restore Purchases, or contact support if this keeps happening.", bundle: .appStrings)))
                 }
             case .pending:
-                router.showToast(String(localized: "Waiting for Approval"), systemImage: "hourglass")
+                router.showToast(String(localized: "Waiting for Approval", bundle: .appStrings), systemImage: "hourglass")
             case .userCancelled:
                 break
             @unknown default:
@@ -159,7 +159,7 @@ struct PaywallScreen: View {
         var message: String
 
         static func purchase(_ message: String) -> Failure {
-            Failure(title: String(localized: "Purchase Failed"), message: message)
+            Failure(title: String(localized: "Purchase Failed", bundle: .appStrings), message: message)
         }
     }
 }

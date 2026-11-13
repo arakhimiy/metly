@@ -1,46 +1,45 @@
 import SwiftUI
 
-/// 5 · Gradient — always gradient fill; company in an outlined pill, name + title in the middle,
-/// contacts with foreground-coloured icons at the bottom; QR bottom-right 23 %.
+/// Aurora (`gradient`, Pro) — a vivid three-stop gradient with contour lines (drawn by `CardEdgeDecor`),
+/// the name as a widely spaced wordmark in the middle, a link and the title along the bottom. [BROOKS]
 struct GradientTemplate: View {
     let model: CardFaceModel
     let style: CardFaceStyle
+    let ink: Color
 
     var body: some View {
-        VStack(alignment: style.horizontalAlignment, spacing: 0) {
-            if !model.company.isEmpty {
-                CardText(text: model.company, style: style, size: 2.6)
-                    .padding(.vertical, style.u(0.9))
-                    .padding(.horizontal, style.u(2.6))
-                    .overlay {
-                        Capsule().strokeBorder(style.rule, lineWidth: style.hairline)
+        ZStack {
+            CardText(text: model.fullName, style: style, size: 6.6, weight: .medium, tracking: 0.3, color: ink,
+                     minimumScale: 0.35, uppercase: true)
+                .frame(width: style.u(model.showsQR ? 64 : 84))
+                .offset(x: model.showsQR ? -style.u(10) : 0)
+            VStack {
+                Spacer()
+                HStack(alignment: .firstTextBaseline, spacing: style.u(4)) {
+                    if let link {
+                        CardText(text: link.value, style: style, size: 2.6, tracking: 0.06, color: ink.opacity(0.92))
                     }
-            }
-            Spacer(minLength: 0)
-            VStack(alignment: style.horizontalAlignment, spacing: style.u(1)) {
-                CardText(text: model.fullName, style: style, size: 7, weight: .semibold, tracking: -0.025,
-                         minimumScale: 0.6)
-                if !model.jobTitle.isEmpty {
-                    // The title sits right above the QR plate at Minimal density: keep it clear of the plate.
-                    CardCapWidth(maxWidth: model.showsQR
-                                 ? style.bottomBlockWidth(spec: 62, qrInset: 6, qrSize: 23, showsQR: true)
-                                 : style.width) {
-                        CardText(text: model.jobTitle, style: style, size: 3.2, color: style.muted)
+                    Spacer(minLength: 0)
+                    let caption = [model.jobTitle, model.company].filter { !$0.isEmpty }.joined(separator: " · ")
+                    if !caption.isEmpty {
+                        CardText(text: caption, style: style, size: 2.6, tracking: 0.06, color: ink.opacity(0.92))
+                            .layoutPriority(-1)
                     }
                 }
             }
-            Spacer(minLength: 0)
-            CardContactList(contacts: model.contacts, style: style, spacing: 0.9,
-                            maxWidth: style.bottomBlockWidth(spec: 58, qrInset: 6, qrSize: 23, showsQR: model.showsQR),
-                            iconColor: style.fg)
+            .padding(.horizontal, style.u(8))
+            .padding(.bottom, style.u(7))
         }
-        .multilineTextAlignment(style.textAlignment)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: style.isCentered ? .top : .topLeading)
-        .padding(style.u(7))
-        .overlay(alignment: .bottomTrailing) {
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .topTrailing) {
             if model.showsQR {
-                CardQRPlate(payload: model.qrPayload, style: style, size: 23).padding(style.u(6))
+                CardQRPlate(payload: model.qrPayload, style: style, size: 14, cornerRadius: 1.4).padding(style.u(7))
             }
         }
+    }
+
+    /// The website when the card shows one, else its first contact.
+    private var link: CardFaceModel.Contact? {
+        model.contacts.first { $0.kind == .website } ?? model.contacts.first
     }
 }

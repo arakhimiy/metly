@@ -152,7 +152,7 @@ private struct EventDetailContent: View {
         EventLifecycle.resume(event)
         try? modelContext.save()
         successCount += 1
-        router.showToast(String(localized: "Event Resumed"), systemImage: "play.circle")
+        router.showToast(String(localized: "Event Resumed", bundle: .appStrings), systemImage: "play.circle")
     }
 
     private func endEvent() {

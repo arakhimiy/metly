@@ -22,11 +22,11 @@ struct QuickActionsSection: View {
             layout {
                 messageAction(actions)
                 callAction(actions)
-                QuickActionButton(title: String(localized: "Mail"), systemImage: "envelope.fill",
+                QuickActionButton(title: String(localized: "Mail", bundle: .appStrings), systemImage: "envelope.fill",
                                   isEnabled: ContactLinks.mail(person.email) != nil,
-                                  accessibilityLabel: String(localized: "Email \(firstName)"), action: mail)
-                QuickActionButton(title: String(localized: "Save"), systemImage: "person.crop.circle.badge.plus", isEnabled: true,
-                                  accessibilityLabel: String(localized: "Save \(firstName) to Contacts"), action: onSave)
+                                  accessibilityLabel: String(localized: "Email \(firstName)", bundle: .appStrings), action: mail)
+                QuickActionButton(title: String(localized: "Save", bundle: .appStrings), systemImage: "person.crop.circle.badge.plus", isEnabled: true,
+                                  accessibilityLabel: String(localized: "Save \(firstName) to Contacts", bundle: .appStrings), action: onSave)
             }
         }
         .listRowBackground(Color.clear)
@@ -39,10 +39,10 @@ struct QuickActionsSection: View {
 
     @ViewBuilder
     private func messageAction(_ actions: PersonReach) -> some View {
-        let title = String(localized: "Message")
+        let title = String(localized: "Message", bundle: .appStrings)
         if actions.choices.count > 1 {
             QuickActionMenu(title: title, systemImage: "message.fill",
-                            accessibilityLabel: String(localized: "Message \(firstName)")) {
+                            accessibilityLabel: String(localized: "Message \(firstName)", bundle: .appStrings)) {
                 ForEach(Array(actions.choices.enumerated()), id: \.offset) { _, choice in
                     messageChoice(choice)
                 }
@@ -93,23 +93,23 @@ struct QuickActionsSection: View {
         switch message {
         case .telegram(let target):
             QuickActionButton(title: title, systemImage: "message.fill", isEnabled: true,
-                              accessibilityLabel: String(localized: "Message \(firstName) on Telegram"),
-                              accessibilityHint: target.isByPhone ? String(localized: "Opens Telegram by phone number") : nil) {
+                              accessibilityLabel: String(localized: "Message \(firstName) on Telegram", bundle: .appStrings),
+                              accessibilityHint: target.isByPhone ? String(localized: "Opens Telegram by phone number", bundle: .appStrings) : nil) {
                 openTelegram(target)
             }
         case .whatsApp(let url, _):
             QuickActionButton(title: title, systemImage: "message.fill", isEnabled: true,
-                              accessibilityLabel: String(localized: "Message \(firstName) on WhatsApp")) {
+                              accessibilityLabel: String(localized: "Message \(firstName) on WhatsApp", bundle: .appStrings)) {
                 openURL(url)
             }
         case .sms(let url):
             QuickActionButton(title: title, systemImage: "message.fill", isEnabled: true,
-                              accessibilityLabel: String(localized: "Message \(firstName)")) {
+                              accessibilityLabel: String(localized: "Message \(firstName)", bundle: .appStrings)) {
                 openURL(url)
             }
         case .none:
             QuickActionButton(title: title, systemImage: "message.fill", isEnabled: false,
-                              accessibilityLabel: String(localized: "Message \(firstName)")) {}
+                              accessibilityLabel: String(localized: "Message \(firstName)", bundle: .appStrings)) {}
         }
     }
 
@@ -126,8 +126,8 @@ struct QuickActionsSection: View {
 
     @ViewBuilder
     private func callAction(_ actions: PersonReach) -> some View {
-        let title = String(localized: "Call")
-        let label = String(localized: "Call \(firstName)")
+        let title = String(localized: "Call", bundle: .appStrings)
+        let label = String(localized: "Call \(firstName)", bundle: .appStrings)
         if actions.callablePhones.count > 1 {
             QuickActionMenu(title: title, systemImage: "phone.fill", accessibilityLabel: label) {
                 ForEach(actions.callablePhones) { phone in

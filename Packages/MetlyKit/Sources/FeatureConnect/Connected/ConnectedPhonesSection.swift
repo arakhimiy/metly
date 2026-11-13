@@ -46,7 +46,7 @@ struct ConnectedPhonesSection: View {
                         Button("Copy", systemImage: "doc.on.doc") { copy(phone) }
                     }
                     .accessibilityLabel(Text("\(phone.label.title), \(phone.value)"))
-                    .accessibilityHint("Calls this number. Touch and hold to copy")
+                    .accessibilityHint("Calls this number. Touch and hold to copy.")
                 }
             } header: {
                 Text("Phone Numbers")
@@ -58,6 +58,6 @@ struct ConnectedPhonesSection: View {
 
     private func copy(_ phone: LabeledPhone) {
         UIPasteboard.general.string = phone.value
-        router.showToast(String(localized: "\(ContactFieldKind.phone.title) Copied"), systemImage: "doc.on.doc")
+        router.showToast(String(localized: "\(ContactFieldKind.phone.title) Copied", bundle: .appStrings), systemImage: "doc.on.doc")
     }
 }

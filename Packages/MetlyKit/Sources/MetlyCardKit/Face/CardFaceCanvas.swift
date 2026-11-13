@@ -22,8 +22,11 @@ struct CardFaceCanvas: View {
 
         ZStack(alignment: .topLeading) {
             Rectangle().fill(style.colors.fill(gradient: style.gradientFill, size: size))
-            CardEdgeDecor(template: design.template, style: style, bleed: bleed)
-            CardTemplateContent(template: design.template, model: model, style: style)
+            CardEdgeDecor(design: design, style: style, bleed: bleed)
+            if design.template.hasPaperGrain, width >= CardPaperGrain.minimumWidth {
+                CardPaperGrain(isDark: style.colors.background.isDark, dotSize: style.hairline * 1.2)
+            }
+            CardTemplateContent(design: design, model: model, style: style)
                 .frame(width: width, height: style.height)
                 .padding(bleed)
         }
@@ -37,40 +40,46 @@ struct CardFaceCanvas: View {
 
 /// Template switch.
 struct CardTemplateContent: View {
-    let template: CardTemplate
+    let design: CardDesign
     let model: CardFaceModel
     let style: CardFaceStyle
 
     var body: some View {
-        switch template {
+        switch design.template {
         case .minimal: MinimalTemplate(model: model, style: style)
         case .professional: ProfessionalTemplate(model: model, style: style)
-        case .modern: ModernTemplate(model: model, style: style)
+        case .modern: ModernTemplate(model: model, style: style, foil: .holographic(for: design.palette))
         case .bold: BoldTemplate(model: model, style: style)
-        case .gradient: GradientTemplate(model: model, style: style)
+        case .gradient: GradientTemplate(model: model, style: style, ink: CardAurora.foreground(design))
         case .split: SplitTemplate(model: model, style: style)
         case .terminal: TerminalTemplate(model: model, style: style)
         case .stack: StackTemplate(model: model, style: style)
-        case .editorial: EditorialTemplate(model: model, style: style)
+        case .editorial: EditorialTemplate(model: model, style: style, foil: .metal(for: design.palette, appearance: design.appearance))
         }
     }
 }
 
-/// Accent areas that touch the card edge (Modern stripe, Split panel); they run into the bleed.
+/// Fills and panels that touch the card edge (Aurora gradient, Duotone panel); they run into the bleed.
 struct CardEdgeDecor: View {
-    let template: CardTemplate
+    let design: CardDesign
     let style: CardFaceStyle
     let bleed: CGFloat
 
     var body: some View {
         let fullHeight = style.height + 2 * bleed
-        switch template {
-        case .modern:
-            Rectangle().fill(style.accent).frame(width: bleed + style.u(2.2), height: fullHeight)
+        switch design.template {
+        case .gradient:
+            CardAuroraFill(design: design, width: style.width, lineWidth: style.hairline)
+                .frame(width: style.width + 2 * bleed, height: fullHeight)
         case .split:
             Rectangle().fill(style.accent).frame(width: bleed + style.u(36), height: fullHeight)
         default:
             EmptyView()
         }
     }
+}
+
+extension CardTemplate {
+    /// Templates printed on a textured stock.
+    var hasPaperGrain: Bool { [.minimal, .modern, .editorial].contains(self) }
 }

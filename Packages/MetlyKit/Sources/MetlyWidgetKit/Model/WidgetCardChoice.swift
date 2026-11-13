@@ -21,8 +21,8 @@ nonisolated public struct WidgetCardChoice: Hashable, Sendable, Identifiable {
     public var cardID: UUID? { UUID(uuidString: id) }
 
     public static var automatic: WidgetCardChoice {
-        WidgetCardChoice(id: automaticID, title: String(localized: "Card to Share"),
-                         subtitle: String(localized: "Your default card, or your event's card"))
+        WidgetCardChoice(id: automaticID, title: String(localized: "Card to Share", bundle: .appStrings),
+                         subtitle: String(localized: "Your default card, or your event’s card", bundle: .appStrings))
     }
 
     /// "Card to Share" first, then every card.
@@ -45,11 +45,11 @@ nonisolated public struct WidgetCardChoice: Hashable, Sendable, Identifiable {
     static func choice(for card: WidgetCard) -> WidgetCardChoice {
         let subtitle: String
         if card.isDefault {
-            subtitle = String(localized: "Default card")
+            subtitle = String(localized: "Default card", bundle: .appStrings)
         } else if let url = card.url, let host = url.host() {
             subtitle = host + url.path()
         } else {
-            subtitle = String(localized: "Not published yet")
+            subtitle = String(localized: "Not published yet", bundle: .appStrings)
         }
         return WidgetCardChoice(id: card.id.uuidString, title: card.displayName, subtitle: subtitle)
     }

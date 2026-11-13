@@ -12,9 +12,9 @@ nonisolated public struct WidgetDueLabel: Hashable, Sendable {
         let start = calendar.startOfDay(for: now)
         let offset = calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: due)).day ?? 0
         switch offset {
-        case 0: text = String(localized: "Today")
-        case 1: text = String(localized: "Tomorrow")
-        case -1: text = String(localized: "Yesterday")
+        case 0: text = String(localized: "Today", bundle: .appStrings)
+        case 1: text = String(localized: "Tomorrow", bundle: .appStrings)
+        case -1: text = String(localized: "Yesterday", bundle: .appStrings)
         default:
             var style = Date.FormatStyle(date: .omitted, time: .omitted, locale: locale, calendar: calendar)
             style.timeZone = calendar.timeZone
@@ -25,7 +25,7 @@ nonisolated public struct WidgetDueLabel: Hashable, Sendable {
 
     /// Spoken after the label ("Yesterday, overdue").
     public var accessibilityNote: String? {
-        emphasis == .overdue ? String(localized: "Overdue") : nil
+        emphasis == .overdue ? String(localized: "Overdue", bundle: .appStrings) : nil
     }
 }
 

@@ -136,14 +136,14 @@ struct MockMetlyServerTests {
             return "eyJhbGciOiJFUzI1NiJ9.\(base64URL).c2ln"
         }
         let server = server()
-        let yearly = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("app.tanishly.ios.pro.yearly",
+        let yearly = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("app.nameshake.ios.pro.yearly",
                                                                                          expires: .now.addingTimeInterval(365 * 86_400))))
         #expect(yearly.plan == .pro)
 
-        let stale = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("app.tanishly.ios.pro.monthly",
+        let stale = try await server.verify(VerifyTransactionRequest(signedTransaction: jws("app.nameshake.ios.pro.monthly",
                                                                                         expires: .now.addingTimeInterval(-86_400))))
         #expect(stale.plan == .pro)
-        #expect(try await server.fetchEntitlement().productID == "app.tanishly.ios.pro.yearly")
+        #expect(try await server.fetchEntitlement().productID == "app.nameshake.ios.pro.yearly")
         #expect(await server.plan == .pro)
     }
 

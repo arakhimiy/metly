@@ -41,17 +41,17 @@ struct RemindersOffSection: View {
 
     private var title: String {
         switch notice {
-        case .systemDenied: String(localized: "Notifications Are Off")
-        case .turnedOff: String(localized: "Follow-up Reminders Are Off")
+        case .systemDenied: String(localized: "Notifications Are Off", bundle: .appStrings)
+        case .turnedOff: String(localized: "Follow-up Reminders Are Off", bundle: .appStrings)
         }
     }
 
     private var message: String {
         switch notice {
         case .systemDenied:
-            String(localized: "Turn on notifications for \(Brand.appName) in iOS Settings so you’re reminded on time.")
+            String(localized: "Turn on notifications for \(Brand.appName) in iOS Settings so you’re reminded on time.", bundle: .appStrings)
         case .turnedOff:
-            String(localized: "You won’t be notified when a follow-up is due.")
+            String(localized: "You won’t be notified when a follow-up is due.", bundle: .appStrings)
         }
     }
 

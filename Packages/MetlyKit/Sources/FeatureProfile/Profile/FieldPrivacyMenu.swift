@@ -11,7 +11,7 @@ struct FieldPrivacyMenu: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(kind: ContactFieldKind, privacy: Binding<FieldPrivacy>) {
-        self.init(title: String(localized: "Who Can See Your \(kind.title)"), fieldName: kind.title, privacy: privacy)
+        self.init(title: String(localized: "Who Can See Your \(kind.title)", bundle: .appStrings), fieldName: kind.title, privacy: privacy)
     }
 
     init(title: String, fieldName: String, privacy: Binding<FieldPrivacy>) {

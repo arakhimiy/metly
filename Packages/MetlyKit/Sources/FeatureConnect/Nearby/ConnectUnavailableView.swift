@@ -70,11 +70,11 @@ struct ConnectUnavailableView: View {
 
     private var title: String {
         switch reason {
-        case .hiddenFromNearby: String(localized: "You’re Hidden from Nearby")
-        case .localNetworkDenied: String(localized: "Local Network Access Needed")
-        case .offline: String(localized: "You’re Offline")
-        case .failed: String(localized: "Couldn’t Start Connect")
-        case .tapUnsupported: String(localized: "Tap Phones Isn’t Available")
+        case .hiddenFromNearby: String(localized: "You’re Hidden from Nearby", bundle: .appStrings)
+        case .localNetworkDenied: String(localized: "Local Network Access Needed", bundle: .appStrings)
+        case .offline: String(localized: "You’re Offline", bundle: .appStrings)
+        case .failed: String(localized: "Couldn’t Start Connect", bundle: .appStrings)
+        case .tapUnsupported: String(localized: "Tap Phones Isn’t Available", bundle: .appStrings)
         case .noOneNearby: ConnectCopy.emptyTitle
         }
     }
@@ -93,15 +93,15 @@ struct ConnectUnavailableView: View {
     private var message: String {
         switch reason {
         case .hiddenFromNearby:
-            String(localized: "“Show in Nearby” is off, so people around you can’t find you. Turn it on to swap cards, or show your QR code instead.")
+            String(localized: "“Show in Nearby” is off, so people around you can’t find you. Turn it on to swap cards, or show your QR code instead.", bundle: .appStrings)
         case .localNetworkDenied:
-            String(localized: "Allow Local Network access in Settings › \(Brand.appName) to find people nearby. You can still show your QR code.")
+            String(localized: "Allow Local Network access in Settings › \(Brand.appName) to find people nearby. You can still show your QR code.", bundle: .appStrings)
         case .offline:
-            String(localized: "Connect needs the internet to swap cards. Your QR code still works offline.")
+            String(localized: "Connect needs the internet to swap cards. Your QR code still works offline.", bundle: .appStrings)
         case .failed(let message):
             message
         case .tapUnsupported:
-            String(localized: "This iPhone can’t tell when another phone is held close. Use Nearby to find the person instead.")
+            String(localized: "This iPhone can’t tell when another phone is held close. Use Nearby to find the person instead.", bundle: .appStrings)
         case .noOneNearby:
             ConnectCopy.emptyMessage
         }

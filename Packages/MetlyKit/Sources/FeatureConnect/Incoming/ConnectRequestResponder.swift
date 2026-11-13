@@ -13,13 +13,13 @@ public enum ConnectRequestResponder {
         let blocked = ConnectModel.blockedUserIDs(in: context)
         guard let request = context.record(ConnectRequest.self, id: requestID),
               IncomingRequestBannerPolicy.isAnswerable(request, blockedUserIDs: blocked, now: .now) else {
-            if accept { router.showToast(String(localized: "This request has expired"), systemImage: "clock.badge.xmark") }
+            if accept { router.showToast(String(localized: "This request has expired", bundle: .appStrings), systemImage: "clock.badge.xmark") }
             return
         }
         do {
             if accept {
                 guard let cardID = request.myCardID ?? context.cardToShare()?.id else {
-                    router.showToast(String(localized: "Create a card first, then accept."), systemImage: "rectangle.stack.badge.plus")
+                    router.showToast(String(localized: "Create a card first, then accept.", bundle: .appStrings), systemImage: "rectangle.stack.badge.plus")
                     return
                 }
                 let connection = try await client.accept(request, sharing: cardID)

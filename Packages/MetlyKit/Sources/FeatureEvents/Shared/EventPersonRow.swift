@@ -19,7 +19,7 @@ struct EventPersonRow: View {
                     Text(person.fullName)
                         .font(.body.weight(.semibold))
                         .lineLimit(2)
-                    Text(hasNote ? person.note.trimmed : String(localized: "No note yet"))
+                    Text(hasNote ? person.note.trimmed : String(localized: "No note yet", bundle: .appStrings))
                         .font(.subheadline)
                         .foregroundStyle(hasNote ? .secondary : .tertiary)
                         .lineLimit(2)

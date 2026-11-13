@@ -52,11 +52,15 @@ struct CardContactValue: View {
     let style: CardFaceStyle
     /// Text size, % of card width.
     let fontSize: CGFloat
+    var weight: Font.Weight = .regular
+    /// Overrides the card font (Editorial's serif colophon).
+    var font: Font?
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: style.u(1)) {
             Text(verbatim: contact.value)
-                .font(style.font(fontSize))
+                .font(font ?? style.font(fontSize, weight: weight))
+                .monospacedDigit()
                 .lineLimit(1)
                 .truncationMode(.tail)
             if let label = contact.phoneLabel {

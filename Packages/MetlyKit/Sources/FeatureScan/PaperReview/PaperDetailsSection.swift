@@ -69,7 +69,7 @@ struct PaperFieldRow: View {
                     .submitLabel(field == .linkedin ? .done : .next)
                     .focused(focus, equals: .field(field))
                     .onSubmit(onSubmit)
-                    .accessibilityHint(hint == .guessed ? String(localized: "Guessed from the card’s layout. Check it.") : "")
+                    .accessibilityHint(hint == .guessed ? String(localized: "Guessed from the card’s layout. Check it.", bundle: .appStrings) : "")
                 if let hint {
                     HintBadge(hint: hint)
                 }

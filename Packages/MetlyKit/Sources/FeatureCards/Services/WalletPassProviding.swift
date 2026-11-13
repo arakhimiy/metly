@@ -32,9 +32,9 @@ public enum WalletPassError: LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .serverRequired: String(localized: "Wallet passes need the server. Try again when you’re online.")
-        case .cannotAddPasses: String(localized: "This device can’t add passes to Apple Wallet.")
-        case .invalidPass: String(localized: "The pass couldn’t be read. Try again in a moment.")
+        case .serverRequired: String(localized: "Wallet passes need the server. Try again when you’re online.", bundle: .appStrings)
+        case .cannotAddPasses: String(localized: "This device can’t add passes to Apple Wallet.", bundle: .appStrings)
+        case .invalidPass: String(localized: "The pass couldn’t be read. Try again in a moment.", bundle: .appStrings)
         }
     }
 }

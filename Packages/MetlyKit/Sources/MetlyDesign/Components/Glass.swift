@@ -25,6 +25,12 @@ public extension View {
         }
     }
 
+    /// Subtle button: an accent-tinted fill, no glass — for actions inside a card or list row,
+    /// where a prominent or glass button would outweigh the row.
+    func subtleButtonStyle() -> some View {
+        self.buttonStyle(.bordered).buttonBorderShape(.capsule)
+    }
+
     /// Secondary button style (glass on iOS 26, bordered before).
     @ViewBuilder
     func secondaryButtonStyle() -> some View {

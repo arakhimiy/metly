@@ -5,7 +5,7 @@ import SwiftData
 public enum MetlyModelContainer {
     /// On-disk store in the App Group container (shared with widgets, read-only there).
     public static func make(inMemory: Bool = false) throws -> ModelContainer {
-        let schema = Schema(versionedSchema: MetlySchemaV3.self)
+        let schema = Schema(versionedSchema: MetlySchemaV4.self)
         let configuration: ModelConfiguration
         if inMemory {
             configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)

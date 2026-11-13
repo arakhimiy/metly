@@ -58,7 +58,7 @@ public struct CardWidgetView: View {
                 Spacer(minLength: 4)
                 Text(display.card.displayName)
                     .font(.caption.weight(.semibold))
-                Text(display.isPaused ? String(localized: "Link Paused") : display.newConnectionsText)
+                Text(display.isPaused ? String(localized: "Link Paused", bundle: .appStrings) : display.newConnectionsText)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -81,7 +81,7 @@ struct CardWidgetDetails: View {
             Text(display.card.displayName)
                 .font(.headline)
                 .lineLimit(2)
-            Text(display.isPaused ? String(localized: "Link paused. Your QR shows an inactive page.") : display.newConnectionsText)
+            Text(display.isPaused ? String(localized: "Link paused. Your QR shows an inactive page.", bundle: .appStrings) : display.newConnectionsText)
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .lineLimit(3)

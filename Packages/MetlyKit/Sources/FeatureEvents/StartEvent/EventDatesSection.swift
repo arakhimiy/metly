@@ -23,11 +23,11 @@ struct EventDatesSection: View {
 
     private var footer: String {
         let issues = draft.issues(mode: mode)
-        if issues.contains(.endBeforeStart) { return String(localized: "The event can’t end before it starts.") }
-        if issues.contains(.startInPast) { return String(localized: "A new event can’t start in the past.") }
-        if issues.contains(.endInPast) { return String(localized: "The event ends by itself after the last day, so pick today or later.") }
+        if issues.contains(.endBeforeStart) { return String(localized: "The event can’t end before it starts.", bundle: .appStrings) }
+        if issues.contains(.startInPast) { return String(localized: "A new event can’t start in the past.", bundle: .appStrings) }
+        if issues.contains(.endInPast) { return String(localized: "The event ends by itself after the last day, so pick today or later.", bundle: .appStrings) }
         let range = EventCopy.dateRange(start: draft.startDate, end: draft.endDate)
         let days = draft.dayCount()
-        return days == 1 ? String(localized: "\(range) · 1 day") : String(localized: "\(range) · \(days) days")
+        return days == 1 ? String(localized: "\(range) · 1 day", bundle: .appStrings) : String(localized: "\(range) · \(days) days", bundle: .appStrings)
     }
 }

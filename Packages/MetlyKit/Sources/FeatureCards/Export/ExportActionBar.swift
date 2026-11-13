@@ -70,12 +70,12 @@ struct ExportActionBar: View {
 
     private var primaryTitle: String {
         switch (tab, isSaved) {
-        case (.pdf, false): String(localized: "Save to Files")
-        case (.pdf, true): String(localized: "Saved to Files")
-        case (.lockScreen, false): String(localized: "Save Wallpaper")
-        case (.lockScreen, true): String(localized: "Wallpaper Saved")
-        case (_, false): String(localized: "Save to Photos")
-        case (_, true): String(localized: "Saved to Photos")
+        case (.pdf, false): String(localized: "Save to Files", bundle: .appStrings)
+        case (.pdf, true): String(localized: "Saved to Files", bundle: .appStrings)
+        case (.lockScreen, false): String(localized: "Save Wallpaper", bundle: .appStrings)
+        case (.lockScreen, true): String(localized: "Wallpaper Saved", bundle: .appStrings)
+        case (_, false): String(localized: "Save to Photos", bundle: .appStrings)
+        case (_, true): String(localized: "Saved to Photos", bundle: .appStrings)
         }
     }
 

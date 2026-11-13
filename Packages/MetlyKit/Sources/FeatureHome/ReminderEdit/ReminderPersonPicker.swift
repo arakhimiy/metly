@@ -11,6 +11,7 @@ struct ReminderPersonPicker: View {
     @Query(Connection.live) private var people: [Connection]
     @State private var query = ""
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppRouter.self) private var router
 
     var body: some View {
         let results = people.filter { PersonText.matches($0, query: query) }
@@ -35,8 +36,11 @@ struct ReminderPersonPicker: View {
         }
         .overlay {
             if people.isEmpty {
-                ContentUnavailableView("No Connections Yet", systemImage: "person.2",
-                                       description: Text("Scan someone's card or open Connect. Your notes about them stay private."))
+                EmptyStateView(.connections, title: "No Connections Yet",
+                               message: "Scan someone’s card or open Connect. Your notes about them stay private.") {
+                    Button("Scan a Card", systemImage: "qrcode.viewfinder") { router.select(.scan) }
+                        .prominentButtonStyle()
+                }
             } else if results.isEmpty {
                 ContentUnavailableView.search(text: query)
             }

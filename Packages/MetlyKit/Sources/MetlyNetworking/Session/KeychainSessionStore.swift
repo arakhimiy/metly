@@ -18,7 +18,7 @@ public final class KeychainSessionStore: SessionStore {
     /// Avoids a Keychain round trip on every request. `.some(nil)` = known empty.
     private let cache = Mutex<AuthSession??>(nil)
 
-    public init(service: String = "app.tanishly.ios.session", account: String = "default", accessGroup: String? = nil) {
+    public init(service: String = "app.nameshake.ios.session", account: String = "default", accessGroup: String? = nil) {
         self.service = service
         self.account = account
         self.accessGroup = accessGroup

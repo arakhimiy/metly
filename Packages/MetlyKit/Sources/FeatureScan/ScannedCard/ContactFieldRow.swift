@@ -91,13 +91,13 @@ struct ContactFieldRow: View {
 
     private var hint: String {
         switch field.kind {
-        case .phone: String(localized: "Calls this number. Touch and hold to copy.")
-        case .email: String(localized: "Writes an email. Touch and hold to copy.")
-        case .telegram: String(localized: "Opens Telegram. Touch and hold to copy.")
-        case .whatsapp: String(localized: "Opens WhatsApp. Touch and hold to copy.")
-        case .instagram: String(localized: "Opens Instagram. Touch and hold to copy.")
-        case .address: String(localized: "Opens Maps. Touch and hold to copy.")
-        case .website, .linkedin: String(localized: "Opens the page. Touch and hold to copy.")
+        case .phone: String(localized: "Calls this number. Touch and hold to copy.", bundle: .appStrings)
+        case .email: String(localized: "Writes an email. Touch and hold to copy.", bundle: .appStrings)
+        case .telegram: String(localized: "Opens Telegram. Touch and hold to copy.", bundle: .appStrings)
+        case .whatsapp: String(localized: "Opens WhatsApp. Touch and hold to copy.", bundle: .appStrings)
+        case .instagram: String(localized: "Opens Instagram. Touch and hold to copy.", bundle: .appStrings)
+        case .address: String(localized: "Opens Maps. Touch and hold to copy.", bundle: .appStrings)
+        case .website, .linkedin: String(localized: "Opens the page. Touch and hold to copy.", bundle: .appStrings)
         }
     }
 
@@ -114,6 +114,6 @@ struct ContactFieldRow: View {
 
     private func copy() {
         UIPasteboard.general.string = field.value
-        router.showToast(String(localized: "\(field.kind.title) Copied"), systemImage: "doc.on.doc")
+        router.showToast(String(localized: "\(field.kind.title) Copied", bundle: .appStrings), systemImage: "doc.on.doc")
     }
 }

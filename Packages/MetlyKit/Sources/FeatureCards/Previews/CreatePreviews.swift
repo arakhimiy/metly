@@ -5,7 +5,7 @@ import SwiftUI
 
 // CARD_CREATE states (SPEC Appendix A #18, #20): method, gallery, style, details, done, limit, setup.
 
-#Preview("Create · method (Pro)") {
+#Preview("Create · templates (Pro)") {
     CardCreateView(origin: .home)
         .metlyPreview(.full, plan: .pro)
 }
@@ -22,23 +22,23 @@ import SwiftUI
         .metlyPreview(.full, plan: .free)
 }
 
-#Preview("Create · template gallery (Free, Editorial locked)") {
-    CardCreateScreen(origin: .home, initialPath: [.gallery])
+#Preview("Create · template gallery (Free, Pro locked)") {
+    CardCreateScreen(origin: .home, initialPath: [])
         .metlyPreview(.empty, plan: .free)
 }
 
 #Preview("Create · template gallery (Pro)") {
-    CardCreateScreen(origin: .home, initialPath: [.gallery])
+    CardCreateScreen(origin: .home, initialPath: [])
         .metlyPreview(.empty, plan: .pro)
 }
 
 #Preview("Create · style (Free, Ocean/Ember locked)") {
-    CardCreateScreen(origin: .home, initialPath: [.gallery, .style])
+    CardCreateScreen(origin: .home, initialPath: [.style])
         .metlyPreview(.empty, plan: .free)
 }
 
 #Preview("Create · details") {
-    CardCreateScreen(origin: .home, initialPath: [.gallery, .style, .details])
+    CardCreateScreen(origin: .home, initialPath: [.style, .details])
         .metlyPreview(.empty, plan: .free)
 }
 

@@ -37,9 +37,9 @@ struct DeleteAccountScreen: View {
             }
 
             Section {
-                DataExportButton(title: String(localized: "Download My Data First"))
+                DataExportButton(title: String(localized: "Download My Data First", bundle: .appStrings))
             } footer: {
-                Text("You’ll get an email with a copy of everything.")
+                Text("You’ll get an email with a copy of your data.")
             }
 
             if services.entitlements.isPro {
@@ -89,7 +89,7 @@ struct DeleteAccountScreen: View {
 
     private func deleteAccount() {
         guard services.network.isOnline else {
-            show(String(localized: "You’re offline. Connect to the internet and try again."))
+            show(String(localized: "You’re offline. Connect to the internet and try again.", bundle: .appStrings))
             return
         }
         Task {
@@ -101,7 +101,7 @@ struct DeleteAccountScreen: View {
                 try? MetlyModelContainer.wipe(modelContext)
                 services.preferences.reset()
                 router.signedOut()
-                router.showToast(String(localized: "Account Deleted"), systemImage: "checkmark.circle")
+                router.showToast(String(localized: "Account Deleted", bundle: .appStrings), systemImage: "checkmark.circle")
             } catch {
                 show(error.localizedDescription)
             }

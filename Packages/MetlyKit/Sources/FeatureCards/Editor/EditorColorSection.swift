@@ -31,7 +31,7 @@ struct EditorColorSection: View {
                 .disabled(design.template == .gradient)
         } footer: {
             if design.template == .gradient {
-                Text("The Gradient template is always gradient.")
+                Text("Aurora has its own gradient.")
             }
         }
     }

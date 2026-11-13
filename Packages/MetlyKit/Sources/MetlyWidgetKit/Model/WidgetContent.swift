@@ -55,9 +55,9 @@ nonisolated public struct CardWidgetDisplay: Hashable, Sendable {
     /// "3 new connections this week".
     public var newConnectionsText: String {
         switch newConnectionsThisWeek {
-        case 0: String(localized: "No new connections this week")
-        case 1: String(localized: "1 new connection this week")
-        default: String(localized: "\(newConnectionsThisWeek) new connections this week")
+        case 0: String(localized: "No new connections this week", bundle: .appStrings)
+        case 1: String(localized: "1 new connection this week", bundle: .appStrings)
+        default: String(localized: "\(newConnectionsThisWeek) new connections this week", bundle: .appStrings)
         }
     }
 }

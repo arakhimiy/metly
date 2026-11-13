@@ -115,8 +115,8 @@ struct FollowUpRowContent: View {
     private func accessibilityValue(due: String, emphasis: DueEmphasis) -> String {
         var parts = [due]
         if let note = emphasis.accessibilityNote { parts.append(note) }
-        parts.append(String(localized: "via \(followUp.channel.title)"))
-        if followUp.isDone { parts.append(String(localized: "Done")) }
+        parts.append(String(localized: "via \(followUp.channel.title)", bundle: .appStrings))
+        if followUp.isDone { parts.append(String(localized: "Done", bundle: .appStrings)) }
         return parts.joined(separator: ", ")
     }
 }

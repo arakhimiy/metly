@@ -32,7 +32,9 @@ struct CardDesignRulesTests {
     }
 
     @Test func gradientTemplateForcesGradientBackground() {
-        guard case .updated(let design) = CardDesignRules.selecting(.gradient, in: CardDesign(background: .solid), allowsPro: false) else {
+        // Aurora (`gradient`) is Pro since templates v2.
+        #expect(CardDesignRules.selecting(.gradient, in: CardDesign(), allowsPro: false) != .updated(CardDesign(template: .gradient)))
+        guard case .updated(let design) = CardDesignRules.selecting(.gradient, in: CardDesign(background: .solid), allowsPro: true) else {
             Issue.record("expected an update")
             return
         }

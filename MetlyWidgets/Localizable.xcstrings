@@ -259,18 +259,18 @@
         }
       }
     },
-    "Add one right after you connect — it takes 2 seconds.": {
+    "Add one right after you connect.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Добавьте его сразу после обмена визитками — это займёт 2 секунды."
+            "value": "Добавьте его сразу после обмена визитками."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitka almashgandan so‘ng darhol qo‘shing — bor-yo‘g‘i 2 soniya."
+            "value": "Vizitka almashgan zahoti qo‘shing."
           }
         }
       }
@@ -318,7 +318,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Havolangiz bor har kim"
+            "value": "Havolangizni olgan har kim"
           }
         }
       }
@@ -513,7 +513,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kontakt kartochkasi"
+            "value": "Kontakt kartasi"
           }
         }
       }
@@ -529,7 +529,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ kontakt kartochkasi"
+            "value": "%@ kontakt kartasi"
           }
         }
       }
@@ -604,7 +604,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Тёмная"
+            "value": "Тёмное"
           }
         },
         "uz": {
@@ -692,7 +692,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Telegram username kiriting, masalan @username."
+            "value": "Telegram foydalanuvchi nomini kiriting, masalan @username."
           }
         }
       }
@@ -740,7 +740,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Instagram username kiriting, masalan @username."
+            "value": "Instagram foydalanuvchi nomini kiriting, masalan @username."
           }
         }
       }
@@ -750,7 +750,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Введите адрес эл. почты, например name@example.com."
+            "value": "Введите адрес email, например name@example.com."
           }
         },
         "uz": {
@@ -1055,7 +1055,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Средний виджет. Нажмите на напоминание, чтобы открыть его в %@, или на кружок, чтобы отметить его выполненным."
+            "value": "Средний виджет. Коснитесь напоминания, чтобы открыть его в %@, или кружка, чтобы отметить его выполненным."
           }
         },
         "uz": {
@@ -1082,7 +1082,7 @@
         }
       }
     },
-    "Medium · Your card and this week's new connections.": {
+    "Medium · Your card and this week’s new connections.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -1104,7 +1104,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Минимум"
+            "value": "Минимальная"
           }
         },
         "uz": {
@@ -1244,7 +1244,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bugun hech narsa yo‘q."
+            "value": "Bugun eslatma yo‘q."
           }
         }
       }
@@ -1377,7 +1377,7 @@
         }
       }
     },
-    "People you've connected with": {
+    "People you’ve connected with": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -1478,7 +1478,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Предпросмотр элемента управления «Показать мой QR-код»"
+            "value": "Предпросмотр элемента управления «Показать мой QR»"
           }
         },
         "uz": {
@@ -1494,7 +1494,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пока вы не создадите визитку, в предпросмотре показаны примерные данные. Коснитесь виджета и удерживайте его, затем нажмите «Изменить виджет», чтобы выбрать визитку."
+            "value": "Пока вы не создадите визитку, в предпросмотре показаны примерные данные. Коснитесь виджета и удерживайте его, затем выберите «Изменить виджет», чтобы указать, какую визитку он показывает."
           }
         },
         "uz": {
@@ -1721,7 +1721,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Найдите %@, выберите «Мой QR», «Визитка» или «Напоминания», затем нажмите «Добавить виджет»."
+            "value": "Найдите %@, выберите «Мой QR-код», «Визитка» или «Напоминания», затем коснитесь «Добавить виджет»."
           }
         },
         "uz": {
@@ -1785,7 +1785,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "QR-код"
+            "value": "Показать QR"
           }
         },
         "uz": {
@@ -1807,7 +1807,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ ilovasida QR kodimni ko‘rsat"
+            "value": "%@ QR kodimni ko‘rsat"
           }
         }
       }
@@ -1940,7 +1940,7 @@
         }
       }
     },
-    "Small · Your QR, one tap away.": {
+    "Small · Opens your QR code in one tap.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -2064,7 +2064,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отмечает всех, с кем вы познакомились, тегом мероприятия."
+            "value": "Ставит тег мероприятия всем, с кем вы познакомитесь."
           }
         },
         "uz": {
@@ -2080,7 +2080,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Нажмите «Изменить», затем «Добавить виджет»."
+            "value": "Коснитесь «Изменить», затем «Добавить виджет»."
           }
         },
         "uz": {
@@ -2150,7 +2150,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vidjetni bosib turing, so‘ng qaysi vizitkani ko‘rsatishini tanlash uchun “Vidjetni tahrirlash”ni bosing."
+            "value": "Vidjetni bosib turing, so‘ng qaysi vizitkani ko‘rsatishini tanlash uchun «Vidjetni tahrirlash»ni bosing."
           }
         }
       }
@@ -2182,7 +2182,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bo‘sh joyni bosib turing, so‘ng “Boshqaruv elementi qo‘shish”ni bosing."
+            "value": "Bo‘sh joyni bosib turing, so‘ng «Boshqaruv elementi qo‘shish»ni bosing."
           }
         }
       }
@@ -2198,7 +2198,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Qulf ekranini bosib turing, so‘ng “Moslash”ni bosing."
+            "value": "Qulf ekranini bosib turing, so‘ng «Moslash»ni bosing."
           }
         }
       }
@@ -2299,7 +2299,7 @@
         }
       }
     },
-    "You can add up to %lld contacts": {
+    "You can add up to %lld contacts.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -2374,7 +2374,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "QR kodingiz to‘g‘ridan-to‘g‘ri Qulf ekranida ko‘rinadi, shuning uchun uni qurilmani ochmasdan skanerlash mumkin. To‘liq ekranda ochish uchun ustiga bosing."
+            "value": "QR kodingiz Qulf ekranining o‘zida ko‘rinadi — telefonni ochmasangiz ham uni skanerlash mumkin. Butun ekranda ochish uchun ustiga bosing."
           }
         }
       }
@@ -2411,7 +2411,7 @@
         }
       }
     },
-    "Your default card, or your event's card": {
+    "Your default card, or your event’s card": {
       "localizations": {
         "ru": {
           "stringUnit": {

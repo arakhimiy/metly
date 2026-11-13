@@ -1,46 +1,39 @@
 import SwiftUI
 
-/// 4 · Bold — accent company on top, huge first/last name (last in accent), title + first two contact
-/// values (no icons) at the bottom; QR bottom-right 20 %.
+/// Wordmark (`bold`) — pure type: the company (or first name) huge and fitted to one line, a spaced
+/// tagline, two contacts bottom-left and the logo as a corner mark. [MOCKUP card stack]
 struct BoldTemplate: View {
     let model: CardFaceModel
     let style: CardFaceStyle
 
     var body: some View {
         VStack(alignment: style.horizontalAlignment, spacing: 0) {
-            if !model.company.isEmpty {
-                CardText(text: model.company, style: style, size: 2.6, weight: .semibold, tracking: 0.18,
-                         color: style.accent, uppercase: true)
+            CardText(text: model.wordmark, style: style, size: 12, weight: .heavy, tracking: -0.03,
+                     minimumScale: 0.3, uppercase: true)
+            if !model.jobTitle.isEmpty {
+                CardText(text: model.jobTitle, style: style, size: 2.3, weight: .semibold, tracking: 0.24,
+                         color: style.muted, uppercase: true)
+                    .padding(.top, style.u(2.2))
             }
-            Spacer(minLength: 0)
-            // CSS line-height 0.95: pull the second line up by the extra system leading.
-            VStack(alignment: style.horizontalAlignment, spacing: -style.u(11) * 0.24) {
-                CardText(text: model.firstName, style: style, size: 11, weight: .bold, tracking: -0.035,
-                         minimumScale: 0.45)
-                if !model.lastName.isEmpty {
-                    CardText(text: model.lastName, style: style, size: 11, weight: .bold, tracking: -0.035,
-                             color: style.accent, minimumScale: 0.45)
+            Spacer(minLength: style.u(2))
+            HStack(alignment: .bottom, spacing: style.u(4)) {
+                VStack(alignment: .leading, spacing: style.u(0.8)) {
+                    if !model.company.isEmpty {
+                        CardText(text: model.fullName, style: style, size: 3.1, weight: .bold, minimumScale: 0.7)
+                    }
+                    CardPlainContacts(contacts: model.boldContacts, style: style, fontSize: 2.8, spacing: 0.7)
                 }
-            }
-            Spacer(minLength: 0)
-            CardCapWidth(maxWidth: style.bottomBlockWidth(spec: 60, qrInset: 6.5, qrSize: 20, showsQR: model.showsQR)) {
-                VStack(alignment: style.horizontalAlignment, spacing: style.u(0.8)) {
-                    if !model.jobTitle.isEmpty {
-                        CardText(text: model.jobTitle, style: style, size: 3, color: style.muted)
-                    }
-                    ForEach(model.boldContacts) { contact in
-                        CardContactValue(contact: contact, style: style, fontSize: 3)
-                    }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if model.showsQR {
+                    CardQRPlate(payload: model.qrPayload, style: style, size: 15, cornerRadius: 1.4)
+                } else if let logo = model.logoData {
+                    CardLogoMark(data: logo, style: model.logoStyle, ink: style.fg, width: style.u(9), height: style.u(9),
+                                 alignment: .bottomTrailing)
                 }
             }
         }
         .multilineTextAlignment(style.textAlignment)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: style.isCentered ? .top : .topLeading)
-        .padding(style.u(6.5))
-        .overlay(alignment: .bottomTrailing) {
-            if model.showsQR {
-                CardQRPlate(payload: model.qrPayload, style: style, size: 20).padding(style.u(6.5))
-            }
-        }
+        .padding(style.u(8))
     }
 }

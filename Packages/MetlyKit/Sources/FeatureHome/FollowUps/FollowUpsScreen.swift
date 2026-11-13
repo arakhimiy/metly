@@ -1,6 +1,7 @@
 import MetlyCapture
 import MetlyCore
 import MetlyData
+import MetlyDesign
 import SwiftData
 import SwiftUI
 
@@ -115,13 +116,10 @@ private struct FollowUpsEmptyView: View {
     let onAdd: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label("No Follow-ups Yet", systemImage: "bell")
-        } description: {
-            Text("Add one right after you connect — it takes 2 seconds.")
-        } actions: {
-            Button("New Reminder", action: onAdd)
-                .buttonStyle(.borderedProminent)
+        EmptyStateView(.followUps, title: "No Follow-ups Yet",
+                       message: "Add one right after you connect.") {
+            Button("New Reminder", systemImage: "plus", action: onAdd)
+                .prominentButtonStyle()
         }
     }
 }

@@ -29,20 +29,20 @@ enum EventCSVColumn: String, CaseIterable, Identifiable, Sendable {
     /// Toggle title on the export screen.
     var title: String {
         switch self {
-        case .name: String(localized: "Name")
-        case .jobTitle: String(localized: "Title", comment: "Job title")
-        case .company: String(localized: "Company")
-        case .phone: String(localized: "Phone")
-        case .email: String(localized: "Email")
-        case .telegram: String(localized: "Telegram")
-        case .website: String(localized: "Website")
-        case .linkedin: String(localized: "LinkedIn")
-        case .event: String(localized: "Event")
-        case .metAt: String(localized: "Met At", comment: "When you met the person")
-        case .place: String(localized: "Place")
-        case .note: String(localized: "Note")
-        case .tags: String(localized: "Tags")
-        case .followUp: String(localized: "Follow-up")
+        case .name: String(localized: "Name", bundle: .appStrings)
+        case .jobTitle: String(localized: "Title", bundle: .appStrings, comment: "Job title")
+        case .company: String(localized: "Company", bundle: .appStrings)
+        case .phone: String(localized: "Phone", bundle: .appStrings)
+        case .email: String(localized: "Email", bundle: .appStrings)
+        case .telegram: String(localized: "Telegram", bundle: .appStrings)
+        case .website: String(localized: "Website", bundle: .appStrings)
+        case .linkedin: String(localized: "LinkedIn", bundle: .appStrings)
+        case .event: String(localized: "Event", bundle: .appStrings)
+        case .metAt: String(localized: "Met At", bundle: .appStrings, comment: "When you met the person")
+        case .place: String(localized: "Place", bundle: .appStrings)
+        case .note: String(localized: "Note", bundle: .appStrings)
+        case .tags: String(localized: "Tags", bundle: .appStrings)
+        case .followUp: String(localized: "Follow-up", bundle: .appStrings)
         }
     }
 

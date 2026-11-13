@@ -26,7 +26,7 @@ struct CardToShareSection: View {
         } header: {
             Text("Card to Share")
         } footer: {
-            Text("Everyone you connect with is added to this event — by QR, Nearby, your web page or a paper card. It ends by itself after the last day and shows you a summary.")
+            Text("Everyone you connect with by QR, Nearby, your web page or a paper card is added to this event. It ends by itself after the last day and shows you a summary.")
         }
         .sensoryFeedback(.selection, trigger: selection)
     }

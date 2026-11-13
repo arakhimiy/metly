@@ -8,11 +8,8 @@ struct PeopleEmptyState: View {
     let onShowQR: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label("No Connections Yet", systemImage: "person.2")
-        } description: {
-            Text("Scan someone's card or open Connect. Your notes about them stay private.")
-        } actions: {
+        EmptyStateView(.connections, title: "No Connections Yet",
+                       message: "Scan someone’s card or open Connect. Your notes about them stay private.") {
             Button("Open Connect", systemImage: "person.badge.plus", action: onConnect)
                 .prominentButtonStyle()
             if canShowQR {

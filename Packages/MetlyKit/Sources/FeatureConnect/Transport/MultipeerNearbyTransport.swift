@@ -2,7 +2,7 @@ import Foundation
 @preconcurrency import MultipeerConnectivity
 import Network
 
-/// Nearby discovery over MultipeerConnectivity (PLAN Q7), Bonjour type `_tanishly._tcp/_udp`
+/// Nearby discovery over MultipeerConnectivity (PLAN Q7), Bonjour type `_nameshake._tcp/_udp`
 /// (declared in `NSBonjourServices`; the first start triggers the Local Network prompt).
 ///
 /// - The advertised discovery info is only the server's opaque `discoveryToken`; the peer's display
@@ -13,7 +13,7 @@ import Network
 /// - Local Network denial is detected with `LocalNetworkWatcher` and reported as `.localNetworkDenied`.
 @MainActor
 final class MultipeerNearbyTransport: NearbyTransport {
-    nonisolated static let serviceType = "tanishly"
+    nonisolated static let serviceType = "nameshake"
     nonisolated static let tokenKey = "t"
     private static let inviteTimeout: TimeInterval = 15
     private static let maxInviteAttempts = 3

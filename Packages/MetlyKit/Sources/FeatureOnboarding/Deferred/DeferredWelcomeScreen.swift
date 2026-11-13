@@ -44,7 +44,7 @@ struct DeferredWelcomeScreen: View {
                         .font(.title)
                         .bold()
                         .accessibilityAddTraits(.isHeader)
-                    Text("Create your account to save \(firstName)’s card and share yours back. It takes a minute.")
+                    Text("Create your account to save \(firstName)’s card and share yours back.")
                         .font(.body)
                         .foregroundStyle(.secondary)
                 }

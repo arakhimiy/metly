@@ -37,6 +37,7 @@ public extension Card {
             phoneLabel: visible.legacyPhoneLabel,
             contacts: visible
         )
+        .applying(faceOptions)
     }
 }
 

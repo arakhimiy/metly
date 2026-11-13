@@ -27,8 +27,8 @@ struct ExportSummarySection: View {
     }
 
     private var subtitle: String {
-        let people = peopleCount == 1 ? String(localized: "1 person") : String(localized: "\(peopleCount) people")
-        return String(localized: "\(people) · notes and follow-ups included")
+        let people = peopleCount == 1 ? String(localized: "1 person", bundle: .appStrings) : String(localized: "\(peopleCount) people", bundle: .appStrings)
+        return String(localized: "\(people) · notes and follow-ups included", bundle: .appStrings)
     }
 }
 
@@ -102,7 +102,7 @@ private struct CSVPreviewCell: View {
             .foregroundStyle(isHeader || !text.isEmpty ? .primary : .tertiary)
             .lineLimit(1)
             .frame(maxWidth: maxWidth, alignment: .leading)
-            .accessibilityLabel(text.isEmpty ? String(localized: "Empty") : text)
+            .accessibilityLabel(text.isEmpty ? String(localized: "Empty", bundle: .appStrings) : text)
     }
 }
 
@@ -155,6 +155,6 @@ struct ExportCallToAction: View {
     }
 
     private var exportTitle: String {
-        peopleCount == 1 ? String(localized: "Export 1 Contact") : String(localized: "Export \(peopleCount) Contacts")
+        peopleCount == 1 ? String(localized: "Export 1 Contact", bundle: .appStrings) : String(localized: "Export \(peopleCount) Contacts", bundle: .appStrings)
     }
 }

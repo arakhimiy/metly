@@ -81,9 +81,9 @@ struct SubscriptionSettingsScreen: View {
         let entitlements = services.entitlements
         if !entitlements.willRenew, let renewsAt = entitlements.renewsAt {
             let date = renewsAt.formatted(date: .abbreviated, time: .omitted)
-            return String(localized: "Your subscription won’t renew. You keep Pro until \(date). Cards beyond two become read-only after that.")
+            return String(localized: "Your subscription won’t renew. You keep Pro until \(date). Cards beyond two become read-only after that.", bundle: .appStrings)
         }
-        return String(localized: "Change your plan or cancel in your App Store account.") + " " + AccountCopy.afterCancelMessage
+        return String(localized: "Change your plan or cancel in your App Store account.", bundle: .appStrings) + " " + AccountCopy.afterCancelMessage
     }
 
     // MARK: Actions
@@ -108,7 +108,7 @@ struct SubscriptionSettingsScreen: View {
         Task {
             await SubscriptionManager.refreshEntitlements(services: services, verifyWithServer: true)
             if services.entitlements.isPro {
-                router.showToast(String(localized: "Welcome to \(Brand.proName)"), systemImage: "crown.fill")
+                router.showToast(String(localized: "Welcome to \(Brand.proName)", bundle: .appStrings), systemImage: "crown.fill")
             }
         }
     }
@@ -123,9 +123,9 @@ struct SubscriptionSettingsScreen: View {
                 try await AppStore.sync()
                 await SubscriptionManager.refreshEntitlements(services: services, verifyWithServer: true)
                 if services.entitlements.isPro {
-                    router.showToast(String(localized: "Purchases Restored"), systemImage: "checkmark.circle")
+                    router.showToast(String(localized: "Purchases Restored", bundle: .appStrings), systemImage: "checkmark.circle")
                 } else {
-                    router.showToast(String(localized: "No purchases to restore"), systemImage: "info.circle")
+                    router.showToast(String(localized: "No purchases to restore", bundle: .appStrings), systemImage: "info.circle")
                 }
             } catch StoreKitError.userCancelled {
                 // The user dismissed the App Store sign-in.

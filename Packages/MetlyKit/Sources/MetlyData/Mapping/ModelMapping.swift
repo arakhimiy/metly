@@ -47,7 +47,7 @@ public extension Profile {
 public extension Card {
     var dto: CardDTO {
         CardDTO(id: id, name: name, slug: slug.isEmpty ? nil : slug, url: url, sortOrder: sortOrder, design: design,
-                visibleContacts: visibleContactIDs, publishState: publishState, isReadOnly: isReadOnly, stats: stats, createdAt: createdAt,
+                visibleContacts: visibleContactIDs, faceOptions: faceOptions, publishState: publishState, isReadOnly: isReadOnly, stats: stats, createdAt: createdAt,
                 updatedAt: updatedAt, deletedAt: deletedAt)
     }
 
@@ -61,6 +61,7 @@ public extension Card {
         sortOrder = dto.sortOrder
         design = dto.design
         visibleContactIDs = dto.visibleContacts
+        if faceOptions != dto.faceOptions { faceOptions = dto.faceOptions }
         createdAt = dto.createdAt
         updatedAt = dto.updatedAt
         deletedAt = dto.deletedAt

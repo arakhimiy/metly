@@ -226,7 +226,7 @@ public final class VoiceNoteRecognizer {
 
     private func sessionFailedToStart(_ failed: any DictationSession) {
         if session === failed { session = nil }
-        preparationEnded(.failed(String(localized: "The microphone couldn’t start. Try again.")))
+        preparationEnded(.failed(String(localized: "The microphone couldn’t start. Try again.", bundle: .appStrings)))
     }
 
     private func listen(to events: AsyncStream<DictationEvent>, from started: any DictationSession) -> Bool {

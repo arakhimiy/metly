@@ -7,19 +7,19 @@ struct HowToAddSection: View {
     var body: some View {
         Section {
             HowToAddGroup(title: "Home Screen", systemImage: "apps.iphone", steps: [
-                String(localized: "Touch and hold an empty area of your Home Screen until the apps jiggle."),
-                String(localized: "Tap Edit, then tap Add Widget."),
-                String(localized: "Search for \(Brand.appName), choose My QR, Card or Follow-ups, then tap Add Widget."),
+                String(localized: "Touch and hold an empty area of your Home Screen until the apps jiggle.", bundle: .appStrings),
+                String(localized: "Tap Edit, then tap Add Widget.", bundle: .appStrings),
+                String(localized: "Search for \(Brand.appName), choose My QR, Card or Follow-ups, then tap Add Widget.", bundle: .appStrings),
             ])
             HowToAddGroup(title: "Lock Screen", systemImage: "lock.iphone", steps: [
-                String(localized: "Touch and hold your Lock Screen, then tap Customize."),
-                String(localized: "Choose Lock Screen, then tap the area below the time."),
-                String(localized: "Choose \(Brand.appName) and tap a QR Code widget."),
+                String(localized: "Touch and hold your Lock Screen, then tap Customize.", bundle: .appStrings),
+                String(localized: "Choose Lock Screen, then tap the area below the time.", bundle: .appStrings),
+                String(localized: "Choose \(Brand.appName) and tap a QR Code widget.", bundle: .appStrings),
             ])
             HowToAddGroup(title: "Control Center", systemImage: "switch.2", steps: [
-                String(localized: "Swipe down from the top-right corner of the screen."),
-                String(localized: "Touch and hold an empty area, then tap Add a Control."),
-                String(localized: "Search for \(Brand.appName) and choose Show My QR."),
+                String(localized: "Swipe down from the top-right corner of the screen.", bundle: .appStrings),
+                String(localized: "Touch and hold an empty area, then tap Add a Control.", bundle: .appStrings),
+                String(localized: "Search for \(Brand.appName) and choose Show My QR.", bundle: .appStrings),
             ])
         } header: {
             Text("How to Add")

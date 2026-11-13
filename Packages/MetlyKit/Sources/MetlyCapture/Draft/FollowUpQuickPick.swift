@@ -11,10 +11,10 @@ public enum FollowUpQuickPick: String, CaseIterable, Identifiable, Sendable {
 
     public var title: String {
         switch self {
-        case .tomorrow: String(localized: "Tomorrow")
-        case .inThreeDays: String(localized: "In 3 Days")
-        case .nextWeek: String(localized: "Next Week")
-        case .custom: String(localized: "Pick a Date…")
+        case .tomorrow: String(localized: "Tomorrow", bundle: .appStrings)
+        case .inThreeDays: String(localized: "In 3 Days", bundle: .appStrings)
+        case .nextWeek: String(localized: "Next Week", bundle: .appStrings)
+        case .custom: String(localized: "Pick a Date…", bundle: .appStrings)
         }
     }
 

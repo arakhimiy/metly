@@ -57,7 +57,7 @@ struct AvatarPickerButton: View {
         }
         guard let data = try? await item.loadTransferable(type: Data.self),
               let jpeg = await ImageDownscaler.jpegData(from: data) else {
-            router.showToast(String(localized: "Couldn’t Load Photo"), systemImage: "exclamationmark.triangle")
+            router.showToast(String(localized: "Couldn’t Load Photo", bundle: .appStrings), systemImage: "exclamationmark.triangle")
             return
         }
         profile.photoData = jpeg

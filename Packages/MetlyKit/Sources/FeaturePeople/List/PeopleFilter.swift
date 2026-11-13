@@ -9,10 +9,10 @@ enum PeopleFilter: String, CaseIterable, Identifiable, Hashable {
 
     var title: String {
         switch self {
-        case .all: String(localized: "All")
-        case .events: String(localized: "Events")
-        case .places: String(localized: "Places")
-        case .tags: String(localized: "Tags")
+        case .all: String(localized: "All", bundle: .appStrings)
+        case .events: String(localized: "Events", bundle: .appStrings)
+        case .places: String(localized: "Places", bundle: .appStrings)
+        case .tags: String(localized: "Tags", bundle: .appStrings)
         }
     }
 }

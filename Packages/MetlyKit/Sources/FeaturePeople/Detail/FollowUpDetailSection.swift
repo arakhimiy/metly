@@ -45,7 +45,7 @@ struct FollowUpDetailSection: View {
             showsLimitAlert = true
         case .scheduled, .rescheduled:
             if let due = person.openFollowUp?.dueAt {
-                router.showToast(String(localized: "Reminder: \(due.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))"),
+                router.showToast(String(localized: "Reminder: \(due.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))", bundle: .appStrings),
                                  systemImage: "bell")
             }
         case .none:
@@ -70,7 +70,7 @@ struct FollowUpDetailSection: View {
     private func markDone(_ reminder: FollowUp) {
         let undo = PeopleActions.markDone(reminder, in: modelContext)
         doneCount += 1
-        router.showToast(String(localized: "Marked Done"), systemImage: "checkmark.circle", undo: undo)
+        router.showToast(String(localized: "Marked Done", bundle: .appStrings), systemImage: "checkmark.circle", undo: undo)
     }
 }
 

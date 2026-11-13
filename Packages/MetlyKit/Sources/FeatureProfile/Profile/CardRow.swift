@@ -52,13 +52,13 @@ struct CardRow: View {
             .contentShape(.rect)
         }
         .accessibilityLabel("\(card.name) Card")
-        .accessibilityValue(isDefault ? String(localized: "\(subtitle), Default") : subtitle)
+        .accessibilityValue(isDefault ? String(localized: "\(subtitle), Default", bundle: .appStrings) : subtitle)
         .accessibilityHint("Shows actions for this card")
     }
 
     private var subtitle: String {
-        var parts: [String] = [card.slug.isEmpty ? String(localized: "Not published") : "\(Brand.linkHost)/c/\(card.slug)"]
-        if card.isReadOnly { parts.append(String(localized: "Read-only")) }
+        var parts: [String] = [card.slug.isEmpty ? String(localized: "Not published", bundle: .appStrings) : "\(Brand.linkHost)/c/\(card.slug)"]
+        if card.isReadOnly { parts.append(String(localized: "Read-only", bundle: .appStrings)) }
         return parts.joined(separator: " · ")
     }
 }

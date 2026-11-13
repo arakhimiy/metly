@@ -17,7 +17,7 @@ import SwiftUI
 
 #Preview("Editor · Color (Free, Ocean/Ember locked)") {
     PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
-        CardEditorForm(card: card, profile: profile, initialTab: .color)
+        CardEditorForm(card: card, profile: profile, initialTab: .style)
     }
     .metlyPreview(.full, plan: .free)
 }
@@ -28,7 +28,7 @@ import SwiftUI
                                for: PreviewStore.workCardID, in: $0)
     }) {
         PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
-            CardEditorForm(card: card, profile: profile, initialTab: .color)
+            CardEditorForm(card: card, profile: profile, initialTab: .style)
         }
     }
     .metlyPreview(.full, plan: .pro)
@@ -39,7 +39,7 @@ import SwiftUI
         PreviewStore.useDesign(CardDesign(template: .minimal, palette: .graphite), for: PreviewStore.workCardID, in: $0)
     }) {
         PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
-            CardEditorForm(card: card, profile: profile, initialTab: .type)
+            CardEditorForm(card: card, profile: profile, initialTab: .style)
         }
     }
     .metlyPreview(.full)
@@ -50,7 +50,7 @@ import SwiftUI
         PreviewStore.useDesign(CardDesign(template: .terminal, palette: .graphite), for: PreviewStore.workCardID, in: $0)
     }) {
         PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
-            CardEditorForm(card: card, profile: profile, initialTab: .type)
+            CardEditorForm(card: card, profile: profile, initialTab: .style)
         }
     }
     .metlyPreview(.full)
@@ -58,7 +58,7 @@ import SwiftUI
 
 #Preview("Editor · Fields (private phone)") {
     PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
-        CardEditorForm(card: card, profile: profile, initialTab: .fields)
+        CardEditorForm(card: card, profile: profile, initialTab: .details)
     }
     .metlyPreview(.full)
 }
@@ -73,7 +73,7 @@ import SwiftUI
                                for: PreviewStore.workCardID, in: $0)
     }) {
         PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
-            CardEditorForm(card: card, profile: profile, initialTab: .fields)
+            CardEditorForm(card: card, profile: profile, initialTab: .details)
         }
     }
     .metlyPreview(.full)
@@ -87,7 +87,7 @@ import SwiftUI
                                for: PreviewStore.workCardID, in: $0)
     }) {
         PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
-            CardEditorForm(card: card, profile: profile, initialTab: .fields)
+            CardEditorForm(card: card, profile: profile, initialTab: .details)
         }
     }
     .metlyPreview(.full)
@@ -99,7 +99,7 @@ import SwiftUI
         PreviewStore.useDesign(CardDesign(template: .modern, palette: .ink), for: PreviewStore.workCardID, in: $0)
     }) {
         PreviewCard(cardID: PreviewStore.workCardID) { card, profile in
-            CardEditorForm(card: card, profile: profile, initialTab: .media)
+            CardEditorForm(card: card, profile: profile, initialTab: .details)
         }
     }
     .metlyPreview(.full)
@@ -107,7 +107,7 @@ import SwiftUI
 
 #Preview("Editor · Dark, accessibility text") {
     PreviewCard(cardID: PreviewStore.personalCardID) { card, profile in
-        CardEditorForm(card: card, profile: profile, initialTab: .fields)
+        CardEditorForm(card: card, profile: profile, initialTab: .details)
     }
     .metlyPreview(.full)
     .preferredColorScheme(.dark)

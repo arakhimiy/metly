@@ -19,6 +19,12 @@ enum CardImageDecoder {
         return image
     }
 
+    /// Whether the image has an alpha channel (a one-colour logo needs a transparent background).
+    static func hasTransparency(_ data: Data) -> Bool {
+        guard let alpha = image(from: data)?.cgImage?.alphaInfo else { return false }
+        return ![.none, .noneSkipFirst, .noneSkipLast].contains(alpha)
+    }
+
     private static func decode(_ data: Data) -> UIImage? {
         guard let source = CGImageSourceCreateWithData(data as CFData, [kCGImageSourceShouldCache: false] as CFDictionary)
         else { return nil }

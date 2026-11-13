@@ -19,7 +19,7 @@ struct NoNoteYetSection: View {
                 Text("No Note Yet")
             } footer: {
                 if people.count > limit {
-                    Text("And \(people.count - limit) more. Notes stay private — only you can see them.")
+                    Text("And \(people.count - limit) more. Only you can see your notes.")
                 } else {
                     Text("Add a note while you still remember the conversation. Only you can see it.")
                 }

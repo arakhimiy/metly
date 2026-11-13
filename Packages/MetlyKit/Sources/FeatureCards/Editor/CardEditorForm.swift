@@ -45,7 +45,7 @@ struct CardEditorForm: View {
                 Button("Not Now", role: .cancel) {}
                 Button("See Pro", action: showTemplatePaywall)
             } message: { _ in
-                Text("Upgrade to \(Brand.proName) to use Editorial and every palette.")
+                Text("Upgrade to \(Brand.proName) to use Foil, Aurora, Editorial and every palette.")
             }
         }
     }
@@ -61,17 +61,17 @@ struct CardEditorForm: View {
                              allowsPro: allowsPro, onSelect: select)
                     .padding(.vertical, 6)
             } footer: {
-                Text("Your details fill every layout. You can switch any time.")
+                Text("Your details fill every layout. You can switch anytime.")
             }
-        case .color:
+        case .style:
             EditorColorSection(design: $draft.design, allowsPro: allowsPro, onSelectPalette: select)
-        case .type:
             EditorTypeSection(design: $draft.design)
-        case .fields:
+        case .details:
+            CardIdentitySection(profile: profile, design: $draft.design, options: $draft.options,
+                                photo: $draft.photo, logo: $draft.logo)
             CardFieldsSection(profile: profile, selection: $draft.contactIDs, design: $draft.design,
-                              footer: String(localized: "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with."))
-        case .media:
-            EditorMediaSection(draft: $draft, profile: profile)
+                              footer: String(localized: "Values come from your profile. Private fields never appear on a card. Connections fields show only in the app to people you’ve connected with.", bundle: .appStrings))
+            CardQRSection(showQR: $draft.design.showQR)
         }
     }
 
@@ -100,12 +100,13 @@ struct CardEditorForm: View {
 
     /// In-app preview: Public + Connections fields, the draft's photo/logo.
     private var previewContent: CardFaceContent {
-        CardContentFactory.content(profile: profile, design: draft.design, selection: draft.contactIDs, audience: .connections,
+        CardContentFactory.content(profile: profile, design: draft.design, selection: draft.contactIDs, options: draft.options,
+                                   audience: .connections,
                                    qrPayload: card.url?.absoluteString ?? "", photo: draft.photo, logo: draft.logo)
     }
 
     private var lockedTemplateTitle: String {
-        String(localized: "\(lockedTemplate?.title ?? CardTemplate.editorial.title) Is a Pro Template")
+        String(localized: "\(lockedTemplate?.title ?? CardTemplate.editorial.title) Is a Pro Template", bundle: .appStrings)
     }
 
     private var isShowingProTemplateAlert: Binding<Bool> {
@@ -150,7 +151,7 @@ struct CardEditorForm: View {
         guard commit.changedAnything else { return }
         services.sync.requestSync()
         let published = card.url != nil && services.network.isOnline
-        router.showToast(published ? String(localized: "\(card.name) Card Published") : String(localized: "\(card.name) Card Saved"),
+        router.showToast(published ? String(localized: "\(card.name) Card Published", bundle: .appStrings) : String(localized: "\(card.name) Card Saved", bundle: .appStrings),
                          systemImage: "checkmark.circle")
     }
 }

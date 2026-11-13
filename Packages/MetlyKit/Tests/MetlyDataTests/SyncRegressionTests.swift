@@ -378,18 +378,18 @@ struct SubscriptionRegressionTests {
     func serverReplyNeverDowngradesStoreKitPro() async throws {
         let server = MockMetlyServer(seed: .demo, configuration: .instant)
         let entitlements = Entitlements(plan: .pro)   // what SubscriptionManager derived from StoreKit
-        entitlements.productID = "app.tanishly.ios.pro.yearly"
+        entitlements.productID = "app.nameshake.ios.pro.yearly"
         let renews = Date.now.addingTimeInterval(300 * 86_400)
         entitlements.renewsAt = renews
         entitlements.willRenew = true
         let verifier = SubscriptionVerifier(api: server, entitlements: entitlements)
 
         // Transaction.updates delivers the expired/refunded monthly plan the user had upgraded from.
-        _ = try await verifier.verify(signedTransaction: Self.jws(productID: "app.tanishly.ios.pro.monthly",
+        _ = try await verifier.verify(signedTransaction: Self.jws(productID: "app.nameshake.ios.pro.monthly",
                                                                    expires: .now.addingTimeInterval(-86_400)))
 
         #expect(entitlements.plan == .pro)
-        #expect(entitlements.productID == "app.tanishly.ios.pro.yearly")
+        #expect(entitlements.productID == "app.nameshake.ios.pro.yearly")
         #expect(entitlements.renewsAt == renews)
         #expect(entitlements.willRenew)
     }
@@ -399,10 +399,10 @@ struct SubscriptionRegressionTests {
         let server = MockMetlyServer(seed: .demo, configuration: .instant)
         let entitlements = Entitlements(plan: .free)
         let verifier = SubscriptionVerifier(api: server, entitlements: entitlements)
-        _ = try await verifier.verify(signedTransaction: Self.jws(productID: "app.tanishly.ios.pro.yearly",
+        _ = try await verifier.verify(signedTransaction: Self.jws(productID: "app.nameshake.ios.pro.yearly",
                                                                    expires: .now.addingTimeInterval(365 * 86_400)))
         #expect(entitlements.plan == .pro)
-        #expect(entitlements.productID == "app.tanishly.ios.pro.yearly")
+        #expect(entitlements.productID == "app.nameshake.ios.pro.yearly")
     }
 }
 

@@ -56,11 +56,11 @@ struct QRPayloadDescription {
         let trimmed = payload.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.uppercased().hasPrefix("BEGIN:VCARD") {
             let name = VCardParser.parse(trimmed)?.fullName ?? ""
-            return name.isEmpty ? String(localized: "Contact card") : String(localized: "Contact card for \(name)")
+            return name.isEmpty ? String(localized: "Contact card", bundle: .appStrings) : String(localized: "Contact card for \(name)", bundle: .appStrings)
         }
         if let url = URL(string: trimmed), let host = url.host() {
             let path = url.path() == "/" ? "" : url.path()
-            return String(localized: "Link to \(host + path)")
+            return String(localized: "Link to \(host + path)", bundle: .appStrings)
         }
         return trimmed
     }

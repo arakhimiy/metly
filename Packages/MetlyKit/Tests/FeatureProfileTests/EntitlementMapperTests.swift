@@ -90,7 +90,7 @@ struct EntitlementMapperTests {
 
     @Test func foreignProductsNeverGrantPro() {
         var foreign = record()
-        foreign.productID = "app.tanishly.ios.tip.small"
+        foreign.productID = "app.nameshake.ios.tip.small"
         #expect(!EntitlementMapper.snapshot(from: [foreign], now: now).isPro)
     }
 
@@ -114,8 +114,8 @@ struct EntitlementMapperTests {
     }
 
     @Test func productIDsMatchTheStoreKitConfiguration() {
-        #expect(ProProduct.allIDs == ["app.tanishly.ios.pro.yearly", "app.tanishly.ios.pro.monthly"])
-        #expect(ProProduct(productID: "app.tanishly.ios.pro.monthly") == .monthly)
+        #expect(ProProduct.allIDs == ["app.nameshake.ios.pro.yearly", "app.nameshake.ios.pro.monthly"])
+        #expect(ProProduct(productID: "app.nameshake.ios.pro.monthly") == .monthly)
         #expect(ProProduct(productID: nil) == nil)
     }
 }

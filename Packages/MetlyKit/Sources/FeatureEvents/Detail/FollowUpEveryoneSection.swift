@@ -19,12 +19,12 @@ struct FollowUpEveryoneSection: View {
     }
 
     private var footer: String {
-        let base = String(localized: "Sets a reminder for tomorrow at 10:00 for each person without one.")
+        let base = String(localized: "Sets a reminder for tomorrow at 10:00 for each person without one.", bundle: .appStrings)
         guard let remaining, remaining < count else { return base }
         switch remaining {
-        case 0: return String(localized: "You’re using every active reminder the Free plan includes.")
-        case 1: return String(localized: "\(base) The Free plan has room for 1 more.")
-        default: return String(localized: "\(base) The Free plan has room for \(remaining) more.")
+        case 0: return String(localized: "You’re using every active reminder the Free plan includes.", bundle: .appStrings)
+        case 1: return String(localized: "\(base) The Free plan has room for 1 more.", bundle: .appStrings)
+        default: return String(localized: "\(base) The Free plan has room for \(remaining) more.", bundle: .appStrings)
         }
     }
 }

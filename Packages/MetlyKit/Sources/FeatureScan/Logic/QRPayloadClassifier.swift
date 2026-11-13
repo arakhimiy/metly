@@ -22,7 +22,7 @@ nonisolated enum QRPayloadClassifier {
     }
 
     /// Slug of `https://tanishly.app/c/{slug}`, also without scheme, with `www.`, upper-cased
-    /// (QR alphanumeric mode upper-cases links) or as `tanishly://c/{slug}`.
+    /// (QR alphanumeric mode upper-cases links) or as `nameshake://c/{slug}`.
     static func metlySlug(in text: String) -> String? {
         guard !text.contains(where: \.isWhitespace) else { return nil }
         // Slugs are lower-case `[a-z0-9-]`, so folding the whole link is safe.

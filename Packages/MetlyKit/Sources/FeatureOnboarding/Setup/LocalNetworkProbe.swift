@@ -5,19 +5,19 @@ import Synchronization
 /// Triggers (first time) and reads the Local Network permission.
 ///
 /// iOS has no API for this permission, so we advertise a short-lived Bonjour service of our own
-/// type (`_tanishly._tcp`, declared in `NSBonjourServices`) and browse for it:
+/// type (`_nameshake._tcp`, declared in `NSBonjourServices`) and browse for it:
 /// - the browser finds our own service → access granted;
 /// - the browser waits with `kDNSServiceErr_PolicyDenied` → access denied;
 /// - neither within `timeout` (the user hasn't answered yet) → undetermined.
 /// Once the user has decided, probing never prompts again, so it's also used to refresh the status.
 nonisolated enum LocalNetworkProbe {
-    static let serviceType = "_tanishly._tcp"
+    static let serviceType = "_nameshake._tcp"
     /// `kDNSServiceErr_PolicyDenied` from dns_sd.h.
     static let policyDeniedError: Int32 = -65570
 
     @concurrent
     static func requestAccess(timeout: Duration) async -> LocalNetworkAccess {
-        let queue = DispatchQueue(label: "app.tanishly.ios.local-network-probe")
+        let queue = DispatchQueue(label: "app.nameshake.ios.local-network-probe")
         let serviceName = "metly-probe-\(UUID().uuidString.prefix(8))"
 
         let listener: NWListener

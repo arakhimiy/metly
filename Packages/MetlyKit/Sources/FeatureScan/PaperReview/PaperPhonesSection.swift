@@ -187,7 +187,7 @@ struct PaperContactFieldRow: View {
                     .submitLabel(.done)
                     .focused(focus, equals: .field(field))
                     .onSubmit { focus.wrappedValue = nil }
-                    .accessibilityHint(hint == .guessed ? String(localized: "Guessed from the card’s layout. Check it.") : "")
+                    .accessibilityHint(hint == .guessed ? String(localized: "Guessed from the card’s layout. Check it.", bundle: .appStrings) : "")
             }
             if !isFocused, let kind = field.kind, let problem = ContactFieldInput.problem(text, for: kind) {
                 ContactProblemNote(problem)

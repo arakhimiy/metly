@@ -28,9 +28,8 @@ struct EventSummary: Identifiable {
 
 /// Search, sort and grouping for the People tab (pure functions over live connections).
 enum PeopleIndex {
-    static let otherPlacesTitle = String(localized: "Other")
-    static let untaggedTitle = String(localized: "No Tags")
-
+    static var otherPlacesTitle: String { String(localized: "Other", bundle: .appStrings) }
+    static var untaggedTitle: String { String(localized: "No Tags", bundle: .appStrings) }
     /// Most recent meeting first.
     static func sorted(_ people: [Connection]) -> [Connection] {
         people.sorted { lhs, rhs in

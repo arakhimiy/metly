@@ -60,7 +60,7 @@ nonisolated struct SetupProfileForm: Equatable, Sendable {
 
     /// Inline footer copy for an incomplete email, nil when fine.
     var emailError: String? {
-        isEmailValid ? nil : String(localized: "Check your email — it looks incomplete.")
+        isEmailValid ? nil : String(localized: "This email address looks incomplete.", bundle: .appStrings)
     }
 
     static func looksLikeEmail(_ value: String) -> Bool {

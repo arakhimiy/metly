@@ -42,7 +42,7 @@ struct ProfileHeaderSection: View {
             }
             .padding(.vertical, 4)
 
-            LabeledFieldRow(title: String(localized: "Company")) {
+            LabeledFieldRow(title: String(localized: "Company", bundle: .appStrings)) {
                 SettingsIcon("building.2.fill", color: .gray)
             } field: {
                 TextField("Company", text: editor.textBinding(\.company))

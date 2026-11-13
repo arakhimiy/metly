@@ -10,8 +10,8 @@
 	<string>Nameshake detects when you hold your iPhone near someone else's to swap cards.</string>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>_tanishly._tcp</string>
-		<string>_tanishly._udp</string>
+		<string>_nameshake._tcp</string>
+		<string>_nameshake._udp</string>
 	</array>
 	<key>NSContactsUsageDescription</key>
 	<string>Nameshake saves the people you meet to your Contacts when you ask it to.</string>
@@ -34,10 +34,10 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>app.tanishly.ios</string>
+			<string>app.nameshake.ios</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>tanishly</string>
+				<string>nameshake</string>
 			</array>
 		</dict>
 	</array>
@@ -57,8 +57,8 @@
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>app.tanishly.ios.refresh</string>
-		<string>app.tanishly.ios.sync</string>
+		<string>app.nameshake.ios.refresh</string>
+		<string>app.nameshake.ios.sync</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>

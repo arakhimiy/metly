@@ -3,7 +3,7 @@ import MetlyWidgetKit
 
 /// "Show my Nameshake QR" — opens QR_FULLSCREEN (Q23) for the card to share, or the chosen card.
 ///
-/// Routes through `tanishly://qr[/cardID]` (handled by `DeepLinkHandler`), the same link the widgets use,
+/// Routes through `nameshake://qr[/cardID]` (handled by `DeepLinkHandler`), the same link the widgets use,
 /// so Siri, Shortcuts, Spotlight and the Action button all land on one code path.
 struct ShowMyQRIntent: AppIntent {
     static let title: LocalizedStringResource = "Show My QR"

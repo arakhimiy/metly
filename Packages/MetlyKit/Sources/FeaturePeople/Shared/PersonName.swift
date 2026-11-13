@@ -25,9 +25,9 @@ enum JustMetNaming {
     /// "Someone at Tashkent Tech Week" / "Someone You Met" (localized — it is the person's visible name).
     static func placeholder(eventName: String?) -> String {
         if let eventName, !eventName.trimmingCharacters(in: .whitespaces).isEmpty {
-            return String(localized: "Someone at \(eventName)", comment: "Name for a person saved without a name; %@ is the event")
+            return String(localized: "Someone at \(eventName)", bundle: .appStrings, comment: "Name for a person saved without a name; %@ is the event")
         }
-        return String(localized: "Someone You Met", comment: "Name for a person saved without a name")
+        return String(localized: "Someone You Met", bundle: .appStrings, comment: "Name for a person saved without a name")
     }
 
     static func isPlaceholder(_ fullName: String) -> Bool {

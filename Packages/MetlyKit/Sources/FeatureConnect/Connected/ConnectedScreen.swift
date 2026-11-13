@@ -102,8 +102,8 @@ struct ConnectedScreen: View {
         guard saved else { return }
         addedToContacts = true
         successCount += 1
-        router.showToast(String(localized: "Added to Contacts"), systemImage: "person.crop.circle.badge.checkmark")
-        AccessibilityNotification.Announcement(String(localized: "Added to Contacts")).post()
+        router.showToast(String(localized: "Added to Contacts", bundle: .appStrings), systemImage: "person.crop.circle.badge.checkmark")
+        AccessibilityNotification.Announcement(String(localized: "Added to Contacts", bundle: .appStrings)).post()
     }
 
     private func save() {
@@ -114,7 +114,7 @@ struct ConnectedScreen: View {
             showsLimitAlert = true
             return
         }
-        router.showToast(result.toastMessage(otherwise: String(localized: "Connection Saved")), systemImage: "checkmark.circle")
+        router.showToast(result.toastMessage(otherwise: String(localized: "Connection Saved", bundle: .appStrings)), systemImage: "checkmark.circle")
         router.open(.connectionDetail(id: connection.id), in: .people)
     }
 
@@ -123,7 +123,7 @@ struct ConnectedScreen: View {
         router.dismiss()
         router.select(.people)
         if !name.isEmpty {
-            router.showToast(String(localized: "Connected with \(name)"), systemImage: "person.crop.circle.badge.checkmark")
+            router.showToast(String(localized: "Connected with \(name)", bundle: .appStrings), systemImage: "person.crop.circle.badge.checkmark")
         }
     }
 }

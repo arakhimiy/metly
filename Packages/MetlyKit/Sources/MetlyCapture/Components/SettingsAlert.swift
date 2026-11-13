@@ -14,19 +14,19 @@ public struct SettingsAlert: Identifiable, Equatable, Sendable {
     }
 
     public static let microphoneOff = SettingsAlert(
-        title: String(localized: "Microphone Is Off"),
-        message: String(localized: "Allow microphone access in Settings › \(Brand.appName) to add notes by voice."))
+        title: String(localized: "Microphone Is Off", bundle: .appStrings),
+        message: String(localized: "Allow microphone access in Settings › \(Brand.appName) to add notes by voice.", bundle: .appStrings))
 
     public static let speechOff = SettingsAlert(
-        title: String(localized: "Speech Recognition Is Off"),
-        message: String(localized: "Allow speech recognition in Settings › \(Brand.appName) to add notes by voice."))
+        title: String(localized: "Speech Recognition Is Off", bundle: .appStrings),
+        message: String(localized: "Allow speech recognition in Settings › \(Brand.appName) to add notes by voice.", bundle: .appStrings))
 
     public static let locationOff = SettingsAlert(
-        title: String(localized: "Turn On in Settings"),
-        message: String(localized: "Open iOS Settings › \(Brand.appName) to allow location access."))
+        title: String(localized: "Turn On in Settings", bundle: .appStrings),
+        message: String(localized: "Open iOS Settings › \(Brand.appName) to allow location access.", bundle: .appStrings))
 
     public static func permission(_ name: String) -> SettingsAlert {
-        SettingsAlert(title: String(localized: "Turn On in Settings"), message: String(localized: "Open iOS Settings › \(Brand.appName) to allow \(name)."))
+        SettingsAlert(title: String(localized: "Turn On in Settings", bundle: .appStrings), message: String(localized: "Open iOS Settings › \(Brand.appName) to allow \(name).", bundle: .appStrings))
     }
 }
 

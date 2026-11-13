@@ -109,7 +109,7 @@ extension LiveMetlyAPI: ProfileAPI {
 
     public func upload(_ data: Data, using ticket: UploadTicket) async throws {
         guard data.count <= ticket.maxBytes else {
-            throw APIError.server(status: 413, problem: APIProblem(.payloadTooLarge, String(localized: "Image is larger than \(ticket.maxBytes) bytes.")))
+            throw APIError.server(status: 413, problem: APIProblem(.payloadTooLarge, String(localized: "Image is larger than \(ticket.maxBytes) bytes.", bundle: .appStrings)))
         }
         let endpoint = Endpoint<EmptyResponse>(method: HTTPMethod(rawValue: ticket.method) ?? .put, path: "", body: data,
                                                headers: ticket.headers, requiresAuth: false,

@@ -53,8 +53,8 @@ struct ConnectedHeaderSection: View {
 
     private var cardsDescription: String {
         if let myCard {
-            return String(localized: "Your \(myCard.name) card and \(firstName)’s card")
+            return String(localized: "Your \(myCard.name) card and \(firstName)’s card", bundle: .appStrings)
         }
-        return String(localized: "\(firstName)’s card")
+        return String(localized: "\(firstName)’s card", bundle: .appStrings)
     }
 }

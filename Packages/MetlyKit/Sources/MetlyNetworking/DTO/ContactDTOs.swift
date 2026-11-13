@@ -47,24 +47,36 @@ public extension ContactEntry {
 }
 
 /// A card design as it goes over the wire: `CardDesign` plus `visibleContacts` (ids of the profile entries
-/// the card shows; nil = a card from before 3.0.0). `CardDesign` itself stays as stored in SwiftData.
+/// the card shows; nil = a card from before 3.0.0) and the face options (`showJobTitle`, `showCompany`,
+/// `logoStyle`, 4.0.0). `CardDesign` itself stays as stored in SwiftData.
 enum WireCardDesign {
-    private enum Keys: String, CodingKey { case visibleContacts }
+    private enum Keys: String, CodingKey { case visibleContacts, showJobTitle, showCompany, logoStyle }
 
     static func decode<K: CodingKey>(from container: KeyedDecodingContainer<K>, forKey key: K) throws -> (CardDesign, [UUID]?) {
+        let (design, ids, _) = try decodeAll(from: container, forKey: key)
+        return (design, ids)
+    }
+
+    static func decodeAll<K: CodingKey>(from container: KeyedDecodingContainer<K>,
+                                        forKey key: K) throws -> (CardDesign, [UUID]?, CardFaceOptions) {
         let decoder = try container.superDecoder(forKey: key)
         let design = try CardDesign(from: decoder)
         let ids = try? decoder.container(keyedBy: Keys.self).decodeIfPresent([UUID].self, forKey: .visibleContacts)
-        return (design, ids.flatMap { $0 })
+        let options = (try? CardFaceOptions(from: decoder)) ?? CardFaceOptions()
+        return (design, ids.flatMap { $0 }, options)
     }
 
-    static func encode<K: CodingKey>(_ design: CardDesign, visibleContacts: [UUID]?, to container: inout KeyedEncodingContainer<K>,
-                                     forKey key: K) throws {
+    static func encode<K: CodingKey>(_ design: CardDesign, visibleContacts: [UUID]?, options: CardFaceOptions = CardFaceOptions(),
+                                     to container: inout KeyedEncodingContainer<K>, forKey key: K) throws {
         let encoder = container.superEncoder(forKey: key)
         var legacy = design
         legacy.visibleFields = legacy.visibleFields.filter(\.isLegacy)
         try legacy.encode(to: encoder)
         var extra = encoder.container(keyedBy: Keys.self)
         try extra.encode(visibleContacts, forKey: .visibleContacts)
+        // Only what differs from the default, so designs from older apps compare equal on the server.
+        if !options.showJobTitle { try extra.encode(false, forKey: .showJobTitle) }
+        if !options.showCompany { try extra.encode(false, forKey: .showCompany) }
+        if options.logoStyle != .original { try extra.encode(options.logoStyle, forKey: .logoStyle) }
     }
 }

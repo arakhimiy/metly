@@ -45,8 +45,8 @@ enum JustMetPrompter {
 
     /// "Who did you just meet? · Add" toast; Add opens JUST_MET.
     static func nudge(cardID: UUID, router: AppRouter) {
-        router.showToast(String(localized: "Who did you just meet?"), systemImage: "person.badge.plus",
-                         action: String(localized: "Add")) {
+        router.showToast(String(localized: "Who did you just meet?", bundle: .appStrings), systemImage: "person.badge.plus",
+                         action: String(localized: "Add", bundle: .appStrings)) {
             router.present(.justMet(cardID: cardID))
         }
     }

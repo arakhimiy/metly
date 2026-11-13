@@ -24,7 +24,7 @@ struct FollowUpActionHandler {
     func markDone(_ followUp: FollowUp) {
         let undo = FollowUpMutations.markDone(followUp, in: context)
         services.sync.requestSync()
-        router.showToast(String(localized: "Marked Done"), systemImage: "checkmark.circle", undo: syncing(undo))
+        router.showToast(String(localized: "Marked Done", bundle: .appStrings), systemImage: "checkmark.circle", undo: syncing(undo))
     }
 
     /// "Moved Back". Returns false when the Free plan's open-reminder limit blocks it.
@@ -34,7 +34,7 @@ struct FollowUpActionHandler {
         }
         let undo = FollowUpMutations.reopen(followUp, in: context)
         services.sync.requestSync()
-        router.showToast(String(localized: "Moved Back"), systemImage: "arrow.uturn.backward.circle", undo: syncing(undo))
+        router.showToast(String(localized: "Moved Back", bundle: .appStrings), systemImage: "arrow.uturn.backward.circle", undo: syncing(undo))
         return true
     }
 
@@ -47,21 +47,21 @@ struct FollowUpActionHandler {
         let undo = FollowUpMutations.reschedule(followUp, to: newDate, in: context)
         services.sync.requestSync()
         let label = FollowUpDates.dueLabel(newDate, now: now, calendar: calendar)
-        router.showToast(String(localized: "Snoozed to \(label)"), systemImage: "clock.arrow.circlepath", undo: syncing(undo))
+        router.showToast(String(localized: "Snoozed to \(label)", bundle: .appStrings), systemImage: "clock.arrow.circlepath", undo: syncing(undo))
     }
 
     /// Immediate delete (long-press menu) with Undo.
     func delete(_ followUp: FollowUp) {
         let undo = FollowUpMutations.delete(followUp, in: context)
         services.sync.requestSync()
-        router.showToast(String(localized: "Reminder Deleted"), systemImage: "trash", undo: syncing(undo))
+        router.showToast(String(localized: "Reminder Deleted", bundle: .appStrings), systemImage: "trash", undo: syncing(undo))
     }
 
     /// Opens Telegram (app, then t.me; by phone number when no username) / Mail / Phone for the reminder's channel.
     func openChannel(_ followUp: FollowUp, with openURL: OpenURLAction) {
         let channel = followUp.channel
         guard let target = ChannelLink.target(channel, for: followUp.connection) else { return }
-        router.showToast(String(localized: "Opening \(ChannelLink.actionTitle(channel))"), systemImage: channel.symbolName)
+        router.showToast(String(localized: "Opening \(ChannelLink.actionTitle(channel))", bundle: .appStrings), systemImage: channel.symbolName)
         openURL(target.primary) { accepted in
             if !accepted, let fallback = target.fallback { openURL(fallback) }
         }

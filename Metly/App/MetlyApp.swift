@@ -20,6 +20,7 @@ struct MetlyApp: App {
     private let subscriptionManager = SubscriptionManager()
 
     init() {
+        AppLanguage.applySavedChoice()   // before any string is read: the language picked in the app
         let container: ModelContainer
         do {
             container = try MetlyModelContainer.make()
@@ -39,7 +40,7 @@ struct MetlyApp: App {
         self.environment = environment
         services = environment.services
         client = environment.client
-        environment.syncEngine.registerBackgroundTasks()   // BGTask "app.tanishly.ios.sync"
+        environment.syncEngine.registerBackgroundTasks()   // BGTask "app.nameshake.ios.sync"
         AppDelegate.services = services
         subscriptionManager.start(services: services)
 

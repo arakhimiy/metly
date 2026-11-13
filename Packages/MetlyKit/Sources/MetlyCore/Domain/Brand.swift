@@ -12,8 +12,8 @@ public enum Brand {
     /// From `MetlyAppGroup` in the app's and the widget's Info.plist (`METLY_APP_GROUP` build setting),
     /// so a personal-team Debug build can use its own group. Tests and previews get the release group.
     public static let appGroup = Bundle.main.object(forInfoDictionaryKey: "MetlyAppGroup") as? String
-        ?? "group.app.tanishly.ios"
-    public static let urlScheme = "tanishly"
+        ?? "group.app.nameshake.ios"
+    public static let urlScheme = "nameshake"
 
     public static let termsURL = URL(string: "https://\(linkHost)/terms")!
     public static let privacyURL = URL(string: "https://\(linkHost)/privacy")!
@@ -23,7 +23,7 @@ public enum Brand {
         URL(string: "https://\(linkHost)/c/\(slug)")!
     }
 
-    /// Extracts the slug from `https://tanishly.app/c/{slug}` (also accepts `tanishly://c/{slug}`).
+    /// Extracts the slug from `https://tanishly.app/c/{slug}` (also accepts `nameshake://c/{slug}`).
     public static func slug(from url: URL) -> String? {
         let parts = url.pathComponents.filter { $0 != "/" }
         if url.host() == linkHost, parts.count == 2, parts[0] == "c" { return parts[1] }

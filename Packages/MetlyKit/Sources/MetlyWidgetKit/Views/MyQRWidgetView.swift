@@ -39,7 +39,7 @@ public struct MyQRWidgetView: View {
                 Text(display.owner.firstName)
                     .font(.headline)
                     .widgetAccentable()
-                Text(display.isPaused ? String(localized: "Link Paused") : display.card.displayName)
+                Text(display.isPaused ? String(localized: "Link Paused", bundle: .appStrings) : display.card.displayName)
                     .font(.caption2)
                     .foregroundStyle(usesPalette ? AnyShapeStyle(colors.muted.color) : AnyShapeStyle(.secondary))
             }

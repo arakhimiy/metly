@@ -24,14 +24,17 @@ struct BlockedPeopleScreen: View {
                             }
                     }
                 } footer: {
-                    Text("Blocked people can't see your cards or send you connect requests. They aren't told you blocked them.")
+                    Text("Blocked people can’t see your cards or send you connect requests. They won’t know you blocked them.")
                 }
             }
         }
         .overlay {
             if blocked.isEmpty {
-                ContentUnavailableView("No Blocked People", systemImage: "hand.raised",
-                                       description: Text("People you block can't see your cards. You can block someone from their page in People."))
+                EmptyStateView(.blocked, title: "No Blocked People",
+                               message: "People you block can’t see your cards. You can block someone from their page in People.") {
+                    Button("Open People", systemImage: "person.2") { router.select(.people) }
+                        .secondaryButtonStyle()
+                }
             }
         }
         .navigationTitle("Blocked People")
@@ -40,7 +43,7 @@ struct BlockedPeopleScreen: View {
 
     private func unblock(_ person: Connection) {
         PeopleActions.unblock(person, in: modelContext)
-        router.showToast(String(localized: "Unblocked \(PersonName.first(person.fullName))"), systemImage: "hand.raised.slash")
+        router.showToast(String(localized: "Unblocked \(PersonName.first(person.fullName))", bundle: .appStrings), systemImage: "hand.raised.slash")
     }
 }
 

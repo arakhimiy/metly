@@ -113,9 +113,9 @@ final class ScannedCardModel {
         guard let snapshot = card.snapshot else { return }
         guard let cardID = modelContext.cardToShare()?.id else {
             if let firstName = card.owner?.firstName {
-                fail(String(localized: "Create a card first — it’s what \(firstName) will get back."))
+                fail(String(localized: "Create a card first. \(firstName) gets it in return.", bundle: .appStrings))
             } else {
-                fail(String(localized: "Create a card first — it’s what they will get back."))
+                fail(String(localized: "Create a card first. They’ll get it in return.", bundle: .appStrings))
             }
             return
         }

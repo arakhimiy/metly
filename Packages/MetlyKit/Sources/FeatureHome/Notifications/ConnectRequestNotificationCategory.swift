@@ -11,10 +11,10 @@ nonisolated enum ConnectRequestNotificationCategory {
     static let requestIDKey = "requestId"
 
     static func makeCategory() -> UNNotificationCategory {
-        let accept = UNNotificationAction(identifier: acceptAction, title: String(localized: "Accept"),
+        let accept = UNNotificationAction(identifier: acceptAction, title: String(localized: "Accept", bundle: .appStrings),
                                           options: [.foreground, .authenticationRequired],
                                           icon: UNNotificationActionIcon(systemImageName: "checkmark.circle"))
-        let decline = UNNotificationAction(identifier: declineAction, title: String(localized: "Decline"),
+        let decline = UNNotificationAction(identifier: declineAction, title: String(localized: "Decline", bundle: .appStrings),
                                            options: [.destructive, .authenticationRequired],
                                            icon: UNNotificationActionIcon(systemImageName: "xmark.circle"))
         return UNNotificationCategory(identifier: identifier, actions: [accept, decline], intentIdentifiers: [], options: [])

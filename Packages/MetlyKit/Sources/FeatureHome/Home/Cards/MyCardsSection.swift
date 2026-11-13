@@ -1,11 +1,13 @@
 import MetlyCore
 import MetlyData
+import MetlyDesign
 import MetlySharedUI
 import SwiftData
 import SwiftUI
 
-/// "My Cards" (SPEC §2.5.7): paging carousel (tap → QR, long-press → CARD_PREVIEW_MENU), the active
-/// card's name / stats / "…" menu, Show QR + Share, draft (publish failed) notice, and New Card.
+/// The cards at the top of Home (SPEC §2.5.7): paging carousel (long-press → CARD_PREVIEW_MENU,
+/// tap → CARD_SETTINGS) and the draft (publish failed) notice. No header or panel: the cards speak for
+/// themselves, Show QR / Share sit in the toolbar (`HomeScreen`), New Card lives in Profile.
 struct MyCardsSection: View {
     let profile: Profile?
     let cards: [Card]
@@ -22,35 +24,26 @@ struct MyCardsSection: View {
 
         Section {
             if cards.isEmpty {
-                Button("Create Your First Card", systemImage: "plus.rectangle.on.rectangle", action: createCard)
-                    .frame(minHeight: 44)
+                EmptyStateView(.cards, title: "Make Your First Card",
+                               message: "Share it as a QR code, a link or in Apple Wallet.", style: .inline) {
+                    Button("Create Your First Card", systemImage: "plus", action: createCard)
+                        .subtleButtonStyle()
+                }
             } else {
                 CardCarousel(cards: cards, profile: profile, defaultCardID: defaultID,
-                             selection: $preferences.activeCardID, onShowQR: showQR, onAction: perform)
+                             selection: $preferences.activeCardID, onOpen: { perform(.settings, on: $0) }, onAction: perform)
                     .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     .listRowBackground(Color.clear)
             }
-        } header: {
-            HomeSectionHeader(Text("My Cards")) {
-                Button("New Card", systemImage: "plus", action: createCard)
-                    .labelStyle(.titleAndIcon)
-            }
         }
-        .headerProminence(.increased)
         .listSectionSpacing(.compact)
         .cardActionAlerts(cardActions)
         .task(id: cards.map(\.id)) { restoreActiveCard(defaultID: defaultID) }
 
-        // The active card's panel gets its own grouped section (rounded on every corner).
-        if let active {
+        // Publish failed: say so under the carousel, in its own grouped section.
+        if let active, active.publishState == .draft {
             Section {
-                ActiveCardPanel(card: active, isDefault: active.id == defaultID,
-                                onAction: { perform($0, on: active) },
-                                onShowQR: { showQR(active) },
-                                onShare: { share(active) })
-                if active.publishState == .draft {
-                    DraftCardNotice(cardName: active.name)
-                }
+                DraftCardNotice(cardName: active.name)
             }
         }
     }
@@ -70,14 +63,6 @@ struct MyCardsSection: View {
         let preferences = services.preferences
         guard !cards.contains(where: { $0.id == preferences.activeCardID }) else { return }
         preferences.activeCardID = defaultID ?? cards.first?.id
-    }
-
-    private func showQR(_ card: Card) {
-        router.present(.qr(cardID: card.id))
-    }
-
-    private func share(_ card: Card) {
-        router.present(.share(cardID: card.id))
     }
 
     private func perform(_ action: CardAction, on card: Card) {

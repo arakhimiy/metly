@@ -120,14 +120,14 @@ struct HomeScreenGallerySection: View {
     var body: some View {
         let design = data.wallpaperDesign
         Section {
-            WidgetShowcaseRow(title: "My QR", detail: "Small · Your QR, one tap away.", design: design,
+            WidgetShowcaseRow(title: "My QR", detail: "Small · Opens your QR code in one tap.", design: design,
                               accessibilityPreview: Text("Preview of the My QR widget")) {
                 HomeWidgetPreview(size: WidgetPreviewSize.small, background: WidgetBackgrounds.card(design),
                                   contentMargin: 12) {
                     MyQRWidgetView(content: data.card)
                 }
             }
-            WidgetShowcaseRow(title: "Card", detail: "Medium · Your card and this week's new connections.", design: design,
+            WidgetShowcaseRow(title: "Card", detail: "Medium · Your card and this week’s new connections.", design: design,
                               accessibilityPreview: Text("Preview of the Card widget")) {
                 HomeWidgetPreview(size: WidgetPreviewSize.medium, background: WidgetBackgrounds.standard) {
                     CardWidgetView(content: data.card)

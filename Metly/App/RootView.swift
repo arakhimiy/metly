@@ -12,6 +12,8 @@ struct RootView: View {
     @Environment(AppRouter.self) private var router
     @Environment(AppServices.self) private var services
     @Environment(\.modelContext) private var modelContext
+    /// Bumped by `AppLanguage.didChangeNotification`; keys the whole tree so every screen re-reads its strings.
+    @State private var language = AppLanguage.current
 
     var body: some View {
         Group {
@@ -27,6 +29,15 @@ struct RootView: View {
             case .main:
                 MainTabView()
             }
+        }
+        // Language picked in the app (first screen or Settings › Language): rebuild every screen in
+        // it at once. `.id` re-runs every `String(localized:)` against `AppLanguage`'s bundle; the
+        // locale drives `Text` keys, dates and numbers. Here, keyed on local state fed by a
+        // notification, which re-renders reliably (an @Observable read here did not).
+        .environment(\.locale, Locale(identifier: AppLanguage.localeIdentifier))
+        .id(language)
+        .onReceive(NotificationCenter.default.publisher(for: AppLanguage.didChangeNotification)) { _ in
+            language = AppLanguage.current
         }
         .animation(.default, value: router.phase)
         .toastHost(level: 0)

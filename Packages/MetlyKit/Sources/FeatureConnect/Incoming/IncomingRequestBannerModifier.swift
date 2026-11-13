@@ -72,7 +72,7 @@ private struct BannerOverlayContent: View {
                     .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
                     .task(id: item.id) { await autoDismiss(item) }
                     .onAppear {
-                        AccessibilityNotification.Announcement(String(localized: "\(item.firstName) wants to connect")).post()
+                        AccessibilityNotification.Announcement(String(localized: "\(item.firstName) wants to connect", bundle: .appStrings)).post()
                     }
             }
             Spacer(minLength: 0)

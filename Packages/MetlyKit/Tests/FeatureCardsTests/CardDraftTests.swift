@@ -109,4 +109,18 @@ struct CardDraftTests {
         #expect(!CardDraft(card: card).apply(to: card, profile: profile).changedAnything)
     }
 
+    @Test func faceOptionsAreWrittenAndQueuedOnce() throws {
+        let context = try makeContext()
+        let card = insertCard("Work", sortOrder: 0, in: context)
+        var draft = CardDraft(card: card)
+        draft.options.showCompany = false
+        draft.options.logoStyle = .mono
+
+        let commit = draft.apply(to: card, profile: nil)
+
+        #expect(commit.cardChanged)
+        #expect(card.faceOptions == CardFaceOptions(showJobTitle: true, showCompany: false, logoStyle: .mono))
+        #expect(card.syncState == .pendingUpsert)
+        #expect(!CardDraft(card: card).apply(to: card, profile: nil).changedAnything)
+    }
 }

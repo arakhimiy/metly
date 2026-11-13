@@ -32,7 +32,7 @@ struct SetupProfileFormTests {
         let form = SetupProfileForm(fullName: "Aziza", email: email)
         #expect(!form.isEmailValid)
         #expect(!form.canContinue)
-        #expect(form.emailError == "Check your email — it looks incomplete.")
+        #expect(form.emailError == "This email address looks incomplete.")
     }
 
     @Test func prefillsFromProvider() {

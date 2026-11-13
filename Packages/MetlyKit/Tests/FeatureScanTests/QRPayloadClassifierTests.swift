@@ -16,7 +16,7 @@ struct QRPayloadClassifierTests {
         "HTTPS://TANISHLY.APP/C/KAMILA-X1Y2",
         "https://tanishly.app/c/kamila-x1y2/?src=qr",
         "  https://tanishly.app/c/kamila-x1y2\n",
-        "tanishly://c/kamila-x1y2",
+        "nameshake://c/kamila-x1y2",
     ])
     func metlyLinks(raw: String) {
         #expect(QRPayloadClassifier.classify(raw) == kamila)

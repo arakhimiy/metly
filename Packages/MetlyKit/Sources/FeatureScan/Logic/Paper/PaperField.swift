@@ -37,18 +37,18 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
 
     var title: String {
         switch self {
-        case .name: String(localized: "Name")
-        case .title: String(localized: "Title")
-        case .company: String(localized: "Company")
+        case .name: String(localized: "Name", bundle: .appStrings)
+        case .title: String(localized: "Title", bundle: .appStrings)
+        case .company: String(localized: "Company", bundle: .appStrings)
         default: kind?.title ?? ""
         }
     }
 
     var placeholder: String {
         switch self {
-        case .name: String(localized: "Full Name")
-        case .title: String(localized: "Job Title")
-        case .company: String(localized: "Company")
+        case .name: String(localized: "Full Name", bundle: .appStrings)
+        case .title: String(localized: "Job Title", bundle: .appStrings)
+        case .company: String(localized: "Company", bundle: .appStrings)
         case .phone: "+998 90 123 45 67"
         case .email: "name@company.com"
         case .telegram: "@username"
@@ -56,7 +56,7 @@ nonisolated enum PaperField: String, CaseIterable, Identifiable, Hashable, Senda
         case .linkedin: "in/username"
         case .whatsapp: "+998 90 123 45 67"
         case .instagram: "@username"
-        case .address: String(localized: "Street, building, city")
+        case .address: String(localized: "Street, building, city", bundle: .appStrings)
         }
     }
 

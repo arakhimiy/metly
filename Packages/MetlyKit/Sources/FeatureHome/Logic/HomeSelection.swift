@@ -50,13 +50,13 @@ nonisolated enum CompactRelativeTime {
         let hours = minutes / 60
         let days = hours / 24
         switch seconds {
-        case ..<60: return String(localized: "now")
-        case ..<3_600: return String(localized: "\(minutes)m")
-        case ..<86_400: return String(localized: "\(hours)h")
+        case ..<60: return String(localized: "now", bundle: .appStrings)
+        case ..<3_600: return String(localized: "\(minutes)m", bundle: .appStrings)
+        case ..<86_400: return String(localized: "\(hours)h", bundle: .appStrings)
         default:
-            if days < 30 { return String(localized: "\(days)d") }
-            if days < 365 { return String(localized: "\(days / 30)mo") }
-            return String(localized: "\(days / 365)y")
+            if days < 30 { return String(localized: "\(days)d", bundle: .appStrings) }
+            if days < 365 { return String(localized: "\(days / 30)mo", bundle: .appStrings) }
+            return String(localized: "\(days / 365)y", bundle: .appStrings)
         }
     }
 }

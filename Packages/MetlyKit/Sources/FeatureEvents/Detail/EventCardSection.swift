@@ -13,11 +13,11 @@ struct EventCardSection: View {
             Section {
                 if event.isActive {
                     Button(action: onShowQR) {
-                        EventCardRow(card: card, profile: profile, caption: String(localized: "Card to Share"), showsQRIcon: true)
+                        EventCardRow(card: card, profile: profile, caption: String(localized: "Card to Share", bundle: .appStrings), showsQRIcon: true)
                     }
                     .accessibilityHint("Shows the QR code")
                 } else {
-                    EventCardRow(card: card, profile: profile, caption: String(localized: "Card Shared"), showsQRIcon: false)
+                    EventCardRow(card: card, profile: profile, caption: String(localized: "Card Shared", bundle: .appStrings), showsQRIcon: false)
                 }
             } footer: {
                 if event.isActive {

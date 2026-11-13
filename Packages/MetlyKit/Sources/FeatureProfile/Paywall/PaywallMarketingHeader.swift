@@ -24,7 +24,7 @@ struct PaywallMarketingHeader: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                 if let savings {
-                    Text("Save \(savings.percent)% with yearly — just \(savings.monthlyEquivalent) a month")
+                    Text("Save \(savings.percent)% with Yearly, at \(savings.monthlyEquivalent) a month")
                         .font(.subheadline.bold())
                         .foregroundStyle(.tint)
                         .multilineTextAlignment(.center)

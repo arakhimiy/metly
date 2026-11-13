@@ -4,12 +4,15 @@ import MetlyData
 import MetlyDesign
 import SwiftUI
 
-/// Step 4 — "Details": live preview, card name (Work / Personal / Conference) and
-/// "Show on This Card". Publish creates the card; the sync engine publishes it.
+/// Step 3 — "Details": live preview, card name (Work / Personal / Conference) and "Show on This Card"
+/// (title, company, logo, photo, contacts, QR). Publish creates the card; the sync engine publishes it.
 struct CreateDetailsStep: View {
     @Binding var design: CardDesign
     /// Profile entries the card shows.
     @Binding var selection: [UUID]?
+    @Binding var options: CardFaceOptions
+    @Binding var photo: MediaEdit
+    @Binding var logo: MediaEdit
     @Binding var name: String
     let content: CardFaceContent
     /// The live profile ("+ Add Contact" writes to it).
@@ -41,8 +44,10 @@ struct CreateDetailsStep: View {
                 Text("Card Name")
             }
 
+            CardIdentitySection(profile: profile, design: $design, options: $options, photo: $photo, logo: $logo)
             CardFieldsSection(profile: profile, selection: $selection, design: $design,
-                              footer: String(localized: "Values come from your profile. Change privacy there."))
+                              footer: String(localized: "Values come from your profile. Change privacy there.", bundle: .appStrings))
+            CardQRSection(showQR: $design.showQR)
         }
         .onAppear {
             // A new card shows every entry that isn't Private.

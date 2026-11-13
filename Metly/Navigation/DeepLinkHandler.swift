@@ -3,7 +3,7 @@ import MetlyData
 import SwiftData
 import SwiftUI
 
-/// Universal Links (`https://tanishly.app/c/{slug}`), custom scheme (`tanishly://…`) and widget/intent links.
+/// Universal Links (`https://tanishly.app/c/{slug}`), custom scheme (`nameshake://…`) and widget/intent links.
 enum DeepLinkHandler {
     /// A link that arrived before the app reached `.main` (cold launch from a widget, control or Siri).
     private static var pendingURL: URL?
@@ -28,7 +28,7 @@ enum DeepLinkHandler {
         guard url.scheme == Brand.urlScheme else { return }
         let parts = url.pathComponents.filter { $0 != "/" }
         switch url.host() {
-        case "qr":   // tanishly://qr[/cardID]  — widgets, App Shortcut, Control
+        case "qr":   // nameshake://qr[/cardID]  — widgets, App Shortcut, Control
             let card = parts.first.flatMap(UUID.init(uuidString:))
                 .flatMap { context.record(Card.self, id: $0) }
                 .flatMap { $0.isDeleted ? nil : $0 } ?? context.cardToShare()   // deleted card → card to share
@@ -38,7 +38,7 @@ enum DeepLinkHandler {
             }
         case "followups":
             router.open(.followUps, in: .home)
-        case "reminder":   // tanishly://reminder/{followUpID}
+        case "reminder":   // nameshake://reminder/{followUpID}
             if let id = parts.first.flatMap(UUID.init(uuidString:)),
                let followUp = context.record(FollowUp.self, id: id), !followUp.isDeleted {
                 router.dismissAll()
@@ -46,7 +46,7 @@ enum DeepLinkHandler {
             } else {
                 router.open(.followUps, in: .home)   // reminder gone (done elsewhere / deleted)
             }
-        case "person":     // tanishly://person/{connectionID}
+        case "person":     // nameshake://person/{connectionID}
             if let id = parts.first.flatMap(UUID.init(uuidString:)),
                let person = context.record(Connection.self, id: id), !person.isDeleted, !person.isBlocked {
                 router.open(.connectionDetail(id: id), in: .people)
@@ -60,7 +60,7 @@ enum DeepLinkHandler {
             router.present(.connect(cardID: nil))
         case "scan":
             router.select(.scan)
-        case "event":    // tanishly://event/start — App Shortcut "Start Event"
+        case "event":    // nameshake://event/start — App Shortcut "Start Event"
             if parts.first == "start" {
                 router.dismissAll()
                 router.present(.startEvent(eventID: nil))

@@ -26,7 +26,7 @@ public struct LockQRRectangularView<Backdrop: View>: View {
                     .clipShape(.rect(cornerRadius: 6, style: .continuous))
                     .frame(maxHeight: .infinity)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(display.isPaused ? String(localized: "Link Paused") : String(localized: "Scan to connect"))
+                    Text(display.isPaused ? String(localized: "Link Paused", bundle: .appStrings) : String(localized: "Scan to connect", bundle: .appStrings))
                         .font(.headline)
                         .lineLimit(2)
                         .widgetAccentable()
@@ -48,8 +48,8 @@ public struct LockQRRectangularView<Backdrop: View>: View {
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(Brand.appName).font(.headline)
-                    Text(content == .noCard ? String(localized: "Create a card to show its QR.")
-                                            : String(localized: "Sign in to show your QR."))
+                    Text(content == .noCard ? String(localized: "Create a card to show its QR.", bundle: .appStrings)
+                                            : String(localized: "Sign in to show your QR.", bundle: .appStrings))
                         .font(.caption)
                 }
                 .lineLimit(2)
@@ -93,7 +93,7 @@ public struct LockQRCircularView<Backdrop: View>: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(content.display.map { String(localized: "QR code for \($0.owner.displayName)") }
-                                 ?? String(localized: "\(Brand.appName) QR code")))
+        .accessibilityLabel(Text(content.display.map { String(localized: "QR code for \($0.owner.displayName)", bundle: .appStrings) }
+                                 ?? String(localized: "\(Brand.appName) QR code", bundle: .appStrings)))
     }
 }

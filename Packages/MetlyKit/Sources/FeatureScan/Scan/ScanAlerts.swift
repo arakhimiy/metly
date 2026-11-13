@@ -14,18 +14,17 @@ struct InvalidCodeAlert: Equatable {
     var url: URL?
     var domain: String?
 
-    static let title = String(localized: "No Business Card Found")
-
+    static var title: String { String(localized: "No Business Card Found", bundle: .appStrings) }
     var message: String {
         switch (source, domain) {
         case (.camera, let domain?):
-            String(localized: "This QR code opens \(domain). It isn’t a \(Brand.appName) or vCard code.")
+            String(localized: "This QR code opens \(domain). It isn’t a \(Brand.appName) or vCard code.", bundle: .appStrings)
         case (.camera, nil):
-            String(localized: "This QR code isn’t a \(Brand.appName) or vCard code.")
+            String(localized: "This QR code isn’t a \(Brand.appName) or vCard code.", bundle: .appStrings)
         case (.clipboard, let domain?):
-            String(localized: "This link opens \(domain). It isn’t a \(Brand.appName) card link.")
+            String(localized: "This link opens \(domain). It isn’t a \(Brand.appName) card link.", bundle: .appStrings)
         case (.clipboard, nil):
-            String(localized: "The copied text isn’t a \(Brand.appName) card link. Copy a link like \(Brand.linkHost)/c/… and try again.")
+            String(localized: "The copied text isn’t a \(Brand.appName) card link. Copy a link like \(Brand.linkHost)/c/… and try again.", bundle: .appStrings)
         }
     }
 }
@@ -37,6 +36,6 @@ struct PaperNotReadAlert: Equatable {
     /// Whatever text was read (offered under Recognized Text after "Enter Manually").
     var recognizedText: [String] = []
 
-    static let title = String(localized: "Couldn’t Read the Card")
-    static let message = String(localized: "Hold the card flat in good light, or type the details yourself.")
+    static var title: String { String(localized: "Couldn’t Read the Card", bundle: .appStrings) }
+    static var message: String { String(localized: "Hold the card flat in good light, or type the details yourself.", bundle: .appStrings) }
 }

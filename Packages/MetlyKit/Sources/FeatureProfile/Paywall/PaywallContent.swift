@@ -17,15 +17,15 @@ nonisolated struct PaywallBenefit: Identifiable, Equatable, Sendable {
     static func make(_ kind: Kind) -> PaywallBenefit {
         switch kind {
         case .cards:
-            PaywallBenefit(kind: kind, title: String(localized: "Unlimited cards"), detail: String(localized: "Free: 2 cards"), symbolName: "rectangle.stack.fill")
+            PaywallBenefit(kind: kind, title: String(localized: "Unlimited cards", bundle: .appStrings), detail: String(localized: "Free: 2 cards", bundle: .appStrings), symbolName: "rectangle.stack.fill")
         case .followUps:
-            PaywallBenefit(kind: kind, title: String(localized: "Unlimited follow-up reminders"), detail: String(localized: "Free: 5 active"), symbolName: "bell.badge.fill")
+            PaywallBenefit(kind: kind, title: String(localized: "Unlimited follow-up reminders", bundle: .appStrings), detail: String(localized: "Free: 5 active", bundle: .appStrings), symbolName: "bell.badge.fill")
         case .events:
-            PaywallBenefit(kind: kind, title: String(localized: "Several events at once"), detail: String(localized: "Free: 1 active event"), symbolName: "calendar")
+            PaywallBenefit(kind: kind, title: String(localized: "Several events at once", bundle: .appStrings), detail: String(localized: "Free: 1 active event", bundle: .appStrings), symbolName: "calendar")
         case .designs:
-            PaywallBenefit(kind: kind, title: String(localized: "Every template and palette"), detail: String(localized: "Editorial, Ocean, Ember and more"), symbolName: "paintpalette.fill")
+            PaywallBenefit(kind: kind, title: String(localized: "Every template and palette", bundle: .appStrings), detail: String(localized: "Foil, Aurora, Editorial and every palette", bundle: .appStrings), symbolName: "paintpalette.fill")
         case .eventExport:
-            PaywallBenefit(kind: kind, title: String(localized: "Export events to CSV"), detail: String(localized: "Every connection, note and follow-up"), symbolName: "tablecells.fill")
+            PaywallBenefit(kind: kind, title: String(localized: "Export events to CSV", bundle: .appStrings), detail: String(localized: "Every connection, note and follow-up", bundle: .appStrings), symbolName: "tablecells.fill")
         }
     }
 }
@@ -43,37 +43,37 @@ nonisolated struct PaywallContent: Equatable, Sendable {
         switch trigger {
         case .settings:
             headline = Brand.proName
-            message = String(localized: "Remember everyone you meet and follow up on time.")
+            message = String(localized: "Remember everyone you meet and follow up on time.", bundle: .appStrings)
             symbolName = "crown.fill"
             highlighted = nil
         case .cardLimit:
-            headline = String(localized: "Unlimited Cards")
-            message = String(localized: "The Free plan includes 2 cards. Upgrade for a card for every side of your work.")
+            headline = String(localized: "Unlimited Cards", bundle: .appStrings)
+            message = String(localized: "The Free plan includes 2 cards. Upgrade for unlimited cards.", bundle: .appStrings)
             symbolName = "rectangle.stack.fill"
             highlighted = .cards
         case .followUpLimit:
-            headline = String(localized: "Unlimited Follow-ups")
-            message = String(localized: "The Free plan includes 5 active reminders. Upgrade and never lose track of a promise.")
+            headline = String(localized: "Unlimited Follow-ups", bundle: .appStrings)
+            message = String(localized: "The Free plan includes 5 active reminders. Upgrade for unlimited reminders.", bundle: .appStrings)
             symbolName = "bell.badge.fill"
             highlighted = .followUps
         case .eventLimit:
-            headline = String(localized: "Run Several Events")
-            message = String(localized: "The Free plan includes 1 active event. Upgrade to run several at once, each with its own summary.")
+            headline = String(localized: "Run Several Events", bundle: .appStrings)
+            message = String(localized: "The Free plan includes 1 active event. Upgrade to run several at once, each with its own summary.", bundle: .appStrings)
             symbolName = "calendar"
             highlighted = .events
         case .proTemplate:
-            headline = String(localized: "Unlock Editorial")
-            message = String(localized: "Upgrade to use the Editorial template and every palette.")
+            headline = String(localized: "Unlock Pro Templates", bundle: .appStrings)
+            message = String(localized: "Upgrade to use Foil, Aurora, Editorial and every palette.", bundle: .appStrings)
             symbolName = "paintpalette.fill"
             highlighted = .designs
         case .proPalette:
-            headline = String(localized: "Unlock Every Palette")
-            message = String(localized: "Upgrade to use Ocean, Ember and the Editorial template.")
+            headline = String(localized: "Unlock Every Palette", bundle: .appStrings)
+            message = String(localized: "Upgrade to use Ocean, Ember and the Foil, Aurora and Editorial templates.", bundle: .appStrings)
             symbolName = "paintpalette.fill"
             highlighted = .designs
         case .eventExport:
-            headline = String(localized: "Export Your Events")
-            message = String(localized: "Take every connection, note and follow-up with you as a CSV file.")
+            headline = String(localized: "Export Your Events", bundle: .appStrings)
+            message = String(localized: "Take every connection, note and follow-up with you as a CSV file.", bundle: .appStrings)
             symbolName = "tablecells.fill"
             highlighted = .eventExport
         }
@@ -89,7 +89,7 @@ nonisolated struct PaywallContent: Equatable, Sendable {
         return kinds.map(PaywallBenefit.make)
     }
 
-    static let renewalTerms = String(localized: "Payment is charged to your Apple ID. Your subscription renews automatically until canceled. Cancel anytime in Settings at least 24 hours before renewal.")
+    static var renewalTerms: String { String(localized: "Payment is charged to your Apple ID. Your subscription renews automatically until canceled. Cancel anytime in Settings at least 24 hours before renewal.", bundle: .appStrings) }
 }
 
 /// Yearly vs monthly comparison ("Save 44%").

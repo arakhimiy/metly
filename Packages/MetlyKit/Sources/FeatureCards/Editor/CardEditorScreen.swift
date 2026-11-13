@@ -12,7 +12,7 @@ struct CardEditorScreen: View {
         if let card = cards.first(where: { $0.id == cardID }) {
             CardEditorForm(card: card, profile: profiles.first)
         } else {
-            MissingCardView(title: String(localized: "Edit Card"))
+            MissingCardView(title: String(localized: "Edit Card", bundle: .appStrings))
         }
     }
 }

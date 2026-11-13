@@ -128,6 +128,21 @@ struct JSONCodingTests {
         #expect(APIError(CancellationError()) == .cancelled)
     }
 
+    @Test("Card face options travel inside design, only when not the default")
+    func cardFaceOptions() throws {
+        let plain = CardDTO(id: UUID(), name: "Work", sortOrder: 0, design: CardDesign(), createdAt: fixedDate, updatedAt: fixedDate)
+        let plainJSON = try json(plain)
+        #expect(!plainJSON.contains("showJobTitle") && !plainJSON.contains("logoStyle"))
+        #expect(try roundTrip(plain).faceOptions == CardFaceOptions())
+
+        var hidden = plain
+        hidden.faceOptions = CardFaceOptions(showJobTitle: false, showCompany: true, logoStyle: .mono)
+        let hiddenJSON = try json(hidden)
+        #expect(hiddenJSON.contains(#""showJobTitle":false"#) && hiddenJSON.contains(#""logoStyle":"mono""#))
+        #expect(!hiddenJSON.contains("showCompany"))
+        #expect(try roundTrip(hidden) == hidden)
+    }
+
     @Test func unavailablePublicCardHasNoPersonalData() throws {
         let card = try MetlyJSON.makeDecoder().decode(PublicCardDTO.self, from: Data(#"{"slug":"lola-p0z3","status":"paused"}"#.utf8))
         #expect(card.status == .paused)

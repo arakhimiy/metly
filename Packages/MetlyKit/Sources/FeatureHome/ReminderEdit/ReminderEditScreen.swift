@@ -91,18 +91,18 @@ struct ReminderEditScreen: View {
         switch ReminderEditor.save(form, existing: existing, in: modelContext, limits: services.entitlements.limits) {
         case .created:
             services.sync.requestSync()
-            router.showToast(String(localized: "Reminder Set"), systemImage: "bell")
+            router.showToast(String(localized: "Reminder Set", bundle: .appStrings), systemImage: "bell")
             router.dismiss()
             Task { await FollowUpNotificationScheduler.requestAuthorizationIfNeeded() }
         case .updated:
             services.sync.requestSync()
-            router.showToast(String(localized: "Reminder Updated"), systemImage: "bell")
+            router.showToast(String(localized: "Reminder Updated", bundle: .appStrings), systemImage: "bell")
             router.dismiss()
         case .limitReached(let count):
             openCount = count
             showsLimitAlert = true
         case .missingPerson:
-            router.showToast(String(localized: "Choose a person first"), systemImage: "person.crop.circle.badge.questionmark")
+            router.showToast(String(localized: "Choose a person first", bundle: .appStrings), systemImage: "person.crop.circle.badge.questionmark")
         }
     }
 
@@ -118,7 +118,7 @@ struct ReminderEditScreen: View {
         guard let existing else { return }
         FollowUpMutations.delete(existing, in: modelContext)
         services.sync.requestSync()
-        router.showToast(String(localized: "Reminder Deleted"), systemImage: "trash")
+        router.showToast(String(localized: "Reminder Deleted", bundle: .appStrings), systemImage: "trash")
         router.dismiss()
     }
 

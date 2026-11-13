@@ -68,12 +68,12 @@ struct ContactInfoSection: View {
 
     private func copy(_ field: ContactField) {
         UIPasteboard.general.string = field.value
-        router.showToast(String(localized: "\(field.kind.title) Copied"), systemImage: "doc.on.doc")
+        router.showToast(String(localized: "\(field.kind.title) Copied", bundle: .appStrings), systemImage: "doc.on.doc")
     }
 
     private func copy(_ phone: String) {
         UIPasteboard.general.string = phone
-        router.showToast(String(localized: "\(ContactFieldKind.phone.title) Copied"), systemImage: "doc.on.doc")
+        router.showToast(String(localized: "\(ContactFieldKind.phone.title) Copied", bundle: .appStrings), systemImage: "doc.on.doc")
     }
 }
 
@@ -142,7 +142,7 @@ private struct PhoneInfoRow: View {
             }
         }
         .accessibilityLabel(Text("\(phone.label.title), \(phone.value)"))
-        .accessibilityHint("Calls this number. Touch and hold to copy")
+        .accessibilityHint("Calls this number. Touch and hold to copy.")
     }
 }
 

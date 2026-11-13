@@ -1,23 +1,18 @@
-/// CARD_CREATE steps pushed after "How do you want to start?" (SPEC §2.5.23; no AI path in v1).
+/// CARD_CREATE steps pushed after the Templates gallery (the wizard's root).
 enum CreateStep: Hashable {
-    /// 2-column template gallery.
-    case gallery
     /// Palette + Light / Dark.
     case style
-    /// Card name + "Show on This Card".
+    /// Card name + "Show on This Card" (title, company, logo, photo, contacts, QR).
     case details
 
-    /// Progress shown under the navigation bar (method step = 0.2, done = 1).
+    /// Progress shown under the navigation bar (Templates = 1/3, done = 1).
     var progress: Double {
         switch self {
-        case .gallery: 0.45
-        case .style: 0.65
-        case .details: 0.88
+        case .style: 0.66
+        case .details: 0.9
         }
     }
-}
 
-/// How the user starts a new card.
-enum CreateMethod {
-    case template, blank
+    /// The Templates gallery (root).
+    static let galleryProgress = 0.33
 }

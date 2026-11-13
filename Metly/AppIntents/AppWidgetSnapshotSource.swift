@@ -61,7 +61,7 @@ final class AppWidgetSnapshotSource: WidgetSnapshotSource {
             ),
             cards: cards.map {
                 WidgetSnapshotInput.Card(id: $0.id, name: $0.name, slug: $0.slug, sortOrder: $0.sortOrder, design: $0.design,
-                                         visibleContactIDs: $0.visibleContactIDs)
+                                         visibleContactIDs: $0.visibleContactIDs, faceOptions: $0.faceOptions)
             },
             defaultCardID: context.defaultCard()?.id,
             shareCardID: context.cardToShare()?.id,

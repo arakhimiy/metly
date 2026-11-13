@@ -250,7 +250,7 @@ extension MockBackend {
 
     /// Reads `productId` / `expiresDate` from the JWS payload when it is a real StoreKit transaction.
     mutating func verify(_ jws: String, now: Date) -> EntitlementDTO {
-        var productID = "app.tanishly.ios.pro.yearly"
+        var productID = "app.nameshake.ios.pro.yearly"
         var expiresAt = now.addingTimeInterval(365 * 86_400)
         var originalTransactionID: String?
         var environment = "Xcode"

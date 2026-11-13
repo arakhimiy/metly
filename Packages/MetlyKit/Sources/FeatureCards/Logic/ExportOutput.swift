@@ -46,11 +46,11 @@ nonisolated enum ExportScale: Int, CaseIterable, Identifiable, Sendable {
 
     var subtitle: String {
         // Plain digits (String, not Int) so pixel sizes never get a thousands separator.
-        let size = String(localized: "\(String(Int(pixelSize.width))) × \(String(Int(pixelSize.height))) px")
+        let size = String(localized: "\(String(Int(pixelSize.width))) × \(String(Int(pixelSize.height))) px", bundle: .appStrings)
         return switch self {
         case .x1: size
-        case .x2: String(localized: "\(size) · Retina")
-        case .x3: String(localized: "\(size) · Print-ready")
+        case .x2: String(localized: "\(size) · Retina", bundle: .appStrings)
+        case .x3: String(localized: "\(size) · Print-ready", bundle: .appStrings)
         }
     }
 }
@@ -62,15 +62,15 @@ nonisolated enum ExportCorners: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .rounded: String(localized: "Rounded")
-        case .square: String(localized: "Square")
+        case .rounded: String(localized: "Rounded", bundle: .appStrings)
+        case .square: String(localized: "Square", bundle: .appStrings)
         }
     }
 
     var subtitle: String {
         switch self {
-        case .rounded: String(localized: "Transparent corners, like the card in the app")
-        case .square: String(localized: "Full rectangle, for print and slides")
+        case .rounded: String(localized: "Transparent corners, like the card in the app", bundle: .appStrings)
+        case .square: String(localized: "Full rectangle, for print and slides", bundle: .appStrings)
         }
     }
 }
@@ -82,19 +82,19 @@ nonisolated enum ExportPDFLayout: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .single: String(localized: "Single Card")
-        case .sheetA4: String(localized: "A4 Sheet")
+        case .single: String(localized: "Single Card", bundle: .appStrings)
+        case .sheetA4: String(localized: "A4 Sheet", bundle: .appStrings)
         }
     }
 
     var subtitle: String {
         switch self {
-        case .single: String(localized: "85 × 55 mm, 3 mm bleed, crop marks")
-        case .sheetA4: String(localized: "10 cards up, for a print shop")
+        case .single: String(localized: "85 × 55 mm, 3 mm bleed, crop marks", bundle: .appStrings)
+        case .sheetA4: String(localized: "10 cards up, for a print shop", bundle: .appStrings)
         }
     }
 }
 
 extension CardExporter.LockScreenDevice {
-    nonisolated var subtitle: String { String(localized: "\(String(Int(pixelSize.width))) × \(String(Int(pixelSize.height))) px") }
+    nonisolated var subtitle: String { String(localized: "\(String(Int(pixelSize.width))) × \(String(Int(pixelSize.height))) px", bundle: .appStrings) }
 }

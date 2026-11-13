@@ -118,7 +118,7 @@ struct StartEventScreen: View {
             start()
         } else if let eventID, let event = modelContext.record(Event.self, id: eventID) {
             EventLifecycle.update(event, with: draft, in: modelContext)
-            finish(String(localized: "Event Updated"), systemImage: "checkmark.circle")
+            finish(String(localized: "Event Updated", bundle: .appStrings), systemImage: "checkmark.circle")
         }
     }
 
@@ -130,7 +130,7 @@ struct StartEventScreen: View {
         }
         modelContext.insert(draft.makeEvent())
         try? modelContext.save()
-        finish(String(localized: "Event Started"), systemImage: "flag")
+        finish(String(localized: "Event Started", bundle: .appStrings), systemImage: "flag")
     }
 
     private func finish(_ message: String, systemImage: String) {

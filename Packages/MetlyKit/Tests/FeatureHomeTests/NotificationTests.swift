@@ -49,7 +49,7 @@ struct NotificationPayloadTests {
     @Test func userInfoCarriesIDAndReminderLink() {
         let info = payload().userInfo
         #expect(info["followUpID"] == id.uuidString)
-        #expect(info["link"] == "tanishly://reminder/\(id.uuidString)")
+        #expect(info["link"] == "nameshake://reminder/\(id.uuidString)")
         #expect(info["fingerprint"] != nil)
     }
 
@@ -128,8 +128,8 @@ struct NotificationActionTests {
     @Test func otherNotificationsFollowTheirLink() {
         let other = FollowUpNotificationAction(actionIdentifier: UNNotificationDefaultActionIdentifier,
                                                categoryIdentifier: "CONNECT_REQUEST", requestIdentifier: "remote-1",
-                                               userInfo: ["link": "tanishly://people"])
-        #expect(other == .openLink(URL(string: "tanishly://people")!))
+                                               userInfo: ["link": "nameshake://people"])
+        #expect(other == .openLink(URL(string: "nameshake://people")!))
         let unknown = FollowUpNotificationAction(actionIdentifier: UNNotificationDefaultActionIdentifier,
                                                  categoryIdentifier: "", requestIdentifier: "remote-2", userInfo: [:])
         #expect(unknown == .ignore)
@@ -137,16 +137,16 @@ struct NotificationActionTests {
 
     @Test func connectRequestActionsAnswerTheRequest() {
         let requestID = UUID()
-        let info: [AnyHashable: Any] = ["requestId": requestID.uuidString, "link": "tanishly://people"]
+        let info: [AnyHashable: Any] = ["requestId": requestID.uuidString, "link": "nameshake://people"]
         func answer(_ identifier: String, _ info: [AnyHashable: Any]) -> FollowUpNotificationAction {
             FollowUpNotificationAction(actionIdentifier: identifier, categoryIdentifier: "CONNECT_REQUEST",
                                        requestIdentifier: "remote-3", userInfo: info)
         }
         #expect(answer("CONNECT_REQUEST_ACCEPT", info) == .answerConnectRequest(requestID: requestID, accept: true))
         #expect(answer("CONNECT_REQUEST_DECLINE", info) == .answerConnectRequest(requestID: requestID, accept: false))
-        #expect(answer(UNNotificationDefaultActionIdentifier, info) == .openLink(URL(string: "tanishly://people")!))
+        #expect(answer(UNNotificationDefaultActionIdentifier, info) == .openLink(URL(string: "nameshake://people")!))
         // No request id: fall back to opening People.
-        #expect(answer("CONNECT_REQUEST_ACCEPT", ["link": "tanishly://people"]) == .openLink(URL(string: "tanishly://people")!))
+        #expect(answer("CONNECT_REQUEST_ACCEPT", ["link": "nameshake://people"]) == .openLink(URL(string: "nameshake://people")!))
     }
 
     @Test func connectRequestCategoryHasAcceptAndDecline() {

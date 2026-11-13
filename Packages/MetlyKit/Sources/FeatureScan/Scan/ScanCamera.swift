@@ -29,7 +29,7 @@ final class ScanCamera {
     @ObservationIgnored private let isPreview: Bool
     @ObservationIgnored private var cachedBackCamera: AVCaptureDevice?
     @ObservationIgnored private var didLookUpBackCamera = false
-    @ObservationIgnored private let torchQueue = DispatchQueue(label: "app.tanishly.ios.scan.torch")
+    @ObservationIgnored private let torchQueue = DispatchQueue(label: "app.nameshake.ios.scan.torch")
 
     init() {
         access = .current

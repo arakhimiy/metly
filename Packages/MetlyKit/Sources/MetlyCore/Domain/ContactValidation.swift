@@ -12,31 +12,31 @@ public nonisolated enum ContactValidation {
         case .phone, .whatsapp:
             let digits = text.filter(\.isNumber).count
             guard text.allSatisfy({ $0.isNumber || " +-()".contains($0) }), (7...15).contains(digits) else {
-                return String(localized: "Enter a full phone number, like +998 90 123 45 67.")
+                return String(localized: "Enter a full phone number, like +998 90 123 45 67.", bundle: .appStrings)
             }
         case .email:
             guard text.wholeMatch(of: /[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}/) != nil else {
-                return String(localized: "Enter an email address, like name@example.com.")
+                return String(localized: "Enter an email address, like name@example.com.", bundle: .appStrings)
             }
         case .telegram:
             guard handle(text).wholeMatch(of: /[A-Za-z0-9_.]{3,32}/) != nil else {
-                return String(localized: "Enter a Telegram username, like @username.")
+                return String(localized: "Enter a Telegram username, like @username.", bundle: .appStrings)
             }
         case .instagram:
             guard handle(text).wholeMatch(of: /[A-Za-z0-9_.]{1,30}/) != nil else {
-                return String(localized: "Enter an Instagram username, like @username.")
+                return String(localized: "Enter an Instagram username, like @username.", bundle: .appStrings)
             }
         case .website:
             guard !text.contains(" "), let host = host(of: text), host.contains("."), !host.hasSuffix(".") else {
-                return String(localized: "Enter a website, like example.com.")
+                return String(localized: "Enter a website, like example.com.", bundle: .appStrings)
             }
         case .address:
             guard text.count >= 5 else {
-                return String(localized: "Enter the full address, like street, building and city.")
+                return String(localized: "Enter the full address, like street, building and city.", bundle: .appStrings)
             }
         case .linkedin:
             guard !text.contains(" "), text.count >= 3 else {
-                return String(localized: "Enter your LinkedIn profile, like in/username.")
+                return String(localized: "Enter your LinkedIn profile, like in/username.", bundle: .appStrings)
             }
         }
         return nil

@@ -47,7 +47,7 @@ struct ContextHero: View {
                 }
                 ContextLine(title: "Event", systemImage: "calendar", value: OnboardingSamples.eventName)
                 ContextLine(title: "Place", systemImage: "mappin.and.ellipse", value: OnboardingSamples.placeName)
-                ContextLine(title: "Time", systemImage: "clock", value: String(localized: "Today, \(sampleTime)"))
+                ContextLine(title: "Time", systemImage: "clock", value: String(localized: "Today, \(sampleTime)", bundle: .appStrings))
             }
 
             Divider()

@@ -4,8 +4,8 @@ import MetlySharedUI
 import SwiftData
 import SwiftUI
 
-/// CARD_CREATE (cover wizard, SPEC §2.5.23 / §3.4): method → (template gallery → style) → details →
-/// "Your Card Is Live". Template or Blank only in v1 (no AI designs).
+/// CARD_CREATE (cover wizard): Templates → Style → Details → "Your Card Is Live". Three short steps with a
+/// live preview of the user's own card; the logo and photo are added inline on Details (templates v2).
 ///
 /// - Free plan: blocked beyond 2 cards (ALERT_CARD_LIMIT → paywall).
 /// - Origin `.setup` with no card yet: the first card can't be cancelled (every account keeps ≥ 1 card).
@@ -21,6 +21,9 @@ struct CardCreateScreen: View {
     @State private var path: [CreateStep] = []
     @State private var design = CardDesign()
     @State private var contactIDs: [UUID]?
+    @State private var options = CardFaceOptions()
+    @State private var photo: MediaEdit = .unchanged
+    @State private var logo: MediaEdit = .unchanged
     @State private var name = ""
     @State private var createdCardID: UUID?
     @State private var createdOffline = false
@@ -43,7 +46,15 @@ struct CardCreateScreen: View {
                     .transition(.opacity)
             } else {
                 NavigationStack(path: $path) {
-                    CreateMethodStep(canCancel: canCancel, onCancel: router.dismiss, onChoose: choose)
+                    CreateGalleryStep(design: $design, content: previewContent, allowsPro: allowsPro,
+                                      onRequirePro: showPaywall, onContinue: { path.append(.style) })
+                        .toolbar {
+                            if canCancel {
+                                ToolbarItem(placement: .cancellationAction) {
+                                    Button("Cancel", action: router.dismiss)
+                                }
+                            }
+                        }
                         .navigationDestination(for: CreateStep.self, destination: step)
                 }
             }
@@ -64,15 +75,12 @@ struct CardCreateScreen: View {
     @ViewBuilder
     private func step(_ step: CreateStep) -> some View {
         switch step {
-        case .gallery:
-            CreateGalleryStep(design: $design, content: previewContent, allowsPro: allowsPro,
-                              onRequirePro: showPaywall, onContinue: { path.append(.style) })
         case .style:
             CreateStyleStep(design: $design, content: previewContent, allowsPro: allowsPro,
                             onRequirePro: showPaywall, onContinue: { path.append(.details) })
         case .details:
-            CreateDetailsStep(design: $design, selection: $contactIDs, name: $name, content: previewContent,
-                              profile: profiles.first, onPublish: publish)
+            CreateDetailsStep(design: $design, selection: $contactIDs, options: $options, photo: $photo, logo: $logo,
+                              name: $name, content: previewContent, profile: profiles.first, onPublish: publish)
         }
     }
 
@@ -94,8 +102,8 @@ struct CardCreateScreen: View {
     /// In-app preview with the user's own details (Public + Connections).
     private var previewContent: CardFaceContent {
         CardContentFactory.content(profile: profiles.first, design: design,
-                                   selection: contactIDs ?? profiles.first?.defaultCardSelection, audience: .connections,
-                                   qrPayload: "")
+                                   selection: contactIDs ?? profiles.first?.defaultCardSelection, options: options,
+                                   audience: .connections, qrPayload: "", photo: photo, logo: logo)
     }
 
     // MARK: Actions
@@ -112,24 +120,21 @@ struct CardCreateScreen: View {
         }
     }
 
-    private func choose(_ method: CreateMethod) {
-        switch method {
-        case .template:
-            path = [.gallery]
-        case .blank:
-            design = CardDesign()   // minimal template, SPEC §3.4 defaults
-            path = [.details]
-        }
-    }
-
     private func publish() {
         guard canCreate else {
             isShowingLimitAlert = true
             return
         }
-        profiles.first?.removeEmptyContacts()
+        let profile = profiles.first
+        profile?.removeEmptyContacts()
+        if let profile, photo != .unchanged || logo != .unchanged {
+            profile.photoData = photo.resolved(profile.photoData)
+            profile.logoData = logo.resolved(profile.logoData)
+            profile.markChanged()
+        }
         let card = CardLibrary.create(name: name, design: design,
-                                      contactIDs: contactIDs ?? profiles.first?.defaultCardSelection, in: modelContext)
+                                      contactIDs: contactIDs ?? profile?.defaultCardSelection, options: options,
+                                      in: modelContext)
         try? modelContext.save()
         services.preferences.activeCardID = card.id   // the new card becomes the active one
         services.sync.requestSync()
@@ -146,7 +151,7 @@ struct CardCreateScreen: View {
     private func done() {
         let isLive = createdCard?.url != nil
         router.dismiss()
-        router.showToast(isLive ? String(localized: "Card Published") : String(localized: "Card Saved"), systemImage: "checkmark.circle")
+        router.showToast(isLive ? String(localized: "Card Published", bundle: .appStrings) : String(localized: "Card Saved", bundle: .appStrings), systemImage: "checkmark.circle")
     }
 
     private func showPaywall(_ trigger: PaywallTrigger) {

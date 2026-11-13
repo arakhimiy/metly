@@ -29,19 +29,16 @@ struct EditorTypeSection: View {
             }
         }
 
-        Section {
-            Picker("Alignment", selection: $design.alignment) {
-                Text("Leading").tag(CardAlignment.leading)
-                Text("Center").tag(CardAlignment.center)
-            }
-            .pickerStyle(.segmented)
-            .labelsHidden()
-            .disabled(!design.templateAllowsAlignment)
-        } header: {
-            Text("Alignment")
-        } footer: {
-            if !design.templateAllowsAlignment {
-                Text("Alignment applies to the Minimal, Bold and Gradient templates.")
+        if design.templateAllowsAlignment {
+            Section {
+                Picker("Alignment", selection: $design.alignment) {
+                    Text("Leading").tag(CardAlignment.leading)
+                    Text("Center").tag(CardAlignment.center)
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+            } header: {
+                Text("Alignment")
             }
         }
 

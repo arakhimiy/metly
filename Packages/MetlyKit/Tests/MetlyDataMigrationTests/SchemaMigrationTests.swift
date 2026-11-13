@@ -4,7 +4,7 @@ import SwiftData
 import Testing
 @testable import MetlyData
 
-/// A store written by a shipped schema (1.0.0, 2.0.0) must open with the current one (3.0.0), keep every
+/// A store written by a shipped schema (1.0.0, 2.0.0, 3.0.0) must open with the current one (4.0.0), keep every
 /// record and turn the per-kind values into contact lists.
 /// Serialized and in a test target of its own: stores of different versions opened side by side make
 /// SwiftData mix up the same-named models of the frozen schemas.
@@ -18,7 +18,7 @@ struct SchemaMigrationTests {
 
     /// Opens with the current schema + migration plan, like the app does.
     private func openCurrent(at url: URL) throws -> ModelContainer {
-        let schema = Schema(versionedSchema: MetlySchemaV3.self)
+        let schema = Schema(versionedSchema: MetlySchemaV4.self)
         return try ModelContainer(for: schema, migrationPlan: MetlyMigrationPlan.self,
                                   configurations: ModelConfiguration(schema: schema, url: url))
     }
@@ -98,5 +98,37 @@ struct SchemaMigrationTests {
         try context.save()
         let reread = try #require(try ModelContext(container).fetch(FetchDescriptor<Connection>()).first)
         #expect(reread.contacts.last?.kind == .instagram)
+    }
+
+    @Test("A 3.0.0 store keeps its cards; the new face options start as shown")
+    func v3StoreMigratesToV4() throws {
+        let (directory, url) = try storeURL()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let selection = [UUID()]
+
+        do {
+            let schema = Schema(versionedSchema: MetlySchemaV3.self)
+            let container = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: url))
+            let context = ModelContext(container)
+            context.insert(MetlySchemaV3.Profile(fullName: "Aziza", jobTitle: "Founder", company: "Tezkor"))
+            let card = MetlySchemaV3.Card(name: "Work", slug: "aziza-w7k2", design: CardDesign(template: .split, palette: .sand))
+            card.visibleContactIDs = selection
+            context.insert(card)
+            try context.save()
+        }
+
+        let container = try openCurrent(at: url)
+        let context = ModelContext(container)
+        let card = try #require(try context.fetch(FetchDescriptor<Card>()).first)
+        #expect(card.name == "Work" && card.slug == "aziza-w7k2")
+        #expect(card.design.template == .split && card.design.palette == .sand)
+        #expect(card.visibleContactIDs == selection)
+        #expect(card.faceOptions == CardFaceOptions())
+
+        card.faceOptions = CardFaceOptions(showJobTitle: false, showCompany: true, logoStyle: .mono)
+        try context.save()
+        let reread = try #require(try ModelContext(container).fetch(FetchDescriptor<Card>()).first)
+        #expect(reread.faceOptions == CardFaceOptions(showJobTitle: false, showCompany: true, logoStyle: .mono))
+        #expect(try context.fetch(FetchDescriptor<Profile>()).first?.company == "Tezkor")
     }
 }

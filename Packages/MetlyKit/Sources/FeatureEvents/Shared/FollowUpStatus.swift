@@ -23,14 +23,14 @@ enum FollowUpStatus: Equatable {
 
     func title(now: Date = .now, calendar: Calendar = .current) -> String {
         switch self {
-        case .none: String(localized: "None")
-        case .done: String(localized: "Done")
-        case .overdue: String(localized: "Overdue")
+        case .none: String(localized: "None", bundle: .appStrings)
+        case .done: String(localized: "Done", bundle: .appStrings)
+        case .overdue: String(localized: "Overdue", bundle: .appStrings)
         case .due(let date):
             if calendar.isDate(date, inSameDayAs: now) {
-                String(localized: "Today")
+                String(localized: "Today", bundle: .appStrings)
             } else if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(date, inSameDayAs: tomorrow) {
-                String(localized: "Tomorrow")
+                String(localized: "Tomorrow", bundle: .appStrings)
             } else {
                 date.formatted(.dateTime.month(.abbreviated).day())
             }
@@ -57,10 +57,10 @@ enum FollowUpStatus: Equatable {
 
     func accessibilityLabel(now: Date = .now) -> String {
         switch self {
-        case .none: String(localized: "No follow-up")
-        case .done: String(localized: "Follow-up done")
-        case .overdue: String(localized: "Follow-up overdue")
-        case .due: String(localized: "Follow-up \(title(now: now))")
+        case .none: String(localized: "No follow-up", bundle: .appStrings)
+        case .done: String(localized: "Follow-up done", bundle: .appStrings)
+        case .overdue: String(localized: "Follow-up overdue", bundle: .appStrings)
+        case .due: String(localized: "Follow-up \(title(now: now))", bundle: .appStrings)
         }
     }
 }

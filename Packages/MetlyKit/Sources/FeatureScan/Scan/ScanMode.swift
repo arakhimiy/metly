@@ -11,15 +11,15 @@ enum ScanMode: String, CaseIterable, Identifiable, Hashable {
 
     var title: String {
         switch self {
-        case .qr: String(localized: "QR Code")
-        case .paper: String(localized: "Paper Card")
+        case .qr: String(localized: "QR Code", bundle: .appStrings)
+        case .paper: String(localized: "Paper Card", bundle: .appStrings)
         }
     }
 
     var hint: String {
         switch self {
-        case .qr: String(localized: "Point at a Nameshake or vCard QR code")
-        case .paper: String(localized: "Fit a business card in the frame, or point at a Nameshake QR")
+        case .qr: String(localized: "Point at a Nameshake or vCard QR code", bundle: .appStrings)
+        case .paper: String(localized: "Fit a business card in the frame, or point at a Nameshake QR", bundle: .appStrings)
         }
     }
 

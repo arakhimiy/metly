@@ -93,7 +93,7 @@ struct QRScanCaption: View {
     private var caption: String {
         switch mode {
         case .link(let url): CardLinkStatus.shortText(for: url)
-        case .contact: String(localized: "Contact only · works offline")
+        case .contact: String(localized: "Contact only · works offline", bundle: .appStrings)
         }
     }
 }

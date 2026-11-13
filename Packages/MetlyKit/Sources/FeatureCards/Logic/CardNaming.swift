@@ -3,16 +3,16 @@ import Foundation
 /// Card names: create-wizard suggestions and "{name} Copy" for duplicates.
 nonisolated enum CardNaming {
     /// Quick picks on the Details step.
-    static let suggestions = [
-        String(localized: "Work", comment: "Suggested card name"),
-        String(localized: "Personal", comment: "Suggested card name"),
-        String(localized: "Conference", comment: "Suggested card name"),
-    ]
+    static var suggestions: [String] { [
+        String(localized: "Work", bundle: .appStrings, comment: "Suggested card name"),
+        String(localized: "Personal", bundle: .appStrings, comment: "Suggested card name"),
+        String(localized: "Conference", bundle: .appStrings, comment: "Suggested card name"),
+    ] }
 
     /// Suffix of duplicated card names ("Work Copy").
     /// Own key: the "Copy" button (a verb) translates differently.
     static var copyWord: String {
-        String(localized: "Copy (card name suffix)", defaultValue: "Copy", comment: "Noun appended to a duplicated card name: “Work Copy”")
+        String(localized: "Copy (card name suffix)", defaultValue: "Copy", bundle: .appStrings, comment: "Noun appended to a duplicated card name: “Work Copy”")
     }
 
     /// First suggestion not used yet, else "Card {n}".
@@ -27,7 +27,7 @@ nonisolated enum CardNaming {
     /// "Work" → "Work Copy" → "Work Copy 2"…; duplicating "Work Copy" gives "Work Copy 2", not "Work Copy Copy".
     static func copyName(for name: String, existing: [String]) -> String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        let base = baseName(of: trimmed.isEmpty ? String(localized: "Card") : trimmed)
+        let base = baseName(of: trimmed.isEmpty ? String(localized: "Card", bundle: .appStrings) : trimmed)
         let used = Set(existing.map { $0.lowercased() })
         let first = "\(base) \(copyWord)"
         if !used.contains(first.lowercased()) { return first }
@@ -37,7 +37,7 @@ nonisolated enum CardNaming {
     }
 
     private static func numberedName(_ number: Int) -> String {
-        String(localized: "Card \(number)", comment: "Default card name when every suggestion is taken")
+        String(localized: "Card \(number)", bundle: .appStrings, comment: "Default card name when every suggestion is taken")
     }
 
     /// Strips a trailing " Copy" / " Copy {n}" (English or the current language).

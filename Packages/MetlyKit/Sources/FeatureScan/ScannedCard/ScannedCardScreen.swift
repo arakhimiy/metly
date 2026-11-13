@@ -46,7 +46,7 @@ struct ScannedCardScreen: View {
             ContentUnavailableView {
                 Label("Card Unavailable", systemImage: "rectangle.on.rectangle.slash")
             } description: {
-                Text("This card isn’t available right now. The link may be paused or removed — ask the person for a new one.")
+                Text("This card isn’t available right now. The link may be paused or removed. Ask the person for a new one.")
             }
         case .offline:
             ContentUnavailableView {

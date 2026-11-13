@@ -51,16 +51,16 @@ struct ReminderForm: Equatable {
     func summary(now: Date = .now, calendar: Calendar = .current, locale: Locale = .autoupdatingCurrent) -> String {
         let due = dueDate(calendar: calendar)
         guard due > now else {
-            return String(localized: "This time has already passed. Pick a later time to be reminded.")
+            return String(localized: "This time has already passed. Pick a later time to be reminded.", bundle: .appStrings)
         }
         let time = FollowUpDates.time(due, calendar: calendar, locale: locale)
         let app = Brand.appName
         switch FollowUpDates.dayOffset(from: now, to: due, calendar: calendar) {
-        case 0: return String(localized: "\(app) will remind you today at \(time).")
-        case 1: return String(localized: "\(app) will remind you tomorrow at \(time).")
+        case 0: return String(localized: "\(app) will remind you today at \(time).", bundle: .appStrings)
+        case 1: return String(localized: "\(app) will remind you tomorrow at \(time).", bundle: .appStrings)
         default:
             let day = FollowUpDates.shortDay(due, calendar: calendar, locale: locale)
-            return String(localized: "\(app) will remind you on \(day) at \(time).")
+            return String(localized: "\(app) will remind you on \(day) at \(time).", bundle: .appStrings)
         }
     }
 }

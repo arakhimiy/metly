@@ -14,7 +14,7 @@ struct CardExportScreen: View {
         if let card = cards.first(where: { $0.id == cardID }) {
             CardExportForm(card: card, profile: profiles.first, initialTab: initialTab)
         } else {
-            MissingCardView(title: String(localized: "Export"))
+            MissingCardView(title: String(localized: "Export", bundle: .appStrings))
         }
     }
 }

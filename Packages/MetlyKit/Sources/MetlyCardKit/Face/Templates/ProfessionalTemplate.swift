@@ -1,48 +1,59 @@
 import SwiftUI
 
-/// 2 · Professional — logo (or monogram tile) + tracked company on top; name, title, accent bar and
-/// contacts at the bottom; QR bottom-right 22 %.
+/// Monogram (`professional`) — the logo, or the initial, blind-debossed into the left of the card;
+/// the name is the card's one accent. [black card, debossed monogram, cyan name]
 struct ProfessionalTemplate: View {
     let model: CardFaceModel
     let style: CardFaceStyle
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: style.u(3)) {
-                CardLogoTile(logoData: model.logoData, monogram: model.monogram, style: style)
-                Spacer(minLength: 0)
-                if !model.company.isEmpty {
-                    CardText(text: model.company, style: style, size: 2.6, tracking: 0.16, color: style.muted,
-                             uppercase: true)
+        HStack(spacing: 0) {
+            deboss
+                .frame(width: style.u(44))
+                .frame(maxHeight: .infinity)
+            VStack(alignment: .leading, spacing: 0) {
+                if model.showsQR {
+                    CardQRPlate(payload: model.qrPayload, style: style, size: 12, cornerRadius: 1.2)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-            }
-            Spacer(minLength: 0)
-            VStack(alignment: .leading, spacing: style.u(1)) {
-                // Like the title, the name stops short of the bottom-right QR plate (long names used to
-                // run underneath it at Minimal / Balanced density).
-                CardCapWidth(maxWidth: model.showsQR ? style.u(63) : style.width) {
-                    CardText(text: model.fullName, style: style, size: 6, weight: .semibold, tracking: -0.02,
-                             minimumScale: 0.6)
-                }
-                if !model.jobTitle.isEmpty {
-                    CardCapWidth(maxWidth: model.showsQR ? style.u(63) : style.width) {
-                        CardText(text: model.jobTitle, style: style, size: 3.2, color: style.muted)
+                Spacer(minLength: style.u(2))
+                VStack(alignment: .leading, spacing: style.u(0.9)) {
+                    CardText(text: model.fullName, style: style, size: 4.6, weight: .semibold, tracking: -0.01,
+                             color: style.accent, lineLimit: 2, minimumScale: 0.6)
+                    if !model.jobTitle.isEmpty {
+                        CardText(text: model.jobTitle, style: style, size: 2.9, lineLimit: 2)
+                    }
+                    if !model.company.isEmpty {
+                        CardText(text: model.company, style: style, size: 2.3, weight: .medium, tracking: 0.16,
+                                 color: style.muted, uppercase: true)
                     }
                 }
-                Rectangle()
-                    .fill(style.accent)
-                    .frame(width: style.u(9), height: style.u(0.6))
-                    .padding(.top, style.u(1.6))
-                    .padding(.bottom, style.u(2.2))
+                if !model.contacts.isEmpty {
+                    CardPlainContacts(contacts: model.contacts, style: style, fontSize: 2.7, spacing: 0.9)
+                        .padding(.top, style.u(4.5))
+                }
+                Spacer(minLength: style.u(2))
             }
-            CardContactList(contacts: model.contacts, style: style, maxWidth: style.u(58))
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .padding(.vertical, style.u(7))
+            .padding(.trailing, style.u(7))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(style.u(6.5))
-        .overlay(alignment: .bottomTrailing) {
-            if model.showsQR {
-                CardQRPlate(payload: model.qrPayload, style: style, size: 22).padding(style.u(6.5))
-            }
+    }
+
+    @ViewBuilder
+    private var deboss: some View {
+        if let logo = model.logoData, CardImageDecoder.hasTransparency(logo) {
+            CardLogoMark(data: logo, style: .mono, ink: style.debossStyle, width: style.u(30), height: style.u(36))
+        } else if let logo = model.logoData {
+            // An opaque logo can't be pressed; it sits as printed, smaller.
+            CardLogoMark(data: logo, style: .original, ink: style.fg, width: style.u(22), height: style.u(22))
+        } else {
+            Text(verbatim: model.monogram)
+                .font(style.font(34, weight: .heavy))
+                .foregroundStyle(style.debossStyle)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .accessibilityHidden(true)
         }
     }
 }

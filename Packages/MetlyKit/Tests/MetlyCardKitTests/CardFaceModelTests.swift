@@ -92,12 +92,46 @@ struct CardFaceModelTests {
         #expect(CardDesign(template: .terminal, font: .serif).effectiveFont == .mono)
         #expect(CardDesign(template: .editorial, font: .rounded).effectiveFont == .serif)
         #expect(CardDesign(template: .stack, font: .rounded).effectiveFont == .rounded)
-        #expect(CardDesign(template: .minimal, alignment: .center).effectiveAlignment == .center)
-        #expect(CardDesign(template: .gradient, alignment: .center).effectiveAlignment == .center)
+        // v2: only Wordmark (`bold`) is composed for both alignments.
+        #expect(CardDesign(template: .minimal, alignment: .center).effectiveAlignment == .leading)
+        #expect(CardDesign(template: .gradient, alignment: .center).effectiveAlignment == .leading)
         #expect(CardDesign(template: .bold, alignment: .center).effectiveAlignment == .center)
         #expect(CardDesign(template: .split, alignment: .center).effectiveAlignment == .leading)
-        #expect(CardDesign(template: .gradient, background: .solid).usesGradientFill)
+        // Aurora draws its own fill, so the palette gradient is off for it.
+        #expect(!CardDesign(template: .gradient, background: .gradient).usesGradientFill)
         #expect(CardDesign(template: .minimal, background: .gradient).usesGradientFill)
         #expect(!CardDesign(template: .minimal, background: .solid).usesGradientFill)
+    }
+
+    // MARK: Templates v2
+
+    @Test func logoAndPhotoSlotsFollowTheTemplates() {
+        let logo = CardTemplate.allCases.filter { CardDesign(template: $0).templateShowsLogo }
+        #expect(Set(logo) == [.minimal, .professional, .modern, .bold, .split, .stack, .editorial])
+        let photo = CardTemplate.allCases.filter { CardDesign(template: $0).templateShowsPhoto }
+        #expect(Set(photo) == [.split, .stack])
+    }
+
+    @Test func proTemplatesAreTheFinishTemplates() {
+        #expect(Set(CardTemplate.allCases.filter(\.isPro)) == [.modern, .gradient, .editorial])
+        #expect(Set(CardTemplate.pickerOrder) == Set(CardTemplate.allCases))
+        #expect(CardTemplate.pickerOrder.suffix(3).allSatisfy { $0.isPro })
+    }
+
+    @Test func faceOptionsHideTitleAndCompany() {
+        let content = CardFaceContent.sample.applying(CardFaceOptions(showJobTitle: false, showCompany: false, logoStyle: .mono))
+        let model = CardFaceModel(design: CardDesign(), content: content)
+        #expect(model.jobTitle.isEmpty && model.company.isEmpty && model.role.isEmpty)
+        #expect(model.logoStyle == .mono)
+        #expect(model.wordmark == "Kamola")
+        let shown = CardFaceModel(design: CardDesign(), content: .sample.applying(CardFaceOptions()))
+        #expect(shown.wordmark == "Tezkor" && shown.jobTitle == "Product Designer")
+    }
+
+    @Test func faceOptionsDecodeMissingKeysAsShown() throws {
+        let options = try JSONDecoder().decode(CardFaceOptions.self, from: Data(#"{"template":"minimal"}"#.utf8))
+        #expect(options == CardFaceOptions())
+        let hidden = try JSONDecoder().decode(CardFaceOptions.self, from: Data(#"{"showCompany":false,"logoStyle":"mono"}"#.utf8))
+        #expect(hidden == CardFaceOptions(showJobTitle: true, showCompany: false, logoStyle: .mono))
     }
 }

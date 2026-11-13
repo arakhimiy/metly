@@ -264,7 +264,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ Бесплатный план позволяет добавить ещё %2$lld."
+            "value": "%1$@ В бесплатном плане можно добавить ещё %2$lld."
           }
         },
         "uz": {
@@ -280,7 +280,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ Бесплатный план позволяет добавить ещё одно."
+            "value": "%@ В бесплатном плане можно добавить ещё 1."
           }
         },
         "uz": {
@@ -312,7 +312,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ не отвечает. Повторите попытку позже или добавьте контакт в «Люди» сейчас."
+            "value": "%@ не отвечает. Повторите попытку позже или сразу добавьте человека в «Люди»."
           }
         },
         "uz": {
@@ -717,7 +717,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ увидит ваш запрос. Вы обменяетесь визитками, как только запрос будет принят."
+            "value": "%@ увидит ваш запрос. Как только его примут, вы обменяетесь визитками."
           }
         },
         "uz": {
@@ -739,7 +739,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ va uning havolasi hamda QR kodi"
+            "value": "%@ (havolasi va QR kodi bilan)"
           }
         }
       }
@@ -755,7 +755,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ va ularning havolalari hamda QR kodlari"
+            "value": "%@ (havolalari va QR kodlari bilan)"
           }
         }
       }
@@ -836,7 +836,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ · Chop etish uchun"
+            "value": "%@ · Chop etishga tayyor"
           }
         }
       }
@@ -1535,13 +1535,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Ertaga uchun %lld ta eslatma qo‘yildi"
+                  "value": "Ertangi kunga %lld ta eslatma qo‘yildi"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Ertaga uchun %lld ta eslatma qo‘yildi"
+                  "value": "Ertangi kunga %lld ta eslatma qo‘yildi"
                 }
               }
             }
@@ -1639,13 +1639,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldk"
+                  "value": "%lld kun"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldk"
+                  "value": "%lld kun"
                 }
               }
             }
@@ -1691,13 +1691,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldsa"
+                  "value": "%lld soat"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldsa"
+                  "value": "%lld soat"
                 }
               }
             }
@@ -1743,13 +1743,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldd"
+                  "value": "%lld daq"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldd"
+                  "value": "%lld daq"
                 }
               }
             }
@@ -1795,13 +1795,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldo"
+                  "value": "%lld oy"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldo"
+                  "value": "%lld oy"
                 }
               }
             }
@@ -1847,13 +1847,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldy"
+                  "value": "%lld yil"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lldy"
+                  "value": "%lld yil"
                 }
               }
             }
@@ -2000,7 +2000,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ertaga uchun 1 ta eslatma qo‘yildi"
+            "value": "Ertangi kunga 1 ta eslatma qo‘yildi"
           }
         }
       }
@@ -2064,7 +2064,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asos uchun oddiy maket"
+            "value": "Boshlash uchun oddiy maket"
           }
         }
       }
@@ -2176,7 +2176,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "So‘rovi paydo bo‘lganda uni qabul qiling."
+            "value": "So‘rovi kelganda qabul qiling."
           }
         }
       }
@@ -2186,7 +2186,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Принятие"
+            "value": "Принимаем запрос"
           }
         },
         "uz": {
@@ -2202,7 +2202,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Если принять, будет отправлена ваша визитка «%@»."
+            "value": "Приняв запрос, вы отправите визитку «%@»."
           }
         },
         "uz": {
@@ -2330,13 +2330,29 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Добавить детали"
+            "value": "Добавить контекст"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
             "value": "Tafsilotlar qo‘shish"
+          }
+        }
+      }
+    },
+    "Add Logo…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить логотип…"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logotip qo‘shish…"
           }
         }
       }
@@ -2438,6 +2454,22 @@
         }
       }
     },
+    "Add Photo…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавить фото…"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rasm qo‘shish…"
+          }
+        }
+      }
+    },
     "Add Reminder…": {
       "localizations": {
         "ru": {
@@ -2518,18 +2550,34 @@
         }
       }
     },
-    "Add one right after you connect — it takes 2 seconds.": {
+    "Add it in Profile": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Добавьте его сразу после обмена визитками — это займёт 2 секунды."
+            "value": "Добавьте в профиле"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitka almashgandan so‘ng darhol qo‘shing — bor-yo‘g‘i 2 soniya."
+            "value": "Profilda qo‘shing"
+          }
+        }
+      }
+    },
+    "Add one right after you connect.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавьте его сразу после обмена визитками."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitka almashgan zahoti qo‘shing."
           }
         }
       }
@@ -2571,7 +2619,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "«Добавить в Контакты» сохранит каждый номер с его меткой."
+            "value": "«Добавить в Контакты» сохранит каждый номер вместе с его типом."
           }
         },
         "uz": {
@@ -2603,7 +2651,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Если добавить %@ в «Люди», контакт сохранится с вашими заметками без отправки запроса."
+            "value": "Если добавить %@ в «Люди», запрос не отправится, а человек сохранится вместе с вашими заметками."
           }
         },
         "uz": {
@@ -2706,7 +2754,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tekislash Minimal, Bold va Gradient shablonlariga qo‘llaniladi."
+            "value": "Tekislash Minimal, Bold va Gradient shablonlarida ishlaydi."
           }
         }
       }
@@ -2860,7 +2908,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Чтобы сканировать визитки, разрешите доступ к камере в Настройках. Также можно вставить ссылку."
+            "value": "Чтобы сканировать визитки, разрешите доступ к камере в Настройках. Ссылку можно вставить и без камеры."
           }
         },
         "uz": {
@@ -2967,6 +3015,22 @@
         }
       }
     },
+    "Always black on a white plate, so every phone can scan it.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Всегда чёрный на белом, чтобы его считывал любой телефон."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Har doim oq fonda qora — har qanday telefon skanerlay oladi."
+          }
+        }
+      }
+    },
     "Always black on a white plate. Logos never go on the code.": {
       "localizations": {
         "ru": {
@@ -2988,7 +3052,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Аналитика никогда не включает ваши контакты, заметки и людей, с которыми вы знакомитесь."
+            "value": "В аналитику никогда не попадают ваши контакты, заметки и люди, с которыми вы знакомитесь."
           }
         },
         "uz": {
@@ -2999,7 +3063,7 @@
         }
       }
     },
-    "And %lld more. Notes stay private — only you can see them.": {
+    "And %lld more. Only you can see your notes.": {
       "localizations": {
         "ru": {
           "variations": {
@@ -3007,25 +3071,25 @@
               "few": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "И ещё %lld человека. Заметки остаются личными — их видите только вы."
+                  "value": "И ещё %lld человека. Заметки видите только вы."
                 }
               },
               "many": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "И ещё %lld человек. Заметки остаются личными — их видите только вы."
+                  "value": "И ещё %lld человек. Заметки видите только вы."
                 }
               },
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "И ещё %lld человек. Заметки остаются личными — их видите только вы."
+                  "value": "И ещё %lld человек. Заметки видите только вы."
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "И ещё %lld человека. Заметки остаются личными — их видите только вы."
+                  "value": "И ещё %lld человека. Заметки видите только вы."
                 }
               }
             }
@@ -3037,13 +3101,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Yana %lld kishi. Izohlar shaxsiy qoladi — ularni faqat siz ko‘rasiz."
+                  "value": "Yana %lld kishi. Izohlarni faqat siz ko‘rasiz."
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Yana %lld kishi. Izohlar shaxsiy qoladi — ularni faqat siz ko‘rasiz."
+                  "value": "Yana %lld kishi. Izohlarni faqat siz ko‘rasiz."
                 }
               }
             }
@@ -3062,7 +3126,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ ilovasini yaxshilashga yordam beruvchi anonim statistika"
+            "value": "%@ ilovasini yaxshilash uchun anonim statistika"
           }
         }
       }
@@ -3078,7 +3142,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Havolangiz bor har kim"
+            "value": "Havolangizni olgan har kim"
           }
         }
       }
@@ -3142,7 +3206,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitkangiz e’lon qilingach, Apple Wallet mavjud bo‘ladi."
+            "value": "Vizitkangiz e’lon qilingach, uni Apple Wallet’ga qo‘shish mumkin bo‘ladi."
           }
         }
       }
@@ -3175,6 +3239,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Taqvimingizga ruxsat so‘raydi"
+          }
+        }
+      }
+    },
+    "Aurora has its own gradient.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "У Aurora свой градиент."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aurora’ning o‘z gradienti bor."
           }
         }
       }
@@ -3311,7 +3391,7 @@
         }
       }
     },
-    "Blocked people can't see your cards or send you connect requests. They aren't told you blocked them.": {
+    "Blocked people can’t see your cards or send you connect requests. They won’t know you blocked them.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -3332,7 +3412,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "У вас обоих должен быть открыт %@ на экране «Обмен»."
+            "value": "Вам обоим нужно открыть экран «Обмен» в %@."
           }
         },
         "uz": {
@@ -3359,7 +3439,7 @@
         }
       }
     },
-    "By continuing you agree to the ": {
+    "By continuing, you agree to the ": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -3370,7 +3450,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Davom etish bilan siz quyidagilarga rozilik bildirasiz: "
+            "value": "Davom etsangiz, quyidagilarga rozi bo‘lasiz: "
           }
         }
       }
@@ -3472,28 +3552,12 @@
         }
       }
     },
-    "Calls this number. Touch and hold to copy": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Звонит на этот номер. Коснитесь и удерживайте, чтобы скопировать"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shu raqamga qo‘ng‘iroq qiladi. Nusxalash uchun bosib turing"
-          }
-        }
-      }
-    },
     "Calls this number. Touch and hold to copy.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вызов этого номера. Нажмите и удерживайте, чтобы скопировать."
+            "value": "Звонит на этот номер. Коснитесь и удерживайте, чтобы скопировать."
           }
         },
         "uz": {
@@ -3541,7 +3605,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Камера ограничена"
+            "value": "Доступ к камере ограничен"
           }
         },
         "uz": {
@@ -3563,7 +3627,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kamera mavjud emas"
+            "value": "Kameradan foydalanib bo‘lmaydi"
           }
         }
       }
@@ -3589,7 +3653,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Доступ к камере на этом iPhone ограничен. Вы можете вставить ссылку."
+            "value": "Доступ к камере на этом iPhone ограничен. Ссылку можно вставить и без камеры."
           }
         },
         "uz": {
@@ -3808,7 +3872,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitkalar chegarasiga yetildi"
+            "value": "Vizitkalar limiti tugadi"
           }
         }
       }
@@ -3904,7 +3968,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitka mavjud emas"
+            "value": "Vizitkani ochib bo‘lmaydi"
           }
         }
       }
@@ -3957,6 +4021,22 @@
         }
       }
     },
+    "Change Logo…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сменить логотип…"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logotipni almashtirish…"
+          }
+        }
+      }
+    },
     "Change Photo": {
       "localizations": {
         "ru": {
@@ -3969,6 +4049,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rasmni o‘zgartirish"
+          }
+        }
+      }
+    },
+    "Change Photo…": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сменить фото…"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rasmni almashtirish…"
           }
         }
       }
@@ -4000,7 +4096,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tarifni o‘zgartirish yoki bekor qilish App Store akkauntingizda amalga oshiriladi."
+            "value": "Tarifni App Store akkauntingizda o‘zgartirishingiz yoki bekor qilishingiz mumkin."
           }
         }
       }
@@ -4010,13 +4106,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выбор другого человека"
+            "value": "Позволяет выбрать другого человека"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Boshqa odamni tanlash"
+            "value": "Boshqa odamni tanlaydi"
           }
         }
       }
@@ -4049,22 +4145,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Internet aloqasini tekshiring. Vizitkangiz qoralama sifatida saqlandi va internet qaytganda e’lon qilinadi."
-          }
-        }
-      }
-    },
-    "Check your email — it looks incomplete.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Проверьте email — похоже, адрес неполный."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Email manzilini tekshiring — u to‘liq emasga o‘xshaydi."
           }
         }
       }
@@ -4133,6 +4213,24 @@
         }
       }
     },
+    "Choose Your Language": {
+      "comment": "Language screen (ONB_LANGUAGE), shown in the language being picked via AppLanguage.localized",
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите язык"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tilni tanlang"
+          }
+        }
+      }
+    },
     "Choose a Person": {
       "localizations": {
         "ru": {
@@ -4160,7 +4258,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avval ulashish uchun vizitkani tanlang."
+            "value": "Avval ulashiladigan vizitkani tanlang."
           }
         }
       }
@@ -4218,7 +4316,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Звуки, баннеры и миниатюры на экране блокировки настраиваются в Настройках iOS."
+            "value": "Звуки, баннеры и миниатюры на экране блокировки можно настроить в Настройках iOS."
           }
         },
         "uz": {
@@ -4272,7 +4370,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kim bilan bog‘lanmoqchi ekanligingizni tanlang."
+            "value": "Bog‘lanmoqchi bo‘lgan odamni tanlang."
           }
         }
       }
@@ -4523,7 +4621,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Обменивайтесь визитками с другими пользователями %@ рядом. Вы отправляете свою визитку и получаете их в ответ. Чтобы поделиться с тем, у кого нет приложения, используйте «Показать мой QR»."
+            "value": "Обменивайтесь визитками с другими пользователями %@ рядом: вы отправляете свою визитку и получаете ответную. Чтобы поделиться с тем, у кого нет приложения, используйте «Показать мой QR»."
           }
         },
         "uz": {
@@ -4593,7 +4691,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ulangan · %@"
+            "value": "Almashilgan · %@"
           }
         }
       }
@@ -4609,7 +4707,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ bilan almashilmoqda…"
+            "value": "%@ bilan vizitka almashilmoqda…"
           }
         }
       }
@@ -4690,7 +4788,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kontakt kartochkasi"
+            "value": "Kontakt kartasi"
           }
         }
       }
@@ -4722,7 +4820,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aloqa ma’lumotlari"
+            "value": "Kontakt ma’lumotlari"
           }
         }
       }
@@ -4770,7 +4868,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kontakt kartochkasi"
+            "value": "Kontakt kartasi"
           }
         }
       }
@@ -4786,7 +4884,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ kontakt kartochkasi"
+            "value": "%@ kontakt kartasi"
           }
         }
       }
@@ -4807,6 +4905,38 @@
         }
       }
     },
+    "Contacts": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контакты"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontaktlar"
+          }
+        }
+      }
+    },
+    "Context Is Saved Automatically": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контекст сохраняется сам"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tafsilotlar o‘zi saqlanadi"
+          }
+        }
+      }
+    },
     "Context Saved": {
       "localizations": {
         "ru": {
@@ -4819,22 +4949,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tafsilotlar saqlandi"
-          }
-        }
-      }
-    },
-    "Context Saves Itself": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Контекст сохраняется сам"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tafsilotlar o‘zi saqlanadi"
           }
         }
       }
@@ -5327,38 +5441,6 @@
         }
       }
     },
-    "Create a card first — it’s what %@ will get back.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сначала создайте визитку — именно её получит %@."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avval vizitka yarating — %@ aynan shuni oladi."
-          }
-        }
-      }
-    },
-    "Create a card first — it’s what they will get back.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сначала создайте визитку — именно её получат в ответ."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avval vizitka yarating — ular aynan shuni oladi."
-          }
-        }
-      }
-    },
     "Create a card first, then accept.": {
       "localizations": {
         "ru": {
@@ -5387,6 +5469,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avval vizitka yarating, keyin yaqin atrofdagi odamlar bilan almashing."
+          }
+        }
+      }
+    },
+    "Create a card first. %@ gets it in return.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сначала создайте визитку. Именно её получит %@."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avval vizitka yarating. %@ aynan shuni oladi."
+          }
+        }
+      }
+    },
+    "Create a card first. They’ll get it in return.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сначала создайте визитку. Именно её получат в ответ."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avval vizitka yarating. Ular aynan shuni oladi."
           }
         }
       }
@@ -5439,18 +5553,18 @@
         }
       }
     },
-    "Create your account to save %@’s card and share yours back. It takes a minute.": {
+    "Create your account to save %@’s card and share yours back.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Создайте аккаунт, чтобы сохранить визитку (%@) и отправить свою в ответ. Это займёт минуту."
+            "value": "Создайте аккаунт, чтобы сохранить визитку %@ и отправить свою в ответ."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ vizitkasini saqlash va o‘zingiznikini yuborish uchun akkaunt yarating. Bu bir daqiqa oladi."
+            "value": "%@ vizitkasini saqlash va o‘zingiznikini yuborish uchun akkaunt yarating."
           }
         }
       }
@@ -5493,7 +5607,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Тёмная"
+            "value": "Тёмное"
           }
         },
         "uz": {
@@ -5783,7 +5897,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Удалить ваш аккаунт?"
+            "value": "Удалить аккаунт?"
           }
         },
         "uz": {
@@ -5805,7 +5919,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "“%@” vizitkasi o‘chirilsinmi?"
+            "value": "«%@» vizitkasi o‘chirilsinmi?"
           }
         }
       }
@@ -5815,7 +5929,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Удаление аккаунта не отменяет %@. Сначала отмените подписку в App Store."
+            "value": "Если удалить аккаунт, подписка %@ не отменится. Сначала отмените её в подписках App Store."
           }
         },
         "uz": {
@@ -5847,13 +5961,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Обещанное на %@ ревью дизайна."
+            "value": "Ревью дизайна, которое вы обещали на %@."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ tadbirida va’da qilgan dizayn sharhi."
+            "value": "%@ tadbirida va’da qilgan dizayn tahlilingiz."
           }
         }
       }
@@ -5955,7 +6069,7 @@
         }
       }
     },
-    "Dictation on this iPhone isn't available for your language right now. You can still type your note.": {
+    "Dictation on this iPhone isn’t available for your language right now. You can still type your note.": {
       "extractionState": "stale",
       "localizations": {
         "ru": {
@@ -6025,13 +6139,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поиск меня"
+            "value": "Как вас найти"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Topilish"
+            "value": "Sizni topish"
           }
         }
       }
@@ -6148,6 +6262,22 @@
         }
       }
     },
+    "Duotone shows your logo in place of the photo.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duotone показывает логотип вместо фото."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duotone rasm o‘rniga logotipni ko‘rsatadi."
+          }
+        }
+      }
+    },
     "Duplicate Card": {
       "localizations": {
         "ru": {
@@ -6169,13 +6299,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Каждая визитка сама решает, что показывать."
+            "value": "Что показывать, настраивается для каждой визитки."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Har bir vizitka nimani ko‘rsatishini o‘zi belgilaydi."
+            "value": "Har bir vizitkada nima ko‘rinishi alohida sozlanadi."
           }
         }
       }
@@ -6415,7 +6545,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avval %@ tadbirini yakunlang yoki bir vaqtda bir nechta tadbir o‘tkazish uchun tarifni yangilang."
+            "value": "Avval %@ tadbirini yakunlang yoki bir vaqtda bir nechta tadbir o‘tkazish uchun Pro’ga o‘ting."
           }
         }
       }
@@ -6425,7 +6555,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Завершить %@?"
+            "value": "Завершить «%@»?"
           }
         },
         "uz": {
@@ -6495,7 +6625,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tugash"
+            "value": "Tugashi"
           }
         }
       }
@@ -6559,7 +6689,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Telegram username kiriting, masalan @username."
+            "value": "Telegram foydalanuvchi nomini kiriting, masalan @username."
           }
         }
       }
@@ -6607,7 +6737,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Instagram username kiriting, masalan @username."
+            "value": "Instagram foydalanuvchi nomini kiriting, masalan @username."
           }
         }
       }
@@ -6617,7 +6747,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Введите адрес эл. почты, например name@example.com."
+            "value": "Введите адрес email, например name@example.com."
           }
         },
         "uz": {
@@ -6735,7 +6865,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tadbir yakuni"
+            "value": "Tadbir xulosasi"
           }
         }
       }
@@ -6783,7 +6913,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tadbir · 2k oldin"
+            "value": "Tadbir · 2 kun oldin"
           }
         }
       }
@@ -6857,7 +6987,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Все шаблоны и цвета"
+            "value": "Все шаблоны и палитры"
           }
         },
         "uz": {
@@ -6868,18 +6998,18 @@
         }
       }
     },
-    "Everyone you connect with is added to this event — by QR, Nearby, your web page or a paper card. It ends by itself after the last day and shows you a summary.": {
+    "Everyone you connect with by QR, Nearby, your web page or a paper card is added to this event. It ends by itself after the last day and shows you a summary.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Все, с кем вы обменяетесь визитками, добавляются в это мероприятие — через QR, «Рядом», вашу веб-страницу или бумажную визитку. Оно завершится само после последнего дня и покажет итоги."
+            "value": "Все, с кем вы обменяетесь визитками через QR, «Рядом», вашу веб-страницу или бумажную визитку, добавляются в это мероприятие. После последнего дня оно завершится автоматически и покажет итоги."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitka almashgan har bir kishi shu tadbirga qo‘shiladi — QR, «Yaqin atrofda», veb-sahifangiz yoki qog‘oz vizitka orqali. Tadbir oxirgi kundan keyin o‘zi yakunlanadi va sizga yakunini ko‘rsatadi."
+            "value": "QR, «Yaqin atrofda», veb-sahifangiz yoki qog‘oz vizitka orqali vizitka almashgan har bir kishi shu tadbirga qo‘shiladi. Tadbir oxirgi kundan keyin o‘zi yakunlanadi va sizga xulosasini ko‘rsatadi."
           }
         }
       }
@@ -6889,7 +7019,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Каждому новому знакомому автоматически ставится тег"
+            "value": "Каждый новый контакт автоматически получает тег"
           }
         },
         "uz": {
@@ -6911,13 +7041,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пример уведомления: Свяжитесь с %1$@. Обещанное на %2$@ ревью дизайна. Варианты: Завтра, Через 3 дня, На следующей неделе."
+            "value": "Пример уведомления: Свяжитесь с %1$@. Ревью дизайна, которое вы обещали на %2$@. Варианты: Завтра, Через 3 дня, На следующей неделе."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bildirishnoma namunasi: %1$@ bilan bog‘laning. %2$@ tadbirida va’da qilgan dizayn sharhi. Tanlov: Ertaga, 3 kundan keyin, Keyingi hafta."
+            "value": "Bildirishnoma namunasi: %1$@ bilan bog‘laning. %2$@ tadbirida va’da qilgan dizayn tahlilingiz. Tanlov: Ertaga, 3 kundan keyin, Keyingi hafta."
           }
         }
       }
@@ -6939,7 +7069,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Misol: %1$@, %2$@ tadbirida tanishildi, %3$@, bugun. Ovozli izoh: keyingi hafta dizayn sharhini xohlaydi."
+            "value": "Misol: %1$@, %2$@ tadbirida tanishilgan, %3$@, bugun. Ovozli izoh: keyingi hafta dizayn tahlilini xohlaydi."
           }
         }
       }
@@ -7194,7 +7324,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Заполнено автоматически. Нажмите на поле, чтобы изменить."
+            "value": "Заполнено автоматически. Коснитесь поля, чтобы изменить его."
           }
         },
         "uz": {
@@ -7274,13 +7404,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поместите визитку в рамку или наведите на QR Nameshake"
+            "value": "Поместите визитку в рамку или наведите камеру на QR-код Nameshake"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitkani ramkaga joylang yoki Nameshake QR’iga qarating"
+            "value": "Vizitkani ramkaga joylang yoki kamerani Nameshake QR kodiga qarating"
           }
         }
       }
@@ -7301,6 +7431,22 @@
         }
       }
     },
+    "Foil, Aurora, Editorial and every palette": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foil, Aurora, Editorial и все палитры"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foil, Aurora, Editorial va barcha ranglar"
+          }
+        }
+      }
+    },
     "Follow Up": {
       "localizations": {
         "ru": {
@@ -7312,7 +7458,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eslatma"
+            "value": "Eslatma qo‘yish"
           }
         }
       }
@@ -7344,12 +7490,12 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "O‘z vaqtida eslatma"
+            "value": "O‘z vaqtida bog‘laning"
           }
         }
       }
     },
-    "Follow Up with Everyone I Haven’t Yet (%lld)": {
+    "Follow Up with Everyone Else (%lld)": {
       "localizations": {
         "ru": {
           "variations": {
@@ -7492,7 +7638,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eslatmalar chegarasiga yetildi"
+            "value": "Eslatmalar limiti tugadi"
           }
         }
       }
@@ -7742,7 +7888,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Полный прямоугольник — для печати и слайдов"
+            "value": "Полный прямоугольник для печати и слайдов"
           }
         },
         "uz": {
@@ -7758,7 +7904,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Аккуратно коснитесь верхними краями iPhone."
+            "value": "Аккуратно соедините iPhone верхними краями."
           }
         },
         "uz": {
@@ -7822,7 +7968,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вход через Google не завершился безопасно. Попробуйте ещё раз."
+            "value": "Не удалось безопасно завершить вход через Google. Попробуйте ещё раз."
           }
         },
         "uz": {
@@ -7854,7 +8000,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "В этой версии вход через Google недоступен. Продолжите с Apple."
+            "value": "В этой версии вход через Google недоступен. Войдите через Apple."
           }
         },
         "uz": {
@@ -8196,7 +8342,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bekor qilsangiz, Pro joriy to‘lov davri oxirigacha saqlanadi. Shundan so‘ng ikkitadan ortiq vizitkalar faqat o‘qish rejimiga o‘tadi."
+            "value": "Bekor qilsangiz, Pro joriy to‘lov davri oxirigacha saqlanadi. Shundan keyin ikkitadan ortiq vizitkalarni faqat ko‘rish mumkin bo‘ladi."
           }
         }
       }
@@ -8402,7 +8548,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Возможно, это было удалено на другом устройстве."
+            "value": "Возможно, это удалили на другом устройстве."
           }
         },
         "uz": {
@@ -8418,7 +8564,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Возможно, это было убрано на другом устройстве."
+            "value": "Возможно, это удалили на другом устройстве."
           }
         },
         "uz": {
@@ -8523,7 +8669,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kimdir vizitka almashmoqchi bo‘lsa, bilib oling"
+            "value": "Kimdir vizitka almashmoqchi bo‘lsa, xabar oling"
           }
         }
       }
@@ -8540,6 +8686,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Turi"
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Язык"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Til"
           }
         }
       }
@@ -8758,7 +8920,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Слушаю… нажмите на микрофон, чтобы остановить"
+            "value": "Слушаю… коснитесь микрофона, чтобы остановить"
           }
         },
         "uz": {
@@ -8849,6 +9011,22 @@
         }
       }
     },
+    "Logo Color": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цвет логотипа"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logotip rangi"
+          }
+        }
+      }
+    },
     "Lola · Paused Card": {
       "shouldTranslate": false
     },
@@ -8880,6 +9058,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pochta"
+          }
+        }
+      }
+    },
+    "Make Your First Card": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создайте первую визитку"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birinchi vizitkangizni yarating"
           }
         }
       }
@@ -8969,7 +9163,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Средний виджет. Нажмите на напоминание, чтобы открыть его в %@, или на кружок, чтобы отметить его выполненным."
+            "value": "Средний виджет. Коснитесь напоминания, чтобы открыть его в %@, или кружка, чтобы отметить его выполненным."
           }
         },
         "uz": {
@@ -8996,7 +9190,7 @@
         }
       }
     },
-    "Medium · Your card and this week's new connections.": {
+    "Medium · Your card and this week’s new connections.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -9259,7 +9453,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Минимум"
+            "value": "Минимальная"
           }
         },
         "uz": {
@@ -9438,13 +9632,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Имя и email взяты из вашего Apple ID. Каждая визитка сама определяет, что показывать."
+            "value": "Имя и email взяты из вашего Apple ID. Что показывать, настраивается для каждой визитки."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ism va email Apple ID’ingizdan olindi. Har bir vizitka nimani ko‘rsatishni o‘zi belgilaydi."
+            "value": "Ism va email Apple ID’ingizdan olindi. Har bir vizitkada nima ko‘rinishi alohida sozlanadi."
           }
         }
       }
@@ -9454,13 +9648,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Имя и email взяты из вашего аккаунта Google. Каждая визитка сама определяет, что показывать."
+            "value": "Имя и email взяты из вашего аккаунта Google. Что показывать, настраивается для каждой визитки."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ism va email Google akkauntingizdan olindi. Har bir vizitka nimani ko‘rsatishni o‘zi belgilaydi."
+            "value": "Ism va email Google akkauntingizdan olindi. Har bir vizitkada nima ko‘rinishi alohida sozlanadi."
           }
         }
       }
@@ -9502,13 +9696,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Взаимодействие с устройствами рядом для %@ выключено. Касание всё равно работает, но с ним оно надёжнее."
+            "value": "Для %@ выключено «Взаимодействие с устройствами рядом». Касание работает и так, но с этой функцией оно надёжнее."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ uchun yaqin atrofdagi o‘zaro aloqalar o‘chiq. Tegizish baribir ishlaydi, lekin ularni yoqsangiz, yanada ishonchli bo‘ladi."
+            "value": "%@ uchun yaqin atrofdagi o‘zaro aloqalar o‘chiq. Tegizish baribir ishlaydi, lekin yoqsangiz, ishonchliroq bo‘ladi."
           }
         }
       }
@@ -9550,7 +9744,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Никогда не забывайте тех, с кем познакомились"
+            "value": "Помните всех, с кем познакомились"
           }
         },
         "uz": {
@@ -9646,13 +9840,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Новые контакты больше не будут добавляться. Вы получите сводку."
+            "value": "Новые контакты больше не будут в него добавляться. Вы получите итоги."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yangi tanishlar unga qo‘shilmaydi. Sizga yakuniy hisobot keladi."
+            "value": "Unga yangi tanishlar qo‘shilmaydi. Sizga xulosa keladi."
           }
         }
       }
@@ -9706,7 +9900,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "To‘qqizta maket, ma’lumotlaringiz uchun tayyor"
+            "value": "Ma’lumotlaringiz uchun to‘qqizta tayyor maket"
           }
         }
       }
@@ -9956,7 +10150,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Контактов пока нет. Добавьте их в профиле."
+            "value": "Контактных данных пока нет. Добавьте их в профиле."
           }
         },
         "uz": {
@@ -9999,18 +10193,18 @@
         }
       }
     },
-    "No follow-ups yet. Add one right after you connect — it takes 2 seconds.": {
+    "No follow-ups yet. Add one right after you connect.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пока нет напоминаний. Добавьте его сразу после обмена визитками — это займёт 2 секунды."
+            "value": "Пока нет напоминаний. Добавьте напоминание сразу после обмена визитками."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hali eslatmalar yo‘q. Vizitka almashgan zahoti qo‘shing — 2 soniya vaqt oladi."
+            "value": "Hali eslatmalar yo‘q. Vizitka almashgan zahoti qo‘shing."
           }
         }
       }
@@ -10135,7 +10329,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Это не он"
+            "value": "Не тот человек"
           }
         },
         "uz": {
@@ -10238,7 +10432,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bugun hech narsa yo‘q."
+            "value": "Bugun eslatma yo‘q."
           }
         }
       }
@@ -10251,25 +10445,25 @@
               "few": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "На сегодня ничего нет. Скоро — %lld напоминания."
+                  "value": "На сегодня ничего нет. Скоро: %lld напоминания."
                 }
               },
               "many": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "На сегодня ничего нет. Скоро — %lld напоминаний."
+                  "value": "На сегодня ничего нет. Скоро: %lld напоминаний."
                 }
               },
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "На сегодня ничего нет. Скоро — %lld напоминание."
+                  "value": "На сегодня ничего нет. Скоро: %lld напоминание."
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "На сегодня ничего нет. Скоро — %lld напоминания."
+                  "value": "На сегодня ничего нет. Скоро: %lld напоминания."
                 }
               }
             }
@@ -10281,13 +10475,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Bugun hech narsa yo‘q. Yaqinda: %lld ta."
+                  "value": "Bugun eslatma yo‘q. Yaqinda: %lld ta."
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Bugun hech narsa yo‘q. Yaqinda: %lld ta."
+                  "value": "Bugun eslatma yo‘q. Yaqinda: %lld ta."
                 }
               }
             }
@@ -10300,7 +10494,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "В вашем календаре ничего нет на ближайшие две недели."
+            "value": "В календаре нет событий на ближайшие две недели."
           }
         },
         "uz": {
@@ -10487,6 +10681,38 @@
         }
       }
     },
+    "One Color": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Один цвет"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir rang"
+          }
+        }
+      }
+    },
+    "One color needs a logo with a transparent background (PNG).": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для одного цвета нужен логотип с прозрачным фоном (PNG)."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir rang uchun foni shaffof logotip kerak (PNG)."
+          }
+        }
+      }
+    },
     "Only You": {
       "localizations": {
         "ru": {
@@ -10508,13 +10734,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Здесь видны только те, у кого открыт «Обмен» и включено «Показывать рядом»."
+            "value": "Здесь видны только те, у кого открыт «Обмен» и включён параметр «Показывать меня в „Рядом“»."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bu yerda faqat Almashish ochiq va «Yaqin atrofda ko‘rsatish» yoqilgan odamlar ko‘rinadi."
+            "value": "Bu yerda faqat Almashish ochiq va «Yaqin atrofda ko‘rinish» yoqilgan odamlar chiqadi."
           }
         }
       }
@@ -10535,7 +10761,7 @@
         }
       }
     },
-    "Only you can see this. Audio isn't stored.": {
+    "Only you can see this. Audio isn’t stored.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -10604,7 +10830,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Откройте %@ и нажмите «Start». Напоминания будут приходить в чат со ссылкой для ответа."
+            "value": "Откройте %@ и коснитесь «Start». Напоминания будут приходить в чат со ссылкой для ответа."
           }
         },
         "uz": {
@@ -10636,7 +10862,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Открыть обмен"
+            "value": "Открыть «Обмен»"
           }
         },
         "uz": {
@@ -10679,6 +10905,22 @@
         }
       }
     },
+    "Open People": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открыть «Люди»"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanishlarni ochish"
+          }
+        }
+      }
+    },
     "Open Person": {
       "localizations": {
         "ru": {
@@ -10690,7 +10932,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kontaktni ochish"
+            "value": "Tanishni ochish"
           }
         }
       }
@@ -10872,7 +11114,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kontekst qo‘shishni ochadi"
+            "value": "«Tafsilotlar qo‘shish»ni ochadi"
           }
         }
       }
@@ -10936,7 +11178,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Telegram telefon raqami orqali ochiladi. Telegram bu odamni faqat uning maxfiylik sozlamalari ruxsat bersa topadi."
+            "value": "Telegramni telefon raqami orqali ochadi. Telegram bu odamni faqat uning maxfiylik sozlamalari ruxsat bersa topadi."
           }
         }
       }
@@ -10989,6 +11231,22 @@
         }
       }
     },
+    "Opens card settings. Touch and hold for card actions.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывает настройки визитки. Коснитесь и удерживайте, чтобы открыть действия с визиткой."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vizitka sozlamalarini ochadi. Vizitka amallari uchun bosib turing."
+          }
+        }
+      }
+    },
     "Opens in Numbers, Excel and other spreadsheet apps.": {
       "localizations": {
         "ru": {
@@ -11010,13 +11268,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Откроет чат по номеру телефона"
+            "value": "Открывает чат по номеру телефона"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chat telefon raqami orqali ochiladi"
+            "value": "Chatni telefon raqami orqali ochadi"
           }
         }
       }
@@ -11154,13 +11412,29 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Порядок на главной. Нажмите «Изменить», чтобы перетащить визитки в новом порядке."
+            "value": "Порядок на главной. Коснитесь «Изменить» и перетащите визитки в нужном порядке."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bosh sahifadagi tartib. Vizitkalarni yangi tartibda sudrab joylash uchun «Tahrirlash»ni bosing."
+            "value": "Bosh sahifadagi tartib. Tartibni o‘zgartirish uchun «Tahrirlash»ni bosib, vizitkalarni suring."
+          }
+        }
+      }
+    },
+    "Original": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оригинал"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asl"
           }
         }
       }
@@ -11269,7 +11543,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Цвет"
+            "value": "Палитра"
           }
         },
         "uz": {
@@ -11416,7 +11690,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отсканировавшие его увидят неактивную страницу."
+            "value": "Те, кто его отсканирует, увидят неактивную страницу."
           }
         },
         "uz": {
@@ -11443,7 +11717,7 @@
         }
       }
     },
-    "People you block can't see your cards. You can block someone from their page in People.": {
+    "People you block can’t see your cards. You can block someone from their page in People.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -11523,7 +11797,7 @@
         }
       }
     },
-    "People you've connected with": {
+    "People you’ve connected with": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -11705,7 +11979,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выберите день. %@ напомнит вам с вашей заметкой."
+            "value": "Выберите день. %@ пришлёт напоминание с вашей заметкой."
           }
         },
         "uz": {
@@ -11716,12 +11990,28 @@
         }
       }
     },
+    "Pick a design. Your details fill it in, and you can change everything later.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выберите дизайн. Ваши данные подставятся сами, а изменить всё можно позже."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dizaynni tanlang. Ma’lumotlaringiz o‘zi joylashadi, hammasini keyin o‘zgartirish mumkin."
+          }
+        }
+      }
+    },
     "Pick a layout. Your details fill it in.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выберите макет. Ваши данные заполнят его."
+            "value": "Выберите макет, а данные подставятся в него сами."
           }
         },
         "uz": {
@@ -11737,7 +12027,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выберите другую визитку основной"
+            "value": "Сделайте основной другую визитку"
           }
         },
         "uz": {
@@ -11836,13 +12126,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Наведите на QR-код Nameshake или vCard"
+            "value": "Наведите камеру на QR-код Nameshake или vCard"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nameshake yoki vCard QR kodiga qarating"
+            "value": "Kamerani Nameshake yoki vCard QR kodiga qarating"
           }
         }
       }
@@ -11964,7 +12254,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Предпросмотр элемента управления «Показать мой QR-код»"
+            "value": "Предпросмотр элемента управления «Показать мой QR»"
           }
         },
         "uz": {
@@ -11980,7 +12270,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пока вы не создадите визитку, в предпросмотре показаны примерные данные. Коснитесь виджета и удерживайте его, затем нажмите «Изменить виджет», чтобы выбрать визитку."
+            "value": "Пока вы не создадите визитку, в предпросмотре показаны примерные данные. Коснитесь виджета и удерживайте его, затем выберите «Изменить виджет», чтобы указать, какую визитку он показывает."
           }
         },
         "uz": {
@@ -12101,22 +12391,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "«Faqat men» raqamlari vizitkada hech qachon ko‘rinmaydi."
-          }
-        }
-      }
-    },
-    "Private — hidden from all cards": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Только мне — скрыто на всех визитках"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Faqat men — barcha vizitkalarda yashirin"
           }
         }
       }
@@ -12266,18 +12540,18 @@
         }
       }
     },
-    "Public: anyone with your link. Connections: people you’ve connected with. Private: only you — it never appears on a card.": {
+    "Public: anyone with your link. Connections: people you’ve connected with. Private: only you. It never appears on a card.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Всем: любой, у кого есть ваша ссылка. Контактам: люди, с которыми вы обменялись визитками. Только мне: только вы — никогда не отображается на визитке."
+            "value": "Всем: любой, у кого есть ваша ссылка. Контактам: люди, с которыми вы обменялись визитками. Только мне: видно только вам и никогда не показывается на визитке."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hammaga: havolangiz bor har qanday odam. Tanishlarga: siz bilan vizitka almashgan odamlar. Faqat men: faqat siz — hech qachon vizitkada ko‘rinmaydi."
+            "value": "Hammaga: havolangizni olgan har kim. Tanishlarga: siz bilan vizitka almashganlar. Faqat men: faqat siz, vizitkada hech qachon ko‘rinmaydi."
           }
         }
       }
@@ -12293,7 +12567,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitkani nashr qilish"
+            "value": "Vizitkani e’lon qilish"
           }
         }
       }
@@ -12309,7 +12583,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Internet qaytganda nashr qilinadi"
+            "value": "Internet qaytganda e’lon qilinadi"
           }
         }
       }
@@ -12325,7 +12599,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ vizitkangizni nashr qiladi"
+            "value": "%@ vizitkangizni e’lon qiladi"
           }
         }
       }
@@ -12341,7 +12615,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nashr qilinmoqda"
+            "value": "E’lon qilinmoqda"
           }
         }
       }
@@ -12357,7 +12631,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nashr qilinmoqda…"
+            "value": "E’lon qilinmoqda…"
           }
         }
       }
@@ -12485,7 +12759,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone’da o‘qildi. Saqlashdan oldin ma’lumotlarni tekshiring."
+            "value": "iPhone’ning o‘zida o‘qildi. Saqlashdan oldin ma’lumotlarni tekshiring."
           }
         }
       }
@@ -12501,7 +12775,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faqat o‘qish uchun vizitka"
+            "value": "Faqat ko‘rish uchun vizitka"
           }
         }
       }
@@ -12517,7 +12791,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faqat o‘qish"
+            "value": "Faqat ko‘rish"
           }
         }
       }
@@ -12565,7 +12839,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "So‘nggilar"
+            "value": "So‘nggi"
           }
         }
       }
@@ -12693,7 +12967,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eslatma o‘rnatildi"
+            "value": "Eslatma qo‘yildi"
           }
         }
       }
@@ -13035,7 +13309,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bu tadbirga yangi tanishlar qo‘shishda davom etish uchun uni qayta yoqing."
+            "value": "Yangi tanishlar shu tadbirga qo‘shilishi uchun uni davom ettiring."
           }
         }
       }
@@ -13188,24 +13462,24 @@
         }
       }
     },
-    "Save %lld%% with yearly — just %@ a month": {
+    "Save %lld%% with Yearly, at %@ a month": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "new",
-            "value": "Save %1$lld%% with yearly — just %2$@ a month"
+            "value": "Save %1$lld%% with Yearly, at %2$@ a month"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сэкономьте %1$lld%% с годовым планом — всего %2$@ в месяц"
+            "value": "Сэкономьте %1$lld%% с годовым планом: всего %2$@ в месяц"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yillik tarifda %1$lld%% tejang — oyiga atigi %2$@"
+            "value": "Yillik tarifda %1$lld%% tejang: oyiga %2$@"
           }
         }
       }
@@ -13285,7 +13559,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Suratlarga saqlash"
+            "value": "Rasmlarga saqlash"
           }
         }
       }
@@ -13349,7 +13623,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Suratlarga saqlandi"
+            "value": "Rasmlarga saqlandi"
           }
         }
       }
@@ -13365,7 +13639,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Saqlandi · Eslatma o‘rnatildi"
+            "value": "Saqlandi · Eslatma qo‘yildi"
           }
         }
       }
@@ -13501,7 +13775,7 @@
         }
       }
     },
-    "Scan someone's card or open Connect. Your notes about them stay private.": {
+    "Scan someone’s card or open Connect. Your notes about them stay private.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -13602,7 +13876,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Найдите %@, выберите «Мой QR», «Визитка» или «Напоминания», затем нажмите «Добавить виджет»."
+            "value": "Найдите %@, выберите «Мой QR-код», «Визитка» или «Напоминания», затем коснитесь «Добавить виджет»."
           }
         },
         "uz": {
@@ -13794,7 +14068,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ставит напоминание на завтра в 10:00 каждому, у кого его нет."
+            "value": "Ставит напоминание на завтра в 10:00 всем, у кого его нет."
           }
         },
         "uz": {
@@ -13917,6 +14191,22 @@
         }
       }
     },
+    "Share it as a QR code, a link or in Apple Wallet.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Делитесь ею через QR-код, ссылку или Apple Wallet."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uni QR kod, havola yoki Apple Wallet orqali ulashing."
+          }
+        }
+      }
+    },
     "Share your card, remember where you met, and follow up on time.": {
       "localizations": {
         "ru": {
@@ -14013,22 +14303,6 @@
         }
       }
     },
-    "Show Me in Nearby": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Показывать меня в «Рядом»"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Meni «Yaqin atrofda»da ko‘rsatish"
-          }
-        }
-      }
-    },
     "Show My QR": {
       "localizations": {
         "ru": {
@@ -14066,7 +14340,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "QR-код"
+            "value": "Показать QR"
           }
         },
         "uz": {
@@ -14109,6 +14383,22 @@
         }
       }
     },
+    "Show in Nearby": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывать меня в «Рядом»"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yaqin atrofda ko‘rinish"
+          }
+        }
+      }
+    },
     "Show my %@ QR": {
       "localizations": {
         "ru": {
@@ -14120,7 +14410,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ ilovasida QR kodimni ko‘rsat"
+            "value": "%@ QR kodimni ko‘rsat"
           }
         }
       }
@@ -14348,7 +14638,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Показывает ваш QR-код. Нажмите и удерживайте для действий с визиткой."
+            "value": "Показывает ваш QR-код. Коснитесь и удерживайте, чтобы открыть действия с визиткой."
           }
         },
         "uz": {
@@ -14503,22 +14793,6 @@
         }
       }
     },
-    "Sign in didn't return an identity token. Try again.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "При входе не получен токен идентификации. Попробуйте ещё раз."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kirishda identifikatsiya tokeni qaytmadi. Qayta urinib ko‘ring."
-          }
-        }
-      }
-    },
     "Sign in to %@ to see your follow-ups.": {
       "localizations": {
         "ru": {
@@ -14627,6 +14901,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Profilingizni sozlash uchun chiqib, qayta kiring."
+          }
+        }
+      }
+    },
+    "Sign-in didn’t return an identity token. Try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "При входе не получен токен идентификации. Попробуйте ещё раз."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kirishda identifikatsiya tokeni qaytmadi. Qayta urinib ko‘ring."
           }
         }
       }
@@ -14759,7 +15049,7 @@
         }
       }
     },
-    "Small · Your QR, one tap away.": {
+    "Small · Opens your QR code in one tap.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -14900,7 +15190,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Shu telefon, email yoki Telegram’ga ega kishi «Tanishlar»da allaqachon bor."
+            "value": "Shu telefon, email yoki Telegram’ga ega kishi Tanishlaringizda allaqachon bor."
           }
         }
       }
@@ -14910,7 +15200,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Что-то пошло не так на нашей стороне. Попробуйте позже."
+            "value": "У нас что-то пошло не так. Попробуйте позже."
           }
         },
         "uz": {
@@ -14990,7 +15280,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Начните мероприятие на главной. Все, с кем вы там познакомитесь, будут собраны вместе."
+            "value": "Начните мероприятие на главной. Все, с кем вы там познакомитесь, окажутся в одной группе."
           }
         },
         "uz": {
@@ -15054,13 +15344,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Включает режим мероприятия — все, с кем вы познакомитесь, добавляются в него."
+            "value": "Включает режим мероприятия, чтобы все, с кем вы познакомитесь, добавлялись в него."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tadbir rejimini yoqadi — tanishgan har bir kishingiz tadbirga qo‘shiladi."
+            "value": "Tadbir rejimini yoqadi: tanishgan har bir kishingiz tadbirga qo‘shiladi."
           }
         }
       }
@@ -15188,7 +15478,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Оплата подписки списывается через ваш Apple ID. Отмените не позднее чем за 24 часа до продления."
+            "value": "Подписка оплачивается через ваш Apple ID. Отменить её нужно не позднее чем за 24 часа до продления."
           }
         },
         "uz": {
@@ -15220,7 +15510,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сводки приходят тихо, без звука."
+            "value": "Итоги приходят без звука."
           }
         },
         "uz": {
@@ -15268,7 +15558,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Смахните человека влево или нажмите и удерживайте, чтобы увидеть другие действия."
+            "value": "Смахните человека влево или коснитесь и удерживайте, чтобы открыть другие действия."
           }
         },
         "uz": {
@@ -15349,7 +15639,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отмечает всех, с кем вы познакомились, тегом мероприятия."
+            "value": "Ставит тег мероприятия всем, с кем вы познакомитесь."
           }
         },
         "uz": {
@@ -15429,7 +15719,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Нажмите «Изменить», затем «Добавить виджет»."
+            "value": "Коснитесь «Изменить», затем «Добавить виджет»."
           }
         },
         "uz": {
@@ -15493,7 +15783,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Нажмите на строку, чтобы использовать её для другого поля."
+            "value": "Коснитесь строки, чтобы использовать её для другого поля."
           }
         },
         "uz": {
@@ -15557,7 +15847,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вход через Telegram не завершился безопасно. Попробуйте ещё раз."
+            "value": "Не удалось безопасно завершить вход через Telegram. Попробуйте ещё раз."
           }
         },
         "uz": {
@@ -15589,7 +15879,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вход через Telegram сейчас недоступен. Продолжите через Apple."
+            "value": "Вход через Telegram сейчас недоступен. Войдите через Apple."
           }
         },
         "uz": {
@@ -15644,22 +15934,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Shartlar"
-          }
-        }
-      }
-    },
-    "Terms of Service": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Условия обслуживания"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xizmat ko‘rsatish shartlari"
           }
         }
       }
@@ -15755,7 +16029,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "App Store bu xaridni tasdiqlay olmadi. «Xaridlarni tiklash»ni sinab ko‘ring yoki muammo takrorlansa, qo‘llab-quvvatlash xizmatiga murojaat qiling."
+            "value": "App Store bu xaridni tasdiqlay olmadi. «Xaridlarni tiklash»ni sinab ko‘ring, muammo takrorlansa, yordam xizmatiga yozing."
           }
         }
       }
@@ -15765,13 +16039,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бесплатный план включает 1 активное мероприятие. Улучшите план, чтобы проводить несколько сразу — у каждого будет своя сводка."
+            "value": "Бесплатный план включает 1 активное мероприятие. Перейдите на Pro, чтобы проводить несколько сразу, каждое со своими итогами."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bepul tarifda 1 ta faol tadbir mavjud. Bir vaqtda bir nechtasini o‘tkazish uchun tarifni yangilang — har biri o‘z xulosasi bilan."
+            "value": "Bepul tarifda 1 ta faol tadbir bor. Bir vaqtda bir nechtasini o‘tkazish uchun Pro’ga o‘ting, har birining o‘z xulosasi bo‘ladi."
           }
         }
       }
@@ -15781,13 +16055,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бесплатный план включает 2 визитки, поэтому эту нельзя изменить. Улучшите план, чтобы снова её редактировать."
+            "value": "Бесплатный план включает 2 визитки, поэтому эту нельзя изменить. Перейдите на Pro, чтобы снова её редактировать."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bepul tarifda 2 ta vizitka mavjud, shuning uchun buni tahrirlab bo‘lmaydi. Uni yana tahrirlash uchun tarifni yangilang."
+            "value": "Bepul tarifda 2 ta vizitka bor, shuning uchun buni tahrirlab bo‘lmaydi. Yana tahrirlash uchun Pro’ga o‘ting."
           }
         }
       }
@@ -15808,18 +16082,18 @@
         }
       }
     },
-    "The Free plan includes 2 cards. Upgrade for a card for every side of your work.": {
+    "The Free plan includes 2 cards. Upgrade for unlimited cards.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бесплатный план включает 2 визитки. Улучшите план, чтобы завести визитку для каждого направления работы."
+            "value": "Бесплатный план включает 2 визитки. Перейдите на Pro, чтобы создавать визитки без ограничений."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bepul tarifda 2 ta vizitka mavjud. Ishingizning har bir yo‘nalishi uchun alohida vizitka yaratish uchun tarifni yangilang."
+            "value": "Bepul tarifda 2 ta vizitka bor. Cheksiz vizitka uchun Pro’ga o‘ting."
           }
         }
       }
@@ -15829,7 +16103,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бесплатный план включает 2 визитки. Перейдите на %@, чтобы дублировать эту."
+            "value": "Бесплатный план включает 2 визитки. Перейдите на %@, чтобы создать копию этой визитки."
           }
         },
         "uz": {
@@ -15840,18 +16114,18 @@
         }
       }
     },
-    "The Free plan includes 5 active reminders. Upgrade and never lose track of a promise.": {
+    "The Free plan includes 5 active reminders. Upgrade for unlimited reminders.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бесплатный план включает 5 активных напоминаний. Перейдите на Pro и не забывайте ни одного обещания."
+            "value": "Бесплатный план включает 5 активных напоминаний. Перейдите на Pro, чтобы создавать напоминания без ограничений."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bepul tarifda 5 ta faol eslatma bor. Pro’ga o‘ting va hech bir va’dani unutmang."
+            "value": "Bepul tarifda 5 ta faol eslatma bor. Cheksiz eslatma uchun Pro’ga o‘ting."
           }
         }
       }
@@ -15983,7 +16257,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Мероприятие также завершится само после последнего дня."
+            "value": "Мероприятие также завершится автоматически после последнего дня."
           }
         },
         "uz": {
@@ -16015,7 +16289,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Мероприятие завершится само после последнего дня, поэтому выберите сегодняшнюю или более позднюю дату."
+            "value": "Мероприятие завершится автоматически после последнего дня, поэтому выберите сегодняшнюю или более позднюю дату."
           }
         },
         "uz": {
@@ -16106,7 +16380,7 @@
         }
       }
     },
-    "The request was cancelled.": {
+    "The request was canceled.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -16149,7 +16423,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Server juda uzoq javob bermadi. Qayta urinib ko‘ring."
+            "value": "Server javobi juda kechikdi. Qayta urinib ko‘ring."
           }
         }
       }
@@ -16239,7 +16513,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Этот QR-код не является кодом %@ или vCard."
+            "value": "Это не QR-код %@ и не vCard."
           }
         },
         "uz": {
@@ -16320,18 +16594,18 @@
         }
       }
     },
-    "This card isn’t available right now. The link may be paused or removed — ask the person for a new one.": {
+    "This card isn’t available right now. The link may be paused or removed. Ask the person for a new one.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Эта визитка сейчас недоступна. Возможно, ссылка приостановлена или удалена — попросите у владельца новую."
+            "value": "Эта визитка сейчас недоступна. Возможно, ссылка приостановлена или удалена. Попросите у владельца новую."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bu vizitka hozir mavjud emas. Havola to‘xtatilgan yoki o‘chirilgan bo‘lishi mumkin — egasidan yangisini so‘rang."
+            "value": "Bu vizitkani hozir ochib bo‘lmaydi. Havola to‘xtatilgan yoki o‘chirilgan bo‘lishi mumkin. Egasidan yangisini so‘rang."
           }
         }
       }
@@ -16368,22 +16642,6 @@
         }
       }
     },
-    "This device can't scan with a camera. You can still paste a link.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Это устройство не может сканировать камерой. Вы можете вставить ссылку."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu qurilma kamera bilan skanerlay olmaydi. Havolani joylashtirishingiz mumkin."
-          }
-        }
-      }
-    },
     "This device can’t add passes to Apple Wallet.": {
       "localizations": {
         "ru": {
@@ -16396,6 +16654,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bu qurilma Apple Wallet’ga karta qo‘sha olmaydi."
+          }
+        }
+      }
+    },
+    "This device can’t scan with a camera. You can still paste a link.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это устройство не может сканировать камерой. Ссылку можно вставить и без камеры."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu qurilma kamera bilan skanerlay olmaydi. Havolani joylashtirishingiz mumkin."
+          }
+        }
+      }
+    },
+    "This email address looks incomplete.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Похоже, адрес email неполный."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email manzili chala yozilganga o‘xshaydi."
           }
         }
       }
@@ -16475,7 +16765,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bu iPhone boshqa telefon yaqin tutilganini aniqlay olmaydi. Uning o‘rniga odamni Yaqin atrofda orqali toping."
+            "value": "Bu iPhone boshqa telefon yaqin tutilganini aniqlay olmaydi. Odamni «Yaqin atrofda» orqali toping."
           }
         }
       }
@@ -16535,7 +16825,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bu profilingizni, %1$@ va %2$@ haqidagi izohlaringizni butunlay o‘chiradi. Bosma QR kodlar nofaol sahifani ko‘rsatadi."
+            "value": "Profilingiz, %1$@ va %2$@ haqidagi izohlaringiz butunlay o‘chiriladi. Chop etilgan QR kodlar nofaol sahifani ko‘rsatadi."
           }
         }
       }
@@ -16615,7 +16905,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bu vaqt allaqachon o‘tib ketgan. Eslatma uchun keyingi vaqtni tanlang."
+            "value": "Bu vaqt o‘tib bo‘lgan. Eslatma uchun kechroq vaqtni tanlang."
           }
         }
       }
@@ -16760,7 +17050,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vidjetni bosib turing, so‘ng qaysi vizitkani ko‘rsatishini tanlash uchun “Vidjetni tahrirlash”ni bosing."
+            "value": "Vidjetni bosib turing, so‘ng qaysi vizitkani ko‘rsatishini tanlash uchun «Vidjetni tahrirlash»ni bosing."
           }
         }
       }
@@ -16792,7 +17082,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bo‘sh joyni bosib turing, so‘ng “Boshqaruv elementi qo‘shish”ni bosing."
+            "value": "Bo‘sh joyni bosib turing, so‘ng «Boshqaruv elementi qo‘shish»ni bosing."
           }
         }
       }
@@ -16824,7 +17114,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Qulf ekranini bosib turing, so‘ng “Moslash”ni bosing."
+            "value": "Qulf ekranini bosib turing, so‘ng «Moslash»ni bosing."
           }
         }
       }
@@ -16937,6 +17227,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sozlamalarda yoqish"
+          }
+        }
+      }
+    },
+    "Turn on Wi‑Fi and Bluetooth.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wi‑Fi и Bluetooth должны быть включены."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wi‑Fi va Bluetooth yoqilgan bo‘lishi kerak."
           }
         }
       }
@@ -17064,7 +17370,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vizitka almashish uchun Profil › Maxfiylik va ma’lumotlar › Bloklanganlar bo‘limida blokdan chiqaring: %@."
+            "value": "Vizitka almashish uchun avval %@ blokdan chiqarilishi kerak: Profil › Maxfiylik va ma’lumotlar › Bloklanganlar."
           }
         }
       }
@@ -17074,7 +17380,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ разблокирован(а)"
+            "value": "Вы разблокировали: %@"
           }
         },
         "uz": {
@@ -17106,7 +17412,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Безлимит визиток"
+            "value": "Визитки без ограничений"
           }
         },
         "uz": {
@@ -17122,7 +17428,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Безлимит напоминаний"
+            "value": "Напоминания без ограничений"
           }
         },
         "uz": {
@@ -17138,7 +17444,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Безлимит визиток"
+            "value": "Визитки без ограничений"
           }
         },
         "uz": {
@@ -17154,7 +17460,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Безлимит визиток, напоминаний и мероприятий, все шаблоны и цвета, а также экспорт мероприятий в CSV."
+            "value": "Неограниченное число визиток, напоминаний и мероприятий, все шаблоны и палитры, а также экспорт мероприятий в CSV."
           }
         },
         "uz": {
@@ -17170,7 +17476,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Безлимит напоминаний"
+            "value": "Напоминания без ограничений"
           }
         },
         "uz": {
@@ -17202,13 +17508,29 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Открыть все цвета"
+            "value": "Открыть все палитры"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
             "value": "Barcha ranglarni ochish"
+          }
+        }
+      }
+    },
+    "Unlock Pro Templates": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Откройте Pro-шаблоны"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro shablonlarni oching"
           }
         }
       }
@@ -17253,13 +17575,29 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перейдите на %@, чтобы использовать Editorial и все цвета."
+            "value": "Перейдите на %@, чтобы использовать Editorial и все палитры."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
             "value": "Editorial va barcha ranglardan foydalanish uchun %@’ga o‘ting."
+          }
+        }
+      }
+    },
+    "Upgrade to %@ to use Foil, Aurora, Editorial and every palette.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перейдите на %@, чтобы использовать Foil, Aurora, Editorial и все палитры."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foil, Aurora, Editorial va barcha ranglardan foydalanish uchun %@’ga o‘ting."
           }
         }
       }
@@ -17280,12 +17618,28 @@
         }
       }
     },
+    "Upgrade to use Foil, Aurora, Editorial and every palette.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перейдите на Pro, чтобы использовать Foil, Aurora, Editorial и все палитры."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foil, Aurora, Editorial va barcha ranglardan foydalanish uchun Pro’ga o‘ting."
+          }
+        }
+      }
+    },
     "Upgrade to use Ocean, Ember and the Editorial template.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перейдите на Pro, чтобы использовать цвета Ocean и Ember и шаблон Editorial."
+            "value": "Перейдите на Pro, чтобы использовать палитры Ocean и Ember и шаблон Editorial."
           }
         },
         "uz": {
@@ -17296,12 +17650,28 @@
         }
       }
     },
+    "Upgrade to use Ocean, Ember and the Foil, Aurora and Editorial templates.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перейдите на Pro, чтобы использовать Ocean, Ember и шаблоны Foil, Aurora и Editorial."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocean, Ember va Foil, Aurora, Editorial shablonlaridan foydalanish uchun Pro’ga o‘ting."
+          }
+        }
+      }
+    },
     "Upgrade to use the Editorial template and every palette.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перейдите на Pro, чтобы использовать шаблон Editorial и все цвета."
+            "value": "Перейдите на Pro, чтобы использовать шаблон Editorial и все палитры."
           }
         },
         "uz": {
@@ -17413,7 +17783,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Данные берутся из профиля. Настройки приватности меняются там."
+            "value": "Данные берутся из профиля. Там же можно изменить, кто их видит."
           }
         },
         "uz": {
@@ -17435,7 +17805,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ma’lumotlar profilingizdan olinadi. “Faqat men” maydonlari vizitkada hech qachon ko‘rinmaydi. “Tanishlarga” maydonlari faqat ilovada siz bilan vizitka almashganlarga ko‘rinadi."
+            "value": "Ma’lumotlar profilingizdan olinadi. «Faqat men» maydonlari vizitkada hech qachon ko‘rinmaydi. «Tanishlarga» maydonlari faqat ilovada, siz bilan vizitka almashganlarga ko‘rinadi."
           }
         }
       }
@@ -17495,7 +17865,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ko‘rishlar %1$lld · Saqlashlar %2$lld · Qaytarilgan %3$lld"
+            "value": "Ko‘rilgan %1$lld · Saqlangan %2$lld · Qaytarilgan %3$lld"
           }
         }
       }
@@ -18012,22 +18382,6 @@
         }
       }
     },
-    "Wi‑Fi and Bluetooth should be turned on.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wi‑Fi и Bluetooth должны быть включены."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wi‑Fi va Bluetooth yoqilgan bo‘lishi kerak."
-          }
-        }
-      }
-    },
     "Work": {
       "comment": "Suggested card name",
       "localizations": {
@@ -18082,13 +18436,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Написать письмо. Коснитесь и удерживайте, чтобы скопировать."
+            "value": "Создаёт письмо. Коснитесь и удерживайте, чтобы скопировать."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Email yozadi. Nusxalash uchun bosib turing."
+            "value": "Email yozish oynasini ochadi. Nusxalash uchun bosib turing."
           }
         }
       }
@@ -18098,7 +18452,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Годовая"
+            "value": "Ежегодно"
           }
         },
         "uz": {
@@ -18130,29 +18484,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы и %@ обменялись визитками. Добавьте подробности, пока всё свежо в памяти."
+            "value": "Вы и %@ обменялись визитками. Добавьте контекст, пока всё свежо в памяти."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Siz va %@ vizitka almashdingiz. Esingizda borida tafsilotlarni qo‘shing."
-          }
-        }
-      }
-    },
-    "You can add up to %lld contacts": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Можно добавить не больше %lld контактов"
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ko‘pi bilan %lld ta kontakt qo‘shish mumkin"
+            "value": "%@ bilan vizitka almashdingiz. Esingizdan chiqmasdan tafsilotlarni yozib qo‘ying."
           }
         }
       }
@@ -18201,6 +18539,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hammasini keyinroq muharrirda o‘zgartirishingiz mumkin."
+          }
+        }
+      }
+    },
+    "You can change it later in Settings.": {
+      "comment": "Language screen (ONB_LANGUAGE), shown in the language being picked via AppLanguage.localized",
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Его можно сменить позже в Настройках."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keyinroq Sozlamalarda o‘zgartirishingiz mumkin."
           }
         }
       }
@@ -18409,7 +18765,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Siz “%1$@” vizitkangizni %2$@ bilan ulashdingiz."
+            "value": "Siz «%1$@» vizitkangizni %2$@ bilan ulashdingiz."
           }
         }
       }
@@ -18435,45 +18791,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вам не будет приходить напоминание связаться с %@."
+            "value": "Напоминание связаться с %@ не придёт."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ bilan bog‘lanish haqida sizga eslatilmaydi."
-          }
-        }
-      }
-    },
-    "You're offline. Check your connection and try again.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вы офлайн. Проверьте подключение и повторите попытку."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Siz oflaynsiz. Internet aloqasini tekshirib, qayta urinib ko‘ring."
-          }
-        }
-      }
-    },
-    "You're offline. Your QR code still works.": {
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вы офлайн. Ваш QR-код всё равно работает."
-          }
-        },
-        "uz": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Siz oflaynsiz. QR kodingiz baribir ishlaydi."
           }
         }
       }
@@ -18495,7 +18819,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sizning “%1$@” vizitkangiz va %2$@ning vizitkasi"
+            "value": "Sizning «%1$@» vizitkangiz va %2$@ vizitkasi"
           }
         }
       }
@@ -18564,18 +18888,18 @@
         }
       }
     },
-    "Your QR note + their web share-back": {
+    "Your QR note and the details they shared from your page": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваша заметка по QR + его ответный контакт с сайта"
+            "value": "Ваша заметка по QR и данные, которые человек отправил с вашей страницы"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "QR izohingiz + uning veb orqali qaytargan kontakti"
+            "value": "QR izohingiz va u sahifangiz orqali yuborgan ma’lumotlar"
           }
         }
       }
@@ -18591,7 +18915,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "QR kodingiz to‘g‘ridan-to‘g‘ri Qulf ekranida ko‘rinadi, shuning uchun uni qurilmani ochmasdan skanerlash mumkin. To‘liq ekranda ochish uchun ustiga bosing."
+            "value": "QR kodingiz Qulf ekranining o‘zida ko‘rinadi, telefonni ochmasangiz ham uni skanerlash mumkin. Butun ekranda ochish uchun ustiga bosing."
           }
         }
       }
@@ -18633,7 +18957,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Визитка ещё не опубликована, поэтому QR-код передаёт ваши контактные данные. Чтобы использовать ссылку, экспортируйте снова после публикации."
+            "value": "Визитка ещё не опубликована, поэтому QR-код передаёт ваши контактные данные. После публикации экспортируйте ещё раз, чтобы использовать ссылку."
           }
         },
         "uz": {
@@ -18655,7 +18979,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ular uchun vizitkalaringiz go‘yo mavjud emasdek ko‘rinadi."
+            "value": "Ularga vizitkalaringiz yo‘qdek ko‘rinadi."
           }
         }
       }
@@ -18692,7 +19016,7 @@
         }
       }
     },
-    "Your default card, or your event's card": {
+    "Your default card, or your event’s card": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -18708,7 +19032,7 @@
         }
       }
     },
-    "Your details fill every layout. You can switch any time.": {
+    "Your details fill every layout. You can switch anytime.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -18724,12 +19048,12 @@
         }
       }
     },
-    "Your link appears in a moment, as soon as the card is published.": {
+    "Your link appears as soon as the card is published.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ссылка появится, как только визитка будет опубликована."
+            "value": "Ссылка появится сразу после публикации визитки."
           }
         },
         "uz": {
@@ -18740,7 +19064,7 @@
         }
       }
     },
-    "Your links are paused, so this page shows as unavailable until you resume them.": {
+    "Your links are paused, so this page is inactive until you resume them.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -18761,13 +19085,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Имя взято из Telegram. Каждая визитка сама определяет, что показывать."
+            "value": "Имя взято из Telegram. Что показывать, настраивается для каждой визитки."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ismingiz Telegram’dan olindi. Har bir vizitka nimani ko‘rsatishni o‘zi belgilaydi."
+            "value": "Ismingiz Telegram’dan olindi. Har bir vizitkada nima ko‘rinishi alohida sozlanadi."
           }
         }
       }
@@ -18831,7 +19155,23 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Izohingiz: “%@”"
+            "value": "Izohingiz: «%@»"
+          }
+        }
+      }
+    },
+    "Your photo and logo are shared by all your cards.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Фото и логотип общие для всех ваших визиток."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rasm va logotip barcha vizitkalaringiz uchun umumiy."
           }
         }
       }
@@ -18841,7 +19181,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваша публичная страница появится, когда основная визитка будет опубликована."
+            "value": "Публичная страница появится после публикации основной визитки."
           }
         },
         "uz": {
@@ -18884,7 +19224,7 @@
         }
       }
     },
-    "You’ll get an email with a copy of everything.": {
+    "You’ll get an email with a copy of your data.": {
       "localizations": {
         "ru": {
           "stringUnit": {
@@ -18911,7 +19251,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Siz “%@” vizitkangizni ulashasiz."
+            "value": "Siz «%@» vizitkangizni ulashasiz."
           }
         }
       }
@@ -18969,13 +19309,29 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы офлайн, поэтому %@ сохранён(а) в «Люди». Обменяйтесь визитками снова, когда будете онлайн."
+            "value": "Вы офлайн, поэтому контакт %@ сохранён в разделе «Люди». Обменяйтесь визитками снова, когда будете онлайн."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Siz oflaynsiz, shuning uchun %@ Tanishlarga saqlandi. Internetga ulanganingizda qayta almashing."
+            "value": "Siz oflaynsiz, shuning uchun %@ Tanishlarga saqlandi. Internetga ulanganingizda qayta vizitka almashing."
+          }
+        }
+      }
+    },
+    "You’re offline. Check your connection and try again.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы офлайн. Проверьте подключение и повторите попытку."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siz oflaynsiz. Internet aloqasini tekshirib, qayta urinib ko‘ring."
           }
         }
       }
@@ -18992,6 +19348,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Siz oflaynsiz. Internetga ulanib, qayta urinib ko‘ring."
+          }
+        }
+      }
+    },
+    "You’re offline. Your QR code still works.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы офлайн. Ваш QR-код всё равно работает."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siz oflaynsiz. QR kodingiz baribir ishlaydi."
           }
         }
       }
@@ -19259,7 +19631,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "iOS не позволяет приложениям ставить обои самостоятельно. После сохранения откройте «Фото», выберите изображение, нажмите «Поделиться» › «Сделать обоями», затем «Добавить»."
+            "value": "iOS не позволяет приложениям ставить обои самостоятельно. После сохранения откройте «Фото», выберите изображение, коснитесь «Поделиться» › «Сделать обоями», затем «Добавить»."
           }
         },
         "uz": {
@@ -19553,13 +19925,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Параметр «Показывать в “Рядом”» выключен, поэтому люди поблизости вас не найдут. Включите его, чтобы обменяться визитками, или покажите QR-код."
+            "value": "Параметр «Показывать меня в „Рядом“» выключен, поэтому люди поблизости вас не найдут. Включите его, чтобы обменяться визитками, или покажите QR-код."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "“Yaqin atrofda ko‘rinish” o‘chiq, shuning uchun atrofingizdagilar sizni topa olmaydi. Vizitka almashish uchun uni yoqing yoki QR kodingizni ko‘rsating."
+            "value": "«Yaqin atrofda ko‘rinish» o‘chiq, shuning uchun atrofingizdagilar sizni topa olmaydi. Vizitka almashish uchun uni yoqing yoki QR kodingizni ko‘rsating."
           }
         }
       }

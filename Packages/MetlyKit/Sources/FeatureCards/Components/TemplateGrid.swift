@@ -14,7 +14,7 @@ struct TemplateGrid: View {
 
     var body: some View {
         LazyVGrid(columns: gridColumns, spacing: 16) {
-            ForEach(CardTemplate.allCases) { template in
+            ForEach(CardTemplate.pickerOrder) { template in
                 Button {
                     onSelect(template)
                 } label: {

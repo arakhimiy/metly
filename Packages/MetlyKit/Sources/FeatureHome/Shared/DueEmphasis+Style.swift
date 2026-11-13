@@ -13,7 +13,7 @@ extension DueEmphasis {
     /// Spoken after the due label so VoiceOver users get the same cue as the color.
     var accessibilityNote: String? {
         switch self {
-        case .overdue: String(localized: "Overdue")
+        case .overdue: String(localized: "Overdue", bundle: .appStrings)
         case .today, .upcoming, .done: nil
         }
     }

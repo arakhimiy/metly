@@ -7,9 +7,7 @@ import WidgetKit
 public enum WidgetBackgrounds {
     /// The card's palette — solid, or its gradient for gradient designs (SPEC Appendix B colours).
     public static func card(_ design: CardDesign) -> LinearGradient {
-        let colors = design.colors
-        let end = design.usesGradientFill ? colors.gradientEnd : colors.background
-        return LinearGradient(colors: [colors.background.color, end.color], startPoint: .topLeading, endPoint: .bottomTrailing)
+        LinearGradient(colors: design.backgroundColors, startPoint: .topLeading, endPoint: .bottomTrailing)
     }
 
     /// Neutral background for the Card and Follow-ups widgets.

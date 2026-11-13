@@ -27,23 +27,26 @@ struct FollowUpTodayRow: View {
             .buttonStyle(.plain)
             .accessibilityHint("Edits the reminder")
 
+            // Always one row, the same shape for every reminder: when the titles don't fit (a long
+            // channel name, Russian words) Snooze and Done drop to their icons. A column only at
+            // accessibility text sizes, where even icons don't fit.
             ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) { buttons }
-                VStack(alignment: .leading, spacing: 8) { buttons }
+                HStack(spacing: 8) { buttons(compact: false) }
+                HStack(spacing: 8) { buttons(compact: true) }
+                VStack(alignment: .leading, spacing: 8) { buttons(compact: false) }
             }
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
             .controlSize(.small)
-            .labelStyle(.titleAndIcon)
         }
         .padding(.vertical, 6)
     }
 
-    @ViewBuilder private var buttons: some View {
+    @ViewBuilder private func buttons(compact: Bool) -> some View {
         let channel = followUp.channel
         let target = ChannelLink.target(channel, for: followUp.connection)
         Button(action: actions.openChannel) {
-            Label(ChannelLink.actionTitle(channel), systemImage: channel.symbolName)
+            ActionLabel(verbatim: ChannelLink.actionTitle(channel), systemImage: channel.symbolName)
         }
         .disabled(target == nil)
         .accessibilityLabel(Text("\(ChannelLink.actionTitle(channel)) \(PersonText.firstName(PersonText.displayName(followUp.connection)))"))
@@ -52,14 +55,42 @@ struct FollowUpTodayRow: View {
         Menu {
             SnoozeMenuItems(dueAt: followUp.dueAt, action: actions.snooze)
         } label: {
-            Label("Snooze", systemImage: "clock.arrow.circlepath")
+            ActionLabel("Snooze", systemImage: "clock.arrow.circlepath", iconOnly: compact)
         }
         .accessibilityLabel(Text("Snooze \(followUp.title)"))
 
         Button(action: actions.done) {
-            Label("Done", systemImage: "checkmark")
+            ActionLabel("Done", systemImage: "checkmark", iconOnly: compact)
         }
         .accessibilityLabel(Text("Mark \(followUp.title) done"))
+    }
+}
+
+/// Icon and title close together (the system label style leaves a wide gap in small bordered buttons).
+private struct ActionLabel: View {
+    let title: Text
+    let systemImage: String
+    var iconOnly = false
+
+    init(_ title: LocalizedStringKey, systemImage: String, iconOnly: Bool = false) {
+        self.title = Text(title); self.systemImage = systemImage; self.iconOnly = iconOnly
+    }
+
+    /// An already-localized title (the channel name).
+    init(verbatim title: String, systemImage: String, iconOnly: Bool = false) {
+        self.title = Text(verbatim: title); self.systemImage = systemImage; self.iconOnly = iconOnly
+    }
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: systemImage)
+                .accessibilityHidden(true)
+            if !iconOnly {
+                title.lineLimit(1)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(title)
     }
 }
 

@@ -5,18 +5,26 @@ import SwiftUI
 
 // FROZEN ENTRY POINTS — the app RouteResolver constructs these. Keep the initialisers.
 
-/// Root phase `.onboarding`: ONB_WELCOME → AUTH_SIGNUP (→ sign-in mode).
+/// Root phase `.onboarding`: ONB_LANGUAGE (until a language is picked) → ONB_WELCOME → AUTH_SIGNUP
+/// (→ sign-in mode).
 public struct OnboardingFlowView: View {
+    @Environment(AppServices.self) private var services
     @State private var path: [OnboardingRoute] = []
 
     public init() {}
 
     public var body: some View {
         NavigationStack(path: $path) {
-            WelcomeView { path.append(.signUp) }
-                .navigationDestination(for: OnboardingRoute.self) { route in
-                    AuthView(mode: route.authMode)
-                }
+            if services.preferences.language == nil {
+                // Picking re-renders the app in that language (MetlyApp keys the root on it), and
+                // this flow comes back with the welcome pages.
+                LanguagePickerView { services.preferences.language = $0 }
+            } else {
+                WelcomeView { path.append(.signUp) }
+                    .navigationDestination(for: OnboardingRoute.self) { route in
+                        AuthView(mode: route.authMode)
+                    }
+            }
         }
     }
 }
@@ -79,6 +87,11 @@ public struct DeferredWelcomeView: View {
         OnboardingStore().pendingInviteSlug = nil
         router.phase = .onboarding
     }
+}
+
+#Preview("Language screen") {
+    NavigationStack { LanguagePickerView { _ in } }
+        .metlyPreview(.signedOut)
 }
 
 #Preview("Onboarding flow") {

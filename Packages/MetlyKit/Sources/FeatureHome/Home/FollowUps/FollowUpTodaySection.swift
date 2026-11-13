@@ -1,5 +1,6 @@
 import MetlyCore
 import MetlyData
+import MetlyDesign
 import SwiftData
 import SwiftUI
 
@@ -37,8 +38,13 @@ struct FollowUpTodaySection: View {
                 Text("Nothing due today. \(upcoming) coming up.")
                     .foregroundStyle(.secondary)
             case .noFollowUps:
-                Text("No follow-ups yet. Add one right after you connect — it takes 2 seconds.")
-                    .foregroundStyle(.secondary)
+                EmptyStateView(.followUps, title: "No Follow-ups Yet",
+                               message: "Add one right after you connect.", style: .inline) {
+                    Button("New Reminder", systemImage: "plus") {
+                        router.present(.reminderEdit(followUpID: nil, connectionID: nil))
+                    }
+                    .subtleButtonStyle()
+                }
             }
         } header: {
             HomeSectionHeader(Text("Follow Up Today")) {

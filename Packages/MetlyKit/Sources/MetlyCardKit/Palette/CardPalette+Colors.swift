@@ -1,4 +1,5 @@
 import MetlyCore
+import SwiftUI
 
 // Palette definitions — SPEC §4.2 table, `[background, foreground, accent]` per appearance.
 
@@ -26,8 +27,8 @@ public extension CardDesign {
     /// Colours of this design's palette in its appearance.
     var colors: CardPaletteColors { palette.colors(appearance) }
 
-    /// The gradient template always uses the gradient fill (SPEC Appendix B).
-    var usesGradientFill: Bool { template == .gradient || background == .gradient }
+    /// The palette gradient fill (the "Gradient" background switch). Aurora draws its own fill.
+    var usesGradientFill: Bool { template != .gradient && background == .gradient }
 
     /// Terminal forces SF Mono and Editorial forces New York; others use the chosen font.
     var effectiveFont: CardFont {
@@ -38,23 +39,30 @@ public extension CardDesign {
         }
     }
 
-    /// Alignment is honoured by Minimal, Bold and Gradient only.
+    /// Alignment is honoured by Wordmark only (v2); the other layouts are composed for one alignment.
     var effectiveAlignment: CardAlignment {
-        switch template {
-        case .minimal, .bold, .gradient: alignment
-        default: .leading
-        }
+        template == .bold ? alignment : .leading
     }
 
-    /// Whether the chosen template renders the profile photo (Modern, Split, Stack).
-    var templateShowsPhoto: Bool { [.modern, .split, .stack].contains(template) }
+    /// Whether the chosen template renders the profile photo (Duotone, Centered).
+    var templateShowsPhoto: Bool { [.split, .stack].contains(template) }
 
-    /// Whether the chosen template renders the logo (Professional).
-    var templateShowsLogo: Bool { template == .professional }
+    /// Whether the chosen template renders the logo (every layout with a logo slot).
+    var templateShowsLogo: Bool { ![.gradient, .terminal].contains(template) }
 
     /// Whether the user's font choice has an effect (not for Terminal / Editorial).
     var templateAllowsFontChoice: Bool { template != .terminal && template != .editorial }
 
     /// Whether the alignment control has an effect for the chosen template.
-    var templateAllowsAlignment: Bool { [.minimal, .bold, .gradient].contains(template) }
+    var templateAllowsAlignment: Bool { template == .bold }
+}
+
+public extension CardDesign {
+    /// Colours of the card's background, top-leading to bottom-trailing — for surfaces around a face that
+    /// should continue it (widget container backgrounds).
+    var backgroundColors: [Color] {
+        if template == .gradient { return CardAurora.colors(palette, appearance).map(\.color) }
+        let colors = colors
+        return [colors.background.color, (usesGradientFill ? colors.gradientEnd : colors.background).color]
+    }
 }

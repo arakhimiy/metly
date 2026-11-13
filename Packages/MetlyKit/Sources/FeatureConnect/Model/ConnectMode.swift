@@ -12,8 +12,8 @@ nonisolated enum ConnectMode: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .nearby: String(localized: "Nearby")
-        case .tapPhones: String(localized: "Tap Phones")
+        case .nearby: String(localized: "Nearby", bundle: .appStrings)
+        case .tapPhones: String(localized: "Tap Phones", bundle: .appStrings)
         }
     }
 }

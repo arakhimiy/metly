@@ -25,7 +25,7 @@ struct WelcomePageView: View {
 
                 VStack(spacing: 12) {
                     Text(page.title)
-                        .font(.largeTitle)
+                        .font(.title)   // 28 pt: two-line titles sit lighter under the hero than Large Title
                         .bold()
                         .accessibilityAddTraits(.isHeader)
                     Text(page.subtitle)
@@ -33,6 +33,8 @@ struct WelcomePageView: View {
                         .foregroundStyle(.secondary)
                 }
                 .multilineTextAlignment(.center)
+                // Never truncate: longer Uzbek / Russian titles wrap to a second line; the hero gives way.
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
 
                 // Room for the system page indicator.

@@ -38,7 +38,7 @@ struct CardFieldsSection: View {
                 AddContactMenu(isEnabled: profile.canAddContact, action: add)
             }
         } header: {
-            Text("Show on This Card")
+            Text("Contacts")
         } footer: {
             footerText
         }
@@ -113,7 +113,7 @@ struct CardFieldsSection: View {
 }
 
 /// One entry: icon, title + privacy badge, "{value} · {privacy}" and a switch. Private entries are disabled
-/// with "Private — hidden from all cards". A row added with "+ Add Contact" asks for its value instead.
+/// with "Private, hidden from all cards". A row added with "+ Add Contact" asks for its value instead.
 struct CardContactToggleRow: View {
     let entry: ContactEntry
     /// Phones say which one they are (Mobile, Work…) when there are several.
@@ -185,12 +185,12 @@ struct CardContactToggleRow: View {
     }
 
     private var subtitle: String {
-        if entry.privacy == .private { return String(localized: "Private — hidden from all cards") }
+        if entry.privacy == .private { return String(localized: "Private, hidden from all cards", bundle: .appStrings) }
         return "\(entry.value) · \(entry.privacy.title)"
     }
 
     private var accessibilityValue: String {
-        if entry.privacy == .private { return String(localized: "Private, hidden from all cards") }
+        if entry.privacy == .private { return String(localized: "Private, hidden from all cards", bundle: .appStrings) }
         return entry.value
     }
 }

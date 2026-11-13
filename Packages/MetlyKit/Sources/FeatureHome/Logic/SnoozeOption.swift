@@ -21,13 +21,13 @@ nonisolated enum SnoozeOption: String, CaseIterable, Identifiable, Sendable {
     /// "Tomorrow" would be misleading — the menu then says "1 Day Later" etc.
     func title(relativeToToday: Bool) -> String {
         switch (self, relativeToToday) {
-        case (.tomorrow, true): String(localized: "Tomorrow")
-        case (.inThreeDays, true): String(localized: "In 3 Days")
-        case (.nextWeek, true): String(localized: "Next Week")
-        case (.tomorrow, false): String(localized: "1 Day Later")
-        case (.inThreeDays, false): String(localized: "3 Days Later")
-        case (.nextWeek, false): String(localized: "1 Week Later")
-        case (.custom, _): String(localized: "Custom…")
+        case (.tomorrow, true): String(localized: "Tomorrow", bundle: .appStrings)
+        case (.inThreeDays, true): String(localized: "In 3 Days", bundle: .appStrings)
+        case (.nextWeek, true): String(localized: "Next Week", bundle: .appStrings)
+        case (.tomorrow, false): String(localized: "1 Day Later", bundle: .appStrings)
+        case (.inThreeDays, false): String(localized: "3 Days Later", bundle: .appStrings)
+        case (.nextWeek, false): String(localized: "1 Week Later", bundle: .appStrings)
+        case (.custom, _): String(localized: "Custom…", bundle: .appStrings)
         }
     }
 

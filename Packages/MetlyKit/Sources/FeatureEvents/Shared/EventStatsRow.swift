@@ -12,9 +12,9 @@ struct EventStatsRow: View {
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
             : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
         layout {
-            EventStatTile(value: stats.people, title: String(localized: "People"))
-            EventStatTile(value: stats.withNotes, title: String(localized: "With Notes"))
-            EventStatTile(value: stats.openFollowUps, title: String(localized: "Follow-ups"))
+            EventStatTile(value: stats.people, title: String(localized: "People", bundle: .appStrings))
+            EventStatTile(value: stats.withNotes, title: String(localized: "With Notes", bundle: .appStrings))
+            EventStatTile(value: stats.openFollowUps, title: String(localized: "Follow-ups", bundle: .appStrings))
         }
         .padding(.vertical, 4)
     }

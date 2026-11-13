@@ -30,10 +30,10 @@ struct CalendarSuggestion: Identifiable, Equatable, Sendable {
 
     /// "Today", "Tomorrow", "Friday", "Oct 12"; "Now" while it is already running.
     func dayLabel(now: Date = .now, calendar: Calendar = .current) -> String {
-        if startDate < calendar.startOfDay(for: now) { return String(localized: "Now") }
-        if calendar.isDate(startDate, inSameDayAs: now) { return String(localized: "Today") }
+        if startDate < calendar.startOfDay(for: now) { return String(localized: "Now", bundle: .appStrings) }
+        if calendar.isDate(startDate, inSameDayAs: now) { return String(localized: "Today", bundle: .appStrings) }
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now), calendar.isDate(startDate, inSameDayAs: tomorrow) {
-            return String(localized: "Tomorrow")
+            return String(localized: "Tomorrow", bundle: .appStrings)
         }
         if let week = calendar.date(byAdding: .day, value: 6, to: calendar.startOfDay(for: now)), startDate < week {
             return startDate.formatted(.dateTime.weekday(.wide))

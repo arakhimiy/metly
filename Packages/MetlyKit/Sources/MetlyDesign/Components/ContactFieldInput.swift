@@ -17,7 +17,7 @@ public nonisolated enum ContactFieldInput {
         case .linkedin: "in/username"
         case .whatsapp: "+998 90 123 45 67"
         case .instagram: "@username"
-        case .address: String(localized: "Street, building, city")
+        case .address: String(localized: "Street, building, city", bundle: .appStrings)
         }
     }
 

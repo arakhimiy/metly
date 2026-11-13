@@ -10,7 +10,7 @@ nonisolated enum MotionSampler {
     static func userAccelerationMagnitudes(from manager: CMMotionManager) -> AsyncStream<Double> {
         let (stream, continuation) = AsyncStream.makeStream(of: Double.self, bufferingPolicy: .bufferingNewest(8))
         let queue = OperationQueue()
-        queue.name = "app.tanishly.ios.connect.motion"
+        queue.name = "app.nameshake.ios.connect.motion"
         queue.maxConcurrentOperationCount = 1
         manager.deviceMotionUpdateInterval = interval
         manager.startDeviceMotionUpdates(to: queue) { @Sendable motion, _ in

@@ -158,7 +158,7 @@ struct PaperReviewScreen: View {
         let connection = ScanConnectionFactory.insertConnection(from: details.draft, source: isManual ? .manual : .paper,
                                                                 in: modelContext)
         let result = capture.apply(to: connection, in: modelContext, limits: limits)
-        router.showToast(result.toastMessage(otherwise: String(localized: "Contact Saved")), systemImage: "checkmark.circle")
+        router.showToast(result.toastMessage(otherwise: String(localized: "Contact Saved", bundle: .appStrings)), systemImage: "checkmark.circle")
 
         let tab = router.selectedTab
         if tab != .people { router.popToRoot(tab) }

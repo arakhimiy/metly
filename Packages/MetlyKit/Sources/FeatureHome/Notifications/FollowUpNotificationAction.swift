@@ -11,7 +11,7 @@ nonisolated public enum FollowUpNotificationAction: Equatable, Sendable {
     case snooze(followUpID: UUID)
     /// "Accept" / "Decline" on a connect request push.
     case answerConnectRequest(requestID: UUID, accept: Bool)
-    /// Another notification carrying a `link` (`tanishly://…`) — routed through the app's deep links.
+    /// Another notification carrying a `link` (`nameshake://…`) — routed through the app's deep links.
     case openLink(URL)
     /// Dismissed, or nothing we understand.
     case ignore

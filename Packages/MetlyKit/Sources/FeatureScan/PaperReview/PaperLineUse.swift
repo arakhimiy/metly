@@ -41,10 +41,10 @@ nonisolated enum PaperLineUse: String, CaseIterable, Identifiable, Hashable, Sen
 
     var title: String {
         switch self {
-        case .name: String(localized: "Name")
-        case .title: String(localized: "Job Title")
-        case .company: String(localized: "Company")
-        case .ignore: String(localized: "Ignore")
+        case .name: String(localized: "Name", bundle: .appStrings)
+        case .title: String(localized: "Job Title", bundle: .appStrings)
+        case .company: String(localized: "Company", bundle: .appStrings)
+        case .ignore: String(localized: "Ignore", bundle: .appStrings)
         default: field?.kind?.title ?? ""
         }
     }

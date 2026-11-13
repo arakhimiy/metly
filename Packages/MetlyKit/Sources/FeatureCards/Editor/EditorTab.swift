@@ -1,16 +1,16 @@
-/// CARD_EDITOR sections (SPEC §2.5.24): Template | Color | Type | Fields | Media.
+/// CARD_EDITOR sections (templates v2): Template | Style | Details — three tabs, so every change is one tap
+/// away. Style holds colour and type; Details is everything the card shows (title, company, logo, photo,
+/// contacts, QR).
 enum EditorTab: String, CaseIterable, Identifiable {
-    case template, color, type, fields, media
+    case template, style, details
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .template: String(localized: "Template")
-        case .color: String(localized: "Color")
-        case .type: String(localized: "Type")
-        case .fields: String(localized: "Fields")
-        case .media: String(localized: "Media")
+        case .template: String(localized: "Template", bundle: .appStrings)
+        case .style: String(localized: "Style", bundle: .appStrings)
+        case .details: String(localized: "Details", bundle: .appStrings)
         }
     }
 }

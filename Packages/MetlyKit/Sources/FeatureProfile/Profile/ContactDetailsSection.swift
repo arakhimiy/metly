@@ -36,7 +36,7 @@ struct ContactDetailsSection: View {
             Text("Contact Details")
         } footer: {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Public: anyone with your link. Connections: people you’ve connected with. Private: only you — it never appears on a card.")
+                Text("Public: anyone with your link. Connections: people you’ve connected with. Private: only you. It never appears on a card.")
                 if !profile.canAddContact {
                     Text("You can add up to \(ContactEntry.maxCount) contacts.")
                 }
@@ -49,7 +49,7 @@ struct ContactDetailsSection: View {
         if entry.kind == .phone {
             PhoneNumberRow(label: editor.labelBinding(id: entry.id), value: editor.valueBinding(id: entry.id),
                            privacy: editor.privacyBinding(id: entry.id),
-                           privacyTitle: String(localized: "Who Can See This Number"),
+                           privacyTitle: String(localized: "Who Can See This Number", bundle: .appStrings),
                            focus: focus, nextFocus: focus.next(contactIDs: ids), focusedField: focusedField)
         } else {
             LabeledFieldRow(title: entry.kind.title) {

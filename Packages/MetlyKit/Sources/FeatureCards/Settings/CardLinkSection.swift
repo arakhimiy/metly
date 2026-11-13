@@ -46,7 +46,7 @@ struct CardLinkSection: View {
         if let explanation = status.explanation {
             Text(explanation)
         } else if isPaused {
-            Text("Your links are paused, so this page shows as unavailable until you resume them.")
+            Text("Your links are paused, so this page is inactive until you resume them.")
         }
     }
 
@@ -54,11 +54,11 @@ struct CardLinkSection: View {
         guard let url else { return }
         UIPasteboard.general.url = url
         copyCount += 1
-        router.showToast(String(localized: "Link Copied"), systemImage: "link")
+        router.showToast(String(localized: "Link Copied", bundle: .appStrings), systemImage: "link")
     }
 }
 
 /// Copy shared by every place that shares a card link.
 enum ShareCopy {
-    static let message = String(localized: "Here’s my card")
+    static var message: String { String(localized: "Here’s my card", bundle: .appStrings) }
 }

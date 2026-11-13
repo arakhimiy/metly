@@ -15,7 +15,7 @@ struct ScanBottomBar: View {
             if ScanMode.showsPicker {
                 ScanModePicker(mode: $mode)
             }
-            ScanHintPill(text: isReadingCard ? String(localized: "Reading the card…") : mode.hint, showsProgress: isReadingCard)
+            ScanHintPill(text: isReadingCard ? String(localized: "Reading the card…", bundle: .appStrings) : mode.hint, showsProgress: isReadingCard)
 
             // The side slots always take their share (Paste Link only shows with a link on the
             // clipboard), so the shutter stays centred.

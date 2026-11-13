@@ -8,11 +8,11 @@ nonisolated enum FollowUpBucket: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .overdue: String(localized: "Overdue")
-        case .today: String(localized: "Today")
-        case .thisWeek: String(localized: "This Week")
-        case .later: String(localized: "Later")
-        case .done: String(localized: "Done")
+        case .overdue: String(localized: "Overdue", bundle: .appStrings)
+        case .today: String(localized: "Today", bundle: .appStrings)
+        case .thisWeek: String(localized: "This Week", bundle: .appStrings)
+        case .later: String(localized: "Later", bundle: .appStrings)
+        case .done: String(localized: "Done", bundle: .appStrings)
         }
     }
 

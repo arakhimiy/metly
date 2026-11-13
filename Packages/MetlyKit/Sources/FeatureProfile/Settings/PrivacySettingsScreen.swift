@@ -28,7 +28,7 @@ private struct PrivacySettingsForm: View {
                     Text("People with your email can send a connect request")
                 }
                 Toggle(isOn: editor.binding(\.privacySettings.showInNearby)) {
-                    Text("Show Me in Nearby")
+                    Text("Show in Nearby")
                     Text("Appear in Connect for people around you")
                 }
             } header: {

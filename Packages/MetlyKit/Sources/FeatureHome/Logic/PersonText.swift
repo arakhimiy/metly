@@ -12,7 +12,7 @@ nonisolated enum PersonText {
     /// Name for a reminder whose person is missing.
     static func displayName(_ person: Connection?) -> String {
         let name = person?.fullName.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return name.isEmpty ? String(localized: "Someone") : name
+        return name.isEmpty ? String(localized: "Someone", bundle: .appStrings) : name
     }
 
     /// "{event or company}" — the second part of "{name} · {event or company}".
@@ -26,7 +26,7 @@ nonisolated enum PersonText {
     /// leads the row and the task adds nothing.
     static func task(of followUp: FollowUp) -> String? {
         let title = followUp.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        let defaults = ["Follow up", String(localized: "Follow up")].map { $0.lowercased() }
+        let defaults = ["Follow up", String(localized: "Follow up", bundle: .appStrings)].map { $0.lowercased() }
         return title.isEmpty || defaults.contains(title.lowercased()) ? nil : title
     }
 

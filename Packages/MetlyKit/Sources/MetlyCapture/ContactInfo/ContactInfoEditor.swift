@@ -119,7 +119,7 @@ private struct EntryEditRow: View {
     }
 
     private var title: String {
-        entry.kind == .phone ? String(localized: "\((entry.label ?? .mobile).title) Number") : entry.kind.title
+        entry.kind == .phone ? String(localized: "\((entry.label ?? .mobile).title) Number", bundle: .appStrings) : entry.kind.title
     }
 }
 

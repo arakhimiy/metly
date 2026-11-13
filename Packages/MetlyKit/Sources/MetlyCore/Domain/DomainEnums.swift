@@ -19,14 +19,14 @@ public enum ContactFieldKind: String, Codable, CaseIterable, Sendable, Identifia
 
     public var title: String {
         switch self {
-        case .phone: String(localized: "Phone")
-        case .email: String(localized: "Email")
-        case .telegram: String(localized: "Telegram")
-        case .website: String(localized: "Website")
-        case .linkedin: String(localized: "LinkedIn")
-        case .whatsapp: String(localized: "WhatsApp")
-        case .instagram: String(localized: "Instagram")
-        case .address: String(localized: "Address")
+        case .phone: String(localized: "Phone", bundle: .appStrings)
+        case .email: String(localized: "Email", bundle: .appStrings)
+        case .telegram: String(localized: "Telegram", bundle: .appStrings)
+        case .website: String(localized: "Website", bundle: .appStrings)
+        case .linkedin: String(localized: "LinkedIn", bundle: .appStrings)
+        case .whatsapp: String(localized: "WhatsApp", bundle: .appStrings)
+        case .instagram: String(localized: "Instagram", bundle: .appStrings)
+        case .address: String(localized: "Address", bundle: .appStrings)
         }
     }
 
@@ -64,10 +64,10 @@ public enum PhoneLabel: String, Codable, CaseIterable, Sendable, Identifiable {
     public var title: String {
         switch self {
         // Own keys: "Home"/"Work" already mean the tab and the card name in the catalog.
-        case .mobile: String(localized: "phoneLabel.mobile", defaultValue: "Mobile")
-        case .work: String(localized: "phoneLabel.work", defaultValue: "Work")
-        case .home: String(localized: "phoneLabel.home", defaultValue: "Home")
-        case .other: String(localized: "phoneLabel.other", defaultValue: "Other")
+        case .mobile: String(localized: "phoneLabel.mobile", defaultValue: "Mobile", bundle: .appStrings)
+        case .work: String(localized: "phoneLabel.work", defaultValue: "Work", bundle: .appStrings)
+        case .home: String(localized: "phoneLabel.home", defaultValue: "Home", bundle: .appStrings)
+        case .other: String(localized: "phoneLabel.other", defaultValue: "Other", bundle: .appStrings)
         }
     }
 
@@ -88,17 +88,17 @@ public enum FieldPrivacy: String, Codable, CaseIterable, Sendable, Identifiable 
 
     public var title: String {
         switch self {
-        case .public: String(localized: "Public", comment: "Field privacy level")
-        case .connections: String(localized: "Connections", comment: "Field privacy level: visible to people you've connected with")
-        case .private: String(localized: "Private", comment: "Field privacy level")
+        case .public: String(localized: "Public", bundle: .appStrings, comment: "Field privacy level")
+        case .connections: String(localized: "Connections", bundle: .appStrings, comment: "Field privacy level: visible to people you've connected with")
+        case .private: String(localized: "Private", bundle: .appStrings, comment: "Field privacy level")
         }
     }
 
     public var explanation: String {
         switch self {
-        case .public: String(localized: "Anyone with your link")
-        case .connections: String(localized: "People you've connected with")
-        case .private: String(localized: "Only you")
+        case .public: String(localized: "Anyone with your link", bundle: .appStrings)
+        case .connections: String(localized: "People you’ve connected with", bundle: .appStrings)
+        case .private: String(localized: "Only you", bundle: .appStrings)
         }
     }
 }
@@ -123,9 +123,33 @@ public enum CardAudience: Sendable {
 public enum CardTemplate: String, Codable, CaseIterable, Sendable, Identifiable {
     case minimal, professional, modern, bold, gradient, split, terminal, stack, editorial
     public var id: String { rawValue }
-    /// Design name, kept in English on purpose (like a font name).
-    public var title: String { rawValue.capitalized }
-    public var isPro: Bool { self == .editorial }
+    /// Design name, kept in English on purpose (like a font name). The wire ids stay as they were in 1.0 so
+    /// older apps keep decoding cards; only the look and the name changed in v2 (docs/design/card-templates-v2.md).
+    public var title: String {
+        switch self {
+        case .minimal: "Classic"
+        case .professional: "Monogram"
+        case .modern: "Foil"
+        case .bold: "Wordmark"
+        case .gradient: "Aurora"
+        case .split: "Duotone"
+        case .terminal: "Terminal"
+        case .stack: "Centered"
+        case .editorial: "Editorial"
+        }
+    }
+    /// The finish templates (foil, gradient, metal) are Pro. Server mirror: `PRO_TEMPLATES` in wire.ts.
+    public var isPro: Bool { [.modern, .gradient, .editorial].contains(self) }
+
+    /// Picker order: free templates first, then Pro.
+    public static var pickerOrder: [CardTemplate] {
+        [.minimal, .professional, .bold, .split, .stack, .terminal, .modern, .gradient, .editorial]
+    }
+}
+
+/// How a card draws the owner's logo: as uploaded, or one-colour in the template's ink (foil, deboss…).
+public enum CardLogoStyle: String, Codable, CaseIterable, Sendable {
+    case original, mono
 }
 
 public enum CardPalette: String, Codable, CaseIterable, Sendable, Identifiable {
@@ -143,10 +167,10 @@ public enum CardFont: String, Codable, CaseIterable, Sendable, Identifiable {
     public var id: String { rawValue }
     public var title: String {
         switch self {
-        case .system: String(localized: "Default", comment: "Badge of the default card; also the system card typeface")
-        case .rounded: String(localized: "Rounded", comment: "Card typeface; also the rounded-corners image export style")
-        case .serif: String(localized: "Serif")
-        case .mono: String(localized: "Mono")
+        case .system: String(localized: "Default", bundle: .appStrings, comment: "Badge of the default card; also the system card typeface")
+        case .rounded: String(localized: "Rounded", bundle: .appStrings, comment: "Card typeface; also the rounded-corners image export style")
+        case .serif: String(localized: "Serif", bundle: .appStrings)
+        case .mono: String(localized: "Mono", bundle: .appStrings)
         }
     }
 }
@@ -158,9 +182,9 @@ public enum CardDensity: String, Codable, CaseIterable, Sendable, Identifiable {
     public var id: String { rawValue }
     public var title: String {
         switch self {
-        case .minimal: String(localized: "Minimal", comment: "Card density: fewest contact rows")
-        case .balanced: String(localized: "Balanced", comment: "Card density")
-        case .detailed: String(localized: "Detailed", comment: "Card density: most contact rows")
+        case .minimal: String(localized: "Minimal", bundle: .appStrings, comment: "Card density: fewest contact rows")
+        case .balanced: String(localized: "Balanced", bundle: .appStrings, comment: "Card density")
+        case .detailed: String(localized: "Detailed", bundle: .appStrings, comment: "Card density: most contact rows")
         }
     }
     /// Maximum number of contact rows rendered on the face.
@@ -183,11 +207,11 @@ public enum ConnectionSource: String, Codable, CaseIterable, Sendable {
     /// Short meta label shown in People rows ("via web", "via QR"…), nil when not shown.
     public var viaLabel: String? {
         switch self {
-        case .webShareBack: String(localized: "via web")
-        case .justMet, .scanQR: String(localized: "via QR")
-        case .paper: String(localized: "via paper card")
-        case .nearby: String(localized: "via Nearby")
-        case .tapPhones: String(localized: "via Tap")
+        case .webShareBack: String(localized: "via web", bundle: .appStrings)
+        case .justMet, .scanQR: String(localized: "via QR", bundle: .appStrings)
+        case .paper: String(localized: "via paper card", bundle: .appStrings)
+        case .nearby: String(localized: "via Nearby", bundle: .appStrings)
+        case .tapPhones: String(localized: "via Tap", bundle: .appStrings)
         default: nil
         }
     }
@@ -198,9 +222,9 @@ public enum FollowUpChannel: String, Codable, CaseIterable, Sendable, Identifiab
     public var id: String { rawValue }
     public var title: String {
         switch self {
-        case .telegram: String(localized: "Telegram")
-        case .email: String(localized: "Email")
-        case .call: String(localized: "Call", comment: "Phone call: button and follow-up channel")
+        case .telegram: String(localized: "Telegram", bundle: .appStrings)
+        case .email: String(localized: "Email", bundle: .appStrings)
+        case .call: String(localized: "Call", bundle: .appStrings, comment: "Phone call: button and follow-up channel")
         }
     }
     public var symbolName: String {
@@ -228,9 +252,9 @@ public enum AppAppearance: String, Codable, CaseIterable, Sendable, Identifiable
     public var id: String { rawValue }
     public var title: String {
         switch self {
-        case .system: String(localized: "System", comment: "App appearance: follow the iOS setting")
-        case .light: String(localized: "Light", comment: "Appearance: app or card")
-        case .dark: String(localized: "Dark", comment: "Appearance: app or card")
+        case .system: String(localized: "System", bundle: .appStrings, comment: "App appearance: follow the iOS setting")
+        case .light: String(localized: "Light", bundle: .appStrings, comment: "Appearance: app or card")
+        case .dark: String(localized: "Dark", bundle: .appStrings, comment: "Appearance: app or card")
         }
     }
 }

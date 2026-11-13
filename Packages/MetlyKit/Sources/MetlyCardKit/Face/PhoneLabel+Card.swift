@@ -4,10 +4,10 @@ public extension PhoneLabel {
     /// "Work phone" — what VoiceOver says before a number, and how a number is named in a sentence.
     var phoneNumberTitle: String {
         switch self {
-        case .mobile: String(localized: "Mobile phone")
-        case .work: String(localized: "Work phone")
-        case .home: String(localized: "Home phone")
-        case .other: String(localized: "Other phone")
+        case .mobile: String(localized: "Mobile phone", bundle: .appStrings)
+        case .work: String(localized: "Work phone", bundle: .appStrings)
+        case .home: String(localized: "Home phone", bundle: .appStrings)
+        case .other: String(localized: "Other phone", bundle: .appStrings)
         }
     }
 

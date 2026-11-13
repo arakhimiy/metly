@@ -26,7 +26,7 @@ public struct AddContactMenu: View {
                 .symbolRenderingMode(.multicolor)
         }
         .disabled(!isEnabled)
-        .accessibilityHint(isEnabled ? Text("Choose a phone, messenger or link to add") : Text("You can add up to \(ContactEntry.maxCount) contacts"))
+        .accessibilityHint(isEnabled ? Text("Choose a phone, messenger or link to add") : Text("You can add up to \(ContactEntry.maxCount) contacts."))
     }
 }
 

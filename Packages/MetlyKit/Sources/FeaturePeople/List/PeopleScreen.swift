@@ -62,6 +62,11 @@ struct PeopleScreen: View {
                     Button("Add Manually", systemImage: "square.and.pencil", action: addManually)
                     Button("Scan Paper Card", systemImage: "camera.viewfinder", action: scanPaperCard)
                     Button("Connect Nearby", systemImage: "dot.radiowaves.left.and.right", action: openConnect)
+                    Section {
+                        Button("Start Event", systemImage: "calendar.badge.plus") {
+                            router.present(.startEvent(eventID: nil))
+                        }
+                    }
                 } label: {
                     Label("Add Contact", systemImage: "plus")
                 }
@@ -83,11 +88,11 @@ struct PeopleScreen: View {
     }
 
     private var removeTitle: String {
-        String(localized: "Remove \(PersonName.first(personToRemove?.fullName ?? ""))?")
+        String(localized: "Remove \(PersonName.first(personToRemove?.fullName ?? ""))?", bundle: .appStrings)
     }
 
     private var declineTitle: String {
-        String(localized: "Decline \(PersonName.first(requestToDecline?.peerName ?? ""))’s Request?")
+        String(localized: "Decline \(PersonName.first(requestToDecline?.peerName ?? ""))’s Request?", bundle: .appStrings)
     }
 
     // MARK: Actions
@@ -121,13 +126,13 @@ struct PeopleScreen: View {
 
     private func remove(_ person: Connection) {
         let undo = PeopleActions.remove(person, in: modelContext)
-        router.showToast(String(localized: "Connection Removed"), systemImage: "trash", undo: undo)
+        router.showToast(String(localized: "Connection Removed", bundle: .appStrings), systemImage: "trash", undo: undo)
     }
 
     private func accept(_ request: ConnectRequest) {
         let blocked = Set(blockedPeople.compactMap(\.remoteUserID))
         guard RequestVisibility.isAnswerable(request, blockedUserIDs: blocked) else {
-            router.showToast(String(localized: "This request has expired"), systemImage: "clock.badge.xmark")
+            router.showToast(String(localized: "This request has expired", bundle: .appStrings), systemImage: "clock.badge.xmark")
             return
         }
         let person = PeopleActions.accept(request, in: modelContext)
@@ -142,6 +147,6 @@ struct PeopleScreen: View {
 
     private func decline(_ request: ConnectRequest) {
         PeopleActions.decline(request, in: modelContext)
-        router.showToast(String(localized: "Request Declined"), systemImage: "xmark.circle")
+        router.showToast(String(localized: "Request Declined", bundle: .appStrings), systemImage: "xmark.circle")
     }
 }

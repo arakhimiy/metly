@@ -92,20 +92,20 @@ nonisolated public enum WidgetSnapshotBuilder {
             payload = url.absoluteString
         } else {
             let content = CardFaceContent(fullName: owner.fullName, jobTitle: owner.jobTitle, company: owner.company,
-                                          contacts: contacts)
+                                          contacts: contacts).applying(card.faceOptions)
             payload = VCardBuilder.make(content: content, url: nil)
         }
         return WidgetCard(id: card.id, name: card.name, design: card.design, url: url, fields: fields,
                           qrPayload: payload, isDefault: isDefault, additionalPhones: phones,
-                          phoneLabel: contacts.legacyPhoneLabel, contacts: contacts)
+                          phoneLabel: contacts.legacyPhoneLabel, contacts: contacts, faceOptions: card.faceOptions)
     }
 
     static func followUp(from followUp: WidgetSnapshotInput.FollowUp) -> WidgetFollowUp {
         let title = followUp.title.trimmingCharacters(in: .whitespacesAndNewlines)
         return WidgetFollowUp(
             id: followUp.id,
-            title: title.isEmpty ? String(localized: "Follow up") : title,
-            personName: followUp.personName?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty ?? String(localized: "Someone"),
+            title: title.isEmpty ? String(localized: "Follow up", bundle: .appStrings) : title,
+            personName: followUp.personName?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty ?? String(localized: "Someone", bundle: .appStrings),
             connectionID: followUp.connectionID,
             context: followUp.personContext?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty,
             dueAt: followUp.dueAt,

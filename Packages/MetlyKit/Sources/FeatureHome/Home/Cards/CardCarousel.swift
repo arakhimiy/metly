@@ -11,7 +11,7 @@ struct CardCarousel: View {
     let profile: Profile?
     let defaultCardID: UUID?
     @Binding var selection: UUID?
-    let onShowQR: (Card) -> Void
+    let onOpen: (Card) -> Void
     let onAction: (CardAction, Card) -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -24,7 +24,7 @@ struct CardCarousel: View {
                         CardCarouselItem(card: card,
                                          content: card.faceContent(profile: profile, audience: .connections),
                                          isDefault: card.id == defaultCardID,
-                                         onShowQR: { onShowQR(card) },
+                                         onOpen: { onOpen(card) },
                                          onAction: { onAction($0, card) })
                             .containerRelativeFrame(.horizontal)
                             .id(card.id)
@@ -57,16 +57,16 @@ struct CardCarousel: View {
     }
 }
 
-/// One card face: tap → QR_FULLSCREEN; touch and hold → large preview + MENU_CARD_ACTIONS.
+/// One card face: tap → CARD_SETTINGS (the card's actions as a list); touch and hold → large preview + MENU_CARD_ACTIONS.
 private struct CardCarouselItem: View {
     let card: Card
     let content: CardFaceContent
     let isDefault: Bool
-    let onShowQR: () -> Void
+    let onOpen: () -> Void
     let onAction: (CardAction) -> Void
 
     var body: some View {
-        Button(action: onShowQR) {
+        Button(action: onOpen) {
             CardFaceView(design: card.design, content: content)
                 .cardFaceElevation()
         }
@@ -80,6 +80,6 @@ private struct CardCarouselItem: View {
         }
         .accessibilityLabel(Text("\(card.name) Card"))
         .accessibilityValue(isDefault ? Text("Default") : Text(""))
-        .accessibilityHint("Shows your QR code. Touch and hold for card actions.")
+        .accessibilityHint("Opens card settings. Touch and hold for card actions.")
     }
 }

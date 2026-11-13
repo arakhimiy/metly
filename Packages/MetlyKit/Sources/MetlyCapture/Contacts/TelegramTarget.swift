@@ -45,5 +45,5 @@ nonisolated public enum TelegramTarget: Hashable, Sendable {
     }
 
     /// Footnote for by-phone actions.
-    public static let byPhoneNote = String(localized: "Opens Telegram by phone number. Telegram finds them only if their privacy settings allow it.")
+    public static var byPhoneNote: String { String(localized: "Opens Telegram by phone number. Telegram finds them only if their privacy settings allow it.", bundle: .appStrings) }
 }

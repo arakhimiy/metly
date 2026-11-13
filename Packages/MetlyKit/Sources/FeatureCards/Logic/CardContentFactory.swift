@@ -30,28 +30,30 @@ extension CardContentFactory {
     @MainActor
     /// - Parameter selection: the card's chosen entries (`Card.visibleContactIDs`); nil = a card from before
     ///   3.0.0, shown by `design.visibleFields`.
-    static func content(profile: Profile?, design: CardDesign, selection: [UUID]?, audience: CardAudience,
-                        qrPayload: String, photo: MediaEdit = .unchanged, logo: MediaEdit = .unchanged) -> CardFaceContent {
+    static func content(profile: Profile?, design: CardDesign, selection: [UUID]?, options: CardFaceOptions = CardFaceOptions(),
+                        audience: CardAudience, qrPayload: String, photo: MediaEdit = .unchanged,
+                        logo: MediaEdit = .unchanged) -> CardFaceContent {
         guard let profile else { return CardFaceContent(fullName: "", qrPayload: qrPayload) }
         return content(fullName: profile.fullName, jobTitle: profile.jobTitle, company: profile.company,
                        photoData: photo.resolved(profile.photoData), logoData: logo.resolved(profile.logoData),
                        contacts: profile.contacts(selectedBy: selection, design: design), audience: audience,
                        qrPayload: qrPayload)
+            .applying(options)
     }
 
     /// In-app preview of a stored card (owner's view: Public + Connections).
     @MainActor
     static func preview(of card: Card, profile: Profile?) -> CardFaceContent {
-        content(profile: profile, design: card.design, selection: card.visibleContactIDs, audience: .connections,
-                qrPayload: card.url?.absoluteString ?? "")
+        content(profile: profile, design: card.design, selection: card.visibleContactIDs, options: card.faceOptions,
+                audience: .connections, qrPayload: card.url?.absoluteString ?? "")
     }
 
     /// Content for everything that leaves the device. Its QR encodes the card link, or — while the
     /// card has no slug yet — a vCard so the printed / saved code still works.
     @MainActor
     static func shareable(_ card: Card, profile: Profile?) -> CardFaceContent {
-        var content = content(profile: profile, design: card.design, selection: card.visibleContactIDs, audience: .public,
-                              qrPayload: "")
+        var content = content(profile: profile, design: card.design, selection: card.visibleContactIDs,
+                              options: card.faceOptions, audience: .public, qrPayload: "")
         content.qrPayload = card.url?.absoluteString ?? vCard(for: content, url: nil)
         return content
     }

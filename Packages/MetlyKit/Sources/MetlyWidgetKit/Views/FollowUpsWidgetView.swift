@@ -64,7 +64,7 @@ struct FollowUpsHeader: View {
         .lineLimit(1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Follow Up Today"))
-        .accessibilityValue(Text(count == 1 ? String(localized: "1 reminder") : String(localized: "\(count) reminders")))
+        .accessibilityValue(Text(count == 1 ? String(localized: "1 reminder", bundle: .appStrings) : String(localized: "\(count) reminders", bundle: .appStrings)))
     }
 }
 
@@ -127,10 +127,10 @@ struct FollowUpsEmptyState: View {
     }
 
     private var message: String {
-        if summary.isEmpty { return String(localized: "Add one right after you connect — it takes 2 seconds.") }
-        guard let next = summary.next else { return String(localized: "Nothing due today.") }
+        if summary.isEmpty { return String(localized: "Add one right after you connect.", bundle: .appStrings) }
+        guard let next = summary.next else { return String(localized: "Nothing due today.", bundle: .appStrings) }
         let due = WidgetDueLabel(due: next.dueAt, now: now)
-        return String(localized: "Next: \(next.personName) · \(due.text)")
+        return String(localized: "Next: \(next.personName) · \(due.text)", bundle: .appStrings)
     }
 }
 

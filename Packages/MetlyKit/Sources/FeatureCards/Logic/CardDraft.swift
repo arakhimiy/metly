@@ -8,15 +8,18 @@ nonisolated struct CardDraft: Equatable, Sendable {
     var design: CardDesign
     /// Profile entries the card shows (`Card.visibleContactIDs`); nil = a card from before 3.0.0 not changed yet.
     var contactIDs: [UUID]?
+    /// Job title / company switches and logo style (`Card.faceOptions`).
+    var options: CardFaceOptions
     /// Profile photo (shared by every card) — applied to `Profile.photoData` on Done.
     var photo: MediaEdit = .unchanged
     /// Profile logo (shared by every card) — applied to `Profile.logoData` on Done.
     var logo: MediaEdit = .unchanged
 
-    init(name: String, design: CardDesign, contactIDs: [UUID]? = nil) {
+    init(name: String, design: CardDesign, contactIDs: [UUID]? = nil, options: CardFaceOptions = CardFaceOptions()) {
         self.name = name
         self.design = design
         self.contactIDs = contactIDs
+        self.options = options
     }
 
     var trimmedName: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -37,7 +40,7 @@ nonisolated struct CardDraftCommit: Equatable, Sendable {
 extension CardDraft {
     @MainActor
     init(card: Card) {
-        self.init(name: card.name, design: card.design, contactIDs: card.visibleContactIDs)
+        self.init(name: card.name, design: card.design, contactIDs: card.visibleContactIDs, options: card.faceOptions)
     }
 
     /// Writes the draft into the stored card (and profile media), marking only what really changed
@@ -65,6 +68,10 @@ extension CardDraft {
         }
         if contactIDs != original.contactIDs, contactIDs != card.visibleContactIDs {
             card.visibleContactIDs = contactIDs
+            cardChanged = true
+        }
+        if options != original.options, options != card.faceOptions {
+            card.faceOptions = options
             cardChanged = true
         }
         if cardChanged { card.markChanged() }

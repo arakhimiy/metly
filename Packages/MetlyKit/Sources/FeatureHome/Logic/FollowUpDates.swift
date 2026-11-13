@@ -21,9 +21,9 @@ nonisolated enum FollowUpDates {
     static func dueLabel(_ due: Date, now: Date = .now, calendar: Calendar = .current,
                          locale: Locale = .autoupdatingCurrent) -> String {
         switch dayOffset(from: now, to: due, calendar: calendar) {
-        case 0: String(localized: "Today")
-        case 1: String(localized: "Tomorrow")
-        case -1: String(localized: "Yesterday")
+        case 0: String(localized: "Today", bundle: .appStrings)
+        case 1: String(localized: "Tomorrow", bundle: .appStrings)
+        case -1: String(localized: "Yesterday", bundle: .appStrings)
         default: shortDay(due, calendar: calendar, locale: locale)
         }
     }

@@ -1,5 +1,6 @@
 import MetlyCore
 import MetlyData
+import MetlyDesign
 import SwiftUI
 
 /// The People list: filter, Requests and the filtered groups.
@@ -13,6 +14,8 @@ struct PeopleList: View {
     let onAccept: (ConnectRequest) -> Void
     let onDecline: (ConnectRequest) -> Void
     let rowActions: PersonRowActions
+
+    @Environment(AppRouter.self) private var router
 
     var body: some View {
         let matches = PeopleIndex.search(connections, query: query)
@@ -51,8 +54,13 @@ struct PeopleList: View {
         .overlay {
             if filter == .events && summaries.isEmpty {
                 if query.isEmpty {
-                    ContentUnavailableView("No Events Yet", systemImage: "calendar",
-                                           description: Text("Start an event from Home. Everyone you meet there is grouped together."))
+                    EmptyStateView(.events, title: "No Events Yet",
+                                   message: "Start an event from Home. Everyone you meet there is grouped together.") {
+                        Button("Start Event", systemImage: "calendar.badge.plus") {
+                            router.present(.startEvent(eventID: nil))
+                        }
+                        .prominentButtonStyle()
+                    }
                 } else {
                     ContentUnavailableView.search
                 }

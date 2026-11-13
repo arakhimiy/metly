@@ -35,7 +35,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "app.tanishly.ios.pro.yearly",
+          "productID" : "app.nameshake.ios.pro.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Pro Yearly",
           "subscriptionGroupID" : "21500001",
@@ -70,7 +70,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "app.tanishly.ios.pro.monthly",
+          "productID" : "app.nameshake.ios.pro.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pro Monthly",
           "subscriptionGroupID" : "21500001",
