@@ -3,7 +3,8 @@ import MetlyCore
 import MetlyData
 import SwiftUI
 
-/// The open reminder (Done / edit) + "Tap a day to reschedule" quick picks + Add Reminder.
+/// The open reminder (Done / tap to edit) or Add Reminder. No day chips (owner, 2026-11-13): the
+/// reminder editor sets the date.
 struct FollowUpDetailSection: View {
     let person: Connection
 
@@ -20,37 +21,16 @@ struct FollowUpDetailSection: View {
             if let reminder {
                 OpenReminderRow(reminder: reminder, onOpen: { edit(reminder) }, onDone: { markDone(reminder) })
             }
-            FollowUpQuickPicker(selection: reminder.map { FollowUpQuickPick.matching($0.dueAt) }, onSelect: pick)
             if reminder == nil {
                 Button("Add Reminder…", systemImage: "bell.badge", action: addReminder)
             }
         } header: {
             Text("Follow Up")
         } footer: {
-            Text(reminder == nil ? "Pick a day. \(Brand.appName) reminds you with your note." : "Tap a day to reschedule.")
+            Text(reminder == nil ? "Pick a day. \(Brand.appName) reminds you with your note." : "Tap the reminder to change it.")
         }
         .followUpLimitAlert(isPresented: $showsLimitAlert, openCount: openCount)
         .sensoryFeedback(.success, trigger: doneCount)
-    }
-
-    private func pick(_ pick: FollowUpQuickPick) {
-        guard pick != .custom else {
-            router.present(.reminderEdit(followUpID: person.openFollowUp?.id, connectionID: person.id))
-            return
-        }
-        let result = FollowUpPolicy.schedule(pick, for: person, in: modelContext, limits: services.entitlements.limits)
-        switch result.followUp {
-        case .limitReached(let count):
-            openCount = count
-            showsLimitAlert = true
-        case .scheduled, .rescheduled:
-            if let due = person.openFollowUp?.dueAt {
-                router.showToast(String(localized: "Reminder: \(due.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))", bundle: .appStrings),
-                                 systemImage: "bell")
-            }
-        case .none:
-            break
-        }
     }
 
     private func addReminder() {

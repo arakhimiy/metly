@@ -2,6 +2,7 @@ import FeatureOnboarding
 import MetlyCore
 import MetlyData
 import MetlyDesign
+import StoreKit
 import SwiftData
 import SwiftUI
 
@@ -12,6 +13,7 @@ struct RootView: View {
     @Environment(AppRouter.self) private var router
     @Environment(AppServices.self) private var services
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.requestReview) private var requestReview
     /// Bumped by `AppLanguage.didChangeNotification`; keys the whole tree so every screen re-reads its strings.
     @State private var language = AppLanguage.current
 
@@ -38,6 +40,16 @@ struct RootView: View {
         .id(language)
         .onReceive(NotificationCenter.default.publisher(for: AppLanguage.didChangeNotification)) { _ in
             language = AppLanguage.current
+        }
+        // After onboarding: ask for a rating once the first card is made and its cover has closed,
+        // when the person just finished something (Apple: ask at a natural pause, not at launch).
+        .onChange(of: router.presentations.isEmpty) { _, nothingPresented in
+            guard nothingPresented, router.phase == .main, services.preferences.reviewPromptPending else { return }
+            services.preferences.reviewPromptPending = false
+            Task {
+                try? await Task.sleep(for: .seconds(1))
+                requestReview()
+            }
         }
         .animation(.default, value: router.phase)
         .toastHost(level: 0)

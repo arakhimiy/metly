@@ -194,13 +194,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ — шаблон Pro"
+            "value": "Шаблон %@ доступен в Pro"
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ — Pro shablon"
+            "value": "%@ Pro shabloni"
           }
         }
       }
@@ -441,7 +441,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "«%@» — теперь основная визитка"
+            "value": "«%@» теперь основная визитка"
           }
         },
         "uz": {
@@ -3026,7 +3026,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Har doim oq fonda qora — har qanday telefon skanerlay oladi."
+            "value": "Har doim oq fonda qora, shuning uchun har qanday telefon skanerlay oladi."
           }
         }
       }
@@ -8315,6 +8315,22 @@
         }
       }
     },
+    "How to Contact": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как связаться"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qanday bog‘lanasiz"
+          }
+        }
+      }
+    },
     "If they share their contact from your page later, %@ asks before merging the two.": {
       "localizations": {
         "ru": {
@@ -9105,7 +9121,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ — bajarildi deb belgilash"
+            "value": "%@: bajarildi deb belgilash"
           }
         }
       }
@@ -11738,7 +11754,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Те, с кем вы обмениваетесь визитками, получают вашу визитку «%@», а вы — их."
+            "value": "Те, с кем вы обмениваетесь визитками, получают вашу визитку «%@», а вы получаете их визитки."
           }
         },
         "uz": {
@@ -13807,18 +13823,18 @@
         }
       }
     },
-    "Scan with the camera — no app needed": {
+    "Scan with the camera. No app needed.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сканируйте камерой — приложение не нужно"
+            "value": "Сканируйте камерой. Приложение не нужно."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kamera bilan skanerlang — ilova shart emas"
+            "value": "Kamera bilan skanerlang. Ilova shart emas."
           }
         }
       }
@@ -15794,6 +15810,22 @@
         }
       }
     },
+    "Tap the reminder to change it.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нажмите на напоминание, чтобы изменить его."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O‘zgartirish uchun eslatmani bosing."
+          }
+        }
+      }
+    },
     "Telegram": {
       "localizations": {
         "ru": {
@@ -16241,7 +16273,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Скопированный текст — не ссылка на визитку %1$@. Скопируйте ссылку вида %2$@/c/… и повторите попытку."
+            "value": "Скопированный текст не является ссылкой на визитку %1$@. Скопируйте ссылку вида %2$@/c/… и повторите попытку."
           }
         },
         "uz": {
@@ -17730,6 +17762,22 @@
         }
       }
     },
+    "Used for Connect and events.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Используется для обмена и мероприятий."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almashish va tadbirlar uchun ishlatiladi."
+          }
+        }
+      }
+    },
     "Used for Connect, events and widgets.": {
       "localizations": {
         "ru": {
@@ -18996,6 +19044,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bu vizitkadagi o‘zgarishlaringiz saqlanmaydi."
+          }
+        }
+      }
+    },
+    "Your default card is used for Connect and events.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Основная визитка используется для обмена и мероприятий."
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asosiy vizitkangiz almashish va tadbirlar uchun ishlatiladi."
           }
         }
       }

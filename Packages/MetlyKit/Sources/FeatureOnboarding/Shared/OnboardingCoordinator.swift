@@ -36,6 +36,7 @@ enum OnboardingCoordinator {
             try? context.save()
         }
         services.preferences.hasCompletedOnboarding = true
+        services.preferences.reviewPromptPending = true   // asked once the first card is made (RootView)
         store.setupPrefill = nil
         if notificationsGranted {
             UIApplication.shared.registerForRemoteNotifications()

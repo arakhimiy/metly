@@ -51,7 +51,7 @@ let package = Package(
     targets: [
         // MARK: Foundation (orchestrator-owned contracts)
         .target(name: "MetlyCore", swiftSettings: nonisolatedSettings),
-        .target(name: "MetlyDesign", dependencies: ["MetlyCore"], swiftSettings: mainActorSettings),
+        .target(name: "MetlyDesign", dependencies: ["MetlyCore"], resources: [.process("Resources")], swiftSettings: mainActorSettings),
         .target(name: "MetlyCardKit", dependencies: ["MetlyCore", "MetlyDesign"], swiftSettings: nonisolatedSettings),
         .target(name: "MetlyNetworking", dependencies: ["MetlyCore"], swiftSettings: nonisolatedSettings),
         // SwiftData @Model types must not be MainActor-isolated → nonisolated default; services are @MainActor explicitly.

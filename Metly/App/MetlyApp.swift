@@ -21,6 +21,7 @@ struct MetlyApp: App {
 
     init() {
         AppLanguage.applySavedChoice()   // before any string is read: the language picked in the app
+        Self.styleLargeTitles()
         let container: ModelContainer
         do {
             container = try MetlyModelContainer.make()
@@ -53,6 +54,14 @@ struct MetlyApp: App {
         }
         FollowUpNotificationScheduler.onRemoteNotification = { [client] in client.catchUpNow() }
         FollowUpNotificationScheduler.configure(router: router, container: container, services: services)
+    }
+
+    /// Tab titles ("Profile", "People", "Hi, Aziza") at Title 1 bold (28 pt) instead of Large Title
+    /// (34 pt): lighter over the content, still scaling with Dynamic Type.
+    private static func styleLargeTitles() {
+        let base = UIFont.preferredFont(forTextStyle: .title1)
+        let bold = base.fontDescriptor.withSymbolicTraits(.traitBold) ?? base.fontDescriptor
+        UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont(descriptor: bold, size: 0)]
     }
 
     var body: some Scene {

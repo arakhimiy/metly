@@ -141,12 +141,10 @@
 				AA0000000000000000001001 /* Sources */,
 				AA0000000000000000000801 /* Frameworks */,
 				AA0000000000000000001003 /* Resources */,
-				AA0000000000000000000601 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				AA0000000000000000000A01 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AA0000000000000000000301 /* Metly */,

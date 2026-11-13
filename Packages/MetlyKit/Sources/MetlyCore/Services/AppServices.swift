@@ -102,6 +102,11 @@ public final class AppPreferences {
     public var hasCompletedOnboarding: Bool {
         didSet { store.set(hasCompletedOnboarding, forKey: Keys.onboarding) }
     }
+    /// Set when onboarding ends; the app asks for an App Store rating once the first card is made
+    /// (the CARD_CREATE cover closes), then clears it. Never asks twice.
+    public var reviewPromptPending: Bool {
+        didSet { store.set(reviewPromptPending, forKey: Keys.reviewPrompt) }
+    }
     /// Index of the card shown in the Home carousel.
     public var activeCardID: UUID? {
         didSet { store.set(activeCardID?.uuidString, forKey: Keys.activeCard) }
@@ -116,6 +121,7 @@ public final class AppPreferences {
         appearance = AppAppearance(rawValue: store.string(forKey: Keys.appearance) ?? "") ?? .system
         language = AppLanguage.chosen
         hasCompletedOnboarding = store.bool(forKey: Keys.onboarding)
+        reviewPromptPending = store.bool(forKey: Keys.reviewPrompt)
         activeCardID = store.string(forKey: Keys.activeCard).flatMap(UUID.init(uuidString:))
         lastQRShownAt = store.object(forKey: Keys.lastQR) as? Date
     }
@@ -123,6 +129,7 @@ public final class AppPreferences {
     public func reset() {
         appearance = .system
         hasCompletedOnboarding = false
+        reviewPromptPending = false
         activeCardID = nil
         lastQRShownAt = nil
     }
@@ -130,6 +137,7 @@ public final class AppPreferences {
     private enum Keys {
         static let appearance = "pref.appearance"
         static let onboarding = "pref.onboardingDone"
+        static let reviewPrompt = "pref.reviewPromptPending"
         static let activeCard = "pref.activeCardID"
         static let lastQR = "pref.lastQRShownAt"
     }

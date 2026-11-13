@@ -33,7 +33,6 @@ public enum PushDestination: Hashable, Sendable {
     case settingsNotifications
     case settingsPrivacy
     case settingsSubscription
-    case settingsHelp
     case settingsDeleteAccount
     case settingsBlockedPeople
 }

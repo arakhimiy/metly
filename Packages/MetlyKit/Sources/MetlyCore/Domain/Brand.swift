@@ -8,7 +8,15 @@ public enum Brand {
     /// before the domain exists point it at the API host; tests and previews get the release domain.
     public static let linkHost = (Bundle.main.object(forInfoDictionaryKey: "MetlyWebHost") as? String)
         .flatMap { $0.isEmpty ? nil : $0 } ?? "tanishly.app"
-    public static let supportEmail = "support@tanishly.app"
+    public static let supportEmail = "support@nameshake.app"
+    /// App Store ID from `MetlyAppStoreID` (`APP_STORE_ID` build setting), empty until the app exists
+    /// in App Store Connect.
+    public static let appStoreID = (Bundle.main.object(forInfoDictionaryKey: "MetlyAppStoreID") as? String)
+        .flatMap { $0.isEmpty ? nil : $0 }
+    /// "Write a Review" on the App Store; nil without an App Store ID.
+    public static var writeReviewURL: URL? {
+        appStoreID.flatMap { URL(string: "https://apps.apple.com/app/id\($0)?action=write-review") }
+    }
     /// From `MetlyAppGroup` in the app's and the widget's Info.plist (`METLY_APP_GROUP` build setting),
     /// so a personal-team Debug build can use its own group. Tests and previews get the release group.
     public static let appGroup = Bundle.main.object(forInfoDictionaryKey: "MetlyAppGroup") as? String

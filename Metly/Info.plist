@@ -41,6 +41,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>MetlyAppStoreID</key>
+	<string>$(APP_STORE_ID)</string>
 	<key>MetlyGoogleClientID</key>
 	<string>$(GOOGLE_CLIENT_ID)</string>
 	<key>MetlyAppGroup</key>

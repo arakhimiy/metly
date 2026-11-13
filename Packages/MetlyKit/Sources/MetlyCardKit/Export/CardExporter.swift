@@ -91,7 +91,7 @@ public enum CardExporter {
         let data = NSMutableData()
         var mediaBox = CGRect(origin: .zero, size: layout.pageSize)
         let info: [CFString: Any] = [
-            kCGPDFContextTitle: "\(content.fullName) — Business Card",
+            kCGPDFContextTitle: "\(content.fullName), Business Card",
             kCGPDFContextCreator: Brand.appName,
         ]
         guard let consumer = CGDataConsumer(data: data as CFMutableData),

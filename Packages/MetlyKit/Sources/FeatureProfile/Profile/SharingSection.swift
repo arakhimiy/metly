@@ -23,9 +23,6 @@ struct SharingSection: View {
             .disabled(defaultCardURL == nil)
             .inAppBrowser($browserPage)
 
-            NavigationLink(value: PushDestination.widgetsGallery) {
-                SettingsRowLabel("Widgets", systemImage: "square.grid.2x2.fill", color: .purple)
-            }
         } header: {
             Text("Sharing")
         } footer: {

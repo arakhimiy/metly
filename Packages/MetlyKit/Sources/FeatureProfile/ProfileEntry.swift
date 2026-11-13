@@ -50,15 +50,6 @@ public struct SubscriptionSettingsView: View {
     }
 }
 
-/// SETTINGS_HELP.
-public struct HelpSupportView: View {
-    public init() {}
-
-    public var body: some View {
-        HelpSupportScreen()
-    }
-}
-
 /// SETTINGS_DELETE_ACCOUNT.
 public struct DeleteAccountView: View {
     public init() {}

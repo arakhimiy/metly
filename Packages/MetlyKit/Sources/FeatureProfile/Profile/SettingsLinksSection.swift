@@ -2,7 +2,7 @@ import MetlyCore
 import SwiftUI
 
 /// Appearance (MENU_APPEARANCE: System / Light / Dark, applied by the app root) ·
-/// Notifications · Privacy & Data · Help & Support.
+/// Language · Notifications · Privacy & Data. Rate, support and legal links: `SupportSection`.
 struct SettingsLinksSection: View {
     @Environment(AppServices.self) private var services
 
@@ -34,9 +34,6 @@ struct SettingsLinksSection: View {
             }
             NavigationLink(value: PushDestination.settingsPrivacy) {
                 SettingsRowLabel("Privacy & Data", systemImage: "hand.raised.fill", color: .blue)
-            }
-            NavigationLink(value: PushDestination.settingsHelp) {
-                SettingsRowLabel("Help & Support", systemImage: "questionmark", color: .green)
             }
         }
     }

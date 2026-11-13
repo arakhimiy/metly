@@ -97,7 +97,7 @@ private struct CSVPreviewCell: View {
     @ScaledMetric(relativeTo: .caption) private var maxWidth: CGFloat = 160
 
     var body: some View {
-        Text(text.isEmpty ? "—" : text)
+        Text(text.isEmpty ? "–" : text)
             .font(isHeader ? .caption.weight(.semibold) : .caption)
             .foregroundStyle(isHeader || !text.isEmpty ? .primary : .tertiary)
             .lineLimit(1)

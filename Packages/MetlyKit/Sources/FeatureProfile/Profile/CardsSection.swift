@@ -34,7 +34,7 @@ struct CardsSection: View {
         } header: {
             Text("Cards")
         } footer: {
-            Text("Your default card is used for Connect, events and widgets.")
+            Text("Your default card is used for Connect and events.")
         }
     }
 

@@ -2,26 +2,22 @@ import SwiftUI
 import UIKit
 
 /// The app's colors beyond the AccentColor asset: what sits on top of the accent, and the
-/// initials-avatar palette. Avatar hues are muted so a list of people doesn’t out-shout the brand blue
-/// (the AccentColor asset is the HIG system Blue).
+/// initials-avatar gradients (the AccentColor asset is the HIG system Blue).
 public enum BrandPalette {
     /// Text/icons drawn on an accent-filled control.
     public static let onAccent = Color(uiColor: UIColor { _ in .white })
 
-    /// Avatar hues, picked to sit next to the system-blue accent (no neon pinks or purples).
-    static let avatarHues: [UIColor] = [
-        UIColor(hex: 0x2F6BC4), // blue (brand)
-        UIColor(hex: 0x3D8B5E), // pine
-        UIColor(hex: 0x5B6BBF), // slate indigo
-        UIColor(hex: 0x8E5BA8), // plum
-        UIColor(hex: 0xC2536B), // rose
-        UIColor(hex: 0xC46A3D), // clay
-        UIColor(hex: 0x6E8B3D), // olive
-        UIColor(hex: 0x667085), // stone
+    /// Initials-avatar gradients, light at the top to deep at the bottom, with white initials (the
+    /// Telegram look the owner asked for, 2026-11-13). One pair per name, picked by a stable hash.
+    static let avatarGradients: [(top: UIColor, bottom: UIColor)] = [
+        (UIColor(hex: 0x72D5FD), UIColor(hex: 0x2A9EF1)), // blue
+        (UIColor(hex: 0xA0DE7E), UIColor(hex: 0x54CB68)), // green
+        (UIColor(hex: 0xFFCD6A), UIColor(hex: 0xFFA85C)), // orange
+        (UIColor(hex: 0xFF885E), UIColor(hex: 0xFF516A)), // red
+        (UIColor(hex: 0x82B1FF), UIColor(hex: 0x665FFF)), // violet
+        (UIColor(hex: 0x53EDD6), UIColor(hex: 0x28C9B7)), // cyan
+        (UIColor(hex: 0xE0A2F3), UIColor(hex: 0xD669ED)), // pink
     ]
-
-    /// Solid fill with white initials, or a soft tint with colored initials.
-    static let tonalAvatars = true
 }
 
 extension UIColor {

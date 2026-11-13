@@ -46,7 +46,7 @@ struct CardSettingsForm: View {
             } header: {
                 Text("Card")
             } footer: {
-                Text("Used for Connect, events and widgets.")
+                Text("Used for Connect and events.")
             }
 
             CardLinkSection(card: card, isPaused: profile?.linksPaused ?? false)

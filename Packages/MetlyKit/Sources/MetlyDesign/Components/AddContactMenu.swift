@@ -18,7 +18,7 @@ public struct AddContactMenu: View {
                 Button {
                     action(kind)
                 } label: {
-                    Label(kind.title, systemImage: kind.symbolName)
+                    Label { Text(kind.title) } icon: { kind.icon }
                 }
             }
         } label: {

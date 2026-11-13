@@ -1029,7 +1029,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ — bajarildi deb belgilash"
+            "value": "%@: bajarildi deb belgilash"
           }
         }
       }
@@ -2374,7 +2374,7 @@
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "QR kodingiz Qulf ekranining o‘zida ko‘rinadi — telefonni ochmasangiz ham uni skanerlash mumkin. Butun ekranda ochish uchun ustiga bosing."
+            "value": "QR kodingiz Qulf ekranining o‘zida ko‘rinadi, shuning uchun telefonni ochmasangiz ham uni skanerlash mumkin. Butun ekranda ochish uchun ustiga bosing."
           }
         }
       }
@@ -2384,7 +2384,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш QR-код — в одно касание."
+            "value": "Ваш QR-код в одно касание."
           }
         },
         "uz": {

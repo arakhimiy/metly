@@ -101,8 +101,10 @@ struct FollowUpRowContent: View {
                 Text(due)
                     .font(.subheadline)
                     .foregroundStyle(emphasis.style)
-                Image(systemName: followUp.channel.symbolName)
-                    .font(.footnote)
+                followUp.channel.icon
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 13, height: 13)
                     .foregroundStyle(.secondary)
             }
         }

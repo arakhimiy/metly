@@ -25,7 +25,6 @@ enum RouteResolver {
         case .settingsNotifications: NotificationSettingsView()
         case .settingsPrivacy: PrivacySettingsView()
         case .settingsSubscription: SubscriptionSettingsView()
-        case .settingsHelp: HelpSupportView()
         case .settingsDeleteAccount: DeleteAccountView()
         case .settingsBlockedPeople: BlockedPeopleView()
         }

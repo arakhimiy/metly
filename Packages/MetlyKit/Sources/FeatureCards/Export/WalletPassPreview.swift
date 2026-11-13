@@ -18,7 +18,7 @@ struct WalletPassPreview: View {
                 Text(cardName)
                     .font(.subheadline)
             }
-            PassField(label: "Name", value: content.fullName.isEmpty ? "—" : content.fullName, isPrimary: true)
+            PassField(label: "Name", value: content.fullName.isEmpty ? "–" : content.fullName, isPrimary: true)
             HStack(alignment: .top, spacing: 16) {
                 if !content.jobTitle.isEmpty {
                     PassField(label: "Title", value: content.jobTitle, isPrimary: false)

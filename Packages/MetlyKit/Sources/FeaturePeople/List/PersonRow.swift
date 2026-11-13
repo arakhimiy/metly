@@ -87,16 +87,18 @@ struct ViaWebBadge: View {
     var showsTitle = true
 
     var body: some View {
-        Group {
+        // HStack, not Label: inside a List row a Label takes the row's wide icon-to-title spacing.
+        HStack(spacing: 3) {
+            Image(systemName: "globe")
             if showsTitle {
-                Label("via web", systemImage: "globe").labelStyle(.titleAndIcon)
-            } else {
-                Label("via web", systemImage: "globe").labelStyle(.iconOnly)
+                Text("via web")
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("via web"))
         .font(.caption.weight(.medium))
         .foregroundStyle(.tint)
-        .padding(.horizontal, 6)
+        .padding(.horizontal, 7)
         .padding(.vertical, 2)
         .background(.tint.opacity(0.12), in: .capsule)
         .fixedSize()

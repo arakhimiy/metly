@@ -78,7 +78,7 @@ struct QRScanCaption: View {
 
     var body: some View {
         VStack(spacing: 4) {
-            Text("Scan with the camera — no app needed")
+            Text("Scan with the camera. No app needed.")
                 .font(.subheadline)
             Text(caption)
                 .font(.footnote)

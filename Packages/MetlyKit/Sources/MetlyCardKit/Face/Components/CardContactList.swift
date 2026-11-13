@@ -1,3 +1,5 @@
+import MetlyCore
+import MetlyDesign
 import SwiftUI
 
 /// Vertical contacts list: SF Symbol + value per row, single line, tail-ellipsized.
@@ -36,8 +38,10 @@ struct CardContactRow: View {
 
     var body: some View {
         HStack(spacing: style.u(1.8)) {
-            Image(systemName: contact.kind.symbolName)
-                .font(.system(size: max(style.u(iconSize) * 0.9, 0.5)))
+            contact.kind.icon
+                .resizable()
+                .scaledToFit()
+                .frame(width: max(style.u(iconSize) * 0.85, 0.5), height: max(style.u(iconSize) * 0.85, 0.5))
                 .foregroundStyle(iconColor)
                 .frame(width: style.u(iconSize) * 1.15, height: style.u(iconSize))
             CardContactValue(contact: contact, style: style, fontSize: fontSize)

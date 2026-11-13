@@ -57,16 +57,14 @@ struct ReminderPersonLabel: View {
     }
 }
 
-/// Quick picks (Tomorrow · In 3 Days · Next Week), Date (min today) and Time (default 10:00),
-/// with the "Nameshake will remind you …" summary.
+/// Date (min today) and Time (default 10:00), with the "Nameshake will remind you …" summary.
+/// No quick-pick chips here (owner, 2026-11-13): editing a reminder sets an exact date.
 struct ReminderWhenSection: View {
     @Binding var form: ReminderForm
     let minimumDay: Date
 
     var body: some View {
         Section {
-            FollowUpQuickPicker(selection: FollowUpQuickPick.matching(form.day),
-                                picks: [.tomorrow, .inThreeDays, .nextWeek], onSelect: pick)
             DatePicker("Date", selection: $form.day, in: minimumDay..., displayedComponents: .date)
             DatePicker("Time", selection: $form.time, displayedComponents: .hourAndMinute)
         } header: {
@@ -75,16 +73,10 @@ struct ReminderWhenSection: View {
             Text(form.summary())
         }
     }
-
-    private func pick(_ pick: FollowUpQuickPick) {
-        guard let offset = pick.dayOffset else { return }
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: .now)
-        form.day = calendar.date(byAdding: .day, value: offset, to: today) ?? today
-    }
 }
 
-/// Reply Via: segmented Telegram | Email | Call; channels without a value for the person are disabled.
+/// "How to Contact": Telegram / Email / Call as a list with a checkmark on the chosen one; channels
+/// without a value for the person are disabled.
 struct ReminderChannelSection: View {
     @Binding var channel: FollowUpChannel
     let person: Connection?
@@ -92,17 +84,21 @@ struct ReminderChannelSection: View {
     var body: some View {
         let available = ChannelLink.availableChannels(for: person)
         Section {
-            Picker("Reply Via", selection: $channel) {
+            Picker("How to Contact", selection: $channel) {
                 ForEach(FollowUpChannel.allCases) { option in
-                    Text(option.title)
-                        .tag(option)
+                    Label {
+                        Text(option.title)
+                    } icon: {
+                        ChannelIcon(channel: option)
+                    }
+                    .tag(option)
                         .disabled(!available.contains(option))
                 }
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.inline)
             .labelsHidden()
         } header: {
-            Text("Reply Via")
+            Text("How to Contact")
         } footer: {
             VStack(alignment: .leading, spacing: 4) {
                 if let person {
@@ -130,12 +126,32 @@ struct ReminderEditExtras: View {
     var body: some View {
         if person != nil {
             Section {
+                // Centred like Delete Reminder below: two stand-alone actions, not list rows.
                 Button("Open Person", systemImage: "person.crop.circle", action: onOpenPerson)
+                    .frame(maxWidth: .infinity)
             }
         }
         Section {
             Button("Delete Reminder", role: .destructive, action: onDelete)
                 .frame(maxWidth: .infinity)
         }
+    }
+}
+
+/// Settings-style tile, in the same colour as the field on Profile. Every glyph is fitted into the
+/// same box, so the wide envelope and the narrow phone read as one set.
+private struct ChannelIcon: View {
+    let channel: FollowUpChannel
+
+    var body: some View {
+        channel.icon
+            .resizable()
+            .scaledToFit()
+            .fontWeight(.semibold)
+            .frame(width: 14, height: 14)
+            .foregroundStyle(.white)
+            .frame(width: 26, height: 26)
+            .background(channel.fieldKind.tint.gradient, in: .rect(cornerRadius: 6, style: .continuous))
+            .accessibilityHidden(true)
     }
 }
