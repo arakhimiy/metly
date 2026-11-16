@@ -374,7 +374,7 @@
 					"@executable_path/Frameworks",
 				);
 				METLY_APP_GROUP = group.app.nameshake.ios;
-				METLY_WEB_HOST = tanishly.app;
+				METLY_WEB_HOST = nameshake.app;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.nameshake.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -409,8 +409,8 @@
 					"@executable_path/Frameworks",
 				);
 				METLY_APP_GROUP = group.app.nameshake.ios;
-				METLY_API_BASE_URL = "https://tanishly.onrender.com";
-				METLY_WEB_HOST = tanishly.onrender.com;
+				METLY_API_BASE_URL = "https://api.nameshake.app";
+				METLY_WEB_HOST = nameshake.app;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.nameshake.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -439,7 +439,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				METLY_APP_GROUP = group.app.nameshake.ios;
-				METLY_WEB_HOST = tanishly.app;
+				METLY_WEB_HOST = nameshake.app;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.nameshake.ios.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -468,7 +468,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				METLY_APP_GROUP = group.app.nameshake.ios;
-				METLY_WEB_HOST = tanishly.onrender.com;
+				METLY_WEB_HOST = nameshake.app;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.nameshake.ios.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
