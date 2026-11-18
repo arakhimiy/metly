@@ -28,9 +28,10 @@ struct SignOutSection: View {
 
     private func signOut() {
         let services = services
-        // Leave the signed-in UI first so no screen keeps rendering models while the store is wiped.
-        router.signedOut()
+        let router = router
         Task {
+            // Leave the signed-in UI first so no screen keeps rendering models while the store is wiped.
+            await router.leaveAccount()
             await services.auth.signOut()   // wipes Keychain + the local store (Q46)
             services.preferences.reset()
         }

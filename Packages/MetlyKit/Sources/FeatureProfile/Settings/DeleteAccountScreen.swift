@@ -96,11 +96,12 @@ struct DeleteAccountScreen: View {
             isDeleting = true
             defer { isDeleting = false }
             do {
-                try await services.auth.deleteAccount()
+                let router = router
+                // The screens leave before the wipe, so none of them reads a deleted record.
+                try await services.auth.deleteAccount(beforeWiping: { await router.leaveAccount() })
                 // Make sure nothing personal stays on the device even if the service didn't wipe.
                 try? MetlyModelContainer.wipe(modelContext)
                 services.preferences.reset()
-                router.signedOut()
                 router.showToast(String(localized: "Account Deleted", bundle: .appStrings), systemImage: "checkmark.circle")
             } catch {
                 show(error.localizedDescription)

@@ -156,7 +156,10 @@ final class PreviewServiceStub: AuthServicing, SyncServicing, DeferredLinkServic
     func telegramAuthorizationURL(codeChallenge: String, state: String, nonce: String) -> URL? { nil }
     func signIn(telegram: TelegramSignInCredential) async throws -> AuthResult { AuthResult(needsSetup: true, suggestedName: "Aziza Karimova", email: nil) }
     func signOut() async { isSignedIn = false }
-    func deleteAccount() async throws { isSignedIn = false }
+    func deleteAccount(beforeWiping: @MainActor () async -> Void) async throws {
+        await beforeWiping()
+        isSignedIn = false
+    }
     func requestDataExport() async throws {}
     func requestSync() {}
     func syncNow() async {}

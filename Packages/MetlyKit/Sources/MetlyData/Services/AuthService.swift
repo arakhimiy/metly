@@ -163,9 +163,10 @@ public final class AuthService: AuthServicing {
         }
     }
 
-    public func deleteAccount() async throws {
+    public func deleteAccount(beforeWiping: @MainActor () async -> Void) async throws {
         try await api.account.deleteAccount()
         await onSignedOut()
+        await beforeWiping()
         wipeLocalAccount()
     }
 

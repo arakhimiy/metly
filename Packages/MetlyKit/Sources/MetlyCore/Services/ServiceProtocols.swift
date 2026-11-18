@@ -66,7 +66,9 @@ public protocol AuthServicing: AnyObject {
     func signIn(telegram: TelegramSignInCredential) async throws -> AuthResult
     /// Wipes Keychain + local store.
     func signOut() async
-    func deleteAccount() async throws
+    /// Deletes the account on the server, then runs `beforeWiping` (leave the signed-in screens) and
+    /// wipes everything local. Nothing is wiped when the server call fails.
+    func deleteAccount(beforeWiping: @MainActor () async -> Void) async throws
     /// "Download My Data" — server emails an export link.
     func requestDataExport() async throws
     #if DEBUG
@@ -120,6 +122,10 @@ public protocol PushRegistering: AnyObject {
 }
 
 extension AuthServicing {
+    public func deleteAccount() async throws {
+        try await deleteAccount(beforeWiping: {})
+    }
+
     /// Browser flow only unless the service offers the Telegram-app flow (previews, test doubles).
     public func telegramAppLink(codeChallenge: String, state: String, nonce: String) async -> URL? { nil }
 }

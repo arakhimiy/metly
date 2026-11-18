@@ -51,7 +51,7 @@ struct RootView: View {
                 requestReview()
             }
         }
-        .animation(.default, value: router.phase)
+        .animation(router.animatesPhaseChanges ? .default : nil, value: router.phase)
         .toastHost(level: 0)
         .task { await bootstrap() }
         // Session expired / Apple ID revoked while running: back to sign-in, but keep local data —
@@ -75,7 +75,7 @@ struct RootView: View {
             services.sync.requestSync()
             // Apple ID revoked while the app was closed → sign out (async, after first frame).
             if await !checkAppleCredential() {
-                router.signedOut()
+                await router.leaveAccount()
                 await services.auth.signOut()
             }
         } else if !services.preferences.hasCompletedOnboarding,

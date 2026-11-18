@@ -12,6 +12,9 @@ public final class AppRouter {
     /// Stack of modal presentations; index 0 is presented from the tab root, each next one from the previous.
     public var presentations: [Presentation] = []
     public var toast: Toast?
+    /// Root phase changes cross-fade, except when leaving an account whose records are about to be
+    /// deleted (see `leaveAccount()`).
+    public private(set) var animatesPhaseChanges = true
 
     public init(phase: RootPhase = .launching) {
         self.phase = phase
@@ -89,6 +92,17 @@ public final class AppRouter {
         presentations = []
         selectedTab = .home
         phase = .onboarding
+    }
+
+    /// Sign-out wipe and account deletion: go to onboarding at once, without the cross-fade. While a
+    /// cross-fade runs the signed-in screens stay alive and re-render, and reading a SwiftData record
+    /// that was just deleted traps. Await this before deleting anything local.
+    public func leaveAccount() async {
+        animatesPhaseChanges = false
+        signedOut()
+        // A few frames for SwiftUI to commit the switch and drop the old screens.
+        try? await Task.sleep(for: .milliseconds(150))
+        animatesPhaseChanges = true
     }
 }
 
