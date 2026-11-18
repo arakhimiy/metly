@@ -134,6 +134,28 @@ paths:
         '302': { description: 'Redirect to Telegram''s consent page (or back into the app with an error).' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/RateLimited' }
+  /v1/auth/telegram/app-link:
+    get:
+      tags: [Auth]
+      operationId: telegramAppLink
+      summary: Start Log In with Telegram in the Telegram app
+      description: |
+        Used instead of `/v1/auth/telegram/authorize` when the Telegram app is installed. The server
+        asks Telegram (`/crossapp`) for a `tg://` link that runs the consent in the Telegram app with
+        the iOS app's Universal Link redirect from @BotFather (Login Widget → Native Login,
+        `TELEGRAM_APP_REDIRECT_URI`, e.g. `https://app123-login.tg.dev`). After approval Telegram opens
+        that link, which reopens the app with `code`; the app then calls `POST /v1/auth/telegram` with
+        `flow: app`. `url` is null when this is not available (not configured, Telegram unreachable):
+        the app falls back to the browser flow.
+      security: []
+      parameters:
+        - { name: code_challenge, in: query, required: true, schema: { type: string, pattern: '^[A-Za-z0-9_-]{43}$' }, description: 'BASE64URL(SHA256(verifier)), method S256.' }
+        - { name: state, in: query, required: true, schema: { type: string, minLength: 16, maxLength: 128 } }
+        - { name: nonce, in: query, required: true, schema: { type: string, minLength: 16, maxLength: 128 } }
+      responses:
+        '200': { description: The link (or null), content: { application/json: { schema: { $ref: '#/components/schemas/TelegramAppLinkResponse' } } } }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/RateLimited' }
   /v1/auth/telegram/callback:
     get:
       tags: [Auth]
@@ -1375,7 +1397,17 @@ components:
       properties:
         code: { type: string, description: 'From the app callback URL.' }
         codeVerifier: { type: string, minLength: 43, maxLength: 128, description: 'The PKCE verifier behind code_challenge.' }
-        nonce: { type: string, minLength: 16, maxLength: 128, description: 'The nonce passed to /v1/auth/telegram/authorize.' }
+        nonce: { type: string, minLength: 16, maxLength: 128, description: 'The nonce passed to /v1/auth/telegram/authorize (or /app-link).' }
+        flow:
+          type: string
+          enum: [web, app]
+          default: web
+          description: '`app` when the code came back through the Telegram app and the app''s Universal Link (`/app-link`); the server redeems it against that redirect URI. The `nonce` claim may then be absent from the id_token, but one that is present must match.'
+    TelegramAppLinkResponse:
+      type: object
+      required: [url]
+      properties:
+        url: { type: [string, 'null'], description: 'A tg:// link to open, or null to use the browser flow.' }
     RefreshRequest:
       type: object
       required: [refreshToken]

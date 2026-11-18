@@ -69,6 +69,89 @@ struct TelegramLoginTests {
         #expect(credential.code == "DEBUG-MOCK-TELEGRAM-CODE")
     }
 
+    // MARK: Telegram app flow
+
+    private func appClient(
+        installed: Bool = true,
+        link: URL? = URL(string: "tg://oauth?token=T"),
+        opens: Bool = true,
+        returns: @escaping @MainActor (_ state: String) -> URL?,
+        receiver: TelegramAppReturn,
+        browserUsed: @escaping @MainActor () -> Void = {}
+    ) -> TelegramSignInClient {
+        var sentState = ""
+        var client = TelegramSignInClient(authorizationURL: { _, state, _ in
+            sentState = state
+            return URL(string: "https://api.example.test/v1/auth/telegram/authorize")
+        }) { _, _ in
+            browserUsed()
+            return URL(string: "nameshake://auth/telegram?code=WEBCODE&state=\(sentState)")!
+        }
+        client.telegramAppInstalled = { installed }
+        client.appLink = { _, _, _ in link }
+        client.telegramReturn = receiver
+        client.openTelegram = { _ in
+            guard opens else { return false }
+            // Telegram approves and reopens the app through its Universal Link.
+            Task { @MainActor in
+                if let url = returns(sentState) { receiver.handle(url) }
+            }
+            return true
+        }
+        return client
+    }
+
+    @Test func signsInThroughTheTelegramAppWhenItIsInstalled() async throws {
+        let receiver = TelegramAppReturn()
+        var browserUsed = false
+        let client = appClient(returns: { URL(string: "https://app1-login.tg.dev?code=APPCODE&state=\($0)") },
+                               receiver: receiver, browserUsed: { browserUsed = true })
+        let credential = try await client.signIn()
+        #expect(credential.code == "APPCODE")
+        #expect(credential.flow == .app)
+        #expect(!browserUsed)
+    }
+
+    @Test func acceptsATelegramReturnWithoutStateButNotAForeignOne() async throws {
+        let receiver = TelegramAppReturn()
+        let bare = appClient(returns: { _ in URL(string: "https://app1-login.tg.dev?code=APPCODE") }, receiver: receiver)
+        #expect(try await bare.signIn().code == "APPCODE")
+
+        let forged = appClient(returns: { _ in URL(string: "https://app1-login.tg.dev?code=APPCODE&state=OTHER") }, receiver: receiver)
+        await #expect(throws: TelegramSignInError.stateMismatch) { _ = try await forged.signIn() }
+    }
+
+    @Test func fallsBackToTheBrowserWithoutTheTelegramApp() async throws {
+        for client in [
+            appClient(installed: false, returns: { _ in nil }, receiver: TelegramAppReturn()),
+            appClient(link: nil, returns: { _ in nil }, receiver: TelegramAppReturn()),
+            appClient(opens: false, returns: { _ in nil }, receiver: TelegramAppReturn()),
+        ] {
+            let credential = try await client.signIn()
+            #expect(credential.code == "WEBCODE")
+            #expect(credential.flow == .web)
+        }
+    }
+
+    @Test func comingBackWithoutApprovingCancels() async throws {
+        let receiver = TelegramAppReturn()
+        receiver.graceAfterReturn = .milliseconds(10)
+        let client = appClient(returns: { _ in
+            // The user returns from Telegram by hand: no link, the app just becomes active again.
+            receiver.appDidLeave()
+            receiver.appDidBecomeActive()
+            return nil
+        }, receiver: receiver)
+        await #expect(throws: TelegramSignInError.cancelled) { _ = try await client.signIn() }
+    }
+
+    @Test func onlyTelegramLoginLinksAreClaimed() throws {
+        #expect(TelegramAppReturn.isTelegramReturn(try #require(URL(string: "https://app123-login.tg.dev?code=x"))))
+        #expect(!TelegramAppReturn.isTelegramReturn(try #require(URL(string: "https://nameshake.app/c/abc"))))
+        #expect(!TelegramAppReturn.isTelegramReturn(try #require(URL(string: "nameshake://auth/telegram?code=x"))))
+        #expect(!TelegramAppReturn().handle(try #require(URL(string: "https://nameshake.app/c/abc"))))
+    }
+
     // MARK: Errors
 
     @Test func failuresReadAsTelegramSpecific() {

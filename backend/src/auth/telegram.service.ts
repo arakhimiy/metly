@@ -16,6 +16,12 @@ export interface TelegramAuthorizeParams {
   nonce: string;
 }
 
+/**
+ * Which redirect URI the code was issued for: `web` — our callback, reached from the app's browser
+ * sheet; `app` — the Universal Link @BotFather generated for the iOS app, opened by the Telegram app.
+ */
+export type TelegramFlow = 'web' | 'app';
+
 /** Path of the redirect URI registered with @BotFather (Login Widget → Allowed URLs). */
 export const TELEGRAM_CALLBACK_PATH = '/v1/auth/telegram/callback';
 
@@ -31,6 +37,10 @@ export const TELEGRAM_CALLBACK_PATH = '/v1/auth/telegram/callback';
  *    the code with the client secret (it never leaves the server) and verify the signed `id_token`.
  *
  * A code intercepted on the way back is useless without the verifier, which stays in the app.
+ *
+ * App flow (when `TELEGRAM_APP_REDIRECT_URI` is set and Telegram is installed): the app asks
+ * `GET /v1/auth/telegram/app-link` for a `tg://` link, Telegram asks the user and then opens the app
+ * through that Universal Link with `code`, and step 3 runs with `flow: "app"`.
  */
 @Injectable()
 export class TelegramLoginService {
@@ -51,6 +61,51 @@ export class TelegramLoginService {
 
   get redirectUri(): string {
     return new URL(TELEGRAM_CALLBACK_PATH, this.env.API_BASE_URL).toString();
+  }
+
+  /** The iOS app's Universal Link redirect from @BotFather; undefined → browser flow only. */
+  get appRedirectUri(): string | undefined {
+    return this.env.TELEGRAM_APP_REDIRECT_URI;
+  }
+
+  private redirectUriFor(flow: TelegramFlow): string {
+    if (flow === 'web') return this.redirectUri;
+    if (!this.appRedirectUri) throw ApiError.unavailable('Sign in with the Telegram app is not configured.');
+    return this.appRedirectUri;
+  }
+
+  /**
+   * A `tg://` link that opens the Telegram app's consent screen for this sign-in; Telegram then opens
+   * the app's Universal Link with the code. Null whenever that is not possible (not configured,
+   * Telegram unreachable or refusing): the app falls back to the browser flow.
+   */
+  async appLink(params: TelegramAuthorizeParams): Promise<string | null> {
+    if (!this.isConfigured || !this.appRedirectUri) return null;
+    const url = new URL('/crossapp', this.issuer);
+    url.search = new URLSearchParams({
+      client_id: this.requireClientId(),
+      redirect_uri: this.appRedirectUri,
+      response_type: 'code',
+      scope: 'openid profile',
+      state: params.state,
+      nonce: params.nonce,
+      code_challenge: params.codeChallenge,
+      code_challenge_method: 'S256',
+      ios_sdk: '1',
+    }).toString();
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(5_000) });
+      const body = (await response.json().catch(() => ({}))) as { url?: unknown; error?: unknown };
+      if (!response.ok || typeof body.url !== 'string') {
+        this.logger.warn({ status: response.status, error: body.error }, 'Telegram app link refused');
+        return null;
+      }
+      const link = new URL(body.url);
+      return link.protocol === 'tg:' || link.protocol === 'https:' ? link.toString() : null;
+    } catch (error) {
+      this.logger.warn({ err: error }, 'Telegram app link unavailable');
+      return null;
+    }
   }
 
   /** Telegram's authorization URL for this sign-in attempt. */
@@ -76,12 +131,13 @@ export class TelegramLoginService {
   }
 
   /** Redeems the authorization code and returns the verified identity. */
-  async signIn(code: string, codeVerifier: string, nonce: string): Promise<TelegramIdentity> {
-    const idToken = await this.exchange(code, codeVerifier);
-    return this.verify(idToken, nonce);
+  async signIn(code: string, codeVerifier: string, nonce: string, flow: TelegramFlow = 'web'): Promise<TelegramIdentity> {
+    const redirectUri = this.redirectUriFor(flow);
+    const idToken = await this.exchange(code, codeVerifier, redirectUri);
+    return this.verify(idToken, nonce, flow);
   }
 
-  private async exchange(code: string, codeVerifier: string): Promise<string> {
+  private async exchange(code: string, codeVerifier: string, redirectUri: string): Promise<string> {
     const clientId = this.requireClientId();
     const secret = this.env.TELEGRAM_LOGIN_CLIENT_SECRET as string;
     let response: Response;
@@ -95,7 +151,7 @@ export class TelegramLoginService {
         body: new URLSearchParams({
           grant_type: 'authorization_code',
           code,
-          redirect_uri: this.redirectUri,
+          redirect_uri: redirectUri,
           client_id: clientId,
           code_verifier: codeVerifier,
         }),
@@ -115,7 +171,7 @@ export class TelegramLoginService {
     return body.id_token;
   }
 
-  private async verify(idToken: string, nonce: string): Promise<TelegramIdentity> {
+  private async verify(idToken: string, nonce: string, flow: TelegramFlow): Promise<TelegramIdentity> {
     let payload: Awaited<ReturnType<typeof jwtVerify>>['payload'];
     try {
       ({ payload } = await jwtVerify(idToken, this.keys, {
@@ -126,7 +182,10 @@ export class TelegramLoginService {
     } catch {
       throw ApiError.unauthorized('The Telegram ID token is invalid.');
     }
-    if (payload.nonce !== nonce) throw ApiError.unauthorized('The Telegram sign-in nonce does not match.');
+    // The Telegram app's flow may not carry the nonce into the token; the code is still bound to this
+    // app's PKCE verifier. A nonce that is present must match.
+    const nonceOptional = flow === 'app' && payload.nonce === undefined;
+    if (!nonceOptional && payload.nonce !== nonce) throw ApiError.unauthorized('The Telegram sign-in nonce does not match.');
     if (typeof payload.sub !== 'string' || payload.sub.length === 0) throw ApiError.unauthorized('The Telegram ID token is invalid.');
     const given = [payload.given_name, payload.family_name].filter((v): v is string => typeof v === 'string' && v.trim() !== '');
     const name = typeof payload.name === 'string' && payload.name.trim() ? payload.name.trim() : given.join(' ').trim() || null;

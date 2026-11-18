@@ -102,9 +102,15 @@ public final class AuthService: AuthServicing {
         api.auth.telegramAuthorizationURL(codeChallenge: codeChallenge, state: state, nonce: nonce)
     }
 
+    /// Any failure (offline, older backend) falls back to the browser flow.
+    public func telegramAppLink(codeChallenge: String, state: String, nonce: String) async -> URL? {
+        try? await api.auth.telegramAppLink(codeChallenge: codeChallenge, state: state, nonce: nonce)
+    }
+
     /// Telegram shares no email; the name (if any) prefills SETUP_PROFILE.
     public func signIn(telegram credential: TelegramSignInCredential) async throws -> AuthResult {
-        let request = TelegramSignInRequest(code: credential.code, codeVerifier: credential.codeVerifier, nonce: credential.nonce)
+        let request = TelegramSignInRequest(code: credential.code, codeVerifier: credential.codeVerifier, nonce: credential.nonce,
+                                            flow: credential.flow == .app ? "app" : nil)
         let response = try await api.auth.signInWithTelegram(request)
         return try await completeSignIn(response, suggestedName: response.suggestedName, fallbackEmail: nil, appleUserID: nil)
     }

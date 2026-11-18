@@ -42,7 +42,12 @@ const TelegramCallbackQuery = z.object({
   state: z.string().max(128).optional(),
   error: z.string().max(200).optional(),
 });
-const TelegramBody = z.object({ code: z.string().min(1).max(2048), codeVerifier: urlSafe(43, 128), nonce: urlSafe(16, 128) });
+const TelegramBody = z.object({
+  code: z.string().min(1).max(2048),
+  codeVerifier: urlSafe(43, 128),
+  nonce: urlSafe(16, 128),
+  flow: z.enum(['web', 'app']).default('web'),
+});
 const RefreshBody = z.object({ refreshToken: z.string().min(1) });
 const LogoutBody = z.object({ refreshToken: nullableString, allDevices: z.boolean().default(false) });
 const DevBody = z.object({ subject: z.string().min(1).max(100), email: nullableString, fullName: nullableString });
@@ -120,6 +125,19 @@ export class AuthController {
   }
 
   /**
+   * Telegram-app sign-in: a `tg://` link for the app to open, or `url: null` when the app should use
+   * the browser flow (`telegram/authorize`) instead.
+   */
+  @Public()
+  @RateLimit('auth')
+  @Get('telegram/app-link')
+  async telegramAppLink(@Query() query: unknown) {
+    const input = parse(TelegramAuthorizeQuery, query);
+    const url = await this.telegram.appLink({ codeChallenge: input.code_challenge, state: input.state, nonce: input.nonce });
+    return { url };
+  }
+
+  /**
    * Telegram's redirect URI (registered with @BotFather). Hands the result back to the app through
    * its URL scheme; the code alone is worthless without the PKCE verifier the app kept.
    */
@@ -142,7 +160,7 @@ export class AuthController {
   @HttpCode(200)
   async signInWithTelegram(@Body() body: unknown) {
     const input = parse(TelegramBody, body);
-    const identity = await this.telegram.signIn(input.code, input.codeVerifier, input.nonce);
+    const identity = await this.telegram.signIn(input.code, input.codeVerifier, input.nonce, input.flow);
     const resolved = await this.resolveUser('telegram', identity.subject, null, null);
     return this.respond(resolved, identity.name);
   }

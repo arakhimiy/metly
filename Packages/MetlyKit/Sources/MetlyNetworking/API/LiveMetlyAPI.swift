@@ -67,6 +67,15 @@ extension LiveMetlyAPI: AuthAPI {
         return components?.url
     }
 
+    public func telegramAppLink(codeChallenge: String, state: String, nonce: String) async throws -> URL? {
+        let response: TelegramAppLinkResponse = try await send(.get, "/v1/auth/telegram/app-link", query: [
+            URLQueryItem(name: "code_challenge", value: codeChallenge),
+            URLQueryItem(name: "state", value: state),
+            URLQueryItem(name: "nonce", value: nonce),
+        ], auth: false)
+        return response.url
+    }
+
     public func logout(_ request: LogoutRequest) async throws {
         let _: EmptyResponse = try await send(.post, "/v1/auth/logout", body: request, auth: true, idempotent: true)
     }

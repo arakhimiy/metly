@@ -3,6 +3,7 @@ import MetlyCore
 import MetlyData
 import MetlyDesign
 import SwiftUI
+import UIKit
 
 /// AUTH_SIGNUP — "Create your Nameshake" (or "Welcome Back" in sign-in mode).
 struct AuthView: View {
@@ -110,12 +111,17 @@ struct AuthView: View {
     private func signInWithTelegram() {
         let session = webAuthenticationSession
         let auth = services.auth
-        let client = TelegramSignInClient(authorizationURL: { challenge, state, nonce in
+        var client = TelegramSignInClient(authorizationURL: { challenge, state, nonce in
             auth.telegramAuthorizationURL(codeChallenge: challenge, state: state, nonce: nonce)
         }) { url, scheme in
             try await session.authenticate(using: url, callback: .customScheme(scheme),
                                            preferredBrowserSession: .shared, additionalHeaderFields: [:])
         }
+        client.telegramAppInstalled = { URL(string: "tg://resolve").map(UIApplication.shared.canOpenURL) ?? false }
+        client.appLink = { challenge, state, nonce in
+            await auth.telegramAppLink(codeChallenge: challenge, state: state, nonce: nonce)
+        }
+        client.openTelegram = { url in await UIApplication.shared.open(url) }
         Task {
             if let outcome = await model.signInWithTelegram(client: client, auth: services.auth) {
                 finish(outcome)

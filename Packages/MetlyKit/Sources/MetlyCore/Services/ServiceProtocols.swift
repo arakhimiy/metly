@@ -61,6 +61,8 @@ public protocol AuthServicing: AnyObject {
     func signIn(google: GoogleSignInCredential) async throws -> AuthResult
     /// Log In with Telegram: the URL that starts it in a browser session (nil without a backend).
     func telegramAuthorizationURL(codeChallenge: String, state: String, nonce: String) -> URL?
+    /// Log In with Telegram through the Telegram app: a `tg://` link, or nil to use the browser.
+    func telegramAppLink(codeChallenge: String, state: String, nonce: String) async -> URL?
     func signIn(telegram: TelegramSignInCredential) async throws -> AuthResult
     /// Wipes Keychain + local store.
     func signOut() async
@@ -115,4 +117,9 @@ public protocol SubscriptionVerifying: AnyObject {
 @MainActor
 public protocol PushRegistering: AnyObject {
     func register(deviceToken: Data) async
+}
+
+extension AuthServicing {
+    /// Browser flow only unless the service offers the Telegram-app flow (previews, test doubles).
+    public func telegramAppLink(codeChallenge: String, state: String, nonce: String) async -> URL? { nil }
 }

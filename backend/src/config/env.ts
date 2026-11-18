@@ -101,6 +101,12 @@ const schema = z
      */
     TELEGRAM_LOGIN_CLIENT_ID: optional,
     TELEGRAM_LOGIN_CLIENT_SECRET: optional,
+    /**
+     * Redirect URI @BotFather generated for the iOS app (Login Widget → Bundle ID + Team ID), e.g.
+     * `https://app123456-login.tg.dev`. Set → the app signs in through the Telegram app, which opens it
+     * again via this Universal Link. Empty → the app uses the browser flow only.
+     */
+    TELEGRAM_APP_REDIRECT_URI: optional.refine((v) => v === undefined || /^https:\/\/[a-z0-9.-]+(\/[^\s?#]*)?$/i.test(v), 'must be an https URL'),
     /** Telegram's OIDC issuer; tests point it at a local stand-in. */
     TELEGRAM_OIDC_ISSUER: z.url().default('https://oauth.telegram.org'),
     /** The app's URL scheme: the sign-in callback hands the authorization code back through it. */

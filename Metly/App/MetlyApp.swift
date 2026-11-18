@@ -1,6 +1,7 @@
 import FeatureCards
 import FeatureConnect
 import FeatureHome
+import FeatureOnboarding
 import FeatureProfile
 import MetlyCore
 import MetlyData
@@ -76,9 +77,14 @@ struct MetlyApp: App {
                 .onChange(of: services.preferences.appearance, initial: true) { _, appearance in
                     AppearanceApplier.apply(appearance)
                 }
-                .onOpenURL { url in DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
+                // The Telegram app's sign-in return goes to the waiting sign-in, never to deep links.
+                .onOpenURL { url in
+                    if TelegramAppReturn.shared.handle(url) { return }
+                    DeepLinkHandler.handle(url, router: router, context: container.mainContext)
+                }
                 .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
-                    if let url = activity.webpageURL { DeepLinkHandler.handle(url, router: router, context: container.mainContext) }
+                    guard let url = activity.webpageURL, !TelegramAppReturn.shared.handle(url) else { return }
+                    DeepLinkHandler.handle(url, router: router, context: container.mainContext)
                 }
                 .onChange(of: router.phase) { _, phase in
                     // Widget / Control / Siri cold launches arrive before the root phase is ready.
@@ -87,9 +93,12 @@ struct MetlyApp: App {
                 .onChange(of: scenePhase) { _, phase in
                     switch phase {
                     case .active:
+                        TelegramAppReturn.shared.appDidBecomeActive()
                         services.sync.requestSync()
                         client.catchUpNow()
-                    case .background: environment.syncEngine.scheduleBackgroundSync()
+                    case .background:
+                        TelegramAppReturn.shared.appDidLeave()
+                        environment.syncEngine.scheduleBackgroundSync()
                     default: break
                     }
                 }

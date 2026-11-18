@@ -48,11 +48,14 @@ public struct TelegramSignInRequest: Codable, Sendable, Hashable {
     public var code: String
     public var codeVerifier: String
     public var nonce: String
+    /// `"app"` when the code came back through the app's Universal Link; omitted (= `"web"`) otherwise.
+    public var flow: String?
 
-    public init(code: String, codeVerifier: String, nonce: String) {
+    public init(code: String, codeVerifier: String, nonce: String, flow: String? = nil) {
         self.code = code
         self.codeVerifier = codeVerifier
         self.nonce = nonce
+        self.flow = flow
     }
 }
 
@@ -177,5 +180,14 @@ public struct Page<Item: Codable & Sendable & Hashable>: Codable, Sendable, Hash
     public init(items: [Item], nextCursor: String?) {
         self.items = items
         self.nextCursor = nextCursor
+    }
+}
+
+/// `GET /v1/auth/telegram/app-link` — a `tg://` link into the Telegram app, or null for the browser flow.
+public struct TelegramAppLinkResponse: Codable, Sendable, Hashable {
+    public var url: URL?
+
+    public init(url: URL?) {
+        self.url = url
     }
 }

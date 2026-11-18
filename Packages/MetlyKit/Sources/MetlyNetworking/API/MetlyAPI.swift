@@ -14,12 +14,20 @@ public protocol AuthAPI: Sendable {
     /// `GET /v1/auth/telegram/authorize?…` — where the browser session starts Log In with Telegram
     /// (the backend redirects to Telegram with its bot client id). Nil when there is no backend.
     func telegramAuthorizationURL(codeChallenge: String, state: String, nonce: String) -> URL?
+    /// `GET /v1/auth/telegram/app-link?…` — a `tg://` link that runs the sign-in in the Telegram app,
+    /// which then reopens this app through its Universal Link. Nil → use the browser flow.
+    func telegramAppLink(codeChallenge: String, state: String, nonce: String) async throws -> URL?
     /// `POST /v1/auth/logout` — revokes the refresh token (best effort; local sign-out never waits on it).
     func logout(_ request: LogoutRequest) async throws
     #if DEBUG
     /// `POST /v1/auth/dev` — only a local backend with `DEV_AUTH_ENABLED` answers it.
     func signInForDevelopment(_ request: DevSignInRequest) async throws -> AuthResponse
     #endif
+}
+
+extension AuthAPI {
+    /// No Telegram-app flow unless an implementation offers one (mock server, test doubles).
+    public func telegramAppLink(codeChallenge: String, state: String, nonce: String) async throws -> URL? { nil }
 }
 
 #if DEBUG
