@@ -7,7 +7,7 @@ import { auroraColors, holographicFoil, metalFoil, type PageColors, pageColors }
 import type { PublicView } from './public-card.service';
 import type { WebPlatform } from './visitor';
 
-// Server-rendered tanishly.app pages (SPEC WEB_CARD / WEB_SHAREBACK_SHEET / WEB_CONFIRMATION /
+// Server-rendered nameshake.app pages (SPEC WEB_CARD / WEB_SHAREBACK_SHEET / WEB_CONFIRMATION /
 // WEB_UNAVAILABLE). No framework: one HTML document, one nonce'd <style>, one nonce'd <script>.
 // Every user value goes through `html` (escape-by-default); URLs through `safeUrl`.
 // Texts come from src/i18n/web-page.ts in the page's language; the script's texts travel as JSON in

@@ -1,4 +1,4 @@
-// Privacy Policy, Terms of Use and Help for tanishly.app — App Store Connect needs a Privacy Policy URL
+// Privacy Policy, Terms of Use and Help for nameshake.app — App Store Connect needs a Privacy Policy URL
 // and a Support URL. The privacy text describes what the app and this server actually do; keep it in
 // step with Metly/PrivacyInfo.xcprivacy and the data model when either changes.
 // Have a lawyer review these before the public launch (Uzbekistan's personal-data law applies).
@@ -90,7 +90,7 @@ const privacyEn: LegalDoc = {
     {
       heading: 'Your public card page',
       body: [
-        'Each card has a permanent link (tanishly.app/c/…). Anyone with the link sees only the fields you marked Public. Fields marked Connections are shown only in the app to people you have connected with. Private fields never leave your devices. You can pause all links or delete a card at any time.',
+        'Each card has a permanent link (nameshake.app/c/…). Anyone with the link sees only the fields you marked Public. Fields marked Connections are shown only in the app to people you have connected with. Private fields never leave your devices. You can pause all links or delete a card at any time.',
         'When someone opens your page we count views and saves using a salted hash of their connection, so we never store a visitor’s IP address. If a visitor chooses to share their contact back, the name and phone number or Telegram username they enter are given to you, and they get a link to remove them again.',
       ],
     },
@@ -178,7 +178,7 @@ const privacyUz: LegalDoc = {
     {
       heading: 'Kartangizning ochiq sahifasi',
       body: [
-        'Har bir kartaning doimiy havolasi bor (tanishly.app/c/…). Havolasi bor odam faqat siz “Hammaga” deb belgilagan maydonlarni ko‘radi. “Ulanganlarga” maydonlari faqat ilovada, siz bilan ulangan odamlarga ko‘rinadi. Shaxsiy maydonlar qurilmalaringizdan hech qachon chiqmaydi. Istalgan payt barcha havolalarni to‘xtatib qo‘yishingiz yoki kartani o‘chirishingiz mumkin.',
+        'Har bir kartaning doimiy havolasi bor (nameshake.app/c/…). Havolasi bor odam faqat siz “Hammaga” deb belgilagan maydonlarni ko‘radi. “Ulanganlarga” maydonlari faqat ilovada, siz bilan ulangan odamlarga ko‘rinadi. Shaxsiy maydonlar qurilmalaringizdan hech qachon chiqmaydi. Istalgan payt barcha havolalarni to‘xtatib qo‘yishingiz yoki kartani o‘chirishingiz mumkin.',
         'Sahifangiz ochilganda ko‘rishlar va saqlashlar tashrifchi ulanishining tuzlangan xeshi orqali sanaladi, shuning uchun uning IP manzili saqlanmaydi. Tashrifchi o‘z kontaktini sizga qaytarib ulashsa, u kiritgan ism va telefon yoki Telegram foydalanuvchi nomi sizga beriladi, unga esa ularni o‘chirish havolasi beriladi.',
       ],
     },
@@ -266,7 +266,7 @@ const privacyRu: LegalDoc = {
     {
       heading: 'Публичная страница визитки',
       body: [
-        'У каждой визитки есть постоянная ссылка (tanishly.app/c/…). По ссылке видны только поля, отмеченные «Всем». Поля «Контактам» видны только в приложении людям, с которыми вы обменялись визитками. Поля «Только мне» никогда не покидают ваши устройства. Вы можете в любой момент приостановить все ссылки или удалить визитку.',
+        'У каждой визитки есть постоянная ссылка (nameshake.app/c/…). По ссылке видны только поля, отмеченные «Всем». Поля «Контактам» видны только в приложении людям, с которыми вы обменялись визитками. Поля «Только мне» никогда не покидают ваши устройства. Вы можете в любой момент приостановить все ссылки или удалить визитку.',
         'Когда страницу открывают, мы считаем просмотры и сохранения по солёному хешу соединения посетителя, поэтому его IP-адрес не хранится. Если посетитель решит поделиться своим контактом в ответ, введённые им имя и телефон или Telegram передаются вам, а он получает ссылку, чтобы удалить их.',
       ],
     },
@@ -323,7 +323,7 @@ const privacyRu: LegalDoc = {
 
 const termsEn: LegalDoc = {
   title: 'Terms of Use',
-  intro: 'These terms apply when you use the Nameshake app and the tanishly.app website. By using Nameshake you agree to them.',
+  intro: 'These terms apply when you use the Nameshake app and the nameshake.app website. By using Nameshake you agree to them.',
   sections: [
     {
       heading: 'Your account',
@@ -380,7 +380,7 @@ const termsEn: LegalDoc = {
 
 const termsUz: LegalDoc = {
   title: 'Foydalanish shartlari',
-  intro: 'Bu shartlar Nameshake ilovasi va tanishly.app saytidan foydalanganingizda amal qiladi. Nameshake’dan foydalanish orqali ularga rozilik bildirasiz.',
+  intro: 'Bu shartlar Nameshake ilovasi va nameshake.app saytidan foydalanganingizda amal qiladi. Nameshake’dan foydalanish orqali ularga rozilik bildirasiz.',
   sections: [
     {
       heading: 'Akkauntingiz',
@@ -437,7 +437,7 @@ const termsUz: LegalDoc = {
 
 const termsRu: LegalDoc = {
   title: 'Условия использования',
-  intro: 'Эти условия действуют при использовании приложения Nameshake и сайта tanishly.app. Пользуясь Nameshake, вы соглашаетесь с ними.',
+  intro: 'Эти условия действуют при использовании приложения Nameshake и сайта nameshake.app. Пользуясь Nameshake, вы соглашаетесь с ними.',
   sections: [
     {
       heading: 'Ваш аккаунт',

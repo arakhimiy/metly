@@ -195,7 +195,7 @@ connections (their `updatedAt` = max(own, event's)).
 ### Slugs & publishing
 - First accepted write of a card assigns `slug = {firstname}-{4}`: first name from `profile.fullName`,
   ASCII-folded, lowercase, `[a-z0-9]` only (fallback `card`); suffix from `abcdefghjkmnpqrstuvwxyz23456789`.
-  Slugs are immutable in v1 (no custom slugs). URL: `https://tanishly.app/c/{slug}`.
+  Slugs are immutable in v1 (no custom slugs). URL: `https://nameshake.app/c/{slug}`.
 - There are no server-side drafts: every accepted card is published. `publishState: draft` only exists
   on a device that hasn't synced the card yet.
 - Pause: `profile.linksPaused` (global "Pause All Links") → every card `isPaused`, public pages show

@@ -3,7 +3,7 @@ import MetlyData
 import SwiftData
 import SwiftUI
 
-/// Universal Links (`https://tanishly.app/c/{slug}`), custom scheme (`nameshake://…`) and widget/intent links.
+/// Universal Links (`https://nameshake.app/c/{slug}`), custom scheme (`nameshake://…`) and widget/intent links.
 enum DeepLinkHandler {
     /// A link that arrived before the app reached `.main` (cold launch from a widget, control or Siri).
     private static var pendingURL: URL?

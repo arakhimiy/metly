@@ -8,7 +8,7 @@ Visual source of truth: **Apple Human Interface Guidelines** — the HTML protot
 | Topic | Decision |
 |---|---|
 | Name / bundle | **Nameshake** (renamed from Metly to Tanishly on 2026-10-26 — another "Metly" app with the same idea is on the App Store — and from Tanishly to Nameshake on 2026-11-13; app ids moved to `nameshake` the same day; the `tanishly.app` domain is a placeholder until the Nameshake domain is bought) · `app.nameshake.ios` · widgets `app.nameshake.ios.widgets` · App Group `group.app.nameshake.ios`. Code names (`MetlyKit`, `Metly.xcodeproj`) stay. |
-| Public links | `https://tanishly.app/c/{slug}` · support `support@tanishly.app` |
+| Public links | `https://nameshake.app/c/{slug}` · support `support@nameshake.app` |
 | Min iOS | **iOS 18.0** (built with Xcode 26 / iOS 26 SDK). Liquid Glass only behind `if #available(iOS 26, *)` with material fallbacks. |
 | UI | 100% native SwiftUI + HIG: system components, SF Symbols, semantic colors, Dynamic Type, Dark/Light (follows system + in-app override), VoiceOver. Accent = HIG system Blue (`AccentColor` = systemBlue; web pages #007AFF / #0A84FF). |
 | Data | **Offline-first**: SwiftData is the local source of truth; a sync engine pushes dirty records to the backend and pulls deltas. |

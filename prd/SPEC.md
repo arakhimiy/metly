@@ -341,7 +341,7 @@ Conventions: "→" = navigation; *italic* = copy; `[Pro]` = gated on Free plan.
 - Group: *Widgets* → WIDGETS_GALLERY; *Preview Public Page* → web page.
 - Group: *Cardy Pro* — value *Free* (should reflect plan) → SETTINGS_SUBSCRIPTION.
 - Group: *Notifications*, *Privacy & Data*, *Help & Support*.
-- *Sign Out* (red) → ALERT *"Sign Out?"* / *"You can sign back in with Apple, Google or email."* [Cancel, Sign Out] → ONB_WELCOME.
+- *Sign Out* (red) → ALERT *"Sign Out?"* / *"You can sign back in with Apple, Google or Telegram."* [Cancel, Sign Out] → ONB_WELCOME.
 - Note: Company is NOT editable here in v8 (only in setup) — §9 Q3. Follow-ups/Events rows were removed from Profile in v7.
 
 #### 2.5.14 FOLLOWUPS (push)
@@ -1083,7 +1083,7 @@ Everything below implies a server; the prototype simulates them. REST shown; rea
 
 | ID | Title | Message | Actions |
 |---|---|---|---|
-| ALERT_SIGN_OUT | Sign Out? | You can sign back in with Apple, Google or email. | Cancel · **Sign Out** (destructive) |
+| ALERT_SIGN_OUT | Sign Out? | You can sign back in with Apple, Google or Telegram. | Cancel · **Sign Out** (destructive) |
 | ALERT_DELETE_CARD | Delete “{name}” Card? | Its link and QR code will stop working. People you’ve connected with keep your details. | Cancel · Delete (destructive) |
 | ALERT_CARD_LIMIT (create) | Card Limit Reached | The Free plan includes 2 cards. Delete one, or upgrade to Cardy Pro for unlimited cards. | Not Now · See Pro |
 | ALERT_CARD_LIMIT (duplicate) | Card Limit Reached | The Free plan includes 2 cards. Upgrade to Cardy Pro to duplicate this one. | Not Now · See Pro |

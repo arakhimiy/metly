@@ -120,7 +120,7 @@ const schema = z
 
     /** Transactional mail (data export links). Empty → exports stay queued. */
     RESEND_API_KEY: optional,
-    MAIL_FROM: z.string().default('Nameshake <no-reply@tanishly.app>'),
+    MAIL_FROM: z.string().default('Nameshake <no-reply@nameshake.app>'),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV !== 'production') return;

@@ -10,7 +10,7 @@ nonisolated enum AccountCopy {
         return String(localized: "This permanently deletes your profile, \(cardsWithLinks), and your notes on \(people). Printed QR codes will show an inactive page.", bundle: .appStrings)
     }
 
-    static var signOutMessage: String { String(localized: "You can sign back in with Apple or Google.", bundle: .appStrings) }
+    static var signOutMessage: String { String(localized: "You can sign back in with Apple, Google or Telegram.", bundle: .appStrings) }
     static var afterCancelMessage: String { String(localized: "If you cancel, you keep Pro until the end of this billing period. Cards beyond two become read-only after that.", bundle: .appStrings) }
     static var billingFooter: String { String(localized: "Subscriptions are billed through your Apple ID. Cancel at least 24 hours before renewal.", bundle: .appStrings) }
 }

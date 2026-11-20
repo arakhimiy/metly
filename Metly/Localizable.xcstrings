@@ -18642,18 +18642,18 @@
         }
       }
     },
-    "You can sign back in with Apple or Google.": {
+    "You can sign back in with Apple, Google or Telegram.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы сможете снова войти через Apple или Google."
+            "value": "Вы сможете снова войти через Apple, Google или Telegram."
           }
         },
         "uz": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apple yoki Google orqali qayta kirishingiz mumkin."
+            "value": "Apple, Google yoki Telegram orqali qayta kirishingiz mumkin."
           }
         }
       }

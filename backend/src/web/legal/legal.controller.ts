@@ -5,7 +5,7 @@ import { appDownloadUrl, ENV, type Env } from '../../config/env';
 import type { LegalDocKind } from './legal-content';
 import { pickLang, renderHomePage, renderLegalPage, STATIC_PAGE_CSP } from './legal-page';
 
-/** tanishly.app home, Privacy Policy, Terms of Use and Help (the App Store's Support URL). */
+/** nameshake.app home, Privacy Policy, Terms of Use and Help (the App Store's Support URL). */
 @Controller()
 @Public()
 export class LegalController {

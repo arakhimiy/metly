@@ -52,7 +52,7 @@ src/
   i18n/          uz / ru / en: Lang, langFromLocale, pickLang, plural; push catalog
                  (messages.ts), card page texts (web-page.ts)
   connect/       connect sessions, peers, requests, blocks, public profiles
-  web/           tanishly.app pages, vCard, public JSON, share-back, web analytics, AASA, deferred links
+  web/           nameshake.app pages, vCard, public JSON, share-back, web analytics, AASA, deferred links
   platform/      devices + APNs, jobs, App Store subscriptions
   media/         uploads (S3), Apple Wallet + PassKit web service, data export
 ```

@@ -26,7 +26,7 @@ export function langFromLocale(locale: string | null | undefined): Lang {
 
 /**
  * Web pages: `?lang=` wins, then the browser's Accept-Language, then Uzbek. One implementation for
- * every tanishly.app page — the legal pages own it; card pages reuse it from here.
+ * every nameshake.app page — the legal pages own it; card pages reuse it from here.
  */
 export { pickLang } from '../web/legal/legal-page';
 

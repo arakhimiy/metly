@@ -12,7 +12,7 @@ import { buildVCard, vcardFilename } from './vcard';
 import { isAndroidUserAgent, platformFromUserAgent } from './visitor';
 import { WebStatsService } from './web-stats.service';
 
-/** tanishly.app: the card page, its vCard, "Get the app" and the Apple app-site association. */
+/** nameshake.app: the card page, its vCard, "Get the app" and the Apple app-site association. */
 @Controller()
 @Public()
 export class WebController {

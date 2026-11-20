@@ -9,11 +9,11 @@ switched on by setting its environment variables; until then those endpoints ans
 
 | Item | Why | Notes |
 |---|---|---|
-| Domain `tanishly.app` | Printed QR codes encode `https://tanishly.app/c/{slug}` — it can never change afterwards | Registrar of choice; DNS can stay with the registrar or move to Cloudflare |
-| `api.tanishly.app` | The app's `METLY_API_BASE_URL` | CNAME/A to the API host |
-| `tanishly.app/c/*` and `/.well-known/apple-app-site-association` | Web card page + Universal Links | Served by the same API (point the apex at it, or proxy those paths) |
-| Privacy Policy, Terms, Support pages | App Store requires a privacy policy URL; the app links `tanishly.app/privacy`, `/terms`, `/help` | Any static host |
-| `support@tanishly.app` | Shown in the app and App Store listing | Email forwarding at the registrar is enough |
+| Domain `nameshake.app` | Printed QR codes encode `https://nameshake.app/c/{slug}` — it can never change afterwards | Registrar of choice; DNS can stay with the registrar or move to Cloudflare |
+| `api.nameshake.app` | The app's `METLY_API_BASE_URL` | CNAME/A to the API host |
+| `nameshake.app/c/*` and `/.well-known/apple-app-site-association` | Web card page + Universal Links | Served by the same API (point the apex at it, or proxy those paths) |
+| Privacy Policy, Terms, Support pages | App Store requires a privacy policy URL; the app links `nameshake.app/privacy`, `/terms`, `/help` | Any static host |
+| `support@nameshake.app` | Shown in the app and App Store listing | Email forwarding at the registrar is enough |
 | Apple Developer Program team | App Store, TestFlight, Push, Sign in with Apple, Wallet, Associated Domains | The team that owns the app also owns users' Sign in with Apple identifiers — pick the final team before launch (moving later needs a user-migration) |
 
 ## 2. Hosting
@@ -35,6 +35,12 @@ default), realtime fan-out uses Postgres LISTEN/NOTIFY and scheduled jobs take a
 `TRUST_PROXY` to the number of proxies in front of the API (1 on Render/Railway/Fly) so rate limits see
 the real client IP.
 
+**Current host (Railway, project `nameshake`, service `api`).** Build and deploy settings live on the
+service itself, not in a repo file (Railway stops reading `railway.json` after 2026-12-01, so the file was removed):
+Dockerfile path `Dockerfile`, healthcheck `/health/ready` with a 120 s timeout, restart on failure
+(5 retries), no watch patterns. Deploy from `backend/` with `railway up --ci --service api`; the CLI
+uploads that folder as the build root.
+
 ## 3. Environment
 
 Copy `backend/.env.example`; production refuses to boot when `JWT_SECRET` is the example,
@@ -44,8 +50,8 @@ Copy `backend/.env.example`; production refuses to boot when `JWT_SECRET` is the
 |---|---|
 | `NODE_ENV` | `production` |
 | `DATABASE_URL` | managed PostgreSQL URL (with `sslmode=require` if the provider needs it) |
-| `WEB_BASE_URL` | `https://tanishly.app` (never change after launch) |
-| `API_BASE_URL` | `https://api.tanishly.app` |
+| `WEB_BASE_URL` | `https://nameshake.app` (never change after launch) |
+| `API_BASE_URL` | `https://api.nameshake.app` |
 | `JWT_SECRET` | `openssl rand -base64 48` |
 | `TRUST_PROXY` | proxy hops in front of the API (`1` behind one load balancer); never `true` |
 | `RATE_LIMIT_STORE` | `postgres` (default; shared by all instances) |
@@ -70,7 +76,7 @@ Multi-line keys can be stored with literal `\n`; the app restores newlines.
 ```bash
 docker build -t metly-api backend
 docker run --env-file backend/.env -p 3000:3000 metly-api   # applies migrations, then serves
-curl https://api.tanishly.app/health/ready
+curl https://api.nameshake.app/health/ready
 ```
 
 The container runs `prisma migrate deploy` before starting, so a deploy is: build, push, restart.
@@ -84,14 +90,14 @@ Migrations are additive; roll back by deploying the previous image (do not roll 
 2. Keys: Sign in with Apple key, APNs key (can be one key with both), App Store Server API key.
 3. App Store Connect: app record, subscriptions `app.nameshake.ios.pro.monthly` and
    `app.nameshake.ios.pro.yearly` in one group, App Store Server Notifications V2 URL
-   `https://api.tanishly.app/v1/webhooks/app-store` (production and sandbox).
-4. Xcode Release configuration: `DEVELOPMENT_TEAM`, `METLY_API_BASE_URL=https://api.tanishly.app`
+   `https://api.nameshake.app/v1/webhooks/app-store` (production and sandbox).
+4. Xcode Release configuration: `DEVELOPMENT_TEAM`, `METLY_API_BASE_URL=https://api.nameshake.app`
    (the Release build fails without it, by design), `GOOGLE_CLIENT_ID`.
 
 ## 6. Sign in with Google
 
 1. Google Cloud Console → APIs & Services → OAuth consent screen: app name **Nameshake**, support
-   email, privacy policy `https://tanishly.app/privacy`, scopes `openid`, `email`, `profile`.
+   email, privacy policy `https://nameshake.app/privacy`, scopes `openid`, `email`, `profile`.
 2. Credentials → Create OAuth client ID → **iOS**, bundle ID `app.nameshake.ios`. Copy the client ID
    (`…apps.googleusercontent.com`; not a secret).
 3. Xcode build setting `GOOGLE_CLIENT_ID` (both configurations) = that client ID. The app derives the
@@ -104,11 +110,11 @@ Migrations are additive; roll back by deploying the previous image (do not roll 
 1. In @BotFather create (or pick) the bot users will see on the consent screen — name and photo should
    be Nameshake's.
 2. @BotFather → the bot → **Login Widget**: add the Allowed URL
-   `https://api.tanishly.app/v1/auth/telegram/callback` (and your staging API's callback). Copy the
+   `https://api.nameshake.app/v1/auth/telegram/callback` (and your staging API's callback). Copy the
    **Client ID** and **Client Secret**.
 3. Backend: `TELEGRAM_LOGIN_CLIENT_ID`, `TELEGRAM_LOGIN_CLIENT_SECRET`. Keep `APP_URL_SCHEME` equal to
    the app's URL scheme (`nameshake`). The app needs no Telegram settings: it starts at the API.
-4. Check: `curl -I "https://api.tanishly.app/v1/auth/telegram/authorize?code_challenge=$(printf %043d 0)&state=0123456789abcdef&nonce=0123456789abcdef"`
+4. Check: `curl -I "https://api.nameshake.app/v1/auth/telegram/authorize?code_challenge=$(printf %043d 0)&state=0123456789abcdef&nonce=0123456789abcdef"`
    answers `302` to `oauth.telegram.org` (a redirect to `nameshake://auth/telegram?error=temporarily_unavailable`
    means the client id/secret are missing).
 

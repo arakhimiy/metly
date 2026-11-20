@@ -20,9 +20,7 @@ The product is **Nameshake**. Two older names remain on purpose:
 - **nameshake** is in the app identifiers: bundle id `app.nameshake.ios` (widgets `.widgets`), App Group
   `group.app.nameshake.ios`, Pass Type ID `pass.app.nameshake.ios.card`, in-app purchase ids, the
   `nameshake://` URL scheme and the npm package name (renamed from `tanishly` on 2026-11-13).
-- **tanishly.app** is still the web/API domain placeholder (`WEB_BASE_URL`, `API_BASE_URL`, support email)
-  until the Nameshake domain is bought; it must be final before the first public build, because printed
-  QR codes encode it (see `docs/DEPLOYMENT.md`).
+- **nameshake.app** is the web/API domain (`WEB_BASE_URL=https://nameshake.app`, `API_BASE_URL=https://api.nameshake.app`, `support@nameshake.app`). It is final: printed QR codes encode it (see `docs/DEPLOYMENT.md`).
 
 ## Quick start
 
