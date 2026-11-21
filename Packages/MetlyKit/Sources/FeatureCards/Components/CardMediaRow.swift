@@ -1,3 +1,4 @@
+import MetlyDesign
 import PhotosUI
 import SwiftUI
 
@@ -16,6 +17,7 @@ struct CardMediaRow: View {
     @State private var isPickerPresented = false
     @State private var isLoading = false
     @State private var isShowingLoadError = false
+    @State private var cropItem: CropImage?
 
     var body: some View {
         HStack(spacing: 14) {
@@ -42,6 +44,9 @@ struct CardMediaRow: View {
             guard let item else { return }
             Task { await load(item) }
         }
+        .imageCropper(item: $cropItem) { cropped in
+            Task { await apply(cropped) }
+        }
         .alert("Couldn’t Use This Image", isPresented: $isShowingLoadError) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -59,14 +64,32 @@ struct CardMediaRow: View {
         .contentShape(.rect)
     }
 
+    /// Photos go through "Move and Scale" first; logos are never cropped (they are trimmed instead).
     private func load(_ item: PhotosPickerItem) async {
         isLoading = true
         defer {
             isLoading = false
             pickerItem = nil   // so picking the same image again triggers onChange
         }
-        guard let data = try? await item.loadTransferable(type: Data.self),
-              let scaled = await ImageDownscaler.downscale(data, maxPixelSize: kind.maxPixelSize, format: kind.format,
+        guard let data = try? await item.loadTransferable(type: Data.self) else {
+            isShowingLoadError = true
+            return
+        }
+        if kind == .photo {
+            guard let crop = await CropImage.load(data) else {
+                isShowingLoadError = true
+                return
+            }
+            cropItem = crop
+        } else {
+            await apply(data)
+        }
+    }
+
+    private func apply(_ data: Data) async {
+        isLoading = true
+        defer { isLoading = false }
+        guard let scaled = await ImageDownscaler.downscale(data, maxPixelSize: kind.maxPixelSize, format: kind.format,
                                                            trimsMargins: kind == .logo)
         else {
             isShowingLoadError = true

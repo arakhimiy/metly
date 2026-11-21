@@ -5,7 +5,7 @@ import PhotosUI
 import SwiftUI
 
 /// Profile photo with a camera badge. Tap picks a photo (`PhotosPicker`, no library permission
-/// needed); with a photo set, a menu also offers "Remove Photo". Stored downscaled in `profile.photoData`.
+/// needed), then "Move and Scale"; with a photo set, a menu also offers "Remove Photo". Stored downscaled in `profile.photoData`.
 struct AvatarPickerButton: View {
     let profile: Profile
     @Environment(AppRouter.self) private var router
@@ -13,6 +13,7 @@ struct AvatarPickerButton: View {
     @State private var isPickerPresented = false
     @State private var selection: PhotosPickerItem?
     @State private var isProcessing = false
+    @State private var cropItem: CropImage?
 
     var body: some View {
         Group {
@@ -36,6 +37,9 @@ struct AvatarPickerButton: View {
             guard let item else { return }
             Task { await loadPhoto(from: item) }
         }
+        .imageCropper(item: $cropItem) { cropped in
+            Task { await savePhoto(cropped) }
+        }
         .accessibilityLabel("Profile Photo")
         .accessibilityHint(profile.photoData == nil ? "Choose a photo" : "Change or remove your photo")
     }
@@ -49,6 +53,7 @@ struct AvatarPickerButton: View {
         profile.markChanged()
     }
 
+    /// Picked photo → "Move and Scale" → `savePhoto`.
     private func loadPhoto(from item: PhotosPickerItem) async {
         isProcessing = true
         defer {
@@ -56,12 +61,26 @@ struct AvatarPickerButton: View {
             selection = nil
         }
         guard let data = try? await item.loadTransferable(type: Data.self),
-              let jpeg = await ImageDownscaler.jpegData(from: data) else {
-            router.showToast(String(localized: "Couldn’t Load Photo", bundle: .appStrings), systemImage: "exclamationmark.triangle")
+              let crop = await CropImage.load(data) else {
+            showLoadError()
+            return
+        }
+        cropItem = crop
+    }
+
+    private func savePhoto(_ cropped: Data) async {
+        isProcessing = true
+        defer { isProcessing = false }
+        guard let jpeg = await ImageDownscaler.jpegData(from: cropped) else {
+            showLoadError()
             return
         }
         profile.photoData = jpeg
         profile.markChanged()
+    }
+
+    private func showLoadError() {
+        router.showToast(String(localized: "Couldn’t Load Photo", bundle: .appStrings), systemImage: "exclamationmark.triangle")
     }
 }
 

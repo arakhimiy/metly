@@ -16,6 +16,7 @@ struct SetupProfileView: View {
     @State private var hasLoaded: Bool
     @State private var photoItem: PhotosPickerItem?
     @State private var isProcessingPhoto = false
+    @State private var cropItem: CropImage?
     @State private var isShowingSaveError = false
     @FocusState private var focusedField: SetupProfileField?
 
@@ -70,6 +71,9 @@ struct SetupProfileView: View {
         .onSubmit(focusNextField)
         .task { load() }
         .task(id: photoItem) { await loadPhoto() }
+        .imageCropper(item: $cropItem) { cropped in
+            Task { await savePhoto(cropped) }
+        }
         .alert("Couldn’t Save Your Profile", isPresented: $isShowingSaveError) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -98,7 +102,15 @@ struct SetupProfileView: View {
         isProcessingPhoto = true
         defer { isProcessingPhoto = false }
         guard let data = try? await photoItem.loadTransferable(type: Data.self),
-              let jpeg = await ImageDownscaler.jpegData(from: data) else { return }
+              let crop = await CropImage.load(data) else { return }
+        self.photoItem = nil   // so picking the same photo again after Cancel still works
+        cropItem = crop
+    }
+
+    private func savePhoto(_ cropped: Data) async {
+        isProcessingPhoto = true
+        defer { isProcessingPhoto = false }
+        guard let jpeg = await ImageDownscaler.jpegData(from: cropped) else { return }
         form.photoData = jpeg
     }
 

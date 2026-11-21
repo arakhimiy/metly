@@ -4149,6 +4149,22 @@
         }
       }
     },
+    "Choose": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбрать"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanlash"
+          }
+        }
+      }
+    },
     "Choose %@ and tap a QR Code widget.": {
       "localizations": {
         "ru": {
@@ -9572,6 +9588,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yuqoriga surish"
+          }
+        }
+      }
+    },
+    "Move and Scale": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переместите и масштабируйте"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surilting va kattalashtiring"
           }
         }
       }
@@ -15601,6 +15633,22 @@
         }
       }
     },
+    "Swipe up or down to zoom": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Смахните вверх или вниз, чтобы изменить масштаб"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kattalashtirish uchun yuqoriga yoki pastga suring"
+          }
+        }
+      }
+    },
     "System": {
       "comment": "App appearance: follow the iOS setting",
       "localizations": {
@@ -19460,6 +19508,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Siz %@ni blokladingiz."
+          }
+        }
+      }
+    },
+    "Zoom %lld percent": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Масштаб %lld процентов"
+          }
+        },
+        "uz": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masshtab %lld foiz"
           }
         }
       }
